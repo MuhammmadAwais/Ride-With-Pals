@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.animate-item {
+  will-change: transform, opacity; /* Tells the browser to optimize these elements */
+}
