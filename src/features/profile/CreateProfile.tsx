@@ -72,11 +72,11 @@ const CreateProfile = () => {
           </div>
 
           <div className="flex-1 relative max-w-md image-reveal">
-            <div className="absolute -inset-4 bg-gradient-to-tr from-[#EB712B]/20 to-transparent rounded-[2rem] blur-xl"></div>
+            <div className="absolute -inset-4 shadow-[0px_4px_20px_rgba(235,113,43,0.4)] from-[#EB712B]/20 to-transparent rounded-3xl blur-xl"></div>
             <img 
               src="/Images/ProfilePic.jpg" 
               alt="Athlete" 
-              className="relative rounded-3xl w-full shadow-2xl border border-white/5 object-cover h-[450px]" 
+              className="relative rounded-3xl w-full shadow-2xl border border-white/5 object-cover h-130" 
             />
           </div>
         </div>

@@ -21,7 +21,7 @@ const SelectRole = () => {
       <div className="text-center mb-16 space-y-4 hero-text">
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter">
           ELEVATE YOUR <br />
-          <span className="bg-gradient-to-r from-[#EB712B] to-[#ff8f50] bg-clip-text text-transparent">
+          <span className=" from-[#EB712B] to-[#ff8f50] bg-clip-text text-transparent">
             RIDE
           </span>
         </h1>
@@ -32,7 +32,7 @@ const SelectRole = () => {
       </div>
 
       {/* Main Interaction Card */}
-      <div className="main-card bg-[#0a0a0a] border border-white/5 p-10 md:p-12 rounded-[2rem] w-full max-w-lg shadow-[0_0_50px_rgba(235,113,43,0.1)] mb-20">
+      <div className="main-card bg-[#0a0a0a] border border-white/5 p-10 md:p-12 rounded-3xl w-full max-w-lg shadow-[0_0_50px_rgba(235,113,43,0.1)] mb-20">
         <button className="w-full bg-[#EB712B] text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-2 mb-4 hover:bg-[#ff8c4a] transition-all hover:scale-[1.02] active:scale-[0.98]">
           GET ME INSIDE <ArrowRight size={20} />
         </button>

@@ -1,10 +1,10 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Camera,  ChevronDown, Calendar } from "lucide-react";
 import gsap from "gsap";
 
 const AthleteProfileForm = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState("Images/ProfileImage.png"); 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -116,7 +116,7 @@ const AthleteProfileForm = () => {
               </button>
 
               {openDropdown === 'country' && (
-                <div className="absolute top-[85px] left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-[9999] shadow-2xl overflow-hidden">
+                <div className="absolute  left-0 w-full bg-[#141414] border border-[#222] rounded-xl shadow-2xl overflow-hidden">
                   {['Germany', 'Pakistan', 'USA', 'Canada'].map((option) => (
                     <div
                       key={option}
@@ -149,7 +149,7 @@ const AthleteProfileForm = () => {
               </button>
 
               {openDropdown === 'gender' && (
-                <div className="absolute top-[85px] left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden">
+                <div className="absolute  left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden">
                   {['Male', 'Female', 'Non-binary'].map((option) => (
                     <div
                       key={option}
@@ -178,7 +178,7 @@ const AthleteProfileForm = () => {
               </button>
 
               {openDropdown === 'unit' && (
-                <div className="absolute top-[85px] left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden">
+                <div className="absolute  left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden">
                   {['Metric (km, kg)', 'Imperial (mi, lbs)'].map((option) => (
                     <div
                       key={option}
