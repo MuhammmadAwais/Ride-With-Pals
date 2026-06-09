@@ -1,5 +1,5 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";git remote -v
 import { Camera,  ChevronDown, Calendar } from "lucide-react";
 import gsap from "gsap";
 
