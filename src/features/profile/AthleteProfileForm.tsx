@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, ChevronLeft, ChevronDown, Calendar } from "lucide-react";
+import { Camera,  ChevronDown, Calendar } from "lucide-react";
 import gsap from "gsap";
 
 const AthleteProfileForm = () => {
@@ -103,7 +103,7 @@ const AthleteProfileForm = () => {
 
             <div className="relative">
               <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Country / Region</label>
-              <button
+               <button
                 type="button"
                 onClick={() => toggleDropdown('country')}
                 className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors"
@@ -116,7 +116,7 @@ const AthleteProfileForm = () => {
               </button>
 
               {openDropdown === 'country' && (
-                <div className="absolute top-[85px] left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden">
+                <div className="absolute top-[85px] left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-[9999] shadow-2xl overflow-hidden">
                   {['Germany', 'Pakistan', 'USA', 'Canada'].map((option) => (
                     <div
                       key={option}

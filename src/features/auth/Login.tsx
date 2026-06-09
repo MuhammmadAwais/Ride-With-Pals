@@ -28,6 +28,12 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleLogin = () => {
+    if (validateForm()) {
+      navigate("/select-role");
+    }
+  };
+
   useGSAP(() => {
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
     tl.fromTo(".brand-side", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.2 })
@@ -100,7 +106,7 @@ const Login = () => {
           </div>
 
           <button 
-            onClick={() => validateForm()} 
+            onClick={handleLogin} 
             className="w-full mt-6 py-4 rounded-xl bg-[#EB712B] hover:bg-[#d16226] font-bold transition-all animate-item"
           >
             Log in
