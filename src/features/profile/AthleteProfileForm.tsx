@@ -1,10 +1,10 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
-// import { useNavigate } from "react-router-dom";git remote -v
+import { useNavigate } from "react-router-dom";
 import { Camera,  ChevronDown, Calendar } from "lucide-react";
 import gsap from "gsap";
 
 const AthleteProfileForm = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState("Images/ProfileImage.png"); 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -204,15 +204,15 @@ const AthleteProfileForm = () => {
           </div>
 
           <button 
-            type="button" 
-            onClick={() => {
-              console.log("Button clicked!");
-              window.location.href = "/select-role"; 
-            }} 
-            className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all"
-          >
-            SAVE
-          </button>
+  type="button" 
+  onClick={() => {
+    console.log("Button clicked!");
+    navigate("/select-role"); // This handles the navigation inside React
+  }} 
+  className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all"
+>
+  Save
+</button>
         </form>
       </div>
     </div>
