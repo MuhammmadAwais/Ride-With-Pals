@@ -207,7 +207,7 @@ const AthleteProfileForm = () => {
   type="button" 
   onClick={() => {
     console.log("Button clicked!");
-    navigate("/select-role"); // This handles the navigation inside React
+    navigate("/select-role"); 
   }} 
   className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all"
 >
