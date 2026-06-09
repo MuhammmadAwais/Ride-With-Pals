@@ -22,22 +22,23 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     if (code.every((digit) => digit !== "")) {
-      navigate("/dashboard");
+      navigate("/create-profile");
     }
   }, [code, navigate]);
 
   const handleChange = (index: number, value: string) => {
-  // Only allow numbers
-  if (value && !/^\d+$/.test(value)) return;
+    // Only allow numbers
+    if (value && !/^\d+$/.test(value)) return;
 
-  const newCode = [...code];
-  newCode[index] = value.slice(-1);
-  setCode(newCode);
+    const newCode = [...code];
+    newCode[index] = value.slice(-1);
+    setCode(newCode);
 
-  if (value && index < 5) {
-    inputRefs.current[index + 1]?.focus();
-  }
-};
+    // Auto-focus 
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && code[index] === "" && index > 0) {
@@ -96,7 +97,7 @@ const VerifyEmail = () => {
 
           <button 
             disabled={!code.every((d) => d !== "")}
-            onClick={() => navigate("/dashboard")} 
+            onClick={() => navigate("/create-profile")} 
             className={`animate-item w-full py-4 rounded-xl font-bold transition-all active:scale-[0.98] mb-6 ${
               code.every((d) => d !== "") 
                 ? "bg-[#EB712B] hover:bg-[#d16226]" 

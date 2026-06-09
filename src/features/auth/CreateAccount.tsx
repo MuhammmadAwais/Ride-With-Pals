@@ -79,7 +79,7 @@ const CreateAccount = () => {
               <label className="text-xs text-gray-400 ml-1">Password</label>
               <div className="relative mt-1">
                 <Lock className={`absolute left-4 top-3.5 transition-all ${errors.password ? "text-[#EB712B]" : "text-gray-600 group-focus-within:text-[#EB712B]"}`} size={18} />
-                <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => {setPassword(e.target.value); setErrors({...errors, password: ""})}} placeholder="••••••••" className={`w-full h-12 rounded-xl bg-[#111111] border pl-12 pr-12 outline-none transition-all ${errors.password ? "border-[#EB712B]" : "border-[#222] focus:border-[#EB712B]"}`} />
+                <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => {setPassword(e.target.value); setErrors({...errors, password: ""})}} placeholder="••••••••" className={`w-full h-12 rounded-xl border pl-12 pr-12 outline-none transition-all ${errors.password ? "border-[#EB712B]" : "border-[#222] focus:border-[#EB712B]"}`} />
                 <div className="absolute right-4 top-3.5 text-gray-500 cursor-pointer hover:text-[#EB712B]" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </div>
@@ -91,7 +91,7 @@ const CreateAccount = () => {
               <label className="text-xs text-gray-400 ml-1">Confirm Password</label>
               <div className="relative mt-1">
                 <Lock className={`absolute left-4 top-3.5 transition-all ${errors.confirmPassword ? "text-[#EB712B]" : "text-gray-600 group-focus-within:text-[#EB712B]"}`} size={18} />
-                <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => {setConfirmPassword(e.target.value); setErrors({...errors, confirmPassword: ""})}} placeholder="••••••••" className={`w-full h-12 rounded-xl bg-[#111111] border pl-12 pr-12 outline-none transition-all ${errors.confirmPassword ? "border-[#EB712B]" : "border-[#222] focus:border-[#EB712B]"}`} />
+                <input type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => {setConfirmPassword(e.target.value); setErrors({...errors, confirmPassword: ""})}} placeholder="••••••••" className={`w-full h-12 rounded-xl  border pl-12 pr-12 outline-none transition-all ${errors.confirmPassword ? "border-[#EB712B]" : "border-[#222] focus:border-[#EB712B]"}`} />
                 <div className="absolute right-4 top-3.5 text-gray-500 cursor-pointer hover:text-[#EB712B]" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </div>
