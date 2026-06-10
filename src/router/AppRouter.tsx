@@ -9,6 +9,7 @@ import SelectRole from '../features/profile/SelectRole';
 import ProfileSetup from '../features/club/ProfileSetup'; 
 import Subscriptions from '../features/club/Subscriptions';
 import SelectRoleClub from '../features/club/SelectRoleClub';
+import DashBoard from '../features/home/DashBoard';
 
 export const AppRouter = () => {
   return (
@@ -29,6 +30,7 @@ export const AppRouter = () => {
         <Route path="/select-role-club" element={<SelectRoleClub />} />
 
         <Route path="/select-role" element={<SelectRole />} />
+        <Route path="/dashboard" element={<DashBoard />} />
         {/* <Route path="/home" element={<div>Home Screen</div>} /> */}
       </Routes>
     </BrowserRouter>

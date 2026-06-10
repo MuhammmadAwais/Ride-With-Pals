@@ -39,11 +39,12 @@ export default function SelectRoleClub() {
       {/* Main Card */}
       <div className="reveal-item bg-[#161616] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl mb-8">
         <button 
-          onClick={() => navigate("/link-stripe")}
-          className="w-full bg-[#EB712B] hover:bg-[#d16226] text-black font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 hover:scale-[1.02] active:scale-[0.98]"
-        >
-          Link your Strip account<ArrowRight size={20} />
-        </button>
+  
+  onClick={() => navigate("/dashboard")} 
+  className="w-full bg-[#EB712B] hover:bg-[#d16226] text-black font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 hover:scale-[1.02] active:scale-[0.98]"
+>
+  Link your Strip account <ArrowRight size={20} />
+</button>
         
         <button 
           onClick={() => navigate("/create-club")}

@@ -52,7 +52,7 @@ const CreateProfile = () => {
           <div className="flex-1 space-y-8 fade-in">
             <h1 className="text-6xl font-extrabold leading-[1.05] tracking-tighter text-white">
               Create your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#EB712B] to-[#ff9e66] ">
+              <span className="text-transparent bg-clip-text  from-[#EB712B] to-[#ff9e66] ">
                 Athlete Profile
               </span>
             </h1>
