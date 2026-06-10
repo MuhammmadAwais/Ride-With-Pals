@@ -8,6 +8,7 @@ import AthleteProfileForm from '../features/profile/AthleteProfileForm';
 import SelectRole from '../features/profile/SelectRole';
 import ProfileSetup from '../features/club/ProfileSetup'; 
 import Subscriptions from '../features/club/Subscriptions';
+import SelectRoleClub from '../features/club/SelectRoleClub';
 
 export const AppRouter = () => {
   return (
@@ -25,6 +26,7 @@ export const AppRouter = () => {
         {/*Club Profile */}
         <Route path="/club-profile-setup" element={<ProfileSetup />} />
         <Route path="/club-subscriptions" element={<Subscriptions />} />
+        <Route path="/select-role-club" element={<SelectRoleClub />} />
 
         <Route path="/select-role" element={<SelectRole />} />
         {/* <Route path="/home" element={<div>Home Screen</div>} /> */}

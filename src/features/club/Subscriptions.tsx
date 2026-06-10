@@ -61,9 +61,12 @@ export default function Subscriptions() {
           </ul>
 
           <div className="pt-8 border-t border-white/5">
-            <button className="w-full py-3 rounded-xl bg-[#1a1a1a] border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition-all duration-300">
-              Continue with Free
-            </button>
+            <button 
+  onClick={() => navigate("/select-role-club")} 
+  className="w-full py-3 rounded-xl bg-[#1a1a1a] border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition-all duration-300"
+>
+  Continue with Free
+</button>
           </div>
         </div>
 
@@ -96,9 +99,12 @@ export default function Subscriptions() {
           </ul>
 
           <div className="pt-8 border-t border-white/10">
-            <button className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)]">
-              GO PREMIUM NOW <ArrowRight size={16} />
-            </button>
+            <button 
+  onClick={() => navigate("/select-role-club")} 
+  className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)]"
+>
+  GO PREMIUM NOW <ArrowRight size={16} />
+</button>
           </div>
         </div>
       </div>
