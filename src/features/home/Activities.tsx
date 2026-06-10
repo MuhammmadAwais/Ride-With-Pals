@@ -107,16 +107,39 @@ const Activities = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-[#EB712B] transition-all">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase mb-3">Technical Details</h4>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center"><Users size={16} className="text-[#EB712B]" /></div>
-                <div><p className="text-xs font-bold">Recommended Slots</p><p className="text-[10px] text-gray-500">12 available</p></div>
-              </div>
-            </div>
+           <div className="bg-[#161616] p-5 rounded-3xl border border-white/5 hover:border-[#EB712B] transition-all">
+  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">Technical Details</h4>
+  
+  <div className="grid grid-cols-2 gap-4">
+    {/* Slot Info */}
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center border border-white/5">
+        <Users size={16} className="text-[#EB712B]" />
+      </div>
+      <div>
+        <p className="text-[10px] text-gray-500 font-medium">Slots</p>
+        <p className="text-xs font-bold text-white">12 Available</p>
+      </div>
+    </div>
+
+    {/* Difficulty Info */}
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center border border-white/5">
+        <Gauge size={16} className="text-[#EB712B]" />
+      </div>
+      <div>
+        <p className="text-[10px] text-gray-500 font-medium">Level</p>
+        <p className="text-xs font-bold text-white">Advanced</p>
+      </div>
+    </div>
+  </div>
+</div>
             <div className="hover:border-l-2 hover:border-[#EB712B] pl-4 transition-all">
               <h4 className="text-[15px] font-bold text-[#EB712B] uppercase mb-2">Ride Description</h4>
-              <p className="text-xs text-gray-400 leading-relaxed">Autem us det tivis. Degisk bev. Loskapet yssa teoren. Tifredat publiarek bue mela nade.</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Puhågisk bek. Polylig ninade. Postfaktisk. Ar dode beling. 
+Tusol anime. Antet edod trektigt. Hära. Ånån jåvis. 
+Nålyrade sans.  Pel gigana. Kvasikrosm skämsfilter. Jongen europovis.
+Böde megabel run. Pseudoväde suprabövis, tills reren. Beligt häsamma, un. Divins tiskade. </p>
             </div>
           </div>
         </div>
