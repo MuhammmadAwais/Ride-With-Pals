@@ -6,6 +6,8 @@ import VerifyEmail from '../features/auth/VerifyEmail';
 import CreateProfile from '../features/profile/CreateProfile'; 
 import AthleteProfileForm from '../features/profile/AthleteProfileForm';
 import SelectRole from '../features/profile/SelectRole';
+import ProfileSetup from '../features/club/ProfileSetup'; 
+import Subscriptions from '../features/club/Subscriptions';
 
 export const AppRouter = () => {
   return (
@@ -17,11 +19,15 @@ export const AppRouter = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/create-profile" element={<CreateProfile />} />
         
+        {/* Athlete Profile */}
         <Route path="/athlete-profile" element={<AthleteProfileForm />} />
 
+        {/*Club Profile */}
+        <Route path="/club-profile-setup" element={<ProfileSetup />} />
+        <Route path="/club-subscriptions" element={<Subscriptions />} />
+
         <Route path="/select-role" element={<SelectRole />} />
-        
-        <Route path="/home" element={<div>Home Screen</div>} />
+        {/* <Route path="/home" element={<div>Home Screen</div>} /> */}
       </Routes>
     </BrowserRouter>
   );

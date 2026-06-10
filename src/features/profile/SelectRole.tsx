@@ -2,8 +2,12 @@ import { useRef } from "react";
 import { ArrowRight, PlusCircle, Activity, Users, ShieldCheck } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useNavigate } from "react-router-dom";
+
+
 
 const SelectRole = () => {
+  const navigate = useNavigate();
   const container = useRef(null);
 
   useGSAP(() => {
@@ -36,9 +40,13 @@ const SelectRole = () => {
         <button className="w-full bg-[#EB712B] text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-2 mb-4 hover:bg-[#ff8c4a] transition-all hover:scale-[1.02] active:scale-[0.98]">
           GET ME INSIDE <ArrowRight size={20} />
         </button>
-        <button className="w-full border border-white/10 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all">
-          Create a new club <PlusCircle size={20} />
-        </button>
+       <button 
+  type="button"
+  onClick={() => navigate("/club-profile-setup")}
+  className="w-full border border-white/10 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all"
+>
+  Create a new club <PlusCircle size={20} />
+</button>
         <p className="text-gray-600 text-xs mt-8 text-center uppercase tracking-[0.2em]">
           You can initiate your own club anytime.
         </p>
