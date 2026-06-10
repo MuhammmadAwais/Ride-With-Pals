@@ -60,7 +60,7 @@ const VerifyEmail = () => {
     <div className="min-h-screen bg-black text-white flex flex-col lg:flex-row overflow-hidden font-sans">
       <div className="hidden lg:flex w-1/2 bg-[#050505] items-center justify-center p-12 border-r border-[#1a1a1a]">
         <div className="relative z-10 text-center max-w-sm">
-          <img src="/Images/LogoImage.png" alt="Logo" className="w-48 mb-8 mx-auto" />
+          <img src="/Images/Logo.png" alt="Logo" className="w-48 mb-8 mx-auto" />
           <h1 className="text-5xl font-extrabold mb-6">Security <span className="text-[#EB712B]">Verified</span></h1>
           <p className="text-gray-400">Confirm your email to unlock the full power of your riding experience.</p>
         </div>

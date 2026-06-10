@@ -50,7 +50,7 @@ const CreateAccount = () => {
         <motion.div animate={{ x: [0, 50, 0], y: [0, -30, 0], scale: [1, 1.2, 1] }} transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }} className="absolute top-1/4 -left-20 w-80 h-80 bg-orange-600/10 rounded-full blur-[120px]" />
         <motion.div animate={{ x: [0, -40, 0], y: [0, 40, 0], scale: [1, 1.1, 1] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-600/5 rounded-full blur-[120px]" />
         <div className="relative z-10 text-center max-w-lg">
-          <img src="/Images/LogoImage.png" alt="Logo" className="w-56 mb-10 mx-auto opacity-90" />
+          <img src="/Images/Logo.png" alt="Logo" className="w-56 mb-10 mx-auto opacity-90" />
           <h1 className="text-6xl font-extrabold mb-6 tracking-tight text-white">Ride with <span className="text-[#EB712B]">Power</span></h1>
           <p className="text-gray-400 text-lg leading-relaxed max-w-xs mx-auto">Join the elite community of high-performance riders. Experience the trail like never before.</p>
         </div>

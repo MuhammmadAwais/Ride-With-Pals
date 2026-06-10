@@ -21,7 +21,7 @@ const ForgotPassword = () => {
       <div className="hidden lg:flex w-1/2 bg-[#050505] items-center justify-center p-12 relative overflow-hidden border-r border-[#1a1a1a] brand-side">
         <div className="absolute top-1/4 -left-20 w-80 h-80 bg-orange-600/10 rounded-full blur-[120px]" />
         <div className="relative z-10 text-center max-w-sm">
-          <img src="/Images/LogoImage.png" alt="Logo" className="w-56 mb-10 mx-auto" />
+          <img src="/Images/Logo.png" alt="Logo" className="w-56 mb-10 mx-auto" />
           <h1 className="text-5xl font-extrabold mb-6">Welcome Back</h1>
           <p className="text-gray-400 text-lg">Sign in to continue your journey with Ride with Pals.</p>
         </div>
