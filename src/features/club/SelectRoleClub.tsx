@@ -9,7 +9,6 @@ export default function SelectRoleClub() {
   const container = useRef(null);
 
   useGSAP(() => {
-    // A clean timeline creates the "smooth/professional" feel seen in your videos
     const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
     tl.fromTo(".reveal-item", 
@@ -18,7 +17,7 @@ export default function SelectRoleClub() {
         opacity: 1, 
         y: 0, 
         duration: 0.8, 
-        stagger: 0.15 // This is the 'secret' to the smooth, non-congested look
+        stagger: 0.15 
       }
     );
   }, { scope: container });
@@ -26,7 +25,7 @@ export default function SelectRoleClub() {
   return (
     <div ref={container} className="min-h-screen bg-[#111111] text-white flex flex-col items-center justify-center p-6 font-sans">
       
-      {/* Header - Class: reveal-item */}
+      {/* Header*/}
       <div className="reveal-item text-center mb-12">
         <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight mb-4 leading-tight">
           ELEVATE YOUR <br />
@@ -37,7 +36,7 @@ export default function SelectRoleClub() {
         </p>
       </div>
 
-      {/* Main Card - Class: reveal-item */}
+      {/* Main Card */}
       <div className="reveal-item bg-[#161616] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl mb-8">
         <button 
           onClick={() => navigate("/link-stripe")}
