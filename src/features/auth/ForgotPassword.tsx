@@ -31,7 +31,7 @@ const ForgotPassword = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-black">
         <div className="w-full max-w-sm">
           
-          {/* MOBILE ONLY: Layout matching your design */}
+          {/* MOBILE */}
           <div className="lg:hidden flex flex-col items-center text-center mb-8 animate-item">
             <div className="flex items-center w-full mb-6">
               <button onClick={() => navigate("/login")} className="p-2 rounded-full bg-[#111111] hover:bg-[#222] transition-colors cursor-pointer border border-[#222]">
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
               </button>
             </div>
             {/* Logo */}
-            <img src="/Images/LogoImage.png" alt="Logo" className="w-32 mb-6" />
+            <img src="/Images/Logo.png" alt="Logo" className="w-70 mb-6" />
             <h2 className="text-2xl font-bold mb-2">Forget Password</h2>
             <p className="text-gray-400 text-sm">Not to worry, it happens to the best of us. Please enter your email address below.</p>
           </div>

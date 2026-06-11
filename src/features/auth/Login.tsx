@@ -53,11 +53,11 @@ const Login = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE */}
+      {/* RIGHT SIDE  for Mobile*/}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-black">
         <div className="w-full max-w-md">
           <div className="mb-8 lg:hidden flex flex-col items-center text-center animate-item">
-            <img src="/Images/LogoImage.png" alt="Logo" className="w-32 mb-4" />
+            <img src="/Images/Logo.png" alt="Logo" className="w-70 mb-4" />
           </div>
 
           <h2 className="text-3xl font-bold mb-8 animate-item">Log in</h2>

@@ -69,7 +69,7 @@ export default function ProfessionalDashboard() {
       <aside className={`fixed lg:relative z-50 w-72 h-full bg-[#111111] border-r border-white/10 p-6 flex flex-col transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="flex justify-between items-center mb-10 px-2 shrink-0">
           <img src="/Images/Logo.png" alt="Logo" className="h-12 w-auto" />
-          <button onClick={() => setIsOpen(false)} className="lg:hidden text-white p-2 rounded-full hover:bg-[#EB712B] transition-colors"><X size={24} /></button>
+          <button onClick={() => setIsOpen(false)} className="lg:hidden text-white p-7 rounded-full hover:bg-[#EB712B] transition-colors"><X size={24} /></button>
         </div>
 
         <nav className="flex-1 flex flex-col space-y-2 overflow-y-auto">

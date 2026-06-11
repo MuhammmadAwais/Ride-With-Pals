@@ -60,7 +60,7 @@ const CreateAccount = () => {
         <div className="w-full max-w-md">
           <div ref={containerRef} className="space-y-6 will-change-transform">
             <div className="animate-item lg:hidden flex flex-col items-center justify-center mb-8 px-4 text-center">
-              <img src="/Images/LogoImage.png" alt="Logo" className="w-40 mb-4" />
+              <img src="/Images/Logo.png" alt="Logo" className="w-70 mb-4" />
             </div>
             <div className="animate-item mb-2 text-center lg:text-left">
               <h2 className="text-4xl font-bold mb-2">Create Account</h2>
