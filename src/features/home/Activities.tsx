@@ -139,7 +139,7 @@ const Activities = () => {
               <p className="text-xs text-gray-400 leading-relaxed">Puhågisk bek. Polylig ninade. Postfaktisk. Ar dode beling. 
 Tusol anime. Antet edod trektigt. Hära. Ånån jåvis. 
 Nålyrade sans.  Pel gigana. Kvasikrosm skämsfilter. Jongen europovis.
-Böde megabel run. Pseudoväde suprabövis, tills reren. Beligt häsamma, un. Divins tiskade. </p>
+Böd megabel run. Pseudoväde suprabövis, tills reren. Beligt häsamma, un. Divins tiskade. </p>
             </div>
           </div>
         </div>
