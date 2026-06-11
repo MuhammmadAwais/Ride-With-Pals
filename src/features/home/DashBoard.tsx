@@ -4,7 +4,10 @@ import {
   LayoutDashboard, Users, Car, DollarSign, Wallet, Newspaper, 
   Settings, UserCircle, Search, X, Trophy, Percent, UserPlus, Menu, Bell, Mail 
 } from 'lucide-react';
+
+
 import Activities from './Activities';
+import Product from './Product'
 
 const data = [
   { name: 'Jan', val: 4000 }, { name: 'Feb', val: 10500 }, { name: 'Mar', val: 6200 },
@@ -113,6 +116,7 @@ export default function ProfessionalDashboard() {
         <div className="flex-1 overflow-y-auto p-8 w-full">
           {activeTab === 'Dashboard' && <DashboardOverview />}
           {activeTab === 'Activities' && <Activities />}
+          {activeTab === 'Product' && <Product />}
         </div>
       </main>
     </div>
