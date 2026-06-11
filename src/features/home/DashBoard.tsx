@@ -8,7 +8,7 @@ import {
 
 import Activities from './Activities';
 import Product from './Product'
-
+import ProfileAccount from './ProfileAccount'
 const data = [
   { name: 'Jan', val: 4000 }, { name: 'Feb', val: 10500 }, { name: 'Mar', val: 6200 },
   { name: 'Apr', val: 7800 }, { name: 'May', val: 5500 }, { name: 'Jun', val: 13000 },
@@ -77,7 +77,7 @@ export default function ProfessionalDashboard() {
           <NavItem onClick={() => {setActiveTab('Activities'); setIsOpen(false);}} active={activeTab === 'Activities'} label="Activities" icon={<Users size={18} />} />
           <NavItem onClick={() => {setActiveTab('Product'); setIsOpen(false);}} active={activeTab === 'Product'} label="Product" icon={<Car size={18} />} />
           <NavItem label="Order" icon={<Wallet size={18} />} />
-          <NavItem label="Profile" icon={<UserCircle size={18} />} />
+          <NavItem onClick={() => {setActiveTab('Profile'); setIsOpen(false);}} active={activeTab === 'Profile'} label="Profile" icon={<UserCircle size={18} />} />
           <div className="my-4 border-t border-white/10" />
           <NavItem label="News" icon={<Newspaper size={18} />} />
           <NavItem label="Leaderboard" icon={<Trophy size={18} />} />
@@ -117,6 +117,7 @@ export default function ProfessionalDashboard() {
           {activeTab === 'Dashboard' && <DashboardOverview />}
           {activeTab === 'Activities' && <Activities />}
           {activeTab === 'Product' && <Product />}
+          {activeTab === 'Profile' && <ProfileAccount />}
         </div>
       </main>
     </div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Download, MapPin, Users, Gauge, Route, UserCircle } from 'lucide-react';
 
-// --- Helper Components ---
 
 interface MetricCardProps {
   icon: React.ReactNode;
@@ -86,7 +85,7 @@ const Activities = () => {
           <div className="lg:col-span-2 bg-[#161616] rounded-3xl p-6 border border-white/5 hover:border-white/10 transition-colors">
             <div className="relative h-64 sm:h-72 rounded-2xl overflow-hidden mb-6">
               <img src="/Images/MapImage.jpg" alt="Mountain Ride Map" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+              <div className="absolute inset-0  from-black/80 to-transparent" />
               <div className="absolute top-4 left-4 flex gap-2">
                 <span className="bg-[#EB712B] px-3 py-1 rounded-lg text-[10px] font-bold tracking-wider">ACTIVE</span>
                 <span className="bg-white/10 px-3 py-1 rounded-lg text-[10px] tracking-wider">GRAVEL</span>
