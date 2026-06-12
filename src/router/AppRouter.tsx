@@ -35,6 +35,7 @@ export const AppRouter = () => {
         <Route path="/select-role-club" element={<SelectRoleClub />} />
         <Route path="/select-role" element={<SelectRole />} />
 
+        {/* --- Dashboard Routes (With Sidebar) --- */}
         <Route path="/dashboard" element={<DashBoard />}>
           <Route index element={<DashboardOverview />} /> 
           <Route path="activities" element={<Activities />} />
@@ -42,7 +43,7 @@ export const AppRouter = () => {
           <Route path="profile" element={<ProfileAccount />} /> 
         </Route>
 
-     
+        {/* --- Manage Club Route (No Sidebar) --- */}
         <Route path="/dashboard/manage-club" element={<ManageClub />} />
       </Routes>
     </BrowserRouter>

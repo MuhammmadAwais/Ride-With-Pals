@@ -1,93 +1,130 @@
-import { BarChart3, Users, Calendar, MessageSquare, ShieldCheck, Plus, ArrowRight, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Plus, Users, Calendar, MessageSquare, ShieldCheck, ChevronRight, ArrowLeft } from 'lucide-react';
+import { motion, type Variants } from 'framer-motion';
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
 
 const ManageClub = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="bg-[#121212] min-h-screen p-8 text-white font-sans">
-      <div className="max-w-7xl mx-auto">
-        
-       <button 
-  onClick={() => navigate('/dashboard/profile')} 
-  className="flex items-center gap-2 text-[#a0a0a0] hover:text-[#EB712B] mb-6 transition-colors group"
->
-  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-  <span className="font-medium">Back to Profile</span>
-</button>
-        {/* Top Header */}
-        <div className="flex justify-between items-start mb-8">
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="min-h-screen bg-[#111111] text-white p-4 md:p-8 font-sans"
+    >
+      {/* Header Section */}
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div className="flex items-center gap-4">
+          <a href="/dashboard/profile" className="p-2 bg-[#222] rounded-full hover:bg-[#333] transition border border-[#333]">
+            <ArrowLeft size={24} />
+          </a>
           <div>
-            <h1 className="text-4xl font-bold mb-2">Manage Club</h1>
-            <p className="text-[#a0a0a0]">Oversee your athletic organizations, monitor member activity, and manage <br/> elite performance metrics across all your registered clubs.</p>
+            <h1 className="text-2xl md:text-4xl font-bold mb-1">Manage Club</h1>
+            <p className="text-gray-400 text-sm">High-performance oversight for your athletic organizations.</p>
           </div>
-          <button className="bg-[#EB712B] flex items-center gap-2 px-6 py-3 rounded-xl font-bold hover:bg-[#c95f1f] transition">
-            <Plus size={20} /> Create New Club
-          </button>
         </div>
+        <button className="bg-[#EB712B] w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-orange-500 transition">
+          <Plus size={18} /> Register New Club
+        </button>
+      </motion.div>
 
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Large Hero Card */}
-          <div className="lg:col-span-2 relative rounded-3xl overflow-hidden border border-[#333] p-6 flex flex-col justify-end">
-            <img src="/Images/PersonImage.png" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 from-black/80 to-transparent"></div>
-            <div className="relative flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-xl border border-white/20 overflow-hidden">
-                  <img src="/Images/GirlImage11.png" className="w-full h-full object-cover" />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Side */}
+        <div className="lg:col-span-8 space-y-6">
+          <motion.div variants={itemVariants} className="h-300 md:h-100 rounded-3xl bg-gray-800 relative overflow-hidden p-6 md:p-8 flex flex-col justify-end">
+            <img src="/Images/MountainImage3.png" alt="Background" className="absolute inset-0 w-full h-full object-cover z-0" />
+            <div className="absolute inset-0  from-black/80 to-transparent z-0" />
+            
+            <div className="relative z-10 flex flex-col sm:flex-row justify-between sm:items-end gap-4">
+              <div className="flex items-end gap-4">
+                <div className="w-16 h-16 rounded-2xl border border-gray-700 overflow-hidden shrink-0">
+                  <img src="/Images/GirlImage11.png" alt="Profile" className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold">Track Wolf</h2>
-                  <p className="text-sm text-gray-300">Brooklyn Simmons • 1,240 members</p>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-1">Track Wolf</h2>
+                  <div className="flex flex-wrap items-center gap-3 text-[10px] md:text-xs text-gray-300">
+                    <span className="flex items-center gap-1"><Users size={12} /> Brooklyn Simmons</span>
+                    <span className="flex items-center gap-1"><Users size={12} /> 1,380 Members</span>
+                    <span>📍 Denver, CO</span>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="bg-[#333] px-6 py-2 rounded-lg font-bold hover:bg-[#444]">Edit Details</button>
-                <button className="bg-[#EB712B] px-6 py-2 rounded-lg font-bold hover:bg-[#c95f1f]">Manage</button>
+                <button className="bg-[#2a2a2a] px-4 py-2 rounded-xl text-xs font-semibold border border-gray-700">Edit</button>
+                <button className="bg-[#EB712B] px-4 py-2 rounded-xl text-xs font-semibold">Dashboard</button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Sidebar Insights */}
-          <div className="bg-[#1e1e1e] p-6 rounded-3xl border border-[#333]">
-            <BarChart3 className="text-[#EB712B] mb-4" />
-            <h3 className="text-xl font-bold mb-2">Club Insights</h3>
-            <p className="text-[#a0a0a0] text-sm mb-6">Performance metrics are up 14% across all registered clubs this month.</p>
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between bg-[#121212] p-3 rounded-lg border border-[#333]"><span>Active Members</span><span className="font-bold">4,822</span></div>
-              <div className="flex justify-between bg-[#121212] p-3 rounded-lg border border-[#333]"><span>Global Rank</span><span className="font-bold">#42</span></div>
-            </div>
-            <button className="w-full py-3 border border-[#333] rounded-lg hover:bg-[#333] transition">View All Reports</button>
-          </div>
-        </div>
-
-        {/* Secondary Clubs Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          {[1, 2].map((i) => (
-            <div key={i} className="relative h-64 rounded-3xl overflow-hidden border border-[#333] p-6 flex flex-col justify-end group cursor-pointer">
-              <img src={i === 1 ? "/Images/cycleImage7.png" : "/Images/MountainImage.png"} className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0  from-black/80 to-transparent"></div>
-              <div className="relative flex justify-between items-end">
-                <div>
-                  <div className="bg-[#1a3a2a] text-[#4ade80] text-xs px-2 py-1 rounded w-fit mb-2">NEW ACTIVITY</div>
-                  <h3 className="text-xl font-bold">Cyc Rock Club</h3>
-                  <p className="text-sm text-gray-300 flex items-center gap-1"><Users size={14}/> 1000 members</p>
+          {/* Sub-Cards Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[ 
+              { name: "Cyc Rock Club", active: "3,888 ACTIVE", img: "/Images/PersonImage.png" }, 
+              { name: "Apex Peak Club", active: "849 ACTIVE", img: "/Images/MountainIamge2.jpg" } 
+            ].map((club, i) => (
+              <motion.div key={i} variants={itemVariants} className="bg-[#1a1a1a] rounded-3xl overflow-hidden border border-[#222] cursor-pointer hover:border-gray-600 transition">
+                <div className="h-40 relative bg-gray-700">
+                  <img src={club.img} alt={club.name} className="w-full h-full object-cover opacity-60" />
+                  <div className="absolute top-4 right-4 bg-[#222]/80 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-blue-400">ACTIVE</div>
                 </div>
-                <div className="bg-white/10 p-3 rounded-full group-hover:bg-[#EB712B] transition"><ArrowRight size={20}/></div>
-              </div>
-            </div>
-          ))}
+                <div className="p-5 flex justify-between items-center">
+                  <div>
+                    <h3 className="font-bold">{club.name}</h3>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase mt-1">{club.active}</p>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-600" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* Footer Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-[#1e1e1e] p-6 rounded-2xl flex items-center gap-4 border border-[#333]"><Calendar className="text-[#EB712B]" /><div><p className="font-bold">Event Calendar</p><p className="text-sm text-[#a0a0a0]">4 events this week</p></div></div>
-          <div className="bg-[#1e1e1e] p-6 rounded-2xl flex items-center gap-4 border border-[#333]"><MessageSquare className="text-[#EB712B]" /><div><p className="font-bold">Member Feed</p><p className="text-sm text-[#a0a0a0]">12 new messages</p></div></div>
-          <div className="bg-[#1e1e1e] p-6 rounded-2xl flex items-center gap-4 border border-[#333]"><ShieldCheck className="text-[#EB712B]" /><div><p className="font-bold">Verification</p><p className="text-sm text-[#a0a0a0]">Pending reviews: 3</p></div></div>
-        </div>
+        {/* Right Side */}
+        <motion.div variants={itemVariants} className="lg:col-span-4 bg-[#1a1a1a] rounded-3xl p-6 border border-[#222] h-fit">
+          <h3 className="font-bold mb-6">Portfolio Insights</h3>
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 mb-8">
+            <div className="bg-[#222222] p-4 rounded-2xl">
+              <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Active Members</p>
+              <p className="text-2xl font-bold">4,822</p>
+            </div>
+            <div className="bg-[#222222] p-4 rounded-2xl">
+              <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Global Rank</p>
+              <p className="text-xl font-bold text-[#EB712B]">#42</p>
+            </div>
+          </div>
+          
+          <button className="w-full py-3 border border-[#333] rounded-xl text-[10px] font-bold text-gray-400 mb-6 hover:bg-[#2a2a2a]">
+            FULL ANALYTICS REPORT
+          </button>
+
+          <div className="space-y-3">
+            {[ 
+              { icon: Calendar, label: "Event Calendar" }, 
+              { icon: MessageSquare, label: "Communication" }, 
+              { icon: ShieldCheck, label: "Verification" } 
+            ].map((item, i) => (
+              <div key={i} className="flex items-center justify-between p-3 bg-[#222222] rounded-xl cursor-pointer hover:bg-[#2a2a2a] transition">
+                <div className="flex items-center gap-3">
+                  <item.icon size={18} className="text-gray-400" />
+                  <p className="text-sm font-bold">{item.label}</p>
+                </div>
+                <ChevronRight size={16} className="text-gray-600" />
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

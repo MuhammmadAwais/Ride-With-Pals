@@ -1,65 +1,61 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Car, Wallet, UserCircle, 
-  Newspaper, Trophy, Percent, UserPlus, Settings 
+  Newspaper, Trophy, Percent, UserPlus, Settings, X 
 } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Helper to check if the current path matches the nav item
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <aside className="w-72 h-full bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0">
-      <div className="flex items-center mb-10 px-2 shrink-0">
-        <img src="/Images/Logo.png" alt="Logo" className="h-12 w-auto" />
-      </div>
+    <>
+      {/* Sidebar Overlay (Mobile Only) */}
+      {isOpen && (
+        <div 
+          onClick={onClose} 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm" 
+        />
+      )}
 
-      <nav className="flex-1 flex flex-col space-y-2 overflow-y-auto">
-        <NavItem 
-          onClick={() => navigate('/dashboard')} 
-          active={isActive('/dashboard')} 
-          label="Dashboard" 
-          icon={<LayoutDashboard size={20} />} 
-        />
-        <NavItem 
-          onClick={() => navigate('/dashboard/activities')} 
-          active={isActive('/dashboard/activities')} 
-          label="Activities" 
-          icon={<Users size={20} />} 
-        />
-        <NavItem 
-          onClick={() => navigate('/dashboard/product')} 
-          active={isActive('/dashboard/product')} 
-          label="Product" 
-          icon={<Car size={20} />} 
-        />
-        <NavItem label="Order" icon={<Wallet size={20} />} />
-        <NavItem 
-          onClick={() => navigate('/dashboard/profile')} 
-          active={isActive('/dashboard/profile')} 
-          label="Profile" 
-          icon={<UserCircle size={20} />} 
-        />
-        
-        <div className="my-4 border-t border-white/10" />
-        
-        <NavItem label="News" icon={<Newspaper size={20} />} />
-        <NavItem label="Leaderboard" icon={<Trophy size={20} />} />
-        <NavItem label="Discount" icon={<Percent size={20} />} />
-        <NavItem label="Club Joining Request" icon={<UserPlus size={20} />} />
-        
-        <div className="mt-auto pt-4">
-          <NavItem label="Settings" icon={<Settings size={20} />} />
+      {/* Aside Panel */}
+      <aside className={`
+        fixed lg:relative z-50 w-72 h-full bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <div className="flex items-center justify-between mb-10 px-2 shrink-0">
+          <img src="/Images/Logo.png" alt="Logo" className="h-12 w-auto" />
+          <button onClick={onClose} className="lg:hidden text-gray-400 hover:text-white">
+            <X size={24} />
+          </button>
         </div>
-      </nav>
-    </aside>
+
+        <nav className="flex-1 flex flex-col space-y-2 overflow-y-auto">
+          <NavItem onClick={() => { navigate('/dashboard'); onClose(); }} active={isActive('/dashboard')} label="Dashboard" icon={<LayoutDashboard size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/activities'); onClose(); }} active={isActive('/dashboard/activities')} label="Activities" icon={<Users size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/product'); onClose(); }} active={isActive('/dashboard/product')} label="Product" icon={<Car size={20} />} />
+          <NavItem label="Order" icon={<Wallet size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/profile'); onClose(); }} active={isActive('/dashboard/profile')} label="Profile" icon={<UserCircle size={20} />} />
+          
+          <div className="my-4 border-t border-white/10" />
+          
+          <NavItem label="News" icon={<Newspaper size={20} />} />
+          <NavItem label="Leaderboard" icon={<Trophy size={20} />} />
+          <NavItem label="Discount" icon={<Percent size={20} />} />
+          <NavItem label="Club Joining Request" icon={<UserPlus size={20} />} />
+          
+          <div className="mt-auto pt-4">
+            <NavItem label="Settings" icon={<Settings size={20} />} />
+          </div>
+        </nav>
+      </aside>
+    </>
   );
 };
 
-// Helper Component
 function NavItem({ icon, label, active, onClick }: any) {
   return (
     <div 

@@ -81,8 +81,7 @@ const ProfileAccount = () => {
 
         {/* Global Config Sections */}
         <h2 className="text-2xl font-bold mb-8">Workspace Settings</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {/* Support */}
+<div className="grid grid-cols-1 gap-6 mb-16">         
           <div className={cardStyle}>
             <div className="flex items-center gap-3 mb-6">
               <HelpCircle className="text-[#EB712B]" />
