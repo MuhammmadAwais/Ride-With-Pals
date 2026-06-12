@@ -55,7 +55,7 @@ const Product = () => {
 
   if (selectedProduct) {
     return (
-      <div className="bg-[#0a0a0a] min-h-screen text-white p-6 md:p-12">
+      <div className="bg-[#111111] min-h-screen text-white p-6 md:p-12">
         <button onClick={() => setSelectedProduct(null)} className="text-gray-400 mb-8 hover:text-white flex items-center gap-2 text-sm transition-colors">
           <ArrowLeft size={16} /> Back to All Gear
         </button>
@@ -104,7 +104,7 @@ const Product = () => {
 
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6">Complete the Kit</h2>
-          <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
+          <div className="flex gap-6 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {products.map((p) => (
               <div key={p.id} onClick={() => handleSelectProduct(p)} className="min-w-[200px] md:min-w-[250px] cursor-pointer group">
                 <div className="bg-[#111111] p-4 rounded-2xl border border-white/5 hover:border-[#EB712B]/50 transition-all">
@@ -156,7 +156,8 @@ const Product = () => {
             <div className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}>
               {p.status}
             </div>
-            <div className="flex justify-end transition-opacity">
+            {/* Operations button appears on group hover */}
+            <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button onClick={() => handleSelectProduct(p)} className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all">
                 <SquarePen size={14} />
               </button>
