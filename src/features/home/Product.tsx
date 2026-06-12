@@ -25,8 +25,8 @@ interface ProductType {
 
 const products: ProductType[] = [
   { id: 1, name: "Water Bottle", sku: "SKU-01", category: "EQUIPMENT", price: "20.00", status: "IN STOCK", image: "/Images/BottleImage.png", gallery: ["/Images/BottleImage.png", "/Images/BottleImage2.png", "/Images/BottleImage4.png"] },
-  { id: 2, name: "Bicycle Helmet", sku: "SKU-02", category: "SAFETY", price: "20.00", status: "LIMITED", image: "/Images/headImage.png", gallery: ["/Images/headImage.png", "/Images/head2.png", "/Images/head3.png"] },
-  { id: 3, name: "Pro Gloves", sku: "SKU-03", category: "APPAREL", price: "20.00", status: "IN STOCK", image: "/Images/cyclingGloveImage.png", gallery: ["/Images/cyclingGloveImage.png", "/Images/glove2.png", "/Images/glove3.png"] },
+  { id: 2, name: "Bicycle Helmet", sku: "SKU-02", category: "SAFETY", price: "20.00", status: "LIMITED", image: "/Images/headImage.png", gallery: ["/Images/headImage.png", "/Images/HelmetImage3.jpg", "/Images/HelmetImage4.jpg"] },
+  { id: 3, name: "Pro Gloves", sku: "SKU-03", category: "APPAREL", price: "20.00", status: "IN STOCK", image: "/Images/cyclingGloveImage.png", gallery: ["/Images/cyclingGloveImage.png", "/Images/CycleGloves.jfif", "/Images/CycleGloves2.jfif"] },
   { id: 4, name: "Tech Jersey", sku: "SKU-04", category: "APPAREL", price: "45.00", status: "IN STOCK", image: "/Images/cycleJeresyImage.jfif", gallery: ["/Images/cycleJeresyImage.jfif"] },
   { id: 5, name: "Cycling Shoes", sku: "SKU-05", category: "EQUIPMENT", price: "120.00", status: "IN STOCK", image: "/Images/shoesImage.png", gallery: ["/Images/shoesImage.png"] },
   { id: 6, name: "Repair Kit", sku: "SKU-06", category: "EQUIPMENT", price: "15.00", status: "IN STOCK", image: "/Images/repairImage.jpg", gallery: ["/Images/repairImage.jpg"] },
@@ -78,16 +78,16 @@ const Product = () => {
             <h1 className="text-3xl md:text-5xl font-bold mb-2">{selectedProduct.name}</h1>
             <div className="flex items-center gap-4 mb-6">
               <span className="text-2xl md:text-4xl font-bold text-[#EB712B]">$ {selectedProduct.price}</span>
-              <span className="bg-[#1a332a] text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase">{selectedProduct.status}</span>
+              <span className="bg-[#1a332a] text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap">{selectedProduct.status}</span>
             </div>
             <p className="text-gray-400 mb-8 leading-relaxed text-sm md:text-base">Engineered for elite performance. Our triple-insulated stainless steel construction keeps hydration at temperature for 24 hours, even in extreme environments.</p>
-            <div className="flex gap-4 mb-8">
+            <div className="flex flex-wrap gap-4 mb-8">
               <div className="flex items-center bg-[#111111] rounded-xl border border-white/10">
-                <button className="px-4 md:px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">-</button>
+                <button className="px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">-</button>
                 <span className="px-4 font-bold">1</span>
-                <button className="px-4 md:px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">+</button>
+                <button className="px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">+</button>
               </div>
-              <button className="flex-1 bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f] transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 min-w-[200px] bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f] transition-all flex items-center justify-center gap-2">
                 <ShoppingCart size={20} /> Add to Cart
               </button>
             </div>
@@ -95,7 +95,7 @@ const Product = () => {
               {[{ label: 'FREE SHIPPING', icon: Truck }, { label: 'LIFETIME WARRANTY', icon: ShieldCheck }, { label: 'EASY RETURNS', icon: RefreshCcw }].map((item) => (
                 <div key={item.label} className="bg-[#111111] p-4 rounded-xl border border-white/5 text-center flex flex-col items-center gap-2 hover:border-[#EB712B]/50 transition-colors">
                   <item.icon size={20} className="text-[#EB712B]" />
-                  <span className="text-[10px] font-bold text-gray-400">{item.label}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -103,11 +103,8 @@ const Product = () => {
         </div>
 
         <div className="mt-12">
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="text-2xl font-bold">Complete the Kit</h2>
-          </div>
-          <div className="flex gap-6 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+          <h2 className="text-2xl font-bold mb-6">Complete the Kit</h2>
+          <div className="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
             {products.map((p) => (
               <div key={p.id} onClick={() => handleSelectProduct(p)} className="min-w-[200px] md:min-w-[250px] cursor-pointer group">
                 <div className="bg-[#111111] p-4 rounded-2xl border border-white/5 hover:border-[#EB712B]/50 transition-all">
@@ -124,76 +121,63 @@ const Product = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 text-white font-sans">
+    <div className="min-h-screen p-4 md:p-8 text-white font-sans max-w-[1400px] mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-  <h1 className="text-2xl md:text-3xl font-bold">
-    High Performance <span className="text-[#EB712B]">Gear</span>
-  </h1>
-  <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
-    <ShoppingCart size={18} /> Add Product
-  </button>
-</div>
-
-      {/* Product List */}
-<div className="bg-[#111111] p-4 md:p-6 rounded-2xl mb-8 border border-white/5 overflow-x-auto">
-  {/* Table Header */}
-  <div className="grid grid-cols-4 md:grid-cols-5 text-[#888] text-[10px] font-bold uppercase mb-6 px-4 min-w-600px">
-    <span>Asset Description</span>
-    <span className="hidden md:block">Classification</span>
-    <span>Unit Value</span>
-    <span>Inventory Status</span>
-    <span className="text-right">Operations</span>
-  </div>
-
-  {/* Table Body */}
-  {paginatedProducts.map((p) => (
-    <div key={p.id} className="grid grid-cols-4 md:grid-cols-5 items-center py-4 border-t border-white/5 px-4 hover:bg-white/5 rounded-xl group min-w-600px">
-      <div className="flex items-center gap-4">
-        <img src={p.image} className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover" alt={p.name} />
-        <div>
-          <p className="font-bold text-xs">{p.name}</p>
-          <p className="text-[9px] text-gray-500 hidden md:block">{p.sku}</p>
-        </div>
-      </div>
-      <span className="bg-[#1a1a1a] px-3 py-1 rounded w-fit text-[10px] border border-white/5 hidden md:block">
-        {p.category}
-      </span>
-      <span className="font-bold text-sm text-[#c99277]">${p.price}</span>
-      <div className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}>
-        {p.status}
-      </div>
-      <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-        <button onClick={() => handleSelectProduct(p)} className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all">
-          <SquarePen size={14} />
+        <h1 className="text-2xl md:text-3xl font-bold">
+          High Performance <span className="text-[#EB712B]">Gear</span>
+        </h1>
+        <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
+          <ShoppingCart size={18} /> Add Product
         </button>
       </div>
-    </div>
-  ))}
 
-  {/* Pagination Controls */}
-  <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-white/5">
-    <button 
-      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-      className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 disabled:hover:border-white/5"
-    >
-      <ChevronLeft size={16} />
-    </button>
-    
-    <span className="text-xs font-bold text-gray-500">Page {currentPage}</span>
-    
-    <button 
-      onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(products.length / itemsPerPage)))}
-      disabled={currentPage >= Math.ceil(products.length / itemsPerPage)}
-      className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 disabled:hover:border-white/5"
-    >
-      <ChevronRight size={16} />
-    </button>
-  </div>
-</div>
+      <div className="bg-[#111111] p-4 md:p-6 rounded-2xl mb-8 border border-white/5 overflow-x-auto">
+        <div className="grid grid-cols-4 md:grid-cols-5 text-[#888] text-[10px] font-bold uppercase mb-6 px-4 min-w-[600px]">
+          <span>Asset Description</span>
+          <span className="hidden md:block">Classification</span>
+          <span>Unit Value</span>
+          <span>Inventory Status</span>
+          <span className="text-right">Operations</span>
+        </div>
+
+        {paginatedProducts.map((p) => (
+          <div key={p.id} className="grid grid-cols-4 md:grid-cols-5 items-center py-4 border-t border-white/5 px-4 hover:bg-white/5 rounded-xl group min-w-[600px]">
+            <div className="flex items-center gap-4">
+              <img src={p.image} className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover" alt={p.name} />
+              <div>
+                <p className="font-bold text-xs">{p.name}</p>
+                <p className="text-[9px] text-gray-500 hidden md:block">{p.sku}</p>
+              </div>
+            </div>
+            <span className="bg-[#1a1a1a] px-3 py-1 rounded w-fit text-[10px] border border-white/5 hidden md:block">
+              {p.category}
+            </span>
+            <span className="font-bold text-sm text-[#c99277]">${p.price}</span>
+            <div className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}>
+              {p.status}
+            </div>
+            <div className="flex justify-end transition-opacity">
+              <button onClick={() => handleSelectProduct(p)} className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all">
+                <SquarePen size={14} />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-white/5">
+          <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30">
+            <ChevronLeft size={16} />
+          </button>
+          <span className="text-xs font-bold text-gray-500">Page {currentPage}</span>
+          <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(products.length / itemsPerPage)))} disabled={currentPage >= Math.ceil(products.length / itemsPerPage)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30">
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div className="md:col-span-2 bg-[#111111] p-4 md:p-6 rounded-2xl border border-white/5 w-full min-h-300px flex flex-col">           <ResponsiveContainer width="100%" height="100%">
+        <div className="md:col-span-2 bg-[#111111] p-4 md:p-6 rounded-2xl border border-white/5 h-[300px]">
+           <ResponsiveContainer width="100%" height="100%">
              <LineChart data={chartData}>
                <XAxis dataKey="name" stroke="#555" fontSize={10} axisLine={false} tickLine={false} />
                <YAxis stroke="#555" fontSize={10} axisLine={false} tickLine={false} />
