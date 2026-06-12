@@ -1,129 +1,122 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { SquarePen, Truck, ShieldCheck, RefreshCcw, ChevronRight, ChevronLeft, ShoppingCart, ClipboardCheck, ArrowLeft } from 'lucide-react';
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+
+const chartData = [
+  { name: 'Jan', val1: 40, val2: 24 },
+  { name: 'Feb', val1: 30, val2: 13 },
+  { name: 'Mar', val1: 60, val2: 30 },
+  { name: 'Apr', val1: 20, val2: 20 },
+  { name: 'May', val1: 80, val2: 45 },
+  { name: 'Jun', val1: 50, val2: 30 },
+  { name: 'Jul', val1: 90, val2: 55 },
+];
 
 interface ProductType {
   id: number;
   name: string;
+  sku: string;
   category: string;
   price: string;
+  status: "IN STOCK" | "LIMITED";
   image: string;
+  gallery: string[];
 }
 
 const products: ProductType[] = [
-  { id: 1, name: "Water Bottle", category: "Equipment", price: "20", image: "/Images/BottleImage.png" },
-  { id: 2, name: "Bicycle Helmet", category: "Safety", price: "20", image: "/Images/headImage.png" },
-  { id: 3, name: "Pro Gloves", category: "Apparel", price: "20", image: "/Images/cyclingGloveImage.png" },
-  { id: 4, name: "Touring Elite", category: "Bicycles", price: "1,200", image: "/Images/cycleImage4.png" },
-  { id: 5, name: "Speed Master", category: "Bicycles", price: "950", image: "/Images/cycleImage5.png" },
-  { id: 6, name: "Helmet Selection", category: "Safety", price: "85", image: "/Images/headsImage.png" },
+  { id: 1, name: "Water Bottle", sku: "SKU-01", category: "EQUIPMENT", price: "20.00", status: "IN STOCK", image: "/Images/BottleImage.png", gallery: ["/Images/BottleImage.png", "/Images/BottleImage2.png", "/Images/BottleImage4.png"] },
+  { id: 2, name: "Bicycle Helmet", sku: "SKU-02", category: "SAFETY", price: "20.00", status: "LIMITED", image: "/Images/headImage.png", gallery: ["/Images/headImage.png", "/Images/head2.png", "/Images/head3.png"] },
+  { id: 3, name: "Pro Gloves", sku: "SKU-03", category: "APPAREL", price: "20.00", status: "IN STOCK", image: "/Images/cyclingGloveImage.png", gallery: ["/Images/cyclingGloveImage.png", "/Images/glove2.png", "/Images/glove3.png"] },
+  { id: 4, name: "Tech Jersey", sku: "SKU-04", category: "APPAREL", price: "45.00", status: "IN STOCK", image: "/Images/cycleJeresyImage.jfif", gallery: ["/Images/cycleJeresyImage.jfif"] },
+  { id: 5, name: "Cycling Shoes", sku: "SKU-05", category: "EQUIPMENT", price: "120.00", status: "IN STOCK", image: "/Images/shoesImage.png", gallery: ["/Images/shoesImage.png"] },
+  { id: 6, name: "Repair Kit", sku: "SKU-06", category: "EQUIPMENT", price: "15.00", status: "IN STOCK", image: "/Images/repairImage.jpg", gallery: ["/Images/repairImage.jpg"] },
+  { id: 7, name: "Speed Glasses", sku: "SKU-07", category: "SAFETY", price: "35.00", status: "LIMITED", image: "/Images/SpeedGlassesImage.jpg", gallery: ["/Images/SpeedGlassesImage.jpg"] },
+  { id: 8, name: "Smart Watch", sku: "SKU-08", category: "EQUIPMENT", price: "199.00", status: "LIMITED", image: "/Images/SmartWatch.jpg", gallery: ["/Images/SmartWatch.jpg"] },
+  { id: 9, name: "Bike Pump", sku: "SKU-09", category: "EQUIPMENT", price: "30.00", status: "IN STOCK", image: "/Images/CyclePump.jpg", gallery: ["/Images/CyclePump.jpg"] },
+  { id: 10, name: "Cycle", sku: "SKU-09", category: "Ride", price: "100.00", status: "LIMITED", image: "/Images/cycleImage6.png", gallery: ["/Images/cycleImage6.png"] }
 ];
 
 const Product = () => {
-  const [quantity, setQuantity] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  const handleSelectProduct = (p: ProductType) => {
-    setSelectedProduct(p);
-    setActiveImage(p.image);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleSelectProduct = (product: ProductType) => {
+    setSelectedProduct(product);
+    setActiveImage(product.image);
+    window.scrollTo(0, 0);
   };
 
-  if (selectedProduct) {
-    const thumbnails = [selectedProduct.image, "/Images/BottleImage2.png", "/Images/BottleImage3.png"];
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return products.slice(startIndex, startIndex + itemsPerPage);
+  }, [currentPage]);
 
+  if (selectedProduct) {
     return (
-      <div className="bg-[#050a0f] min-h-screen px-4 py-8 lg:px-20 text-white font-sans rounded-3xl">
-        <button onClick={() => setSelectedProduct(null)} className="text-gray-400 hover:text-white mb-8 flex items-center gap-2">
-          ← Back to Accessories
+      <div className="bg-[#0a0a0a] min-h-screen text-white p-6 md:p-12">
+        <button onClick={() => setSelectedProduct(null)} className="text-gray-400 mb-8 hover:text-white flex items-center gap-2 text-sm transition-colors">
+          <ArrowLeft size={16} /> Back to All Gear
         </button>
 
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12 mb-20">
-          {/* Left Column */}
-          <div className="flex-1 w-full">
-            <div className="bg-[#0a1118] p-4 rounded-3xl border border-white/10 mb-4">
-              <img src={activeImage || selectedProduct.image} alt={selectedProduct.name} className="w-full h-auto rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+          <div className="flex flex-col gap-4">
+            <div className="bg-[#111111] p-4 rounded-3xl border border-white/5">
+              <img src={activeImage || selectedProduct.image} className="rounded-2xl w-full h-[300px] md:h-[400px] object-cover" alt={selectedProduct.name} />
             </div>
-            <div className="flex gap-4">
-              {thumbnails.map((imgSrc, index) => (
-                <div key={index} onClick={() => setActiveImage(imgSrc)}
-                  className={`w-20 h-20 sm:w-24 sm:h-24 bg-[#0a1118] rounded-xl border border-white/10 overflow-hidden cursor-pointer hover:border-[#EB712B]/50 transition-colors ${activeImage === imgSrc ? 'border-[#EB712B]' : ''}`}>
-                  <img src={imgSrc} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+            <div className="grid grid-cols-3 gap-4">
+              {selectedProduct.gallery.map((img, i) => (
+                <div key={i} onClick={() => setActiveImage(img)} className={`bg-[#111111] p-2 rounded-2xl border cursor-pointer hover:border-[#EB712B] transition-colors ${activeImage === img ? 'border-[#EB712B]' : 'border-white/5'}`}>
+                  <img src={img} className="rounded-xl w-full h-20 md:h-24 object-cover" alt="thumbnail" />
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="flex-1 space-y-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold">{selectedProduct.name}</h1>
-                <p className="text-gray-400 mt-1">ProGear Elite Series • BPA Free • 750ml</p>
-                <div className="flex items-center gap-2 mt-2 text-[#EB712B]">★★★★☆ <span className="text-sm text-gray-500">(124 reviews)</span></div>
-              </div>
-              <p className="text-2xl font-bold text-[#EB712B]">$24.99</p>
+          <div>
+            <h1 className="text-3xl md:text-5xl font-bold mb-2">{selectedProduct.name}</h1>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="text-2xl md:text-4xl font-bold text-[#EB712B]">$ {selectedProduct.price}</span>
+              <span className="bg-[#1a332a] text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase">{selectedProduct.status}</span>
             </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="flex gap-4">
-                <div className="flex items-center bg-[#0a1118] rounded-xl border border-white/10 px-4 h-14">
-                  <button className="px-3 text-xl hover:text-[#EB712B]" onClick={() => setQuantity(prev => Math.max(1, prev - 1))}>-</button>
-                  <span className="px-6 font-bold w-12 text-center">{quantity}</span>
-                  <button className="px-3 text-xl hover:text-[#EB712B]" onClick={() => setQuantity(prev => prev + 1)}>+</button>
+            <p className="text-gray-400 mb-8 leading-relaxed text-sm md:text-base">Engineered for elite performance. Our triple-insulated stainless steel construction keeps hydration at temperature for 24 hours, even in extreme environments.</p>
+            <div className="flex gap-4 mb-8">
+              <div className="flex items-center bg-[#111111] rounded-xl border border-white/10">
+                <button className="px-4 md:px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">-</button>
+                <span className="px-4 font-bold">1</span>
+                <button className="px-4 md:px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">+</button>
+              </div>
+              <button className="flex-1 bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f] transition-all flex items-center justify-center gap-2">
+                <ShoppingCart size={20} /> Add to Cart
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {[{ label: 'FREE SHIPPING', icon: Truck }, { label: 'LIFETIME WARRANTY', icon: ShieldCheck }, { label: 'EASY RETURNS', icon: RefreshCcw }].map((item) => (
+                <div key={item.label} className="bg-[#111111] p-4 rounded-xl border border-white/5 text-center flex flex-col items-center gap-2 hover:border-[#EB712B]/50 transition-colors">
+                  <item.icon size={20} className="text-[#EB712B]" />
+                  <span className="text-[10px] font-bold text-gray-400">{item.label}</span>
                 </div>
-                <button className="flex-1 bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f]">Add to Cart ({quantity})</button>
-              </div>
-              <button 
-  onClick={() => setIsWishlisted(!isWishlisted)} 
-  className="w-full py-4 rounded-xl border border-white/10 hover:bg-white/5 flex items-center justify-center gap-2 font-bold transition-all"
->
-  <svg 
-    className={`w-5 h-5 transition-colors duration-300 ${isWishlisted ? 'text-[#EB712B] fill-[#EB712B]' : 'text-white'}`} 
-    fill="none" 
-    stroke="currentColor" 
-    viewBox="0 0 24 24"
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth={2} 
-      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-    />
-  </svg>
-  {isWishlisted ? 'Added to Wishlist' : 'Add to Wishlist'}
-</button>
-            </div>
-
-            <div className="border-t border-white/10 pt-6 space-y-6">
-              <h2 className="font-bold text-xl">Description</h2>
-              <p className="text-gray-400 text-sm leading-relaxed">Elevate your hydration game with the Gym Mode Shaker. Engineered for high-performance athletes.</p>
-              <div className="grid grid-cols-3 gap-4">
-                {['Free Shipping', 'Lifetime Warranty', 'Easy Returns'].map((b) => (
-                  <div key={b} className="bg-[#0a1118] p-3 rounded-xl border border-white/5 text-center text-[10px] font-bold text-gray-400">📦 {b}</div>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Kit Section */}
-        <div className="max-w-7xl mx-auto border-t border-white/10 pt-16">
-          <div className="flex justify-between items-end mb-10">
-            <div><h2 className="text-3xl font-bold">Complete the Kit</h2><p className="text-gray-400 mt-2">Essential gear.</p></div>
-            <a href="#" className="text-[#EB712B] hover:underline">View All →</a>
+        <div className="mt-12">
+          <div className="flex justify-between items-end mb-6">
+            <h2 className="text-2xl font-bold">Complete the Kit</h2>
           </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">            {products.filter(p => p.name !== "Touring Elite").slice(0, 4).map((p, index) => {
-              const customData: any = { 0: { name: "Pro Yoga Mat", image: "/Images/mateImage.png" }, 1: { name: "Powergrip Gloves", image: "/Images/cyclingGloveImage2.png" }, 2: { name: "Elite Runner 3.0", image: "/Images/shoesImage.png" }, 3: { name: "QuickDry Sports Towel", image: "/Images/sportsTowelImage.png" } };
-              const displayData = customData[index] || { name: p.name, image: p.image };
-              return (
-                <div key={p.id} className="bg-[#0a1118] p-4 rounded-3xl border border-white/5 hover:border-[#EB712B]/50 cursor-pointer" onClick={() => handleSelectProduct(p)}>
-                  <div className="h-48 mb-4 overflow-hidden rounded-2xl bg-black"><img src={displayData.image} className="w-full h-full object-cover" /></div>
-                  <h3 className="font-bold">{displayData.name}</h3>
-                  <p className="text-[#EB712B] font-bold">$ {p.price}</p>
+          <div className="flex gap-6 overflow-x-auto pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+            {products.map((p) => (
+              <div key={p.id} onClick={() => handleSelectProduct(p)} className="min-w-[200px] md:min-w-[250px] cursor-pointer group">
+                <div className="bg-[#111111] p-4 rounded-2xl border border-white/5 hover:border-[#EB712B]/50 transition-all">
+                  <img src={p.image} className="rounded-xl w-full h-32 md:h-48 object-cover mb-4" alt={p.name} />
+                  <h3 className="font-bold text-sm">{p.name}</h3>
+                  <p className="text-[#EB712B] font-bold text-sm">$ {p.price}</p>
                 </div>
-              );
-             })}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -131,21 +124,96 @@ const Product = () => {
   }
 
   return (
-    <div className="bg-black min-h-screen px-6 py-16 lg:px-20 text-white">
-      <div className="max-w-7xl mx-auto mb-16">
-        <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight">High Performance <span className="text-[#EB712B]">Gear</span></h1>
+    <div className="min-h-screen p-4 md:p-8 text-white font-sans">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+  <h1 className="text-2xl md:text-3xl font-bold">
+    High Performance <span className="text-[#EB712B]">Gear</span>
+  </h1>
+  <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
+    <ShoppingCart size={18} /> Add Product
+  </button>
+</div>
+
+      {/* Product List */}
+<div className="bg-[#111111] p-4 md:p-6 rounded-2xl mb-8 border border-white/5 overflow-x-auto">
+  {/* Table Header */}
+  <div className="grid grid-cols-4 md:grid-cols-5 text-[#888] text-[10px] font-bold uppercase mb-6 px-4 min-w-600px">
+    <span>Asset Description</span>
+    <span className="hidden md:block">Classification</span>
+    <span>Unit Value</span>
+    <span>Inventory Status</span>
+    <span className="text-right">Operations</span>
+  </div>
+
+  {/* Table Body */}
+  {paginatedProducts.map((p) => (
+    <div key={p.id} className="grid grid-cols-4 md:grid-cols-5 items-center py-4 border-t border-white/5 px-4 hover:bg-white/5 rounded-xl group min-w-600px">
+      <div className="flex items-center gap-4">
+        <img src={p.image} className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover" alt={p.name} />
+        <div>
+          <p className="font-bold text-xs">{p.name}</p>
+          <p className="text-[9px] text-gray-500 hidden md:block">{p.sku}</p>
+        </div>
       </div>
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products.map((p) => (
-          <div key={p.id} className="bg-[#0a0a0a] p-5 rounded-3xl border border-white/5 hover:border-[#EB712B]/50 transition-all hover:-translate-y-2">
-            <div className="h-72 mb-6 overflow-hidden rounded-2xl"><img src={p.image} className="w-full h-full object-cover" /></div>
-            <h3 className="text-xl font-bold mb-3">{p.name}</h3>
-            <div className="flex justify-between items-center">
-              <p className="font-bold text-2xl">$ {p.price}</p>
-              <button onClick={() => handleSelectProduct(p)} className="bg-white/5 p-2 rounded-full hover:bg-[#EB712B]"> ➔ </button>
+      <span className="bg-[#1a1a1a] px-3 py-1 rounded w-fit text-[10px] border border-white/5 hidden md:block">
+        {p.category}
+      </span>
+      <span className="font-bold text-sm text-[#c99277]">${p.price}</span>
+      <div className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}>
+        {p.status}
+      </div>
+      <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+        <button onClick={() => handleSelectProduct(p)} className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all">
+          <SquarePen size={14} />
+        </button>
+      </div>
+    </div>
+  ))}
+
+  {/* Pagination Controls */}
+  <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-white/5">
+    <button 
+      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 disabled:hover:border-white/5"
+    >
+      <ChevronLeft size={16} />
+    </button>
+    
+    <span className="text-xs font-bold text-gray-500">Page {currentPage}</span>
+    
+    <button 
+      onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(products.length / itemsPerPage)))}
+      disabled={currentPage >= Math.ceil(products.length / itemsPerPage)}
+      className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 disabled:hover:border-white/5"
+    >
+      <ChevronRight size={16} />
+    </button>
+  </div>
+</div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div className="md:col-span-2 bg-[#111111] p-4 md:p-6 rounded-2xl border border-white/5 w-full min-h-300px flex flex-col">           <ResponsiveContainer width="100%" height="100%">
+             <LineChart data={chartData}>
+               <XAxis dataKey="name" stroke="#555" fontSize={10} axisLine={false} tickLine={false} />
+               <YAxis stroke="#555" fontSize={10} axisLine={false} tickLine={false} />
+               <CartesianGrid stroke="#333" strokeDasharray="3 3" vertical={false} />
+               <Tooltip contentStyle={{ backgroundColor: '#111', border: 'none' }} />
+               <Line type="monotone" dataKey="val1" stroke="#EB712B" strokeWidth={3} dot={false} />
+               <Line type="monotone" dataKey="val2" stroke="#8884d8" strokeWidth={3} dot={false} />
+             </LineChart>
+           </ResponsiveContainer>
+        </div>
+        <div className="flex flex-col gap-4">
+            <div className="bg-[#111111] p-6 rounded-2xl border border-[#EB712B]/50 flex justify-between items-center">
+                <div><p className="text-gray-400 text-xs uppercase">Active Orders</p><h3 className="text-2xl md:text-3xl font-bold mt-2">124</h3></div>
+                <ShoppingCart className="text-[#EB712B]" size={24} />
             </div>
-          </div>
-        ))}
+            <div className="bg-[#111111] p-6 rounded-2xl border border-green-500/50 flex justify-between items-center">
+                <div><p className="text-gray-400 text-xs uppercase">Pending Audit</p><h3 className="text-2xl md:text-3xl font-bold mt-2">08</h3></div>
+                <ClipboardCheck className="text-green-500" size={24} />
+            </div>
+        </div>
       </div>
     </div>
   );

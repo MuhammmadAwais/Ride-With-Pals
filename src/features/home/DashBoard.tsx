@@ -5,7 +5,7 @@ import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu } from 'lucide
 import { motion } from 'framer-motion';
 import Sidebar from '../../components/Sidebar';
 
-// --- Data ---
+
 const data = [
   { name: 'Jan', val: 4000 }, { name: 'Feb', val: 10500 }, { name: 'Mar', val: 6200 },
   { name: 'Apr', val: 7800 }, { name: 'May', val: 5500 }, { name: 'Jun', val: 13000 },
@@ -19,7 +19,6 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// --- Analytics Grid (Includes Donut Chart) ---
 const AnalyticsGrid = () => {
   const size = 120;
   const strokeWidth = 12;
@@ -27,9 +26,9 @@ const AnalyticsGrid = () => {
   const circumference = radius * 2 * Math.PI;
   
  const segments = [
-    { color: '#3B82F6', value: 30, label: 'Inter-City', radius: 45 }, // Blue
-    { color: '#10B981', value: 30, label: 'Joint', radius: 35 },      // Green
-    { color: '#F97316', value: 40, label: 'Solo', radius: 25 },       // Orange
+    { color: '#3B82F6', value: 30, label: 'Inter-City', radius: 45 }, 
+    { color: '#10B981', value: 30, label: 'Joint', radius: 35 },      
+    { color: '#F97316', value: 40, label: 'Solo', radius: 25 },       
   ];
 
   return (
@@ -158,9 +157,13 @@ export default function DashBoard() {
             <button className="text-gray-400 hover:text-[#EB712B]"><Bell size={20} /></button>
           </div>
         </header>
+        <div className="my-4 border-t border-white/20" />
         <div className="w-full"><Outlet /></div>
+        
       </main>
+      <div className="my-4 border-t border-white/20" />
     </div>
+    
   );
 }
 
@@ -170,6 +173,8 @@ function KPICard({ title, value, icon }: any) {
       {icon}
       <h3 className="text-gray-400 text-xs uppercase font-semibold mt-4">{title}</h3>
       <p className="text-2xl font-black mt-1">{value}</p>
+      
     </div>
+    
   );
 }

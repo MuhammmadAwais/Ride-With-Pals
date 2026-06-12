@@ -21,17 +21,20 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
       )}
 
       {/* Aside Panel */}
-      <aside className={`
+      <aside 
+      className={`
         fixed lg:relative z-50 w-72 h-full bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0
         transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
+      `}
+      >
         <div className="flex items-center justify-between mb-10 px-2 shrink-0">
           <img src="/Images/Logo.png" alt="Logo" className="h-12 w-auto" />
           <button onClick={onClose} className="lg:hidden text-gray-400 hover:text-white">
             <X size={24} />
           </button>
         </div>
+        
 
         <nav className="flex-1 flex flex-col space-y-2 overflow-y-auto">
           <NavItem onClick={() => { navigate('/dashboard'); onClose(); }} active={isActive('/dashboard')} label="Dashboard" icon={<LayoutDashboard size={20} />} />
