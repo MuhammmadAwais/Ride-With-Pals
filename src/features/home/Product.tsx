@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { SquarePen, Truck, ShieldCheck, RefreshCcw, ChevronRight, ChevronLeft, ShoppingCart, ClipboardCheck, ArrowLeft } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
@@ -126,9 +127,11 @@ const Product = () => {
         <h1 className="text-2xl md:text-3xl font-bold">
           High Performance <span className="text-[#EB712B]">Gear</span>
         </h1>
-        <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
-          <ShoppingCart size={18} /> Add Product
-        </button>
+        <Link to="/add-product">
+  <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
+    <ShoppingCart size={18} /> Add Product
+  </button>
+</Link>
       </div>
 
       <div className="bg-[#111111] p-4 md:p-6 rounded-2xl mb-8 border border-white/5 overflow-x-auto">

@@ -18,6 +18,7 @@ import ProfileAccount from '../features/home/ProfileAccount';
 import ManageClub from '../features/home/ManageClub';
 import Activities from '../features/home/Activities';
 import Product from '../features/home/Product';
+import AddProduct from '../features/home/AddProduct';
 
 export const AppRouter = () => {
   return (
@@ -43,7 +44,7 @@ export const AppRouter = () => {
           <Route path="profile" element={<ProfileAccount />} /> 
         </Route>
 
-        
+        <Route path="/add-product" element={<AddProduct />} />
         <Route path="/dashboard/manage-club" element={<ManageClub />} />
       </Routes>
     </BrowserRouter>
