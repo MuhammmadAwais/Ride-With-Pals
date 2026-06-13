@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { SquarePen, Truck, ShieldCheck, RefreshCcw, ChevronRight, ChevronLeft, ShoppingCart, ClipboardCheck, ArrowLeft } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
@@ -41,6 +42,7 @@ const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
   const itemsPerPage = 5;
 
   const handleSelectProduct = (product: ProductType) => {
@@ -88,9 +90,12 @@ const Product = () => {
                 <span className="px-4 font-bold">1</span>
                 <button className="px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">+</button>
               </div>
-              <button className="flex-1 min-w-[200px] bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f] transition-all flex items-center justify-center gap-2">
-                <ShoppingCart size={20} /> Add to Cart
-              </button>
+              <button 
+  onClick={() => navigate('/add-product', { state: { imageUrl: activeImage || selectedProduct.image } })}
+  className="flex-1 min-w-[200px] bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f] transition-all flex items-center justify-center gap-2"
+>
+  <ShoppingCart size={20} /> Add to Cart
+</button>
             </div>
             <div className="grid grid-cols-3 gap-4">
               {[{ label: 'FREE SHIPPING', icon: Truck }, { label: 'LIFETIME WARRANTY', icon: ShieldCheck }, { label: 'EASY RETURNS', icon: RefreshCcw }].map((item) => (
