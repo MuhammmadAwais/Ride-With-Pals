@@ -20,7 +20,6 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
         />
       )}
 
-      {/* Aside Panel */}
       <aside 
       className={`
         fixed lg:relative z-50 w-72 h-full bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0

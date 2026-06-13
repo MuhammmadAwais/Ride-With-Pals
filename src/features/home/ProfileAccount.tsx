@@ -6,21 +6,18 @@ import {
 const ProfileAccount = () => {
   const navigate = useNavigate(); 
 
-  // Updated styles for better mobile-to-desktop scaling
   const sectionCardStyle = "bg-[#111111] p-4 md:p-6 rounded-2xl border border-white/5";
   const rowItemStyle = "flex items-center justify-between py-4 border-b border-white/5 last:border-0 hover:bg-white/[0.02] px-2 md:px-4 -mx-4 transition-colors cursor-pointer group";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] p-4 md:p-12 text-white font-sans">
+    <div className="min-h-screen  p-4 md:p-12 text-white font-sans">
       <div className="max-w-4xl mx-auto w-full">
         
-        {/* Header Section - Stacked on mobile, centered on desktop */}
         <div className="mb-8 md:mb-10 text-left">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Profile & Account</h1>
           <p className="text-[#888] text-sm">Manage your personal information and application preferences.</p>
         </div>
 
-        {/* Profile Info Bar - Responsive Flex */}
         <div className="bg-[#111111] p-5 md:p-6 rounded-2xl border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8 md:mb-10">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-[#1a1a1a] flex items-center justify-center border border-white/5 shrink-0">
@@ -39,10 +36,8 @@ const ProfileAccount = () => {
           </div>
         </div>
 
-        {/* Sections Wrapper */}
         <div className="grid gap-8">
           
-          {/* Account Management */}
           <section>
             <h3 className="text-[10px] md:text-xs text-[#888] font-bold uppercase mb-4 px-1">Account Management</h3>
             <div className={sectionCardStyle}>
@@ -64,7 +59,6 @@ const ProfileAccount = () => {
             </div>
           </section>
 
-          {/* Workspace & Support */}
           <section>
             <h3 className="text-[10px] md:text-xs text-[#888] font-bold uppercase mb-4 px-1">Workspace & Support</h3>
             <div className={sectionCardStyle}>

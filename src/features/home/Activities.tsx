@@ -1,176 +1,220 @@
-import React, { useState } from 'react';
-import { Download, MapPin, Users, Gauge, Route, UserCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Bike, BarChart3, TrendingUp, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler } from 'chart.js';
 
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler);
 
-interface MetricCardProps {
-  icon: React.ReactNode;
-  value: string | number;
-  label: string;
-  title: string;
-}
-
-const MetricCard = ({ icon, value, label, title }: MetricCardProps) => (
-  <div className="bg-white/5 p-4 rounded-2xl flex flex-col items-center justify-center hover:-translate-y-1 hover:bg-[#EB712B]/10 hover:border hover:border-[#EB712B] transition-all cursor-default">
-    <div className="text-[#EB712B] mb-2">{icon}</div>
-    <p className="text-xl sm:text-2xl font-black">{value} <span className="text-sm font-normal text-gray-400">{label}</span></p>
-    <p className="text-gray-500 text-[10px] uppercase font-bold mt-1">{title}</p>
-  </div>
-);
-
-interface LeaderItemProps {
+// --- Types ---
+interface Activity {
+  id: number;
   name: string;
-  handle: string;
-  imageSrc: string;
+  region: string;
+  distance: string;
+  level: 'ADVANCED' | 'PRO ELITE' | 'INTERMEDIATE';
+  status: 'IN PROGRESS' | 'SCHEDULED' | 'OPEN' | 'COMPLETED' | 'ARCHIVED';
+  participants: string;
+  progress: number;
+  imageUrl: string;
+  leaderImageUrl: string;
 }
 
-const LeaderItem = ({ name, handle, imageSrc }: LeaderItemProps) => (
-  <div className="flex items-center gap-3 hover:bg-white/5 p-2 rounded-xl transition-all cursor-pointer">
-    <img src={imageSrc} alt={name} className="w-10 h-10 rounded-full object-cover border border-white/10" />
-    <div>
-      <p className="text-sm font-bold">{name}</p>
-      <p className="text-[10px] text-gray-500 font-medium">{handle}</p>
+// 1. Define your 10 unique images
+const girlImages = [
+  "Girlmage1.png", "Girlmage2.png", "Girlmage3.png", "Girlmage4.png", "Girlmage5.png",
+  "GrilImage11.png", "GirlImage11.png", "GirlImage11.png", "Girlmage9.png", "GirlImage10.png"
+];
+
+const leaderImages = [
+  "Girlmage1.png", "Girlmage2.png", "Girlmage3.png", "Girlmage4.png", "Girlmage5.png",
+  "GrilImage11.png", "GirlImage11.png", "GirlImage11.png", "Girlmage9.png", "GirlImage10.png"
+];
+
+const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
+  <div className={`p-6 rounded-2xl border ${isLive ? 'bg-[#161616] border-orange-500/40' : 'border-zinc-800 bg-[#111111]'}`}>
+    <div className="flex justify-between items-start mb-4">
+      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-orange-500">{icon}</span>
     </div>
+    <div className="text-3xl font-black mb-1">{value}</div>
+    <div className="text-[10px] text-zinc-500 font-medium">{subtext}</div>
   </div>
 );
 
-interface ParticipantItemProps {
-  name: string;
-  imageSrc: string;
-  id: string;
-}
+const ActivitiesRegistry = () => {
+  const [activeTab, setActiveTab] = useState('Active');
+  
+  // 2. Map the state using your image arrays
+  const [activities] = useState<Activity[]>(Array.from({ length: 15 }, (_, i) => ({
+    id: i + 1,
+    name: `Activity ${i + 1}`,
+    region: "Alpine Range",
+    distance: "80 KM",
+    level: "ADVANCED",
+    status: i % 3 === 0 ? 'COMPLETED' : i % 5 === 0 ? 'ARCHIVED' : 'IN PROGRESS',
+    participants: "18 / 38",
+    progress: i % 3 === 0 ? 100 : 50,
+    imageUrl: `/Images/${girlImages[i % 10]}`,
+    leaderImageUrl: `/Images/${leaderImages[i % 10]}`
+  })));
 
-const ParticipantItem = ({ name, imageSrc, id }: ParticipantItemProps) => (
-  <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center border border-white/5 hover:border-[#EB712B] transition-all cursor-pointer">
-    <img src={imageSrc} alt={name} className="w-10 h-10 rounded-full object-cover mb-2 border border-white/10" />
-    <p className="text-[10px] font-bold text-center leading-tight truncate w-full">{name}</p>
-    <p className="text-[9px] text-gray-500 text-center truncate w-full">{id}</p>
-  </div>
-);
+  // ... (Keep existing Filter, chartData, chartOptions, and JSX structure exactly as it is)
 
-// --- Main Component ---
+  // FILTER LOGIC
+  const filteredActivities = activities.filter(act => {
+    if (activeTab === 'Active') return act.status === 'IN PROGRESS' || act.status === 'SCHEDULED' || act.status === 'OPEN';
+    if (activeTab === 'Completed') return act.status === 'COMPLETED';
+    if (activeTab === 'Archived') return act.status === 'ARCHIVED';
+    return true;
+  });
 
-const Activities = () => {
-  const [showAll, setShowAll] = useState<boolean>(false);
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Completed Carpools',
+        data: [3000, 2500, 9500, 4000, 3500, 4500, 4000, 5000, 4500, 5500, 6000, 7000],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
+      },
+      {
+        label: 'Ride Bookings',
+        data: [4000, 3500, 3000, 4500, 4000, 3800, 4200, 4800, 4500, 5000, 5500, 6000],
+        borderColor: '#f97316',
+        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0
+      }
+    ]
+  };
 
-  const participants = [
-    { name: "Arlene McCoy", imageSrc: "/Images/Girlmage2.png" , id:"@Arlenmccoy" },
-    { name: "Cody Fisher", imageSrc: "/Images/Girlmage3.png" , id:"@CodyFisher" },
-    { name: "Eleanor Pena", imageSrc: "/Images/Girlmage4.png" , id:"@EleanorPena" },
-    { name: "User Four", imageSrc: "/Images/Girlmage5.png" , id:"@UserFour" },
-    { name: "Arlene McCoy", imageSrc: "/Images/Girlmage6.png" , id:"@Arlenmccoy" },
-    { name: "Eleanor Pena", imageSrc: "/Images/Girlmage7.png" , id:"@EleanorPena" },
-    { name: "User Five", imageSrc: "/Images/Girlmage8.png" , id:"@UserFive" },
-    { name: "Cody Fisher", imageSrc: "/Images/Girlmage9.png" , id:"@CodyFisher" },
-  ];
-
-  const displayedParticipants = showAll ? participants : participants.slice(0, 3);
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#71717a' } },
+      y: { min: 0, max: 10000, grid: { color: '#27272a' }, ticks: { color: '#71717a' } }
+    }
+  };
 
   return (
-    <div className="w-full text-white p-4 sm:p-6 bg-[#111111] min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Activities</h1>
-            <p className="text-gray-400">Manage your group rides and community events</p>
-          </div>
-          <div className="bg-[#161616] p-1 rounded-2xl flex border border-white/5 w-full sm:w-auto">
-            <button className="bg-[#EB712B] px-6 py-2 rounded-xl text-sm font-bold shadow-lg flex-1">Active Rides</button>
-            <button className="px-6 py-2 text-sm text-gray-400 hover:text-white transition-colors flex-1">Completed</button>
-          </div>
+    <div className="min-h-screen p-8 text-white font-sans">
+      <div className="max-w-6xl mx-auto">
+        {/* Header/Tabs */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-bold">Activities Registry</h1>
+         
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content Card */}
-          <div className="lg:col-span-2 bg-[#161616] rounded-3xl p-6 border border-white/5 hover:border-white/10 transition-colors">
-            <div className="relative h-64 sm:h-72 rounded-2xl overflow-hidden mb-6">
-              <img src="/Images/MapImage.jpg" alt="Mountain Ride Map" className="w-full h-full object-cover" />
-              <div className="absolute inset-0  from-black/80 to-transparent" />
-              <div className="absolute top-4 left-4 flex gap-2">
-                <span className="bg-[#EB712B] px-3 py-1 rounded-lg text-[10px] font-bold tracking-wider">ACTIVE</span>
-                <span className="bg-white/10 px-3 py-1 rounded-lg text-[10px] tracking-wider">GRAVEL</span>
-              </div>
-              <button className="absolute top-4 right-4 bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-bold flex items-center gap-2 border border-white/10 hover:bg-[#EB712B]/20 transition-all">
-                <Download size={14} /> DOWNLOAD GPX
-              </button>
-              <div className="absolute bottom-6 left-6">
-                <h2 className="text-3xl sm:text-4xl font-bold mb-1">Mountain Ride</h2>
-                <p className="flex items-center gap-1 text-gray-300 text-sm"><MapPin size={16} /> Chamonix, French Alps</p>
-              </div>
-            </div>
+        {/* Summaries */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <SummaryCard label="TOTAL ACTIVE" value="24" subtext="+12% from last week" icon={<Bike size={20} />} />
+          <SummaryCard label="AVG DISTANCE" value="68 km" subtext="Target: 75km" icon={<BarChart3 size={20} />} />
+          <SummaryCard label="ELEVATION GAIN" value="1.4k" subtext="New record set" icon={<TrendingUp size={20} />} />
+          <SummaryCard label="LIVE STATUS" value="08" subtext="Activities in progress" icon={<Bike size={20} />} isLive={true} />
+        </div>
 
-            {/* Metric Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-              <MetricCard icon={<Gauge size={20} />} value="28" label="km/h" title="Pace" />
-              <MetricCard icon={<Route size={20} />} value="80" label="km" title="Distance" />
-              <MetricCard icon={<UserCircle size={20} />} value="10" label="riders" title="Participants" />
-            </div>
+        {/* --- UPDATED HEADER/TAB SECTION --- */}
+<div className="flex justify-between items-center mb-8">
+  <h1 className="text-2xl font-bold">Activities Registry</h1>
+  <div className="flex bg-[#111111] p-1.5 rounded-xl border border-zinc-800">
+    {['Active', 'Completed', 'Archived'].map((tab) => (
+      <button 
+        key={tab} 
+        onClick={() => setActiveTab(tab)} 
+        className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${
+          activeTab === tab 
+            ? 'bg-zinc-800 text-white shadow-lg' 
+            : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900'
+        }`}
+      >
+        {tab}
+      </button>
+    ))}
+  </div>
+</div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-[#161616] p-5 rounded-3xl border border-white/5 hover:border-[#EB712B] transition-all">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">Technical Details</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center border border-white/5">
-                      <Users size={16} className="text-[#EB712B]" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-medium">Slots</p>
-                      <p className="text-xs font-bold text-white">12 Available</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#111111] flex items-center justify-center border border-white/5">
-                      <Gauge size={16} className="text-[#EB712B]" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 font-medium">Level</p>
-                      <p className="text-xs font-bold text-white">Advanced</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="hover:border-l-2 hover:border-[#EB712B] pl-4 transition-all">
-                <h4 className="text-[15px] font-bold text-[#EB712B] uppercase mb-2">Ride Description</h4>
-                <p className="text-xs text-gray-400 leading-relaxed">Puhågisk bek. Polylig ninade. Postfaktisk. Ar dode beling. Tusol anime. Antet edod trektigt. Hära. Ånån jåvis. Nålyrade sans.</p>
+{/* --- UPDATED TABLE SECTION --- */}
+<div className="bg-[#111111] rounded-3xl border border-zinc-800 overflow-hidden shadow-2xl">
+  <table className="w-full text-left border-collapse">
+    <thead>
+      <tr className="border-b border-zinc-800/60 bg-[#0c0c0c]">
+        {['Activity', 'Leadership', 'Metrics', 'Level', 'Status', ''].map((h) => (
+          <th key={h} className="p-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">{h}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-zinc-800/60">
+      {filteredActivities.map((act) => (
+        <tr 
+          key={act.id} 
+          className="group hover:bg-[#1a1a1a] transition-colors duration-300 cursor-pointer"
+        >
+          <td className="p-6">
+            <div className="flex items-center gap-4">
+              <img src={act.imageUrl} className="w-14 h-14 rounded-2xl object-cover ring-1 ring-white/10" alt="" />
+              <div>
+                <div className="font-bold text-white group-hover:text-orange-500 transition-colors">{act.name}</div>
+                <div className="text-xs text-zinc-500">{act.region}</div>
               </div>
             </div>
-          </div>
+          </td>
+          <td className="p-6">
+            <img src={act.leaderImageUrl} className="w-10 h-10 rounded-full ring-2 ring-[#111111] object-cover" alt="" />
+          </td>
+          <td className="p-6">
+            <div className="font-mono text-sm font-bold tracking-wider text-zinc-300">{act.distance}</div>
+            <div className="w-20 h-1.5 bg-zinc-800 rounded-full mt-2 overflow-hidden">
+              <div className="h-full bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.5)]" style={{ width: `${act.progress}%` }} />
+            </div>
+          </td>
+          <td className="p-6">
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold border border-zinc-700 bg-zinc-900 text-zinc-400">
+              {act.level}
+            </span>
+          </td>
+          <td className="p-6">
+            <div className="flex items-center gap-2 text-xs font-medium text-zinc-300">
+              {act.status === 'COMPLETED' ? (
+                <CheckCircle2 size={14} className="text-emerald-400" /> 
+              ) : (
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+              )}
+              {act.status}
+            </div>
+          </td>
+          <td className="p-6 text-right">
+            <ChevronRight 
+              size={20} 
+              className="text-zinc-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" 
+            />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <div className="bg-[#161616] p-6 rounded-3xl border border-white/5 hover:border-[#EB712B] transition-all">
-              <h3 className="text-[10px] text-gray-500 font-bold mb-4 uppercase tracking-widest">Ride Leaders</h3>
-              <div className="space-y-4">
-                <LeaderItem name="Arlene McCoy" handle="@ARLENEMCCOY" imageSrc="/Images/Girlmage6.png" />
-                <LeaderItem name="Cody Fisher" handle="@CODYFISHER" imageSrc="/Images/Girlmage1.png" />
-              </div>
+        {/* Chart */}
+        <div className="p-8">
+            <h3 className="text-xl font-bold mb-1">Data Velocity Over Time</h3>
+            <p className="text-sm text-zinc-500 mb-6">Monthly Ride Bookings vs Completed Carpools</p>
+            <div className="h-64">
+                <Line data={chartData} options={chartOptions as any} />
             </div>
-
-            <div className="bg-[#161616] p-6 rounded-3xl border border-white/5 hover:border-[#EB712B] transition-all">
-              <div className="flex justify-between mb-4">
-                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Participants Joined</h3>
-                <span onClick={() => setShowAll(!showAll)} className="text-[10px] text-[#EB712B] font-bold cursor-pointer hover:underline transition-all">
-                  {showAll ? 'SHOW LESS' : 'VIEW ALL'}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {displayedParticipants.map((p, i) => (
-                  <ParticipantItem key={i} name={p.name} imageSrc={p.imageSrc} id={p.id} />
-                ))}
-                {!showAll && participants.length > 3 && (
-                  <div onClick={() => setShowAll(true)} className="bg-white/5 rounded-2xl p-4 flex flex-col justify-center items-center border border-transparent hover:border-[#EB712B]/50 cursor-pointer transition-all">
-                    <p className="text-xl font-black">+{participants.length - 3}</p>
-                    <p className="text-[9px] text-gray-400 uppercase font-bold">More</p>
-                  </div>
-                )}
-              </div>
+            <div className="flex justify-center gap-8 mt-6">
+                <div className="flex items-center gap-2 text-sm font-bold"><span className="w-3 h-3 rounded-full bg-blue-500"/> Completed Carpools</div>
+                <div className="flex items-center gap-2 text-sm font-bold"><span className="w-3 h-3 rounded-full bg-orange-500"/> Ride Bookings</div>
             </div>
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Activities;
+export default ActivitiesRegistry;

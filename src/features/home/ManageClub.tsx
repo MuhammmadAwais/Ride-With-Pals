@@ -145,7 +145,7 @@ const ManageClub = () => {
             <div className="p-4 bg-[#1a1a1a] rounded-lg h-fit border border-[#222]"><TrendingUp className="text-[#EB712B]" size={32} /></div>
             <div>
               <h3 className="text-xl font-bold mb-3">Club Intelligence</h3>
-              <p className="text-gray-400 text-sm">System analytics suggest no hardware interventions required for the next 45 days.</p>
+              <p className="text-gray-400 ">Your managed entities have maintained a <span className="text-[#EB712B] font-bold">98% technical compliance</span> rate this fiscal quarter. System analytics suggest no hardware interventions required for the next 45 days based on current intensity trends.</p>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@ const ManageClub = () => {
             <div className="p-4 bg-[#1a1a1a] rounded-lg h-fit border border-[#222]"><Award className="text-emerald-500" size={32} /></div>
             <div>
               <h3 className="text-xl font-bold mb-3">Global Standing</h3>
-              <p className="text-gray-400 text-sm">Operational efficiency ranked in the top 5% of gear management professionals worldwide.</p>
+              <p className="text-gray-400">Elite status verified across all portfolios. Your operational efficiency is currently ranked in the top <span className="text-emerald-600 font-bold">5% of gear management professionals</span> worldwide within the Technical Athletics sector.</p>
             </div>
           </div>
         </div>
