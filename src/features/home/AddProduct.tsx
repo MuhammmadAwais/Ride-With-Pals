@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, ChevronDown, ArrowLeft, LayoutDashboard, FileText, DollarSign, Tag, X } from 'lucide-react';
+import { Upload,  ArrowLeft, LayoutDashboard, FileText,  X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const AddProduct = () => {
