@@ -1,6 +1,10 @@
+import { ThemeProvider } from 'next-themes';
 import { AppRouter } from './router/AppRouter';
+
 export default function App() {
   return (
-    <AppRouter />
+    <ThemeProvider attribute="class" defaultTheme="dark">
+      <AppRouter />
+    </ThemeProvider>
   );
 }

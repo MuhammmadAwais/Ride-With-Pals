@@ -1,7 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { SquarePen, Truck, ShieldCheck, RefreshCcw, ChevronRight, ChevronLeft, ShoppingCart, ClipboardCheck, ArrowLeft } from 'lucide-react';
+import { 
+  SquarePen, ChevronRight, 
+  ChevronLeft, ShoppingCart, ClipboardCheck, ArrowLeft, 
+   Plus, Edit2, Clipboard, EyeOff 
+} from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 const chartData = [
@@ -23,6 +27,8 @@ interface ProductType {
   status: "IN STOCK" | "LIMITED";
   image: string;
   gallery: string[];
+  units?: number;
+  sales?: string;
 }
 
 const products: ProductType[] = [
@@ -77,51 +83,67 @@ const Product = () => {
             </div>
           </div>
 
-          <div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-2">{selectedProduct.name}</h1>
-            <div className="flex items-center gap-4 mb-6">
-              <span className="text-2xl md:text-4xl font-bold text-[#EB712B]">$ {selectedProduct.price}</span>
-              <span className="bg-[#1a332a] text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap">{selectedProduct.status}</span>
-            </div>
-            <p className="text-gray-400 mb-8 leading-relaxed text-sm md:text-base">Engineered for elite performance. Our triple-insulated stainless steel construction keeps hydration at temperature for 24 hours, even in extreme environments.</p>
-            <div className="flex flex-wrap gap-4 mb-8">
-              <div className="flex items-center bg-[#111111] rounded-xl border border-white/10">
-                <button className="px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">-</button>
-                <span className="px-4 font-bold">1</span>
-                <button className="px-6 py-4 text-xl hover:text-[#EB712B] transition-colors">+</button>
-              </div>
-              <button 
-  onClick={() => navigate('/add-product', { state: { imageUrl: activeImage || selectedProduct.image } })}
-  className="flex-1 min-w-[200px] bg-[#EB712B] rounded-xl font-bold hover:bg-[#c95f1f] transition-all flex items-center justify-center gap-2"
+         <div>
+  <h1 className="text-3xl md:text-5xl font-bold mb-2">{selectedProduct.name}</h1>
+  
+  <div className="flex items-center gap-4 mb-6">
+    <span className="text-2xl md:text-4xl font-bold text-[#EB712B]">$ {selectedProduct.price}</span>
+    <span className="bg-[#1a332a] text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap">
+      ● IN STOCK: {selectedProduct.units || 42} UNITS
+    </span>
+  </div>
+
+  <p className="text-gray-400 mb-8 leading-relaxed text-sm md:text-base">
+    Engineered for elite performance. Our triple-insulated stainless steel construction keeps hydration at temperature for 24 hours, even in extreme environments.
+  </p>
+
+  {/* Owner Info Grid */}
+  <div className="grid grid-cols-3 gap-4 mb-10 pt-10 bg-[#111111] p-6 rounded-2xl border border-white/5">
+    <div>
+      <p className="text-[10px] text-gray-500 uppercase font-bold">SKU</p>
+      <p className="font-mono font-bold text-[#EB712B]">{selectedProduct.sku || 'EB-BOT-001'}</p>
+    </div>
+    <div>
+      <p className="text-[10px] text-gray-500 uppercase font-bold">TOTAL SALES</p>
+      <p className="font-bold text-lg">{selectedProduct.sales || '1,248'}</p>
+    </div>
+    <div>
+      <p className="text-[10px] text-gray-500 uppercase font-bold">LAST MODIFIED</p>
+      <p className="font-bold text-sm">2 hours ago</p>
+    </div>
+  </div>
+
+  {/* Owner Controls */}
+  <div className="flex flex-wrap gap-4 pt-8">
+  
+   <button 
+  onClick={() => {
+    
+    const productToEdit = {
+      ...selectedProduct,
+      image: activeImage
+    };
+    
+    navigate('/add-product', { state: { product: productToEdit } });
+  }}
+  className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
 >
-  <ShoppingCart size={20} /> Add to Cart
+  <Edit2 size={18} /> Edit
 </button>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              {[{ label: 'FREE SHIPPING', icon: Truck }, { label: 'LIFETIME WARRANTY', icon: ShieldCheck }, { label: 'EASY RETURNS', icon: RefreshCcw }].map((item) => (
-                <div key={item.label} className="bg-[#111111] p-4 rounded-xl border border-white/5 text-center flex flex-col items-center gap-2 hover:border-[#EB712B]/50 transition-colors">
-                  <item.icon size={20} className="text-[#EB712B]" />
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+    <button className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+      <Clipboard size={18} /> Stock
+    </button>
+  </div>
+
+  <div className= "pt-15">
+    <button className="w-full mt-4 py-4 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/5 transition-all flex items-center justify-center gap-2">
+  <EyeOff size={18} /> Deactivate Listing
+</button>
+  </div>
+</div>
         </div>
 
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Complete the Kit</h2>
-          <div className="flex gap-6 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {products.map((p) => (
-              <div key={p.id} onClick={() => handleSelectProduct(p)} className="min-w-[200px] md:min-w-[250px] cursor-pointer group">
-                <div className="bg-[#111111] p-4 rounded-2xl border border-white/5 hover:border-[#EB712B]/50 transition-all">
-                  <img src={p.image} className="rounded-xl w-full h-32 md:h-48 object-cover mb-4" alt={p.name} />
-                  <h3 className="font-bold text-sm">{p.name}</h3>
-                  <p className="text-[#EB712B] font-bold text-sm">$ {p.price}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        
       </div>
     );
   }
@@ -133,9 +155,11 @@ const Product = () => {
           High Performance <span className="text-[#EB712B]">Gear</span>
         </h1>
         <Link to="/add-product">
+  <Link to="/add-product">
   <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
-    <ShoppingCart size={18} /> Add Product
+    <Plus size={18} /> Add new Product
   </button>
+</Link>
 </Link>
       </div>
 

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 .animate-item {
   will-change: transform, opacity; 
 }
