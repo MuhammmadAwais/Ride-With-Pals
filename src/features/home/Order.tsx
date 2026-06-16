@@ -31,7 +31,7 @@ const Order = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const navigate = useNavigate();
-  const [orders, setOrders] = useState(allOrders);
+ 
 
 
   const filteredOrders = allOrders.filter(order => 

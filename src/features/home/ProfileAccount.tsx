@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { 
   Users, Lock, ShieldCheck, Wallet, CreditCard, HelpCircle, Languages, 
-  Info, AlertTriangle, ChevronRight, Moon, Sun, X, Eye, EyeOff, AlertCircle, ChevronDown, ChevronLeft, Search, Check, Shield, ArrowRight, Bike
+  Info, AlertTriangle, ChevronRight, Moon, Sun, X, Eye, EyeOff, AlertCircle,  ChevronLeft, Search, Check, Shield, ArrowRight, Bike
 } from 'lucide-react';
 
 const ProfileAccount = () => {
@@ -19,7 +19,7 @@ const ProfileAccount = () => {
   const [passwordData, setPasswordData] = useState({ current: '', new: '', confirm: '' });
   const [errors, setErrors] = useState({ current: '', new: '', confirm: '' });
   const [selectedRole, setSelectedRole] = useState<'admin' | 'user' | null>(null);
-  const [fullAccess, setFullAccess] = useState(false);
+  const [fullAccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [userPermissions, setUserPermissions] = useState({
