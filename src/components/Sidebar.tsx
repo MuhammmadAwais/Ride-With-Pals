@@ -39,7 +39,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           <NavItem onClick={() => { navigate('/dashboard'); onClose(); }} active={isActive('/dashboard')} label="Dashboard" icon={<LayoutDashboard size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/activities'); onClose(); }} active={isActive('/dashboard/activities')} label="Activities" icon={<Users size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/product'); onClose(); }} active={isActive('/dashboard/product')} label="Product" icon={<Car size={20} />} />
-          <NavItem label="Order" icon={<Wallet size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/order'); onClose(); }} active={isActive('/dashboard/order')} label="Order" icon={<Wallet size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/profile'); onClose(); }} active={isActive('/dashboard/profile')} label="Profile" icon={<UserCircle size={20} />} />
           
           <div className="my-4 border-t border-white/10" />

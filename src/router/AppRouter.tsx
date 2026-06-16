@@ -20,13 +20,15 @@ import ManageClub from '../features/home/ManageClub';
 import Activities from '../features/home/Activities';
 import Product from '../features/home/Product';
 import AddProduct from '../features/home/AddProduct';
+import Order from '../features/home/Order';
+import OrderDetail from '../features/home/OrderDetail';
+import Wallet from '../features/home/Wallet';
+import Subscription from '../features/home/Subscription';
+
 
 export const AppRouter = () => {
   return (
     <BrowserRouter>
-      {/* ThemeProvider wraps the routes to share theme state globally.
-        attribute="class" ensures the 'dark' class is applied to the <html> tag.
-      */}
       <ThemeProvider attribute="class" defaultTheme="dark">
         <Routes>
           {/* --- Public/Auth Routes --- */}
@@ -47,11 +49,16 @@ export const AppRouter = () => {
             <Route path="activities" element={<Activities />} />
             <Route path="product" element={<Product />} />
             <Route path="add-product" element={<AddProduct />} />
+            <Route path="order" element={<Order />} />
+            <Route path="order/:id" element={<OrderDetail />} />
             <Route path="profile" element={<ProfileAccount />} /> 
+            <Route path="wallet" element={<Wallet />} /> 
+           <Route path="subscription" element={<Subscription />} />
           </Route>
 
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/dashboard/manage-club" element={<ManageClub />} />
+          
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

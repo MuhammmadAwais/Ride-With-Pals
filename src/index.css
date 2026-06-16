@@ -43,3 +43,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   -ms-overflow-style: none; 
   scrollbar-width: none;    
 }
+
+/* Hide browser default password reveal */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+}
+
+input[type="password"]::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+}
+
+/* This is the key one for most browsers */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+}
