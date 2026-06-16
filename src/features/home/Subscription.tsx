@@ -1,13 +1,18 @@
 import { Check, Crown, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Subscription = () => {
+    const navigate = useNavigate();
   return (
     <div className="min-h-screen  text-white p-8 md:p-16">
       {/* Back Button with Hover Transition */}
-      <button className="group flex items-center gap-2 text-gray-500 hover:text-white transition-all duration-300 mb-12">
-        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-300" />
-        <span className="text-sm font-bold uppercase tracking-widest">Back</span>
-      </button>
+      <button 
+      onClick={() => navigate('/dashboard/profile')} // 3. Add the click handler
+      className="group flex items-center gap-2 text-gray-500 hover:text-white transition-all duration-300 mb-12"
+    >
+      <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-300" />
+      <span className="text-sm font-bold uppercase tracking-widest">Back</span>
+    </button>
 
       {/* Header */}
       <div className="relative flex flex-col items-center text-center mb-20 px-4">
