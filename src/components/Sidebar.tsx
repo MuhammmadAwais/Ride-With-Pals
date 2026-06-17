@@ -20,12 +20,13 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
         />
       )}
 
+      {/* Aside container: fixed on mobile, relative on desktop */}
       <aside 
-      className={`
-        fixed lg:relative z-50 w-72 h-full bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0
-        transition-transform duration-300 ease-in-out
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}
+        className={`
+          fixed lg:relative z-50 w-72 h-screen bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
       >
         <div className="flex items-center justify-between mb-10 px-2 shrink-0">
           <img src="/Images/Logo.png" alt="Logo" className="h-12 w-auto" />
@@ -34,7 +35,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           </button>
         </div>
         
-
+        {/* Navigation - flex-1 allows this to fill space, overflow-y-auto enables scrolling if list gets long */}
         <nav className="flex-1 flex flex-col space-y-2 overflow-y-auto">
           <NavItem onClick={() => { navigate('/dashboard'); onClose(); }} active={isActive('/dashboard')} label="Dashboard" icon={<LayoutDashboard size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/activities'); onClose(); }} active={isActive('/dashboard/activities')} label="Activities" icon={<Users size={20} />} />
@@ -44,9 +45,9 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           
           <div className="my-4 border-t border-white/10" />
           
-          <NavItem label="News" icon={<Newspaper size={20} />} />
-          <NavItem label="Leaderboard" icon={<Trophy size={20} />} />
-          <NavItem label="Discount" icon={<Percent size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/News'); onClose(); }} active={isActive('/dashboard/News')} label="News" icon={<Newspaper size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/leader-board'); onClose(); }} active={isActive('/dashboard/leader-board')} label="Leaderboard" icon={<Trophy size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/discount'); onClose(); }} active={isActive('/dashboard/discount')} label="Discount" icon={<Percent size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/joining-requests'); onClose(); }} active={isActive('/dashboard/joining-requests')} label="Joining Requests" icon={<UserPlus size={20} />} />
           
           <div className="mt-auto pt-4">
@@ -58,7 +59,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
   );
 };
 
-function NavItem({ icon, label, active, onClick }: any) {
+function NavItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick?: () => void }) {
   return (
     <div 
       onClick={onClick} 

@@ -24,8 +24,14 @@ import Order from '../features/ClubSide/Order';
 import OrderDetail from '../features/ClubSide/OrderDetail';
 import Wallet from '../features/ClubSide/Wallet';
 import Subscription from '../features/ClubSide/Subscription';
+import SubPaymentDet from '../features/ClubSide/SubPaymentDet';
+import Leaderboard from '../features/ClubSide/Leaderboard';
 import { ClubJoiningReq } from '../features/ClubSide/ClubJoiningReq';
-
+import News from '../features/ClubSide/News';
+import { NewsAdded } from '../features/ClubSide/NewsAdded';
+import Discount from '../features/ClubSide/Discount';
+import AddDiscount from '../features/ClubSide/AddDiscount';
+import AboutApp from '../features/ClubSide/AboutApp';
 
 export const AppRouter = () => {
   return (
@@ -42,6 +48,7 @@ export const AppRouter = () => {
           <Route path="/club-profile-setup" element={<ProfileSetup />} />
           <Route path="/club-subscriptions" element={<Subscriptions />} />
           <Route path="/select-role-club" element={<SelectRoleClub />} />
+          
           <Route path="/select-role" element={<SelectRole />} />
 
           {/* --- Dashboard Routes (Uses DashBoard as Layout) --- */}
@@ -54,13 +61,19 @@ export const AppRouter = () => {
             <Route path="order/:id" element={<OrderDetail />} />
             <Route path="profile" element={<ProfileAccount />} /> 
             <Route path="wallet" element={<Wallet />} /> 
-           <Route path="subscription" element={<Subscription />} />
-           <Route path="joining-requests" element={<ClubJoiningReq />} />
+            <Route path="subscription" element={<Subscription />} />
+            <Route path="subscription/payment" element={<SubPaymentDet />} />
+            <Route path="joining-requests" element={<ClubJoiningReq />} />
+            <Route path="leader-board" element={<Leaderboard />} />
+            <Route path="news" element={<News />} />
+            <Route path="news/add" element={<NewsAdded />} />
+            <Route path="discount" element={<Discount />} />
+            <Route path="discount/add" element={<AddDiscount />} />
           </Route>
 
-          <Route path="/add-product" element={<AddProduct />} />
+          {/* --- Secondary Dashboard Routes --- */}
           <Route path="/dashboard/manage-club" element={<ManageClub />} />
-          
+          <Route path="/about-app" element={<AboutApp />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

@@ -5,9 +5,8 @@ const Subscription = () => {
     const navigate = useNavigate();
   return (
     <div className="min-h-screen  text-white p-8 md:p-16">
-      {/* Back Button with Hover Transition */}
       <button 
-      onClick={() => navigate('/dashboard/profile')} // 3. Add the click handler
+      onClick={() => navigate('/dashboard/profile')} 
       className="group flex items-center gap-2 text-gray-500 hover:text-white transition-all duration-300 mb-12"
     >
       <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-300" />
@@ -16,7 +15,6 @@ const Subscription = () => {
 
       {/* Header */}
       <div className="relative flex flex-col items-center text-center mb-20 px-4">
-  {/* Decorative subtle background element */}
   <div className="absolute top-0 -z-10 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-[100px]" />
   
 
@@ -80,9 +78,12 @@ const Subscription = () => {
       ))}
     </div>
     
-    <button className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-[0_10px_20px_-10px_rgba(235,113,43,0.5)]">
-      Subscribe Now
-    </button>
+   <button 
+  onClick={() => navigate('/dashboard/subscription/payment')} 
+  className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-[0_10px_20px_-10px_rgba(235,113,43,0.5)]"
+>
+  Subscribe Now
+</button>
   </div>
 </div>
     </div>
