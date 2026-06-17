@@ -14,16 +14,17 @@ import Subscriptions from '../features/club/Subscriptions';
 import SelectRoleClub from '../features/club/SelectRoleClub';
 
 // Dashboard components
-import DashBoard, { DashboardOverview } from '../features/home/DashBoard';
-import ProfileAccount from '../features/home/ProfileAccount';
-import ManageClub from '../features/home/ManageClub';
-import Activities from '../features/home/Activities';
-import Product from '../features/home/Product';
-import AddProduct from '../features/home/AddProduct';
-import Order from '../features/home/Order';
-import OrderDetail from '../features/home/OrderDetail';
-import Wallet from '../features/home/Wallet';
-import Subscription from '../features/home/Subscription';
+import DashBoard, { DashboardOverview } from '../features/ClubSide/DashBoard';
+import ProfileAccount from '../features/ClubSide/ProfileAccount';
+import ManageClub from '../features/ClubSide/ManageClub';
+import Activities from '../features/ClubSide/Activities';
+import Product from '../features/ClubSide/Product';
+import AddProduct from '../features/ClubSide/AddProduct';
+import Order from '../features/ClubSide/Order';
+import OrderDetail from '../features/ClubSide/OrderDetail';
+import Wallet from '../features/ClubSide/Wallet';
+import Subscription from '../features/ClubSide/Subscription';
+import { ClubJoiningReq } from '../features/ClubSide/ClubJoiningReq';
 
 
 export const AppRouter = () => {
@@ -54,6 +55,7 @@ export const AppRouter = () => {
             <Route path="profile" element={<ProfileAccount />} /> 
             <Route path="wallet" element={<Wallet />} /> 
            <Route path="subscription" element={<Subscription />} />
+           <Route path="joining-requests" element={<ClubJoiningReq />} />
           </Route>
 
           <Route path="/add-product" element={<AddProduct />} />

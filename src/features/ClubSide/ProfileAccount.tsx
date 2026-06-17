@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { 
   Users, Lock, ShieldCheck, Wallet, CreditCard, HelpCircle, Languages, 
-  Info, AlertTriangle, ChevronRight, Moon, Sun, X, Eye, EyeOff, AlertCircle,  ChevronLeft, Search, Check, Shield, ArrowRight, Bike
+  Info, AlertTriangle, ChevronRight, Moon, Sun, Globe, X,  Eye, EyeOff, AlertCircle,  ChevronLeft, Search, Check, Shield, ArrowRight, Bike
 } from 'lucide-react';
 
 const ProfileAccount = () => {
@@ -30,6 +30,8 @@ const ProfileAccount = () => {
   const [tempUserPermissions, setTempUserPermissions] = useState(userPermissions);
   const [isMemberPickerOpen, setIsMemberPickerOpen] = useState(false);
 const [memberSelectionType, setMemberSelectionType] = useState<'all' | 'select'>('select');
+const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+const [selectedLanguage, setSelectedLanguage] = useState('English');
   
   // Admin Granular Permissions
   const [adminPermissions, setAdminPermissions] = useState({
@@ -57,7 +59,7 @@ const [members, setMembers] = useState([
   const handleSaveAdminPermissions = () => {
     setIsSaving(true);
     setTimeout(() => {
-      setAdminPermissions(tempPermissions); // Commit to real state
+      setAdminPermissions(tempPermissions); 
       setIsSaving(false);
       setIsAdminSettingsOpen(false);
     }, 500);
@@ -145,7 +147,16 @@ const [members, setMembers] = useState([
           <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">Workspace & Support</h3>
           <div className={sectionCardStyle}>
             <div className={rowItemStyle}><div className="flex items-center gap-4"><HelpCircle className="text-[#EB712B]" size={20} /><span className="font-medium text-sm">Support & Help</span></div><ChevronRight size={18} /></div>
-            <div className={rowItemStyle}><div className="flex items-center gap-4"><Languages className="text-[#EB712B]" size={20} /><span className="font-medium text-sm">Languages</span></div><span className="text-xs text-gray-500">English (US)</span></div>
+            <div 
+  onClick={() => setIsLanguageModalOpen(true)} 
+  className={`${rowItemStyle} cursor-pointer hover:bg-white/[0.05]`}
+>
+  <div className="flex items-center gap-4">
+    <Languages className="text-[#EB712B]" size={20} />
+    <span className="font-medium text-sm">Languages</span>
+  </div>
+  <span className="text-xs text-gray-500">English (US)</span>
+</div>
             <div className={rowItemStyle}><div className="flex items-center gap-4"><Info className="text-[#EB712B]" size={20} /><span className="font-medium text-sm">About App</span></div><span className="text-xs text-gray-500">v2.6.0</span></div>
           </div>
         </section>
@@ -522,6 +533,66 @@ const [members, setMembers] = useState([
       >
         <Shield size={18} /> Save Permissions
       </button>
+    </div>
+  </div>
+)}
+
+{/* Language Modal */}
+{isLanguageModalOpen && (
+  <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
+    <div className="bg-[#0f0f0f] border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+      
+      {/* Decorative Gradient Line */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-500 to-transparent" />
+      
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-xl font-bold text-white tracking-tight">System Localization</h2>
+          <p className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mt-1">Operational Settings</p>
+        </div>
+        <button onClick={() => setIsLanguageModalOpen(false)} className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-white">
+          <X size={18} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        {[
+          { name: "English", tag: "Standard" },
+          { name: "Español", tag: "Regional" }
+        ].map((lang) => (
+          <div 
+            key={lang.name}
+            onClick={() => setSelectedLanguage(lang.name)}
+            className={`cursor-pointer transition-all p-6 rounded-2xl flex flex-col items-center ${
+              selectedLanguage === lang.name 
+                ? "bg-[#151515] border-2 border-[#EB712B]" 
+                : "bg-[#151515] border border-white/5 opacity-50 hover:opacity-100"
+            }`}
+          >
+            <Globe className={`mb-3 ${selectedLanguage === lang.name ? "text-[#EB712B]" : "text-gray-500"}`} size={24} />
+            <span className="text-sm font-bold text-white uppercase">{lang.name}</span>
+            <span className={`text-[9px] uppercase tracking-widest font-bold ${selectedLanguage === lang.name ? "text-[#EB712B]" : "text-gray-500"}`}>
+              {lang.tag}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-[#151515] p-4 rounded-xl border border-white/5 flex gap-3 mb-8">
+        <AlertCircle className="text-[#EB712B] shrink-0" size={16} />
+        <p className="text-[10px] text-gray-400">System re-initialization is required to apply localization assets.</p>
+      </div>
+
+      <button 
+  onClick={() => {
+    console.log("Applying language:", selectedLanguage);
+    
+    setIsLanguageModalOpen(false);
+  }}
+  className="w-full bg-[#EB712B] py-3 rounded-xl text-sm font-bold text-white hover:bg-[#ff7e36] transition-all"
+>
+  Apply Configuration
+</button>
     </div>
   </div>
 )}

@@ -47,7 +47,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           <NavItem label="News" icon={<Newspaper size={20} />} />
           <NavItem label="Leaderboard" icon={<Trophy size={20} />} />
           <NavItem label="Discount" icon={<Percent size={20} />} />
-          <NavItem label="Club Joining Request" icon={<UserPlus size={20} />} />
+          <NavItem onClick={() => { navigate('/dashboard/joining-requests'); onClose(); }} active={isActive('/dashboard/joining-requests')} label="Joining Requests" icon={<UserPlus size={20} />} />
           
           <div className="mt-auto pt-4">
             <NavItem label="Settings" icon={<Settings size={20} />} />
