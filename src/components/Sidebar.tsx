@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
         />
       )}
 
-      {/* Aside container: fixed on mobile, relative on desktop */}
+     
       <aside 
         className={`
           fixed lg:relative z-50 w-72 h-screen bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0

@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CouponCard = ({ title, code, expiry, description }: any) => (
-  <div className="group relative bg-[#0c0c0c] border border-white/[0.05] rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-500 hover:border-[#EB712B]/30">
+  <div className="group relative bg-[#161616] border border-white/[0.05] rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-500 hover:border-[#EB712B]/30">
     <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     
     <div className="relative z-10">
@@ -85,12 +85,10 @@ const Discount = () => {
     </p>
   </div>
 
-  {/* Button and Tab Switcher Container */}
   <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-    {/* Add Discount Button */}
     
 
-    {/* Tab Switcher */}
+    {/* Tab  */}
     <div className="flex bg-[#0a0a0a] p-1 rounded-full border border-white/[0.05] w-full lg:w-auto overflow-hidden">
       <button
         onClick={() => setActiveTab('active')}

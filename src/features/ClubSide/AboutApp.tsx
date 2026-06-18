@@ -39,7 +39,7 @@ const PrivacyProtocol = () => {
     try {
       
       console.log("Saving to DB:", { protocolData, blocks });
-      alert("Privacy Protocol Saved Permanently!");
+      
       setIsEditing(false);
     } catch (error) {
       alert("Failed to save.");

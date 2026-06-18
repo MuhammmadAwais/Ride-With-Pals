@@ -49,7 +49,7 @@ const AddProduct = () => {
 };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12 font-sans">
+    <div className="min-h-screen  text-white p-6 md:p-12 font-sans">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-[#111111] p-8 rounded-2xl border border-zinc-800 mb-8 flex justify-between items-start">
