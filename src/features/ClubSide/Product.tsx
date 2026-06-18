@@ -303,7 +303,7 @@ const Product = () => {
           High Performance <span className="text-[#EB712B]">Gear</span>
         </h1>
         <Link to="/dashboard/add-product">
-          <button className="bg-[#EB712B] hover:bg-[#c95f1f] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
+          <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
             <Plus size={18} /> Add new Product
           </button>
         </Link>

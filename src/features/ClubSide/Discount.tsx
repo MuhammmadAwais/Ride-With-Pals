@@ -115,7 +115,7 @@ const Discount = () => {
 
 <button 
       onClick={() => navigate('/dashboard/discount/add')} // 3. Add the navigation trigger
-      className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 hover:bg-[#ff8c4a]"
+      className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 "
     >
       <div className="bg-black/10 p-0.5 rounded-full">
         <Plus size={14} strokeWidth={3} />

@@ -33,6 +33,7 @@ import Discount from '../features/ClubSide/Discount';
 import AddDiscount from '../features/ClubSide/AddDiscount';
 import AboutApp from '../features/ClubSide/AboutApp';
 import SupportHelp from '../features/ClubSide/SupportHelp';
+import ManageClubHome from '../features/ClubSide/ManageClubHome';
 
 export const AppRouter = () => {
   return (
@@ -71,6 +72,7 @@ export const AppRouter = () => {
             <Route path="discount" element={<Discount />} />
             <Route path="discount/add" element={<AddDiscount />} />
             <Route path="support" element={<SupportHelp />} />
+            <Route path="manage-club-home" element={<ManageClubHome />} />
           </Route>
 
           {/* --- Secondary Dashboard Routes --- */}

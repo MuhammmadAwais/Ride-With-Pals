@@ -62,7 +62,7 @@ const AddProduct = () => {
           </div>
           <div className="flex gap-3 mt-8">
             <button className="bg-transparent border border-zinc-800 text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-zinc-900 transition-all">Save as Draft</button>
-            <button onClick={handleUpdate} className="bg-[#EB712B] text-white px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-[#c95f1f] transition-all">
+            <button onClick={handleUpdate} className="bg-[#EB712B] text-white px-6 py-2.5 rounded-lg font-bold text-sm  transition-all">
               {incomingProduct ? 'Update Product' : 'Publish Product'}
             </button>
           </div>
