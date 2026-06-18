@@ -50,9 +50,8 @@ export const AppRouter = () => {
           <Route path="/club-profile-setup" element={<ProfileSetup />} />
           <Route path="/club-subscriptions" element={<Subscriptions />} />
           <Route path="/select-role-club" element={<SelectRoleClub />} />
-          
           <Route path="/select-role" element={<SelectRole />} />
-
+          
           {/* --- Dashboard Routes (Uses DashBoard as Layout) --- */}
           <Route path="/dashboard" element={<DashBoard />}>
             <Route index element={<DashboardOverview />} /> 
@@ -72,10 +71,10 @@ export const AppRouter = () => {
             <Route path="discount" element={<Discount />} />
             <Route path="discount/add" element={<AddDiscount />} />
             <Route path="support" element={<SupportHelp />} />
-            <Route path="manage-club-home" element={<ManageClubHome />} />
           </Route>
 
-          {/* --- Secondary Dashboard Routes --- */}
+          {/* These routes now have NO Sidebar/Header */}
+          <Route path="/dashboard/manage-club-home" element={<ManageClubHome />} />
           <Route path="/dashboard/manage-club" element={<ManageClub />} />
           <Route path="/about-app" element={<AboutApp />} />
           

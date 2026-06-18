@@ -24,7 +24,7 @@ const ManageClub = () => {
   const allClubs = [
     {
       name: "Track Wolf",
-      img: "/Images/GirlImage11.png",
+      img: "/Images/HikingPicture.jpg",
       sub: "FOUNDED 2021 • TECHNICAL",
       owner: "Brooklyn Simmons",
       avatar: "BS",
@@ -34,7 +34,7 @@ const ManageClub = () => {
     },
     {
       name: "Cyc Rock Club",
-      img: "/Images/Girlmage1.png",
+      img: "/Images/CyclingPicture.jpg",
       sub: "FOUNDED 2019 • EXTREME",
       owner: "Jerome Steward",
       avatar: "JS",
@@ -277,13 +277,17 @@ const ManageClub = () => {
                   ACTIVE
                 </span>
               </div>
-              <div className="col-span-2 flex justify-end gap-2 items-center">
-                <Link to="/dashboard/manage-club-home">
-                  <button className="px-4 py-2 bg-[#1a1a1a] border border-[#222] rounded text-[10px] font-bold hover:bg-[#222] transition-colors">
-                    MANAGE
-                  </button>
-                </Link>
-              </div>
+              {/* Ensure the parent cell/div has this class */}
+<div className="flex justify-center items-center ps-55"> 
+  <Link 
+    to={`/dashboard/manage-club-home?image=${encodeURIComponent(club.img)}&name=${encodeURIComponent(club.name)}`}
+    className="flex justify-center"
+  >
+    <button className="px-5 py-2.5 bg-[#1a1a1a] border border-[#222] rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer">
+      MANAGE
+    </button>
+  </Link>
+</div>
             </div>
           ))}
 
