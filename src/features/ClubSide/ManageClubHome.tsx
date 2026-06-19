@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MoreVertical, CreditCard, Plus, X, } from "lucide-react";
-import { useLocation, useNavigate,useSearchParams, Link } from "react-router-dom";
+import {  useNavigate, Link } from "react-router-dom";
 import News from "./News";
 import Leaderboard from "./Leaderboard"
 import Discount from "./Discount";
@@ -16,17 +16,14 @@ interface MembershipPlan {
 }
 
 const ManageClubHome = () => {
- const location = useLocation();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
   // 1. Retrieve passed states and fallback to search/query parameters or defaults
  
   
  // Instead of reading from URL query parameters (e.g., ?image=...) or static state:
-const displayBanner = localStorage.getItem("bannerUrl") || "your-default-banner.jpg";
+
 const clubName = localStorage.getItem("clubName") || "Club Name";
-const clubLogo = localStorage.getItem("logoUrl") || "your-default-logo.png";
 
   const [activeTab, setActiveTab] = useState("Members");
 
