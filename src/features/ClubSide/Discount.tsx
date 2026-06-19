@@ -32,7 +32,7 @@ const CouponCard = ({ title, code, expiry, description }: any) => (
           </div>
           <div className="text-right shrink-0">
             <p className="text-[9px] text-gray-600 uppercase font-bold mb-0.5 ">Expires</p>
-            <span className="text-xs text-gray-300 font-medium text-red-700">{expiry}</span>
+            <span className="text-xs  font-medium text-red-700">{expiry}</span>
           </div>
         </div>
       </div>

@@ -34,6 +34,7 @@ import AddDiscount from '../features/ClubSide/AddDiscount';
 import AboutApp from '../features/ClubSide/AboutApp';
 import SupportHelp from '../features/ClubSide/SupportHelp';
 import ManageClubHome from '../features/ClubSide/ManageClubHome';
+import EditClub from "../features/ClubSide/EditClub";
 
 export const AppRouter = () => {
   return (
@@ -77,7 +78,7 @@ export const AppRouter = () => {
           <Route path="/dashboard/manage-club-home" element={<ManageClubHome />} />
           <Route path="/dashboard/manage-club" element={<ManageClub />} />
           <Route path="/about-app" element={<AboutApp />} />
-          
+          <Route path="/edit-club" element={<EditClub />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

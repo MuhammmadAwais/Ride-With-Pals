@@ -21,6 +21,11 @@ const ManageClub = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Pull dynamically saved local storage items if they exist, to allow real-time updates from EditClub
+  const updatedCycRockName = localStorage.getItem("clubName");
+  const updatedCycRockBanner = localStorage.getItem("bannerUrl");
+  const updatedCycRockLogo = localStorage.getItem("logoUrl");
+
   const allClubs = [
     {
       name: "Track Wolf",
@@ -33,8 +38,9 @@ const ManageClub = () => {
       rank: "#42 ↑",
     },
     {
-      name: "Cyc Rock Club",
-      img: "/Images/CyclingPicture.jpg",
+      name: updatedCycRockName || "Cyc Rock Club",
+      img: updatedCycRockBanner || "/Images/CyclingPicture.jpg",
+      logo: updatedCycRockLogo || "",
       sub: "FOUNDED 2019 • EXTREME",
       owner: "Jerome Steward",
       avatar: "JS",
@@ -126,7 +132,7 @@ const ManageClub = () => {
 
   const currentClubs = allClubs.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   return (
@@ -158,7 +164,7 @@ const ManageClub = () => {
             </p>
           </div>
         </div>
-        <button className="bg-[#EB712B] flex items-center gap-2 px-6 py-2 rounded text-sm font-bold hover:bg-orange-600 transition">
+        <button className="bg-[#EB712B] flex items-center gap-2 px-6 py-2 rounded text-sm font-bold hover:bg-orange-600 transition cursor-pointer">
           <Plus size={18} /> Register New Club
         </button>
       </div>
@@ -245,7 +251,7 @@ const ManageClub = () => {
             >
               <div className="col-span-4 flex items-center gap-4">
                 <img
-                  src={club.img}
+                  src={"img" in club && (club as any).logo ? (club as any).logo : club.img}
                   alt={club.name}
                   className="w-12 h-12 bg-[#1a1a1a] border border-[#222] rounded object-cover"
                 />
@@ -277,17 +283,19 @@ const ManageClub = () => {
                   ACTIVE
                 </span>
               </div>
-              {/* Ensure the parent cell/div has this class */}
-<div className="flex justify-center items-center ps-55"> 
-  <Link 
-    to={`/dashboard/manage-club-home?image=${encodeURIComponent(club.img)}&name=${encodeURIComponent(club.name)}`}
-    className="flex justify-center"
-  >
-    <button className="px-5 py-2.5 bg-[#1a1a1a] border border-[#222] rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer">
-      MANAGE
-    </button>
-  </Link>
-</div>
+
+              {/* Passing data directly via navigate state */}
+              <div className="flex justify-center items-center ps-55">
+                <Link
+                  to="/dashboard/manage-club-home"
+                  state={{ bannerUrl: club.img, clubName: club.name }}
+                  className="flex justify-center"
+                >
+                  <button className="px-5 py-2.5 bg-[#1a1a1a] border border-[#222] rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer">
+                    MANAGE
+                  </button>
+                </Link>
+              </div>
             </div>
           ))}
 
@@ -298,14 +306,14 @@ const ManageClub = () => {
               <button
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
-                className="p-2 border border-[#222] rounded hover:bg-[#222] disabled:opacity-20"
+                className="p-2 border border-[#222] rounded hover:bg-[#222] disabled:opacity-20 cursor-pointer"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 onClick={() => setCurrentPage(2)}
                 disabled={currentPage === 2}
-                className="p-2 border border-[#222] rounded hover:bg-[#222] disabled:opacity-20"
+                className="p-2 border border-[#222] rounded hover:bg-[#222] disabled:opacity-20 cursor-pointer"
               >
                 <ChevronRight size={16} />
               </button>

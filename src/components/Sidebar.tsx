@@ -41,9 +41,9 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           <NavItem onClick={() => { navigate('/dashboard/activities'); onClose(); }} active={isActive('/dashboard/activities')} label="Activities" icon={<Users size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/product'); onClose(); }} active={isActive('/dashboard/product')} label="Product" icon={<Car size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/order'); onClose(); }} active={isActive('/dashboard/order')} label="Order" icon={<Wallet size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/profile'); onClose(); }} active={isActive('/dashboard/profile')} label="Profile" icon={<UserCircle size={20} />} />
           
-          <div className="my-4 border-t border-white/10" />
+          
+        
           
           <NavItem onClick={() => { navigate('/dashboard/News'); onClose(); }} active={isActive('/dashboard/News')} label="News" icon={<Newspaper size={20} />} />
           <NavItem onClick={() => { navigate('/dashboard/leader-board'); onClose(); }} active={isActive('/dashboard/leader-board')} label="Leaderboard" icon={<Trophy size={20} />} />
@@ -51,6 +51,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           <NavItem onClick={() => { navigate('/dashboard/joining-requests'); onClose(); }} active={isActive('/dashboard/joining-requests')} label="Joining Requests" icon={<UserPlus size={20} />} />
           
           <div className="mt-auto pt-4">
+            <NavItem onClick={() => { navigate('/dashboard/profile'); onClose(); }} active={isActive('/dashboard/profile')} label="Profile" icon={<UserCircle size={20} />} />
             <NavItem label="Settings" icon={<Settings size={20} />} />
           </div>
         </nav>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight,Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const productCatalog = [
@@ -31,6 +31,7 @@ const Order = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
  
 
 
@@ -46,24 +47,40 @@ const Order = () => {
 
   return (
     <div className="w-full text-white font-sans bg-[#111111] min-h-screen p-4 md:p-8 overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Order Management</h1>
           <p className="text-zinc-500 text-xs md:text-sm">Oversee real-time logistics and athlete fulfillment streams.</p>
         </div>
-        <div className="bg-[#161616] p-1 rounded-xl border border-zinc-800 flex shrink-0">
-          <button 
-            onClick={() => { setActiveTab('Active'); setCurrentPage(1); }} 
-            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'Active' ? 'bg-[#EB712B] text-white' : 'text-zinc-500'}`}
-          >
-            Active
-          </button>
-          <button 
-            onClick={() => { setActiveTab('Delivered'); setCurrentPage(1); }} 
-            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'Delivered' ? 'bg-[#EB712B] text-white' : 'text-zinc-500'}`}
-          >
-            Delivered
-          </button>
+        
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full xl:w-auto">
+          {/* Search Bar Container */}
+          <div className="relative w-full sm:w-72">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search orders, athletes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-[#161616] border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 font-medium focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300"
+            />
+          </div>
+
+          {/* Tab Buttons Container */}
+          <div className="bg-[#161616] p-1 rounded-xl border border-zinc-800 flex self-end shrink-0">
+            <button 
+              onClick={() => { setActiveTab('Active'); setCurrentPage(1); }} 
+              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Active' ? 'bg-[#EB712B] text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              Active
+            </button>
+            <button 
+              onClick={() => { setActiveTab('Delivered'); setCurrentPage(1); }} 
+              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Delivered' ? 'bg-[#EB712B] text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              Delivered
+            </button>
+          </div>
         </div>
       </div>
 
