@@ -33,6 +33,7 @@ export default function EditClub() {
     localStorage.getItem("description") || "chshshf",
   );
 
+  // Load directly from localStorage Base64 storage
   const [bannerFile, setBannerFile] = useState<string | null>(
     localStorage.getItem("bannerUrl"),
   );
@@ -50,19 +51,35 @@ export default function EditClub() {
     localStorage.setItem("description", description);
   }, [clubName, email, phone, visibility, clubType, location, description]);
 
+  // Convert uploaded image to Base64 string for persistent localStorage saving
+  const convertToBase64 = (file: File, callback: (base64: string) => void) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (reader.result && typeof reader.result === "string") {
+        callback(reader.result);
+      }
+    };
+    reader.onerror = (error) => {
+      console.error("Error converting file to base64: ", error);
+    };
+  };
+
   const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const url = URL.createObjectURL(e.target.files[0]);
-      setBannerFile(url);
-      localStorage.setItem("bannerUrl", url);
+      convertToBase64(e.target.files[0], (base64) => {
+        setBannerFile(base64);
+        localStorage.setItem("bannerUrl", base64);
+      });
     }
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const url = URL.createObjectURL(e.target.files[0]);
-      setLogoFile(url);
-      localStorage.setItem("logoUrl", url);
+      convertToBase64(e.target.files[0], (base64) => {
+        setLogoFile(base64);
+        localStorage.setItem("logoUrl", base64);
+      });
     }
   };
 
@@ -97,7 +114,7 @@ export default function EditClub() {
           <span>Back to Dashboard</span>
         </button>
 
-        {/* Top Title  */}
+        {/* Top Title */}
         <h1 className="text-3xl font-black tracking-tight text-white mb-8">
           Edit Club Profile
         </h1>
@@ -289,7 +306,7 @@ export default function EditClub() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN*/}
+          {/* RIGHT COLUMN */}
           <div className="space-y-6">
             {/* Club Media Container */}
             <div className="bg-[#181818] border border-white/5 rounded-3xl p-8 space-y-6">
@@ -396,7 +413,7 @@ export default function EditClub() {
               </div>
             </div>
 
-            {/* Submit  */}
+            {/* Submit */}
             <div className="space-y-4">
               <button
                 type="submit"
@@ -406,7 +423,7 @@ export default function EditClub() {
               </button>
             </div>
 
-            {/* Footer  */}
+            {/* Footer */}
             <p className="text-[9px] font-medium text-center text-gray-500 tracking-wide pt-2">
               Last saved: Just now
             </p>

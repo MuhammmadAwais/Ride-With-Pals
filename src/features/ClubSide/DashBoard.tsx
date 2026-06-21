@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -99,23 +99,23 @@ export const DashboardOverview = () => (
           </AreaChart>
         </ResponsiveContainer>
       </div>
-      
     </div>
-    
     <AnalyticsGrid />
   </div>
 );
 
-export default function DashBoard() {
+interface DashBoardProps {
+  defaultView?: React.ReactNode;
+}
+
+export default function DashBoard({ defaultView }: DashBoardProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
   const getPageTitle = () => {
     const path = location.pathname.split('/').pop();
-    
     if (!path) return 'Dashboard';
-    
     return path === 'dashboard' ? 'Dashboard' : path.charAt(0).toUpperCase() + path.slice(1);
   };
 
@@ -135,12 +135,11 @@ export default function DashBoard() {
           </div>
         </header>
         
-<div className="w-full border-t border-white/10 my-8" />  
-      <div className="w-full">
-            <Outlet />
-            
-        </div>
+        <div className="w-full border-t border-white/10 my-8" />  
         
+        <div className="w-full">
+          {defaultView ? defaultView : <DashboardOverview />}
+        </div>
       </main>
     </div>
   );

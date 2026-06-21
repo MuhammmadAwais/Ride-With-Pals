@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -20,8 +20,9 @@ const containerVariants: Variants = {
 const ManageClub = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const navigate = useNavigate();
 
-  // Pull dynamically saved local storage items if they exist, to allow real-time updates from EditClub
+  // Retrieve values from LocalStorage (updates dynamically if edited in EditClub)
   const updatedCycRockName = localStorage.getItem("clubName");
   const updatedCycRockBanner = localStorage.getItem("bannerUrl");
   const updatedCycRockLogo = localStorage.getItem("logoUrl");
@@ -30,6 +31,7 @@ const ManageClub = () => {
     {
       name: "Track Wolf",
       img: "/Images/HikingPicture.jpg",
+      logo: "/Images/HikingPicture.jpg",
       sub: "FOUNDED 2021 • TECHNICAL",
       owner: "Brooklyn Simmons",
       avatar: "BS",
@@ -39,8 +41,8 @@ const ManageClub = () => {
     },
     {
       name: updatedCycRockName || "Cyc Rock Club",
-      img: updatedCycRockBanner || "/Images/CyclingPicture.jpg",
-      logo: updatedCycRockLogo || "",
+      img: "/Images/CyclingPicture.jpg",
+      logo: "/Images/CyclingPicture.jpg",
       sub: "FOUNDED 2019 • EXTREME",
       owner: "Jerome Steward",
       avatar: "JS",
@@ -51,6 +53,7 @@ const ManageClub = () => {
     {
       name: "Night Ghost",
       img: "/Images/Girlmage2.png",
+      logo: "/Images/Girlmage2.png",
       sub: "FOUNDED 2023 • STEALTH",
       owner: "Leslie Murphy",
       avatar: "LM",
@@ -61,6 +64,7 @@ const ManageClub = () => {
     {
       name: "Neon Riders",
       img: "/Images/Girlmage3.png",
+      logo: "/Images/Girlmage3.png",
       sub: "FOUNDED 2022 • URBAN",
       owner: "Alex Rivera",
       avatar: "AR",
@@ -71,6 +75,7 @@ const ManageClub = () => {
     {
       name: "Iron Grip",
       img: "/Images/Girlmage4.png",
+      logo: "/Images/Girlmage4.png",
       sub: "FOUNDED 2020 • POWER",
       owner: "Sam Taylor",
       avatar: "ST",
@@ -81,6 +86,7 @@ const ManageClub = () => {
     {
       name: "Sky Dwellers",
       img: "/Images/Girlmage5.png",
+      logo: "/Images/Girlmage5.png",
       sub: "FOUNDED 2024 • AERIAL",
       owner: "Jordan Lee",
       avatar: "JL",
@@ -91,6 +97,7 @@ const ManageClub = () => {
     {
       name: "Deep Sea",
       img: "/Images/Girlmage6.png",
+      logo: "/Images/Girlmage6.png",
       sub: "FOUNDED 2018 • MARINE",
       owner: "Casey Smith",
       avatar: "CS",
@@ -101,6 +108,7 @@ const ManageClub = () => {
     {
       name: "Volt Runners",
       img: "/Images/Girlmage7.png",
+      logo: "/Images/Girlmage7.png",
       sub: "FOUNDED 2021 • SPEED",
       owner: "Taylor Reed",
       avatar: "TR",
@@ -111,6 +119,7 @@ const ManageClub = () => {
     {
       name: "Peak Climbers",
       img: "/Images/Girlmage8.png",
+      logo: "/Images/Girlmage8.png",
       sub: "FOUNDED 2019 • ALPINIST",
       owner: "Morgan Hill",
       avatar: "MH",
@@ -121,6 +130,7 @@ const ManageClub = () => {
     {
       name: "Core Kinetic",
       img: "/Images/GrilImage11.png",
+      logo: "/Images/GrilImage11.png",
       sub: "FOUNDED 2023 • AGILITY",
       owner: "Riley Quinn",
       avatar: "RQ",
@@ -152,7 +162,7 @@ const ManageClub = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
           <a
-            href="/dashboard/profile"
+            href="/profile"
             className="p-2 bg-[#222] rounded-full hover:bg-[#333] transition border border-[#333]"
           >
             <ArrowLeft size={24} />
@@ -251,7 +261,7 @@ const ManageClub = () => {
             >
               <div className="col-span-4 flex items-center gap-4">
                 <img
-                  src={"img" in club && (club as any).logo ? (club as any).logo : club.img}
+                  src={club.logo}
                   alt={club.name}
                   className="w-12 h-12 bg-[#1a1a1a] border border-[#222] rounded object-cover"
                 />
@@ -284,17 +294,20 @@ const ManageClub = () => {
                 </span>
               </div>
 
-              {/* Passing data directly via navigate state */}
-              <div className="flex justify-center items-center ps-55">
-                <Link
-                  to="/dashboard/manage-club-home"
-                  state={{ bannerUrl: club.img, clubName: club.name }}
-                  className="flex justify-center"
+              {/* Action Button */}
+              <div className="col-span-2 flex justify-end items-center">
+                <button
+                  onClick={() => {
+                    // Send updated localstorage banner/logo dynamically if it exists
+                    localStorage.setItem("selectedClubBanner", club.img);
+                    localStorage.setItem("selectedClubLogo", club.logo);
+                    localStorage.setItem("selectedClubName", club.name);
+                    navigate("/manage-club-home");
+                  }}
+                  className="px-5 py-2.5 bg-[#1a1a1a] border border-[#222] rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer"
                 >
-                  <button className="px-5 py-2.5 bg-[#1a1a1a] border border-[#222] rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer">
-                    MANAGE
-                  </button>
-                </Link>
+                  MANAGE
+                </button>
               </div>
             </div>
           ))}

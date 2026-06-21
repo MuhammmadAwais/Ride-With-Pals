@@ -4,8 +4,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useNavigate } from "react-router-dom";
 
-
-
 const SelectRole = () => {
   const navigate = useNavigate();
   const container = useRef(null);
@@ -18,6 +16,10 @@ const SelectRole = () => {
       .fromTo(".feature-card", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.2 }, "-=0.3");
   }, { scope: container });
 
+  const handleGetInside = () => {
+    navigate("/clubs"); 
+  };
+
   return (
     <div ref={container} className="min-h-screen bg-[#050505] text-white flex flex-col items-center py-20 px-6 overflow-hidden">
       
@@ -25,7 +27,7 @@ const SelectRole = () => {
       <div className="text-center mb-16 space-y-4 hero-text">
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter">
           ELEVATE YOUR <br />
-          <span className=" from-[#EB712B] to-[#ff8f50] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#EB712B] to-[#ff8f50] bg-clip-text text-transparent">
             RIDE
           </span>
         </h1>
@@ -37,16 +39,19 @@ const SelectRole = () => {
 
       {/* Main Interaction Card */}
       <div className="main-card bg-[#0a0a0a] border border-white/5 p-10 md:p-12 rounded-3xl w-full max-w-lg shadow-[0_0_50px_rgba(235,113,43,0.1)] mb-20">
-        <button className="w-full bg-[#EB712B] text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-2 mb-4 hover:bg-[#ff8c4a] transition-all hover:scale-[1.02] active:scale-[0.98]">
+        <button 
+          onClick={handleGetInside}
+          className="w-full bg-[#EB712B] text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-2 mb-4 hover:bg-[#ff8c4a] transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+        >
           GET ME INSIDE <ArrowRight size={20} />
         </button>
-       <button 
-  type="button"
-  onClick={() => navigate("/club-profile-setup")}
-  className="w-full border border-white/10 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all"
->
-  Create a new club <PlusCircle size={20} />
-</button>
+        <button 
+          type="button"
+          onClick={() => navigate("/club-profile-setup")}
+          className="w-full border border-white/10 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all cursor-pointer"
+        >
+          Create a new club <PlusCircle size={20} />
+        </button>
         <p className="text-gray-600 text-xs mt-8 text-center uppercase tracking-[0.2em]">
           You can initiate your own club anytime.
         </p>

@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   SquarePen,
   ChevronRight,
@@ -44,6 +43,7 @@ interface ProductType {
   gallery: string[];
   units?: number;
   sales?: string;
+  code?: string;
 }
 
 const products: ProductType[] = [
@@ -51,6 +51,7 @@ const products: ProductType[] = [
     id: 1,
     name: "Water Bottle",
     sku: "SKU-01",
+    code: "WB-001",
     category: "EQUIPMENT",
     price: "20.00",
     status: "IN STOCK",
@@ -65,6 +66,7 @@ const products: ProductType[] = [
     id: 2,
     name: "Bicycle Helmet",
     sku: "SKU-02",
+    code: "HL-002",
     category: "SAFETY",
     price: "20.00",
     status: "LIMITED",
@@ -79,6 +81,7 @@ const products: ProductType[] = [
     id: 3,
     name: "Pro Gloves",
     sku: "SKU-03",
+    code: "GL-003",
     category: "APPAREL",
     price: "20.00",
     status: "IN STOCK",
@@ -93,6 +96,7 @@ const products: ProductType[] = [
     id: 4,
     name: "Tech Jersey",
     sku: "SKU-04",
+    code: "JR-004",
     category: "APPAREL",
     price: "45.00",
     status: "IN STOCK",
@@ -103,6 +107,7 @@ const products: ProductType[] = [
     id: 5,
     name: "Cycling Shoes",
     sku: "SKU-05",
+    code: "SH-005",
     category: "EQUIPMENT",
     price: "120.00",
     status: "IN STOCK",
@@ -113,6 +118,7 @@ const products: ProductType[] = [
     id: 6,
     name: "Repair Kit",
     sku: "SKU-06",
+    code: "RK-006",
     category: "EQUIPMENT",
     price: "15.00",
     status: "IN STOCK",
@@ -123,6 +129,7 @@ const products: ProductType[] = [
     id: 7,
     name: "Speed Glasses",
     sku: "SKU-07",
+    code: "SG-007",
     category: "SAFETY",
     price: "35.00",
     status: "LIMITED",
@@ -133,6 +140,7 @@ const products: ProductType[] = [
     id: 8,
     name: "Smart Watch",
     sku: "SKU-08",
+    code: "SW-008",
     category: "EQUIPMENT",
     price: "199.00",
     status: "LIMITED",
@@ -143,6 +151,7 @@ const products: ProductType[] = [
     id: 9,
     name: "Bike Pump",
     sku: "SKU-09",
+    code: "BP-009",
     category: "EQUIPMENT",
     price: "30.00",
     status: "IN STOCK",
@@ -152,7 +161,8 @@ const products: ProductType[] = [
   {
     id: 10,
     name: "Cycle",
-    sku: "SKU-09",
+    sku: "SKU-10",
+    code: "CY-010",
     category: "Ride",
     price: "100.00",
     status: "LIMITED",
@@ -162,9 +172,7 @@ const products: ProductType[] = [
 ];
 
 const Product = () => {
-  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(
-    null,
-  );
+  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
@@ -186,7 +194,7 @@ const Product = () => {
       <div className="bg-[#111111] min-h-screen text-white p-6 md:p-12">
         <button
           onClick={() => setSelectedProduct(null)}
-          className="text-gray-400 mb-8 hover:text-white flex items-center gap-2 text-sm transition-colors"
+          className="text-gray-400 mb-8 hover:text-white flex items-center gap-2 text-sm transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} /> Back to All Gear
         </button>
@@ -237,8 +245,16 @@ const Product = () => {
               even in extreme environments.
             </p>
 
+            {/* Display Club Code */}
+            {selectedProduct.code && (
+              <div className="mb-6 bg-white/5 px-4 py-3 rounded-xl border border-white/10 w-fit">
+                <p className="text-[9px] text-gray-400 uppercase tracking-wider mb-0.5">Club Product Code</p>
+                <p className="font-mono text-sm font-bold text-[#EB712B]">{selectedProduct.code}</p>
+              </div>
+            )}
+
             {/* Owner Info Grid */}
-            <div className="grid grid-cols-3 gap-4 mb-10 pt-10 bg-[#111111] p-6 rounded-2xl border border-white/5">
+            <div className="grid grid-cols-3 gap-4 mb-10 pt-6 bg-[#111111] p-6 rounded-2xl border border-white/5">
               <div>
                 <p className="text-[10px] text-gray-500 uppercase font-bold">
                   SKU
@@ -263,7 +279,7 @@ const Product = () => {
               </div>
             </div>
 
-            {/* Owner Controls */}
+            {/* Owner Controls Updated without /dashboard prefix */}
             <div className="flex flex-wrap gap-4 pt-8">
               <button
                 onClick={() => {
@@ -272,21 +288,21 @@ const Product = () => {
                     image: activeImage,
                   };
 
-                  navigate("/dashboard/add-product", {
+                  navigate("/add-product", {
                     state: { product: productToEdit },
                   });
                 }}
-                className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+                className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Edit2 size={18} /> Edit
               </button>
-              <button className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer">
                 <Clipboard size={18} /> Stock
               </button>
             </div>
 
             <div className="pt-15">
-              <button className="w-full mt-4 py-4 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/5 transition-all flex items-center justify-center gap-2">
+              <button className="w-full mt-4 py-4 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/5 transition-all flex items-center justify-center gap-2 cursor-pointer">
                 <EyeOff size={18} /> Deactivate Listing
               </button>
             </div>
@@ -302,8 +318,9 @@ const Product = () => {
         <h1 className="text-2xl md:text-3xl font-bold">
           High Performance <span className="text-[#EB712B]">Gear</span>
         </h1>
-        <Link to="/dashboard/add-product">
-          <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm">
+        {/* Changed to plain /add-product route */}
+        <Link to="/add-product">
+          <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer">
             <Plus size={18} /> Add new Product
           </button>
         </Link>
@@ -349,7 +366,7 @@ const Product = () => {
             <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <button
                 onClick={() => handleSelectProduct(p)}
-                className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all"
+                className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all cursor-pointer"
               >
                 <SquarePen size={14} />
               </button>
@@ -361,7 +378,7 @@ const Product = () => {
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30"
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
           >
             <ChevronLeft size={16} />
           </button>
@@ -375,7 +392,7 @@ const Product = () => {
               )
             }
             disabled={currentPage >= Math.ceil(products.length / itemsPerPage)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30"
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
           >
             <ChevronRight size={16} />
           </button>

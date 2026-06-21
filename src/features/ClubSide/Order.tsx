@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight,Search } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const productCatalog = [
@@ -29,21 +29,36 @@ const allOrders = Array.from({ length: 38 }, (_, i) => {
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 5;
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
- 
 
+  // Combined filtering logic: checks both the tab status and the search query string
+  const filteredOrders = useMemo(() => {
+    return allOrders.filter(order => {
+      const matchesTab = activeTab === 'Active' 
+        ? order.status !== 'Delivered' 
+        : order.status === 'Delivered';
+      
+      const matchesSearch = order.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            order.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            order.orderId.toLowerCase().includes(searchQuery.toLowerCase());
 
-  const filteredOrders = allOrders.filter(order => 
-    activeTab === 'Active' ? order.status !== 'Delivered' : order.status === 'Delivered'
-  );
+      return matchesTab && matchesSearch;
+    });
+  }, [activeTab, searchQuery]);
 
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage));
+  
+  // Reset current page if search/tab state shrinks the list beyond bounds
+  useMemo(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
-
-  
 
   return (
     <div className="w-full text-white font-sans bg-[#111111] min-h-screen p-4 md:p-8 overflow-x-hidden">
@@ -61,7 +76,10 @@ const Order = () => {
               type="text"
               placeholder="Search orders, athletes..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset pagination on search
+              }}
               className="w-full bg-[#161616] border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 font-medium focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300"
             />
           </div>
@@ -94,52 +112,73 @@ const Order = () => {
       </div>
 
       <div className="space-y-3">
-        {currentOrders.map((order) => (
-          <div key={order.id} className="group relative grid grid-cols-4 md:grid-cols-7 items-center p-4 md:p-5 rounded-2xl bg-[#121212] border border-white/[0.03] transition-all duration-500 hover:border-[#EB712B]/40 hover:bg-[#141414]">
-            <div className="col-span-2 flex items-center gap-3 md:gap-5 z-10">
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-[#1A1A1A] flex items-center justify-center overflow-hidden">
-                <img src={order.image} alt={order.productName} className="w-full h-full object-cover" />
+        {currentOrders.length > 0 ? (
+          currentOrders.map((order) => (
+            <div key={order.id} className="group relative grid grid-cols-4 md:grid-cols-7 items-center p-4 md:p-5 rounded-2xl bg-[#121212] border border-white/[0.03] transition-all duration-500 hover:border-[#EB712B]/40 hover:bg-[#141414]">
+              <div className="col-span-2 flex items-center gap-3 md:gap-5 z-10">
+                <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-[#1A1A1A] flex items-center justify-center overflow-hidden">
+                  <img src={order.image} alt={order.productName} className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 className="text-xs md:text-sm font-bold text-zinc-100">{order.productName}</h3>
+                  <p className="text-[9px] md:text-[10px] text-zinc-500 font-medium uppercase">{order.category}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xs md:text-sm font-bold text-zinc-100">{order.productName}</h3>
-                <p className="text-[9px] md:text-[10px] text-zinc-500 font-medium uppercase">{order.category}</p>
+              
+              <p className="hidden md:block text-xs font-mono text-zinc-500">#{order.orderId}</p>
+              <p className="hidden md:block text-sm font-semibold text-zinc-300">{order.price}</p>
+              <div className="hidden md:block text-xs">
+                <p className="font-medium text-zinc-300">{order.recipient}</p>
+              </div>
+              <p className="hidden md:block text-xs text-zinc-500">{order.date}</p>
+              
+              <div className="flex justify-end col-span-2 md:col-span-1 z-10">
+                {order.status === 'Delivered' ? (
+                  <button 
+                    onClick={() => navigate(`/order/${order.orderId}`, { state: { order } })}
+                    className="px-3 py-2 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
+                  >
+                    Delivered
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => navigate(`/order/${order.orderId}`, { state: { order } })}
+                    className="px-4 py-2 rounded-lg bg-[#1A1A1A] border border-zinc-800 text-[10px] font-bold uppercase hover:bg-[#EB712B] hover:text-white transition-all cursor-pointer"
+                  >
+                    Details
+                  </button>
+                )}
               </div>
             </div>
-            
-            <p className="hidden md:block text-xs font-mono text-zinc-500">#{order.orderId}</p>
-            <p className="hidden md:block text-sm font-semibold text-zinc-300">{order.price}</p>
-            <div className="hidden md:block text-xs">
-              <p className="font-medium text-zinc-300">{order.recipient}</p>
-            </div>
-            <p className="hidden md:block text-xs text-zinc-500">{order.date}</p>
-            
-<div className="flex justify-end col-span-2 md:col-span-1 z-10">
-  {order.status === 'Delivered' ? (
-    <button 
-      onClick={() => navigate(`/dashboard/order/${order.orderId}`, { state: { order } })}
-      className="px-3 py-2 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all"
-    >
-      Delivered
-    </button>
-  ) : (
-    <button 
-      onClick={() => navigate(`/dashboard/order/${order.orderId}`, { state: { order } })}
-      className="px-4 py-2 rounded-lg bg-[#1A1A1A] border border-zinc-800 text-[10px] font-bold uppercase hover:bg-[#EB712B] hover:text-white transition-all"
-    >
-      Details
-    </button>
-  )}
-</div>          </div>
-        ))}
+          ))
+        ) : (
+          <div className="text-center py-16 text-zinc-600 font-medium text-sm bg-[#121212] rounded-2xl border border-white/[0.03]">
+            No orders found under "{activeTab}" matching your filter.
+          </div>
+        )}
       </div>
 
-      <div className="flex justify-between items-center mt-8 text-xs text-zinc-500">
-        <p>Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredOrders.length)} of {filteredOrders.length}</p>
-        <div className="flex gap-2">
-          <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="w-8 h-8 flex items-center justify-center border border-zinc-800 rounded-lg disabled:opacity-30 hover:bg-zinc-800"><ChevronLeft size={14} /></button>
-          <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="w-8 h-8 flex items-center justify-center border border-zinc-800 rounded-lg disabled:opacity-30 hover:bg-zinc-800"><ChevronRight size={14} /></button>
+      {currentOrders.length > 0 && (
+        <div className="flex justify-between items-center mt-8 text-xs text-zinc-500">
+          <p>Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredOrders.length)} of {filteredOrders.length}</p>
+          <div className="flex gap-2">
+            <button 
+              disabled={currentPage === 1} 
+              onClick={() => setCurrentPage(p => p - 1)} 
+              className="w-8 h-8 flex items-center justify-center border border-zinc-800 rounded-lg disabled:opacity-30 hover:bg-zinc-800 cursor-pointer disabled:cursor-not-allowed"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            <button 
+              disabled={currentPage === totalPages || totalPages === 0} 
+              onClick={() => setCurrentPage(p => p + 1)} 
+              className="w-8 h-8 flex items-center justify-center border border-zinc-800 rounded-lg disabled:opacity-30 hover:bg-zinc-800 cursor-pointer disabled:cursor-not-allowed"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

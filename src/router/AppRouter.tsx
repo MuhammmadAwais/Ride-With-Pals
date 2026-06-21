@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'next-themes';
 
-// Import your components
+// Import your auth/profile components
 import CreateAccount from '../features/auth/CreateAccount'; 
 import Login from '../features/auth/Login'; 
 import ForgotPassword from '../features/auth/ForgotPassword'; 
@@ -13,7 +13,7 @@ import ProfileSetup from '../features/club/ProfileSetup';
 import Subscriptions from '../features/club/Subscriptions';
 import SelectRoleClub from '../features/club/SelectRoleClub';
 
-// Dashboard components
+// Dashboard / ClubSide components
 import DashBoard, { DashboardOverview } from '../features/ClubSide/DashBoard';
 import ProfileAccount from '../features/ClubSide/ProfileAccount';
 import ManageClub from '../features/ClubSide/ManageClub';
@@ -29,12 +29,20 @@ import Leaderboard from '../features/ClubSide/Leaderboard';
 import { ClubJoiningReq } from '../features/ClubSide/ClubJoiningReq';
 import News from '../features/ClubSide/News';
 import { NewsAdded } from '../features/ClubSide/NewsAdded';
+
+// Import Discount Components
 import Discount from '../features/ClubSide/Discount';
 import AddDiscount from '../features/ClubSide/AddDiscount';
+
 import AboutApp from '../features/ClubSide/AboutApp';
 import SupportHelp from '../features/ClubSide/SupportHelp';
 import ManageClubHome from '../features/ClubSide/ManageClubHome';
 import EditClub from "../features/ClubSide/EditClub";
+
+// Public side & Ride components
+import Clubs from '../features/public-club/pages/UserClub';
+import Ride from '../features/public-club/pages/Ride';
+import RideJoining from '../features/public-club/pages/RideJoining'; 
 
 export const AppRouter = () => {
   return (
@@ -53,30 +61,43 @@ export const AppRouter = () => {
           <Route path="/select-role-club" element={<SelectRoleClub />} />
           <Route path="/select-role" element={<SelectRole />} />
           
-          {/* --- Dashboard Routes (Uses DashBoard as Layout) --- */}
-          <Route path="/dashboard" element={<DashBoard />}>
-            <Route index element={<DashboardOverview />} /> 
-            <Route path="activities" element={<Activities />} />
-            <Route path="product" element={<Product />} />
-            <Route path="add-product" element={<AddProduct />} />
-            <Route path="order" element={<Order />} />
-            <Route path="order/:id" element={<OrderDetail />} />
-            <Route path="profile" element={<ProfileAccount />} /> 
-            <Route path="wallet" element={<Wallet />} /> 
-            <Route path="subscription" element={<Subscription />} />
-            <Route path="subscription/payment" element={<SubPaymentDet />} />
-            <Route path="joining-requests" element={<ClubJoiningReq />} />
-            <Route path="leader-board" element={<Leaderboard />} />
-            <Route path="news" element={<News />} />
-            <Route path="news/add" element={<NewsAdded />} />
-            <Route path="discount" element={<Discount />} />
-            <Route path="discount/add" element={<AddDiscount />} />
-            <Route path="support" element={<SupportHelp />} />
-          </Route>
+          {/* --- Direct Root Level Routes --- */}
+          <Route path="/dashboard" element={<DashBoard defaultView={<DashboardOverview />} />} />
+          <Route path="/activities" element={<DashBoard defaultView={<Activities />} />} />
+          <Route path="/product" element={<DashBoard defaultView={<Product />} />} />
+          <Route path="/add-product" element={<DashBoard defaultView={<AddProduct />} />} />
+          <Route path="/order" element={<DashBoard defaultView={<Order />} />} />
+          <Route path="/order/:id" element={<DashBoard defaultView={<OrderDetail />} />} />
+          <Route path="/profile" element={<DashBoard defaultView={<ProfileAccount />} />} /> 
+          <Route path="/wallet" element={<DashBoard defaultView={<Wallet />} />} /> 
+          <Route path="/subscription" element={<DashBoard defaultView={<Subscription />} />} />
+          <Route path="/subscription/payment" element={<DashBoard defaultView={<SubPaymentDet />} />} />
+          <Route path="/joining-requests" element={<DashBoard defaultView={<ClubJoiningReq />} />} />
+          <Route path="/leader-board" element={<DashBoard defaultView={<Leaderboard />} />} />
+          <Route path="/news" element={<DashBoard defaultView={<News />} />} />
+          <Route path="/news/add" element={<DashBoard defaultView={<NewsAdded />} />} />
+          
+          {/* Club Management Discount Routes */}
+          <Route path="/discount" element={<DashBoard defaultView={<Discount role="organizer" />} />} />
+          <Route path="/discount/add" element={<DashBoard defaultView={<AddDiscount />} />} />
+          
+          {/* Athlete Promo Wallet Route */}
+          <Route path="/my-promos" element={<DashBoard defaultView={<Discount role="athlete" />} />} />
 
-          {/* These routes now have NO Sidebar/Header */}
-          <Route path="/dashboard/manage-club-home" element={<ManageClubHome />} />
-          <Route path="/dashboard/manage-club" element={<ManageClub />} />
+          <Route path="/support" element={<DashBoard defaultView={<SupportHelp />} />} />
+          
+          {/* Community/User Interface Route */}
+          <Route path="/clubs" element={<DashBoard defaultView={<Clubs />} />} />
+
+          {/* Base Ride Listing Route */}
+          <Route path="/clubs/Ride" element={<DashBoard defaultView={<Ride />} />} />
+
+          {/* Detailed Ride Joining Route */}
+          <Route path="/dashboard/ride/:id" element={<DashBoard defaultView={<RideJoining />} />} />
+
+          {/* Standalone routes with NO Sidebar/Header */}
+          <Route path="/manage-club-home" element={<ManageClubHome />} />
+          <Route path="/manage-club" element={<ManageClub />} />
           <Route path="/about-app" element={<AboutApp />} />
           <Route path="/edit-club" element={<EditClub />} />
         </Routes>

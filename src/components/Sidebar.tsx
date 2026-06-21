@@ -1,14 +1,22 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, Car, Wallet, UserCircle, 
-  Newspaper, Trophy, Percent, UserPlus, Settings, X 
+  Newspaper, Trophy, Percent, UserPlus, Settings, X, Compass, Bike, Sparkles 
 } from 'lucide-react';
 
-const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+
+  // Check if the current route belongs to the user/public community side
+  const isCommunitySide = location.pathname.startsWith('/clubs') || location.pathname.startsWith('/my-promos');
 
   return (
     <>
@@ -20,7 +28,6 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
         />
       )}
 
-     
       <aside 
         className={`
           fixed lg:relative z-50 w-72 h-screen bg-[#111111] border-r border-white/10 p-6 flex flex-col shrink-0
@@ -35,23 +42,31 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
           </button>
         </div>
         
-        {/* Navigation - flex-1 allows this to fill space, overflow-y-auto enables scrolling if list gets long */}
+        {/* Navigation */}
         <nav className="flex-1 flex flex-col space-y-2 overflow-y-auto">
-          <NavItem onClick={() => { navigate('/dashboard'); onClose(); }} active={isActive('/dashboard')} label="Dashboard" icon={<LayoutDashboard size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/activities'); onClose(); }} active={isActive('/dashboard/activities')} label="Activities" icon={<Users size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/product'); onClose(); }} active={isActive('/dashboard/product')} label="Product" icon={<Car size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/order'); onClose(); }} active={isActive('/dashboard/order')} label="Order" icon={<Wallet size={20} />} />
+          {isCommunitySide ? (
+            <>
+              <div className="px-3 mb-2 text-xs font-bold text-gray-500 uppercase tracking-wider">Athlete Interface</div>
+              <NavItem onClick={() => { navigate('/clubs'); onClose(); }} active={isActive('/clubs')} label="Explore Clubs" icon={<Compass size={20} />} />
+              <NavItem onClick={() => { navigate('/clubs/Ride'); onClose(); }} active={isActive('/clubs/Ride')} label="Ride" icon={<Bike size={20} />} />
+              <NavItem onClick={() => { navigate('/my-promos'); onClose(); }} active={isActive('/my-promos')} label="My Promos" icon={<Sparkles size={20} />} />
+            </>
+          ) : (
+            <>
+              <div className="px-3 mb-2 text-xs font-bold text-gray-500 uppercase tracking-wider">Club Management</div>
+              <NavItem onClick={() => { navigate('/dashboard'); onClose(); }} active={isActive('/dashboard')} label="Dashboard" icon={<LayoutDashboard size={20} />} />
+              <NavItem onClick={() => { navigate('/activities'); onClose(); }} active={isActive('/activities')} label="Activities" icon={<Users size={20} />} />
+              <NavItem onClick={() => { navigate('/product'); onClose(); }} active={isActive('/product')} label="Product" icon={<Car size={20} />} />
+              <NavItem onClick={() => { navigate('/order'); onClose(); }} active={isActive('/order')} label="Order" icon={<Wallet size={20} />} />
+              <NavItem onClick={() => { navigate('/news'); onClose(); }} active={isActive('/news')} label="News" icon={<Newspaper size={20} />} />
+              <NavItem onClick={() => { navigate('/leader-board'); onClose(); }} active={isActive('/leader-board')} label="Leaderboard" icon={<Trophy size={20} />} />
+              <NavItem onClick={() => { navigate('/discount'); onClose(); }} active={isActive('/discount')} label="Discount" icon={<Percent size={20} />} />
+              <NavItem onClick={() => { navigate('/joining-requests'); onClose(); }} active={isActive('/joining-requests')} label="Joining Requests" icon={<UserPlus size={20} />} />
+              <NavItem onClick={() => { navigate('/profile'); onClose(); }} active={isActive('/profile')} label="Profile" icon={<UserCircle size={20} />} />
+            </>
+          )}
           
-          
-        
-          
-          <NavItem onClick={() => { navigate('/dashboard/News'); onClose(); }} active={isActive('/dashboard/News')} label="News" icon={<Newspaper size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/leader-board'); onClose(); }} active={isActive('/dashboard/leader-board')} label="Leaderboard" icon={<Trophy size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/discount'); onClose(); }} active={isActive('/dashboard/discount')} label="Discount" icon={<Percent size={20} />} />
-          <NavItem onClick={() => { navigate('/dashboard/joining-requests'); onClose(); }} active={isActive('/dashboard/joining-requests')} label="Joining Requests" icon={<UserPlus size={20} />} />
-          
-          <div className="mt-auto pt-4">
-            <NavItem onClick={() => { navigate('/dashboard/profile'); onClose(); }} active={isActive('/dashboard/profile')} label="Profile" icon={<UserCircle size={20} />} />
+          <div className="mt-auto pt-4 border-t border-white/5">
             <NavItem label="Settings" icon={<Settings size={20} />} />
           </div>
         </nav>
@@ -60,12 +75,12 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) 
   );
 };
 
-function NavItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick?: () => void }) {
+function NavItem({ icon, label, active, activeSub, onClick }: { icon?: React.ReactNode, label: string, active?: boolean, activeSub?: boolean, onClick?: () => void }) {
   return (
     <div 
       onClick={onClick} 
       className={`flex items-center gap-4 cursor-pointer px-4 py-3 rounded-xl transition-all font-medium ${
-        active ? 'bg-[#eb712a] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
+        active || activeSub ? 'bg-[#eb712a] text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
       }`}
     >
       {icon}

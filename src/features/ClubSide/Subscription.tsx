@@ -6,7 +6,7 @@ const Subscription = () => {
   return (
     <div className="min-h-screen  text-white p-8 md:p-16">
       <button 
-      onClick={() => navigate('/dashboard/profile')} 
+      onClick={() => navigate('/profile')} 
       className="group flex items-center gap-2 text-gray-500 hover:text-white transition-all duration-300 mb-12"
     >
       <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-300" />
@@ -79,7 +79,7 @@ const Subscription = () => {
     </div>
     
    <button 
-  onClick={() => navigate('/dashboard/subscription/payment')} 
+  onClick={() => navigate('/subscription/payment')} 
   className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-[0_10px_20px_-10px_rgba(235,113,43,0.5)]"
 >
   Subscribe Now

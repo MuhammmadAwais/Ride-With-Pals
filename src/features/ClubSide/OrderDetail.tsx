@@ -11,11 +11,11 @@ const OrderDetail = () => {
 
   return (
     <div className="w-full min-h-screen text-zinc-100 font-sans p-6 md:p-10">
-      {/* Navigation Header */}
+      {/* Navigation Header - fixed route to point to plain /order */}
       <div className="flex items-center gap-4 mb-8">
         <button 
-          onClick={() => navigate('/dashboard/order')} 
-          className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-all"
+          onClick={() => navigate('/order')} 
+          className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-all cursor-pointer"
         >
           <div className="p-2 rounded-full bg-[#161616] group-hover:bg-[#1f1f1f] border border-white/5">
             <ChevronLeft size={18} />
@@ -31,17 +31,17 @@ const OrderDetail = () => {
           {/* Dynamically displaying the correct ID */}
           <h1 className="text-4xl font-extrabold text-white">#{id}</h1>
         </div>
-        {/* Replace your current badge code with this dynamic version */}
-<div className="flex items-center gap-3">
-  <span className={`px-4 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${
-    order?.status === 'Delivered' 
-      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-      : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-  }`}>
-    <CheckCircle2 size={12} /> 
-    {order?.status || 'In Progress'}
-  </span>
-</div>
+        
+        <div className="flex items-center gap-3">
+          <span className={`px-4 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${
+            order?.status === 'Delivered' 
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+              : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+          }`}>
+            <CheckCircle2 size={12} /> 
+            {order?.status || 'In Progress'}
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -76,38 +76,38 @@ const OrderDetail = () => {
         {/* Right Column */}
         <div className="space-y-8">
           <div className="bg-[#161616] p-5 rounded-3xl border border-white/5">
-  <h3 className="text-lg font-semibold mb-6">Order Summary</h3>
-  <div className="space-y-6 mb-8">
-    {[
-      { icon: <Package size={16}/>, l: 'Customer', v: order?.recipient || 'N/A' },
-      { icon: <MapPin size={16}/>, l: 'Location', v: 'Las Vegas, NV' },
-      { icon: <Calendar size={16}/>, l: 'Date', v: order?.date || 'Oct 24, 2024' }
-    ].map((i) => (
-      <div key={i.l} className="flex items-center gap-4">
-        <div className="text-zinc-600">{i.icon}</div>
-        <div className="flex-1 flex justify-between">
-          <span className="text-sm text-zinc-500">{i.l}</span>
-          <span className="text-sm font-medium">{i.v}</span>
-        </div>
-      </div>
-    ))}
-  </div>
-  
-  <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5 mb-6 flex justify-between items-center">
-    <span className="text-zinc-400 font-medium">Total Amount</span>
-    <span className="text-2xl font-bold text-[#EB712B]">{order?.price || "$0.00"}</span>
-  </div>
+            <h3 className="text-lg font-semibold mb-6">Order Summary</h3>
+            <div className="space-y-6 mb-8">
+              {[
+                { icon: <Package size={16}/>, l: 'Customer', v: order?.recipient || 'N/A' },
+                { icon: <MapPin size={16}/>, l: 'Location', v: 'Las Vegas, NV' },
+                { icon: <Calendar size={16}/>, l: 'Date', v: order?.date || 'Oct 24, 2024' }
+              ].map((i) => (
+                <div key={i.l} className="flex items-center gap-4">
+                  <div className="text-zinc-600">{i.icon}</div>
+                  <div className="flex-1 flex justify-between">
+                    <span className="text-sm text-zinc-500">{i.l}</span>
+                    <span className="text-sm font-medium">{i.v}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5 mb-6 flex justify-between items-center">
+              <span className="text-zinc-400 font-medium">Total Amount</span>
+              <span className="text-2xl font-bold text-[#EB712B]">{order?.price || "$0.00"}</span>
+            </div>
 
-  {order?.status === 'Delivered' ? (
-    <div className="w-full py-4 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-center font-bold text-sm uppercase tracking-widest">
-      Delivered
-    </div>
-  ) : (
-    <button className="w-full py-4 rounded-xl bg-[#EB712B] text-white font-bold text-sm hover:bg-[#d66525] transition-colors mb-3">
-      Mark as Delivered
-    </button>
-  )}
-</div>
+            {order?.status === 'Delivered' ? (
+              <div className="w-full py-4 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-center font-bold text-sm uppercase tracking-widest">
+                Delivered
+              </div>
+            ) : (
+              <button className="w-full py-4 rounded-xl bg-[#EB712B] text-white font-bold text-sm hover:bg-[#d66525] transition-colors mb-3 cursor-pointer">
+                Mark as Delivered
+              </button>
+            )}
+          </div>
 
           <div className="bg-[#161616] p-8 rounded-3xl border border-white/5">
             <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">

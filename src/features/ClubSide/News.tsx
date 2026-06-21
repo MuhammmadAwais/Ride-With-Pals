@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquare,Plus,ArrowUpRight, Newspaper } from 'lucide-react';
+import { MessageSquare, Plus, ArrowUpRight, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const newsItems = [
@@ -71,7 +71,7 @@ const NewsArticle = ({ item }: { item: typeof newsItems[0] }) => {
             <p className="text-sm text-gray-400 leading-relaxed">
               {item.previewText}
               {!isExpanded && (
-                <button onClick={() => setIsExpanded(true)} className="ml-2 font-bold text-[#EB712B] underline underline-offset-4">
+                <button onClick={() => setIsExpanded(true)} className="ml-2 font-bold text-[#EB712B] underline underline-offset-4 cursor-pointer">
                   Read More
                 </button>
               )}
@@ -82,7 +82,7 @@ const NewsArticle = ({ item }: { item: typeof newsItems[0] }) => {
                 <img src="/Images/CycleImage8.png" alt="Article visual" className="w-full h-40 sm:h-48 object-cover rounded-2xl border border-white/[0.05]" />
                 <p className="text-sm text-gray-400 leading-relaxed">
                   {item.fullContent}
-                  <button onClick={() => setIsExpanded(false)} className="ml-2 font-bold text-[#EB712B] underline underline-offset-4">
+                  <button onClick={() => setIsExpanded(false)} className="ml-2 font-bold text-[#EB712B] underline underline-offset-4 cursor-pointer">
                     Show Less
                   </button>
                 </p>
@@ -95,7 +95,7 @@ const NewsArticle = ({ item }: { item: typeof newsItems[0] }) => {
               <div className="w-6 h-6 rounded-full bg-[#1a1a1a] flex items-center justify-center text-[8px] font-black text-[#EB712B] border border-white/5">{item.authorInitials}</div>
               <span className="text-xs font-bold text-white truncate max-w-[100px]">{item.author}</span>
             </div>
-            <button className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-[#EB712B] transition-colors">
+            <button className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-[#EB712B] transition-colors cursor-pointer">
               <MessageSquare size={12} /> 25
             </button>
           </div>
@@ -110,12 +110,13 @@ export const NewsFeed = () => (
     <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
         <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter">Community News</h1>
+        {/* Updated route without /dashboard prefix */}
         <Link 
-  to="/dashboard/news/add" 
-  className="flex items-center justify-center gap-2 px-6 py-3 bg-[#1a1a1a] border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto"
->
-  <Plus size={18} /> Add new Post
-</Link>
+          to="/news/add" 
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#1a1a1a] border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
+        >
+          <Plus size={18} /> Add new Post
+        </Link>
       </div>
     </header>
     <main className="max-w-4xl mx-auto space-y-4 sm:space-y-6">

@@ -46,6 +46,18 @@ const ProfileAccount = () => {
   const [selectedRole, setSelectedRole] = useState<"admin" | "user" | null>(
     null,
   );
+  
+  const handleLogout = () => {
+    // 1. Clear authentication tokens or session storage (adjust according to your auth setup)
+    localStorage.removeItem("token"); // Example: if you store a JWT token
+    localStorage.removeItem("user");  // Example: if you store user data
+
+    // Alternatively, if you are using an AuthContext:
+    // logout(); 
+
+    // 2. Redirect the user to the login page
+    navigate("/login");
+  };
   const [fullAccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -54,6 +66,7 @@ const ProfileAccount = () => {
     publishNews: false,
     publishDiscount: false,
   });
+  
   const [tempUserPermissions, setTempUserPermissions] =
     useState(userPermissions);
   const [isMemberPickerOpen, setIsMemberPickerOpen] = useState(false);
@@ -135,6 +148,8 @@ const ProfileAccount = () => {
   }, []);
   if (!mounted) return null;
 
+  
+
   const sectionCardStyle =
     "bg-white dark:bg-[#111111] p-4 md:p-6 rounded-2xl border border-gray-200 dark:border-white/5 transition-colors";
   const rowItemStyle =
@@ -179,56 +194,68 @@ const ProfileAccount = () => {
               </p>
             </div>
           </div>
-          <button className="bg-white/5 px-6 py-2 rounded-xl text-sm font-bold hover:bg-[#EB712B] transition-all">
-            Logout
-          </button>
+          <button 
+      onClick={handleLogout}
+      className="bg-white/5 px-6 py-2 rounded-xl text-sm font-bold hover:bg-[#EB712B] transition-all cursor-pointer active:scale-95"
+    >
+      Logout
+    </button>
         </div>
 
         {/* Account Management */}
         <section className="mb-8">
-          <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
-            Account Management
-          </h3>
-          <div className={sectionCardStyle}>
-            {[
-              {
-                icon: Users,
-                title: "Manage Club",
-                path: "/dashboard/manage-club",
-              },
-              {
-                icon: Lock,
-                title: "Change Password",
-                action: () => setIsPasswordModalOpen(true),
-              },
-              {
-                icon: ShieldCheck,
-                title: "Permission",
-                action: () => setIsPermissionsModalOpen(true),
-              },
-              { icon: Wallet, title: "Wallet", path: "/dashboard/wallet" },
-              {
-                icon: CreditCard,
-                title: "Subscription",
-                path: "/dashboard/subscription",
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                onClick={
-                  item.action || (() => item.path && navigate(item.path))
-                }
-                className={rowItemStyle}
-              >
-                <div className="flex items-center gap-4">
-                  <item.icon className="text-[#EB712B]" size={20} />
-                  <span className="font-medium text-sm">{item.title}</span>
-                </div>
-                <ChevronRight size={18} className="text-gray-400" />
-              </div>
-            ))}
-          </div>
-        </section>
+  <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
+    Account Management
+  </h3>
+  <div className={sectionCardStyle}>
+    {[
+      {
+        icon: Users,
+        title: "Manage Club",
+        path: "/manage-club",
+      },
+      {
+        icon: Lock,
+        title: "Change Password",
+        action: () => setIsPasswordModalOpen(true),
+      },
+      {
+        icon: ShieldCheck,
+        title: "Admin Modules",
+        action: handleOpenAdminModal,
+      },
+      {
+        icon: Bike,
+        title: "User Modules",
+        action: handleOpenUserModal,
+      },
+      { 
+        icon: Wallet, 
+        title: "Wallet", 
+        path: "/wallet" 
+      },
+      {
+        icon: CreditCard,
+        title: "Subscription",
+        path: "/subscription",
+      },
+    ].map((item, idx) => (
+      <div
+        key={idx}
+        onClick={
+          item.action || (() => item.path && navigate(item.path))
+        }
+        className={rowItemStyle}
+      >
+        <div className="flex items-center gap-4">
+          <item.icon className="text-[#EB712B]" size={20} />
+          <span className="font-medium text-sm">{item.title}</span>
+        </div>
+        <ChevronRight size={18} className="text-gray-400" />
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* Workspace & Support */}
         <section className="mb-8">
@@ -236,7 +263,7 @@ const ProfileAccount = () => {
             Workspace & Support
           </h3>
           <div className={sectionCardStyle}>
-            <Link to="/dashboard/support" className="block w-full">
+            <Link to="/support" className="block w-full">
               <div className={rowItemStyle}>
                 <div className="flex items-center gap-4">
                   <HelpCircle className="text-[#EB712B]" size={20} />
