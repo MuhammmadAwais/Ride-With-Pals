@@ -24,8 +24,7 @@ const ManageClub = () => {
 
   // Retrieve values from LocalStorage (updates dynamically if edited in EditClub)
   const updatedCycRockName = localStorage.getItem("clubName");
-  const updatedCycRockBanner = localStorage.getItem("bannerUrl");
-  const updatedCycRockLogo = localStorage.getItem("logoUrl");
+ 
 
   const allClubs = [
     {
