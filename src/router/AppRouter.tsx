@@ -6,7 +6,7 @@ import CreateAccount from '../features/auth/CreateAccount';
 import Login from '../features/auth/Login'; 
 import ForgotPassword from '../features/auth/ForgotPassword'; 
 import VerifyEmail from '../features/auth/VerifyEmail';
-import AuthSubscription from '../features/auth/AuthSubscription'; // Added import for AuthSubscription
+import AuthSubscription from '../features/auth/AuthSubscription'; 
 import CreateProfile from '../features/profile/CreateProfile'; 
 import AthleteProfileForm from '../features/profile/AthleteProfileForm';
 import SelectRole from '../features/profile/SelectRole';

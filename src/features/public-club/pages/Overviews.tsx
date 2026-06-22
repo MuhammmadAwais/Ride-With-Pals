@@ -5,9 +5,7 @@ interface OverviewsProps {
   clubId?: string;
 }
 
-// Mock function/hook structure - replace with your actual data-fetching hook (e.g., useQuery, useFetch)
 const useClubOverview = ( ) => {
-  // Simulate loading state for demonstration
   return {
     isLoading: false,
     description: [
@@ -79,12 +77,9 @@ export default function Overviews({ }: OverviewsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
       
-      {/* Left Column: Description & Administrator (2/3 width) */}
       <div className="lg:col-span-2 space-y-8">
         
-        {/* Description Section */}
         <div className="bg-[#141414] border border-white/5 rounded-3xl p-8 space-y-5 relative overflow-hidden backdrop-blur-xl transition-all duration-300 hover:border-white/10">
-          {/* subtle glowing backdrop accent */}
           <div className="absolute -right-20 -top-20 w-40 h-40 bg-[#EB712B]/5 rounded-full blur-3xl" />
           
           <h2 className="text-sm font-black uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
@@ -137,7 +132,7 @@ export default function Overviews({ }: OverviewsProps) {
         </div>
       </div>
 
-      {/* Right Column: Location & Members (1/3 width) */}
+      {/* Right Column */}
       <div className="space-y-6">
         
         {/* Location Card */}

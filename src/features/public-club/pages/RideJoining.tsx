@@ -4,11 +4,9 @@ import {
   ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert
 } from "lucide-react";
 
-// Leaflet Map Imports
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
-// Fix for default Leaflet marker icon issues in React
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
@@ -20,7 +18,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl,
 });
 
-// Full Roster Details Database
 const FULL_ROSTER_DB = [
   { initials: "AM", name: "Arlene McCoy", role: "Lead Pacer", joinedDate: "May 10, 2026", verified: true },
   { initials: "CF", name: "Cody Fisher", role: "Host + Senior Member", joinedDate: "May 02, 2026", verified: true },
@@ -38,12 +35,10 @@ const RideJoining = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // Local state for Roster Slide-Over Drawer, Search, and Toast Notification
   const [isRosterOpen, setIsRosterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  // Mock geographic coordinates for the Map (French Alps / Haute-Savoie area)
   const mapCenter: [number, number] = [45.9184, 6.5862];
 
   const rideDetails = {
@@ -81,7 +76,6 @@ const RideJoining = () => {
     setTimeout(() => setShowToast(false), 3000);
   };
 
-  // Filter directory via search input
   const filteredRoster = FULL_ROSTER_DB.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -89,7 +83,6 @@ const RideJoining = () => {
   return (
     <div className="min-h-screen text-white p-4 md:p-8 font-sans select-none relative antialiased">
       
-      {/* Custom Toast Notification */}
       <div 
         className={`fixed bottom-6 right-6 bg-[#121212] border border-[#EB712B]/40 text-white px-5 py-3.5 rounded-2xl shadow-[0_10px_40px_-15px_rgba(235,113,43,0.3)] flex items-center gap-3 z-50 transition-all duration-300 transform ${
           showToast ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"

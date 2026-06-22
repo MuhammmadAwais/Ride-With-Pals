@@ -12,7 +12,6 @@ import {
   Compass
 } from "lucide-react";
 
-// Mock data matching the cards in your screenshot
 const initialRides = [
   {
     id: 1,
@@ -99,7 +98,6 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
 
   console.log("Active club ID context:", clubId);
 
-  // Filtering Logic
   const filteredRides = initialRides.filter(ride => {
     const query = searchQuery.trim().toLowerCase();
 
@@ -113,7 +111,6 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
     return matchesSearch && matchesType;
   });
 
-  // Navigates to the dynamic detailed RideJoining screen when clicked
   const handleJoinRide = (id: number | string) => {
     navigate(`/dashboard/ride/${id}`);
   };
@@ -175,7 +172,6 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           </div>
         </div>
 
-        {/* Responsive Ride Cards Grid */}
         {filteredRides.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRides.map((ride) => (
