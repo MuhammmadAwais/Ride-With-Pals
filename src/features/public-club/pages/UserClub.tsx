@@ -10,7 +10,6 @@ import Overviews from "./Overviews";
 import Shop from "./Shop"; 
 import Marketplace from "./Marketplace";
 
-// Standard TypeScript Interfaces
 interface ClubData {
   id: string;
   name: string;

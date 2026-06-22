@@ -87,7 +87,7 @@ const RideJoining = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white p-4 md:p-8 font-sans select-none relative antialiased">
+    <div className="min-h-screen text-white p-4 md:p-8 font-sans select-none relative antialiased">
       
       {/* Custom Toast Notification */}
       <div 
