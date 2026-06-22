@@ -85,11 +85,9 @@ export default function UserClub() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   
-  // Explicitly typing as ClubData | null solves the inferring 'never' issue.
   const [selectedClub, setSelectedClub] = useState<ClubData | null>(null);
   const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
 
-  // --- JOIN CLUB WORKFLOW STATES ---
   const [isMember, setIsMember] = useState(false);
   const [showCodeScreen, setShowCodeScreen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
@@ -98,7 +96,6 @@ export default function UserClub() {
   const [showDepositScreen, setShowDepositScreen] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   
-  // Deposit Form Fields with auto-formatting logic
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -130,7 +127,6 @@ export default function UserClub() {
   const handleSelectDiscoverClub = (comm: ClubData) => {
     setIsDiscoverContext(true); 
     setSelectedClub(comm);
-    // If it's a private club in discovery, we start as non-member until codes/deposits are verified
     setIsMember(comm.status === "PRIVATE" ? false : true);
     setShowCodeScreen(false);
     setShowDepositScreen(false);
@@ -145,7 +141,6 @@ export default function UserClub() {
     setIsMember(false);
     setCodeError("");
     setPaymentSuccess(false);
-    // Reset Deposit Fields
     setCardNumber("");
     setExpiryDate("");
     setCvv("");
@@ -164,7 +159,6 @@ export default function UserClub() {
 
   const handleVerifyCode = (e: React.FormEvent) => {
     e.preventDefault();
-    // Verification Code "111" logic retained
     if (joinCode === "111") {
       setCodeError("");
       setShowCodeScreen(false);
@@ -178,14 +172,12 @@ export default function UserClub() {
     }
   };
 
-  // Card formatting engine (Groups 4 digits separated by a space)
   const handleCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "");
     const groups = val.match(/.{1,4}/g);
     setCardNumber(groups ? groups.join(" ") : "");
   };
 
-  // Expiry date formatter (Injects "/" automatically after MM)
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value.replace(/\D/g, "");
     if (val.length >= 2) {
@@ -218,7 +210,7 @@ export default function UserClub() {
     const currentRole: "organizer" | "athlete" = isDiscoverContext ? "athlete" : "organizer";
 
     return (
-      <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8 bg-[#161616]">
+      <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8">
         <div className="flex-1 transition-all max-w-7xl w-full mx-auto space-y-8">
           
           {/* Back button */}
@@ -452,7 +444,7 @@ export default function UserClub() {
                 {activeTab === "rides" && <Ride clubId={selectedClub?.id} />}
                 {activeTab === "news" && <News clubId={selectedClub?.id} />}
                 {activeTab === "leaderboard" && <Leaderboard clubId={selectedClub?.id} />}
-                {activeTab === "discounts" && <Discount role={currentRole} />}        
+                {activeTab === "discounts" && <Discount role={"athlete"} />}        
                 {activeTab === "shop" && <Shop clubId={selectedClub?.id} />} 
                 {activeTab === "marketplace" && <Marketplace clubId={selectedClub?.id} />} 
                 {activeTab === "overviews" && <Overviews clubId={selectedClub?.id} />}
