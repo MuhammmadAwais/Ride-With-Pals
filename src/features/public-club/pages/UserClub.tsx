@@ -463,7 +463,7 @@ export default function UserClub() {
 
   // --- DEFAULT VIEW: HUB & SEARCH ---
   return (
-    <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8 bg-[#161616]">
+    <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8 ">
       <div className="flex-1 p-4 transition-all max-w-7xl w-full mx-auto space-y-12">
         
         {/* Top Header & Overview */}
