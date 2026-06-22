@@ -12,6 +12,7 @@ const VerifyEmail = () => {
   const userEmail = location.state?.email || "abcxyz@gmail.com";
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(60);
+  const [error, setError] = useState("");
 
   // Timer logic
   useEffect(() => {
@@ -37,6 +38,19 @@ const VerifyEmail = () => {
     if (e.key === "Backspace" && code[index] === "" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
+  };
+
+  const handleVerify = () => {
+    // Basic validation to make sure all 6 digits are filled
+    if (code.includes("")) {
+      setError("Please enter the complete 6-digit verification code.");
+      return;
+    }
+    setError("");
+    
+    // Navigate to your AuthSubscription component route
+    // Make sure this matches the path you define in your AppRouter.tsx
+    navigate("/auth-subscription"); 
   };
 
   useGSAP(() => {
@@ -67,7 +81,7 @@ const VerifyEmail = () => {
           </div>
 
           {/* OTP Inputs with Auto-Focus Logic */}
-          <div className="animate-item flex justify-center gap-2 mb-8">
+          <div className="animate-item flex justify-center gap-2 mb-4">
             {code.map((digit, index) => (
               <input
                 key={index}
@@ -82,9 +96,15 @@ const VerifyEmail = () => {
             ))}
           </div>
 
+          {error && (
+            <p className="animate-item text-red-500 text-xs font-bold text-center mb-4">
+              {error}
+            </p>
+          )}
+
           <button 
-            onClick={() => navigate("/create-profile")} 
-            className="animate-item w-full py-4 bg-[#EB712B] rounded-xl font-bold hover:bg-[#d16226] transition-all mb-6"
+            onClick={handleVerify} 
+            className="animate-item w-full py-4 bg-[#EB712B] rounded-xl font-bold hover:bg-[#d16226] transition-all mb-6 cursor-pointer"
           >
             Verify Code
           </button>
@@ -97,7 +117,7 @@ const VerifyEmail = () => {
             <button 
               disabled={timeLeft > 0} 
               onClick={() => setTimeLeft(60)} 
-              className={`text-sm underline ${timeLeft > 0 ? "text-gray-700" : "text-white hover:text-[#EB712B]"}`}
+              className={`text-sm underline cursor-pointer ${timeLeft > 0 ? "text-gray-700" : "text-white hover:text-[#EB712B]"}`}
             >
               Resend!
             </button>

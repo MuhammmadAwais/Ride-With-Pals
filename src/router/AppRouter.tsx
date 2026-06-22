@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'next-themes';
 
@@ -6,6 +7,7 @@ import CreateAccount from '../features/auth/CreateAccount';
 import Login from '../features/auth/Login'; 
 import ForgotPassword from '../features/auth/ForgotPassword'; 
 import VerifyEmail from '../features/auth/VerifyEmail';
+import AuthSubscription from '../features/auth/AuthSubscription'; // Added import for AuthSubscription
 import CreateProfile from '../features/profile/CreateProfile'; 
 import AthleteProfileForm from '../features/profile/AthleteProfileForm';
 import SelectRole from '../features/profile/SelectRole';
@@ -35,7 +37,6 @@ import Discount from '../features/ClubSide/Discount';
 import AddDiscount from '../features/ClubSide/AddDiscount';
 
 import AboutApp from '../features/ClubSide/AboutApp';
-// import SupportHelp from '../features/ClubSide/SupportHelp';
 import ManageClubHome from '../features/ClubSide/ManageClubHome';
 import EditClub from "../features/ClubSide/EditClub";
 import { OrganizerSupport, AthleteSupport } from '../features/ClubSide/SupportHelp';
@@ -53,6 +54,7 @@ export const AppRouter = () => {
           {/* --- Public/Auth Routes --- */}
           <Route path="/" element={<CreateAccount />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/auth-subscription" element={<AuthSubscription />} /> {/* Added route for AuthSubscription */}
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/create-profile" element={<CreateProfile />} />
@@ -85,11 +87,12 @@ export const AppRouter = () => {
           {/* Athlete Promo Wallet Route */}
           <Route path="/my-promos" element={<DashBoard defaultView={<Discount role="athlete" />} />} />
 
-         {/* Owner / Organizer Support Route */}
-<Route path="/support/owner" element={<DashBoard defaultView={<OrganizerSupport />} />} />
+          {/* Owner / Organizer Support Route */}
+          <Route path="/support/owner" element={<DashBoard defaultView={<OrganizerSupport />} />} />
 
-{/* Athlete / User Support Route */}
-<Route path="/support/athlete" element={<DashBoard defaultView={<AthleteSupport />} />} />
+          {/* Athlete / User Support Route */}
+          <Route path="/support/athlete" element={<DashBoard defaultView={<AthleteSupport />} />} />
+          
           {/* Community/User Interface Route */}
           <Route path="/clubs" element={<DashBoard defaultView={<Clubs />} />} />
 
