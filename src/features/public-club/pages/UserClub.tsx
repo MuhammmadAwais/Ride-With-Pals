@@ -207,7 +207,7 @@ export default function UserClub() {
   };
 
   if (selectedClub) {
-    const currentRole: "organizer" | "athlete" = isDiscoverContext ? "athlete" : "organizer";
+    // const currentRole: "organizer" | "athlete" = isDiscoverContext ? "athlete" : "organizer";
 
     return (
       <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8">

@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { MapPin, Users, ShieldCheck, ExternalLink, Activity } from "lucide-react";
 
 interface OverviewsProps {
@@ -58,7 +58,7 @@ const useClubOverview = ( ) => {
   };
 };
 
-export default function Overviews({ clubId }: OverviewsProps) {
+export default function Overviews({ }: OverviewsProps) {
   const { isLoading, description, administrators, location, stats } = useClubOverview();
 
   if (isLoading) {
