@@ -86,7 +86,7 @@ export default function UserClub() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   
   const [selectedClub, setSelectedClub] = useState<ClubData | null>(null);
-  const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
+  // const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
 
   const [isMember, setIsMember] = useState(false);
   const [showCodeScreen, setShowCodeScreen] = useState(false);
@@ -116,7 +116,7 @@ export default function UserClub() {
   );
 
   const handleSelectMyClub = (club: ClubData) => {
-    setIsDiscoverContext(false); 
+    // setIsDiscoverContext(false); 
     setSelectedClub(club);
     setIsMember(true);
     setShowCodeScreen(false);
@@ -125,7 +125,7 @@ export default function UserClub() {
   };
 
   const handleSelectDiscoverClub = (comm: ClubData) => {
-    setIsDiscoverContext(true); 
+    // setIsDiscoverContext(true); 
     setSelectedClub(comm);
     setIsMember(comm.status === "PRIVATE" ? false : true);
     setShowCodeScreen(false);
