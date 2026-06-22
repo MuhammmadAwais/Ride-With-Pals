@@ -1,8 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock } from "lucide-react";
+import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 
-const myClubsData = [
+import Ride from "./Ride";
+import News from "../../ClubSide/News";
+import Leaderboard from "../../ClubSide/Leaderboard";
+import Discount from "../../ClubSide/Discount";
+import Overviews from "./Overviews";
+import Shop from "./Shop"; 
+import Marketplace from "./Marketplace";
+
+// Standard TypeScript Interfaces
+interface ClubData {
+  id: string;
+  name: string;
+  activityType: string;
+  status: "PUBLIC" | "PRIVATE";
+  members: string;
+  logo: string;
+  isPaid: boolean;
+  price: string;
+}
+
+const myClubsData: ClubData[] = [
   {
     id: "1",
     name: "Red Rock Cyclists",
@@ -10,6 +30,8 @@ const myClubsData = [
     status: "PUBLIC",
     members: "248",
     logo: "/Images/CycleImage2.png",
+    isPaid: true,
+    price: "50.00"
   },
   {
     id: "2",
@@ -18,10 +40,12 @@ const myClubsData = [
     status: "PRIVATE",
     members: "112",
     logo: "/Images/PersonImage.png",
+    isPaid: false,
+    price: "0"
   },
 ];
 
-const discoverClubsData = [
+const discoverClubsData: ClubData[] = [
   {
     id: "1",
     name: "Red Rock Cyclists",
@@ -29,31 +53,59 @@ const discoverClubsData = [
     status: "PUBLIC",
     members: "248 Pals joined",
     logo: "/Images/CyclingPicture.jpg",
+    isPaid: true,
+    price: "50.00"
   },
   {
     id: "2",
     name: "Apex Running Club",
     activityType: "Running",
-    status: "PRIVATE",
+    status: "PUBLIC",
     members: "112 Pals joined",
     logo: "/Images/CyclingPicture.jpg",
+    isPaid: false,
+    price: "0"
   },
   {
-    id: "3",
-    name: "Ironman Triathlons",
-    activityType: "Triathlon",
-    status: "PUBLIC",
-    members: "128 Pals joined",
+    id: "4",
+    name: "Private Elite Runners",
+    activityType: "Running",
+    status: "PRIVATE",
+    members: "45 Pals joined",
     logo: "/Images/CyclingPicture.jpg",
+    isPaid: true,
+    price: "25.00"
   },
 ];
 
-export default function ClubHome() {
+type TabType = "rides" | "news" | "leaderboard" | "shop" | "discounts" | "marketplace" | "members" | "overviews";
+
+export default function UserClub() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  
+  // Explicitly typing as ClubData | null solves the inferring 'never' issue.
+  const [selectedClub, setSelectedClub] = useState<ClubData | null>(null);
+  const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
 
-  // Functional Search: Filters based on club name or activity type
+  // --- JOIN CLUB WORKFLOW STATES ---
+  const [isMember, setIsMember] = useState(false);
+  const [showCodeScreen, setShowCodeScreen] = useState(false);
+  const [joinCode, setJoinCode] = useState("");
+  const [codeError, setCodeError] = useState("");
+  
+  const [showDepositScreen, setShowDepositScreen] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  
+  // Deposit Form Fields with auto-formatting logic
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
+
+  const [activeTab, setActiveTab] = useState<TabType>("overviews");
+
   const filteredMyClubs = myClubsData.filter(
     (club) =>
       club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -66,8 +118,360 @@ export default function ClubHome() {
       comm.activityType.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleSelectMyClub = (club: ClubData) => {
+    setIsDiscoverContext(false); 
+    setSelectedClub(club);
+    setIsMember(true);
+    setShowCodeScreen(false);
+    setShowDepositScreen(false);
+    setCodeError("");
+  };
+
+  const handleSelectDiscoverClub = (comm: ClubData) => {
+    setIsDiscoverContext(true); 
+    setSelectedClub(comm);
+    // If it's a private club in discovery, we start as non-member until codes/deposits are verified
+    setIsMember(comm.status === "PRIVATE" ? false : true);
+    setShowCodeScreen(false);
+    setShowDepositScreen(false);
+    setJoinCode("");
+    setCodeError("");
+  };
+
+  const handleBackToHub = () => {
+    setSelectedClub(null);
+    setShowCodeScreen(false);
+    setShowDepositScreen(false);
+    setIsMember(false);
+    setCodeError("");
+    setPaymentSuccess(false);
+    // Reset Deposit Fields
+    setCardNumber("");
+    setExpiryDate("");
+    setCvv("");
+    setAccountHolder("");
+  };
+
+  const handleJoinClubClick = () => {
+    if (selectedClub?.status === "PRIVATE") {
+      setShowCodeScreen(true);
+    } else if (selectedClub?.isPaid) {
+      setShowDepositScreen(true);
+    } else {
+      setIsMember(true);
+    }
+  };
+
+  const handleVerifyCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Verification Code "111" logic retained
+    if (joinCode === "111") {
+      setCodeError("");
+      setShowCodeScreen(false);
+      if (selectedClub?.isPaid) {
+        setShowDepositScreen(true);
+      } else {
+        setIsMember(true);
+      }
+    } else {
+      setCodeError("Incorrect code entered. Please use '111' to proceed.");
+    }
+  };
+
+  // Card formatting engine (Groups 4 digits separated by a space)
+  const handleCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, "");
+    const groups = val.match(/.{1,4}/g);
+    setCardNumber(groups ? groups.join(" ") : "");
+  };
+
+  // Expiry date formatter (Injects "/" automatically after MM)
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length >= 2) {
+      val = val.slice(0,2) + "/" + val.slice(2,4);
+    }
+    setExpiryDate(val);
+  };
+
+  // Validation Checkers
+  const isCardComplete = cardNumber.replace(/\s/g, "").length === 16;
+  const isExpiryComplete = /^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(expiryDate);
+  const isCvvComplete = cvv.length >= 3 && cvv.length <= 4 && /^\d+$/.test(cvv);
+  const isHolderComplete = accountHolder.trim().length > 2;
+
+  const isFormValid = isCardComplete && isExpiryComplete && isCvvComplete && isHolderComplete;
+
+  const handleDepositConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isFormValid) return;
+    
+    setPaymentSuccess(true);
+    setTimeout(() => {
+      setIsMember(true);
+      setShowDepositScreen(false);
+      setPaymentSuccess(false);
+    }, 2000);
+  };
+
+  if (selectedClub) {
+    const currentRole: "organizer" | "athlete" = isDiscoverContext ? "athlete" : "organizer";
+
+    return (
+      <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8 bg-[#161616]">
+        <div className="flex-1 transition-all max-w-7xl w-full mx-auto space-y-8">
+          
+          {/* Back button */}
+          <button
+            onClick={handleBackToHub}
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-xs font-bold tracking-wider uppercase cursor-pointer transition-all bg-[#141414] px-5 py-3 rounded-xl border border-white/5"
+          >
+            <ArrowLeft size={16} /> Back to Hub
+          </button>
+
+          {/* Large Hero/Banner Section */}
+          <div className="relative h-64 w-full rounded-3xl overflow-hidden border border-white/10">
+            <img 
+              src={selectedClub.logo} 
+              alt={selectedClub.name} 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#161616] via-black/40 to-transparent" />
+            
+            <div className="absolute inset-x-6 bottom-6 flex flex-wrap items-end justify-between gap-4">
+              <div className="flex items-center gap-5">
+                <img 
+                  src={selectedClub.logo} 
+                  alt={selectedClub.name} 
+                  className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-xl shrink-0"
+                />
+                <div>
+                  <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border mb-1.5 ${
+                    selectedClub.status === "PUBLIC" 
+                      ? "bg-green-500/10 text-green-300 border-green-500/30" 
+                      : "bg-rose-500/10 text-rose-300 border-rose-500/30"
+                  }`}>
+                    {selectedClub.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {selectedClub.status}
+                  </span>
+                  <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">{selectedClub.name}</h2>
+                  <p className="text-gray-300 text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Activity: {selectedClub.activityType}</p>
+                </div>
+              </div>
+
+              {!isMember && !showCodeScreen && !showDepositScreen && (
+                <button 
+                  onClick={handleJoinClubClick}
+                  className="px-6 py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black tracking-widest uppercase cursor-pointer shadow-lg transition-all duration-300 hover:scale-105 shrink-0"
+                >
+                  Join Club
+                </button>
+              )}
+
+              {isMember && (
+                <div className="px-6 py-3.5 bg-white/5 border border-white/10 text-gray-400 rounded-xl text-xs font-black tracking-widest uppercase cursor-default shrink-0">
+                  ✓ Joined
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* SCREEN 2: Code Verification (Modern Popup) */}
+          {showCodeScreen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+              <div className="bg-[#141414] border border-white/10 p-8 rounded-3xl w-full max-w-sm space-y-6 shadow-2xl relative">
+                <div className="text-center">
+                  <h3 className="text-xl font-black uppercase tracking-tight">Join Verification</h3>
+                  <p className="text-gray-400 text-[10px] mt-1 tracking-wider">Please enter the club join code (Hint: 111)</p>
+                </div>
+                <form onSubmit={handleVerifyCode} className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="— — —"
+                    maxLength={3}
+                    value={joinCode}
+                    onChange={(e) => setJoinCode(e.target.value)}
+                    className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-[#EB712B] text-white placeholder-gray-600"
+                  />
+                  
+                  {/* Professional Inline Error Message */}
+                  {codeError && (
+                    <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-[10px] font-bold tracking-wide animate-pulse">
+                      <AlertCircle size={14} className="shrink-0" />
+                      <span>{codeError}</span>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowCodeScreen(false)}
+                      className="flex-1 py-4 bg-[#1A1A1A] hover:bg-[#222222] text-gray-400 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-white/5"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/10"
+                    >
+                      Verify
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 3: Deposit Modal (Sleek Overlay Form with secure fields) */}
+          {showDepositScreen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+              <div className="bg-[#141414] border border-white/10 p-8 rounded-3xl w-full max-w-md space-y-6 my-8 shadow-2xl relative">
+                
+                {paymentSuccess ? (
+                  <div className="flex flex-col items-center justify-center py-12 space-y-4 text-center animate-fade-in">
+                    <div className="p-4 bg-green-500/10 rounded-full border border-green-500/20 text-green-400">
+                      <CheckCircle2 size={48} className="animate-bounce" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-white">Payment Successful!</h3>
+                      <p className="text-gray-400 text-[10px] mt-1 tracking-wider">Redirecting you to your club dashboard...</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-center">
+                      <h3 className="text-xl font-black uppercase tracking-tight">Secure Checkout</h3>
+                      <p className="text-gray-400 text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${selectedClub.price}</span></p>
+                    </div>
+                    
+                    <form onSubmit={handleDepositConfirm} className="space-y-4 text-xs font-bold tracking-wider">
+                      <div>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Card number</label>
+                        <input
+                          type="text"
+                          placeholder="1111 1111 1111 1111"
+                          maxLength={19}
+                          value={cardNumber}
+                          onChange={handleCardChange}
+                          className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] text-gray-400 uppercase mb-1">Expiry Date</label>
+                          <input
+                            type="text"
+                            placeholder="12/26"
+                            maxLength={5}
+                            value={expiryDate}
+                            onChange={handleExpiryChange}
+                            className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] text-gray-400 uppercase mb-1">CVV</label>
+                          <input
+                            type="text"
+                            placeholder="XXX"
+                            maxLength={4}
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
+                            className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Account holder</label>
+                        <input
+                          type="text"
+                          placeholder="Full name on card"
+                          value={accountHolder}
+                          onChange={(e) => setAccountHolder(e.target.value)}
+                          className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Amount to pay</label>
+                        <input
+                          type="text"
+                          disabled
+                          value={`$${selectedClub.price}`}
+                          className="w-full bg-[#1a1a1a] border border-white/5 rounded-xl p-4 text-gray-500 focus:outline-none cursor-not-allowed"
+                        />
+                      </div>
+                      <div className="pt-2 flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setShowDepositScreen(false)}
+                          className="w-full py-4 bg-[#1A1A1A] hover:bg-[#222222] text-gray-400 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-white/5"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={!isFormValid}
+                          className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg ${
+                            isFormValid 
+                              ? "bg-[#EB712B] hover:bg-[#ff8036] text-white cursor-pointer shadow-[#EB712B]/10" 
+                              : "bg-[#222222] text-gray-600 cursor-not-allowed border border-white/5 shadow-none"
+                          }`}
+                        >
+                          Pay Securely
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* NAVIGATION TABS - Unlocks/locks content dynamically using optional chaining */}
+          <div className="flex bg-[#111111] border border-white/5 rounded-2xl p-2 gap-2 w-full md:w-fit overflow-x-auto mt-6">
+            {(["rides", "news", "leaderboard", "shop", "discounts", "marketplace", "overviews"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`relative flex-1 md:flex-initial px-6 py-4 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all text-center whitespace-nowrap ${
+                  activeTab === tab 
+                    ? "text-white bg-white/5" 
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <span className="absolute left-1/2 bottom-1 -translate-x-1/2 w-4 h-1 bg-[#EB712B] rounded-full" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content Display */}
+          <div className="mt-6">
+            {isMember ? (
+              <>
+                {activeTab === "rides" && <Ride clubId={selectedClub?.id} />}
+                {activeTab === "news" && <News clubId={selectedClub?.id} />}
+                {activeTab === "leaderboard" && <Leaderboard clubId={selectedClub?.id} />}
+                {activeTab === "discounts" && <Discount role={currentRole} />}        
+                {activeTab === "shop" && <Shop clubId={selectedClub?.id} />} 
+                {activeTab === "marketplace" && <Marketplace clubId={selectedClub?.id} />} 
+                {activeTab === "overviews" && <Overviews clubId={selectedClub?.id} />}
+              </>
+            ) : (
+              <div className="bg-[#141414] border border-white/5 rounded-3xl p-12 text-center text-gray-400 text-xs font-bold tracking-wider">
+                Join this club to view its {activeTab}.
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
+    );
+  }
+
+  // --- DEFAULT VIEW: HUB & SEARCH ---
   return (
-    <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8">
+    <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8 bg-[#161616]">
       <div className="flex-1 p-4 transition-all max-w-7xl w-full mx-auto space-y-12">
         
         {/* Top Header & Overview */}
@@ -130,7 +534,6 @@ export default function ClubHome() {
                   key={club.id}
                   className="bg-[#141414] border border-white/[0.06] rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
                 >
-                  {/* Background image dynamically set using club.logo */}
                   <div className="absolute inset-0 bg-zinc-950">
                     <img
                       src={club.logo}
@@ -140,7 +543,6 @@ export default function ClubHome() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-black/40 to-transparent" />
                   </div>
 
-                  {/* Card Activity Tag & Upgraded Premium Status Badge */}
                   <div className="relative z-10 p-6 flex justify-between items-start">
                     <span className="px-4 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
                       {club.activityType}
@@ -154,7 +556,6 @@ export default function ClubHome() {
                     </span>
                   </div>
 
-                  {/* Card Info */}
                   <div className="relative z-10 p-6 backdrop-blur-[2px]">
                     <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase">
                       {club.name}
@@ -170,7 +571,7 @@ export default function ClubHome() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                       </svg>
                       <span>Las Vegas, NV</span>
@@ -195,7 +596,10 @@ export default function ClubHome() {
                         </svg>
                         {club.members} Pals joined
                       </div>
-                      <span className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform">
+                      <span 
+                        onClick={() => handleSelectMyClub(club)} 
+                        className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer"
+                      >
                         Manage &rarr;
                       </span>
                     </div>
@@ -256,7 +660,6 @@ export default function ClubHome() {
                   key={comm.id}
                   className="bg-[#141414] border border-white/[0.06] rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
                 >
-                  {/* Background image dynamically set using comm.logo */}
                   <div className="absolute inset-0 bg-zinc-950">
                     <img
                       src={comm.logo}
@@ -270,7 +673,6 @@ export default function ClubHome() {
                     <span className="px-4 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
                       {comm.activityType}
                     </span>
-                    {/* Upgraded Premium Status Badge */}
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
                       comm.status === "PUBLIC" 
                         ? "bg-green-500/10 text-green-300 border-green-500/30 shadow-green-950/20 shadow-sm" 
@@ -295,7 +697,7 @@ export default function ClubHome() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
                         <circle cx="12" cy="10" r="3"></circle>
                       </svg>
                       <span>Las Vegas, NV</span>
@@ -320,8 +722,11 @@ export default function ClubHome() {
                         </svg>
                         {comm.members}
                       </div>
-                      <span className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform">
-                        {comm.status === "PUBLIC" ? "Explore →" : "Request →"}
+                      <span 
+                        onClick={() => handleSelectDiscoverClub(comm)} 
+                        className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer"
+                      >
+                        View &rarr;
                       </span>
                     </div>
                   </div>
@@ -329,68 +734,51 @@ export default function ClubHome() {
               ))}
             </div>
           ) : (
-            <div className="space-y-4">
-              {/* Table Headers */}
-              <div className="hidden md:grid grid-cols-5 text-gray-500 text-[10px] font-black uppercase tracking-widest px-6 mb-4">
-                <div>Community</div>
-                <div>Activity Type</div>
-                <div>Access</div>
-                <div>Members</div>
-                <div className="text-right">Action</div>
-              </div>
-
+            <div className="flex flex-col gap-4">
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}
-                  className="grid grid-cols-1 md:grid-cols-5 items-center bg-[#141414] border border-white/5 rounded-3xl p-4 px-6 hover:scale-[1.01] hover:border-[#EB712B]/50 hover:shadow-[0_0_25px_rgba(235,113,43,0.1)] transition-all duration-300 gap-y-4 md:gap-y-0"
+                  className="bg-[#141414] border border-white/[0.06] rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
                 >
-                  <div className="flex items-center gap-4 font-bold col-span-2 md:col-span-1">
-                    {/* List-view image dynamically rendered */}
+                  <div className="flex items-center gap-6 w-full">
                     <img
                       src={comm.logo}
                       alt={comm.name}
-                      className="w-12 h-12 rounded-2xl object-cover border border-white/10"
+                      className="w-20 h-20 rounded-2xl object-cover shrink-0"
                     />
-                    <span className="truncate group-hover:text-[#EB712B] transition-colors uppercase tracking-tight">
-                      {comm.name}
-                    </span>
+                    <div className="space-y-1.5 w-full">
+                      <div className="flex items-center gap-3">
+                        <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
+                          {comm.activityType}
+                        </span>
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
+                          comm.status === "PUBLIC" 
+                            ? "bg-green-500/10 text-green-300 border-green-500/30" 
+                            : "bg-rose-500/10 text-rose-300 border-rose-500/30"
+                        }`}>
+                          {comm.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {comm.status}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase">
+                        {comm.name}
+                      </h3>
+                      <p className="text-[10px] text-gray-400 font-bold tracking-wider uppercase">
+                        {comm.members}
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="text-gray-400 text-xs font-semibold md:pl-0">
-                    <span className="md:hidden font-black text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Activity Type</span>
-                    {comm.activityType}
-                  </div>
-                  
-                  <div>
-                    <span className="md:hidden font-black text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Access</span>
-                    <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg border ${
-                      comm.status === "PUBLIC" 
-                        ? "bg-green-500/10 text-green-300 border-green-500/30 shadow-green-950/20" 
-                        : "bg-rose-500/10 text-rose-300 border-rose-500/30 shadow-rose-950/20"
-                    }`}>
-                      {comm.status === "PUBLIC" ? <Globe size={12} /> : <Lock size={12} />} {comm.status}
-                    </span>
-                  </div>
-                  
-                  <div className="text-gray-400 text-xs font-bold tracking-tight">
-                    <span className="md:hidden font-black text-[9px] text-gray-500 uppercase tracking-widest block mb-1">Members</span>
-                    {comm.members}
-                  </div>
-                  
-                  <div className="text-left md:text-right">
-                    <button className={`w-full md:text-auto px-6 py-3 font-black uppercase rounded-xl transition-all cursor-pointer text-xs tracking-wide shadow-lg ${
-                      comm.status === "PUBLIC"
-                        ? "bg-[#EB712B] hover:bg-[#d05c1c] text-white shadow-[#EB712B]/20"
-                        : "bg-white/5 hover:bg-white/10 text-gray-300 border border-white/10 shadow-none"
-                    }`}>
-                      {comm.status === "PUBLIC" ? "Explore" : "Request Access"}
-                    </button>
-                  </div>
+                  <span 
+                    onClick={() => handleSelectDiscoverClub(comm)} 
+                    className="text-[#EB712B] font-black text-xs tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer shrink-0"
+                  >
+                    View Hub &rarr;
+                  </span>
                 </div>
               ))}
             </div>
           )}
         </section>
+
       </div>
     </div>
   );

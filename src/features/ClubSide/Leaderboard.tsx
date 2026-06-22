@@ -1,4 +1,3 @@
-// import React from 'react';
 import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
 
 const LEADERBOARD_DATA = [
@@ -23,7 +22,7 @@ const StatCard = ({ title, value, icon: Icon }: any) => (
   </div>
 );
 
-export const Leaderboard = () => {
+export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   return (
     <div className="min-h-screen text-white p-6 md:p-16 font-sans overflow-x-hidden">
       
@@ -35,6 +34,7 @@ export const Leaderboard = () => {
             <span className="text-[10px] font-bold tracking-widest text-[#EB712B] uppercase">Performance Analytics</span>
           </div>
           <h1 className="text-4xl md:text-4.4xl font-extrabold tracking-tighter text-white">Leaderboard</h1>
+          {clubId && <p className="text-xs text-[#EB712B] font-bold">Club ID: {clubId}</p>}
           <p className="text-gray-400 text-sm md:text-base max-w-lg leading-relaxed tracking-wide">
             <span className="text-[#EB712B] font-bold">Global Performance Index:</span> Tracking elite cycling metrics and club rankings across the continental federation circuit.
           </p>

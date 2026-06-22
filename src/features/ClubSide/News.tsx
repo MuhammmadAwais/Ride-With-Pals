@@ -10,7 +10,8 @@ const newsItems = [
     author: "Bessie Cooper",
     authorInitials: "BC",
     previewText: "Tilogi ip-tv. Dideng euroledes. Min spepikas, demoskop. Nes megagōliga devis.",
-    fullContent: "Presegen pinas. Nyn halvtaktsjobb, jag holigt. Decidat resovår. Tremön sesam etnovision. Nipobyvis höprek. Megt migös."
+    fullContent: "Presegen pinas. Nyn halvtaktsjobb, jag holigt. Decidat resovår. Tremön sesam etnovision. Nipobyvis höprek. Megt migös.",
+    image: "/Images/CycleImage8.png"
   },
   {
     id: 2,
@@ -19,7 +20,8 @@ const newsItems = [
     author: "Ahmad Khan",
     authorInitials: "AK",
     previewText: "The system architecture has been successfully migrated to the new cloud infrastructure.",
-    fullContent: "This allows for faster deployment cycles, improved security, and significantly lower latency."
+    fullContent: "This allows for faster deployment cycles, improved security, and significantly lower latency.",
+    image: "/Images/CycleImage8.png"
   },
   {
     id: 3,
@@ -28,7 +30,8 @@ const newsItems = [
     author: "Sarah Jenkins",
     authorInitials: "SJ",
     previewText: "We have successfully completed our Q2 security audit with zero critical vulnerabilities found.",
-    fullContent: "The audit covered all major endpoints and API gateways. We have updated our encryption protocols to ensure that all user data remains protected against emerging threats."
+    fullContent: "The audit covered all major endpoints and API gateways. We have updated our encryption protocols to ensure that all user data remains protected against emerging threats.",
+    image: "/Images/CycleImage8.png"
   },
   {
     id: 4,
@@ -37,7 +40,8 @@ const newsItems = [
     author: "Marcus Thorne",
     authorInitials: "MT",
     previewText: "Our community has officially surpassed 50,000 active members this week.",
-    fullContent: "To celebrate this milestone, we are launching a series of community-led workshops starting next month to foster better collaboration and learning."
+    fullContent: "To celebrate this milestone, we are launching a series of community-led workshops starting next month to foster better collaboration and learning.",
+    image: "/Images/CycleImage8.png"
   }
 ];
 
@@ -79,7 +83,7 @@ const NewsArticle = ({ item }: { item: typeof newsItems[0] }) => {
 
             {isExpanded && (
               <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                <img src="/Images/CycleImage8.png" alt="Article visual" className="w-full h-40 sm:h-48 object-cover rounded-2xl border border-white/[0.05]" />
+                <img src={item.image} alt="Article visual" className="w-full h-40 sm:h-48 object-cover rounded-2xl border border-white/[0.05]" />
                 <p className="text-sm text-gray-400 leading-relaxed">
                   {item.fullContent}
                   <button onClick={() => setIsExpanded(false)} className="ml-2 font-bold text-[#EB712B] underline underline-offset-4 cursor-pointer">
@@ -105,7 +109,11 @@ const NewsArticle = ({ item }: { item: typeof newsItems[0] }) => {
   );
 };
 
-export const NewsFeed = () => (
+interface NewsFeedProps {
+  clubId?: string | number;
+}
+
+export const NewsFeed: React.FC<NewsFeedProps> = () => (
   <div className="min-h-screen text-white p-4 sm:p-6 md:p-16 font-sans">
     <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">

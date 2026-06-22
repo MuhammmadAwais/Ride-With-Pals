@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Calendar, 
@@ -12,89 +12,95 @@ import {
   Compass
 } from "lucide-react";
 
-const Ride = () => {
+// Mock data matching the cards in your screenshot
+const initialRides = [
+  {
+    id: 1,
+    title: "Run and Fit",
+    clubName: "Cyc Rock Cycle",
+    date: "20 Jan, 2026 - 10:00 AM",
+    location: "6391 Elgin St. Celina, Delaware 10299",
+    rideType: "Gravel",
+    speed: "28km/h",
+    distance: "80km",
+    participants: "10",
+    organizer: "Arlene McCoy"
+  },
+  {
+    id: 2,
+    title: "Coastal Cruise",
+    clubName: "Ocean Drive Riders",
+    date: "22 Jan, 2026 - 07:30 AM",
+    location: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
+    rideType: "Road",
+    speed: "32km/h",
+    distance: "120km",
+    participants: "24",
+    organizer: "Cody Fisher"
+  },
+  {
+    id: 3,
+    title: "Mountain Pass Express",
+    clubName: "Apex Ascents",
+    date: "24 Jan, 2026 - 06:00 AM",
+    location: "4140 Washington Ave. Manchester, Kentucky 39495",
+    rideType: "MTB",
+    speed: "18km/h",
+    distance: "45km",
+    participants: "8",
+    organizer: "Robert Fox"
+  },
+  {
+    id: 4,
+    title: "Urban Night Sprint",
+    date: "28 Jan, 2026 - 08:30 PM",
+    clubName: "Neon Hub",
+    location: "8502 Preston Rd. Inglewood, Maine 98380",
+    rideType: "Criterium",
+    speed: "45km/h",
+    distance: "30km",
+    participants: "15",
+    organizer: "Esther Howard"
+  },
+  {
+    id: 5,
+    title: "Early Bird Loop",
+    clubName: "Sunrise Spinners",
+    date: "28 Jan, 2026 - 08:30 AM",
+    location: "2718 Thornridge Cir. Syracuse, Connecticut 35624",
+    rideType: "Road",
+    speed: "26km/h",
+    distance: "80km",
+    participants: "12",
+    organizer: "Jenny Wilson"
+  },
+  {
+    id: 6,
+    title: "Gravel Grind XL",
+    clubName: "Dirty Spokes",
+    date: "28 Jan, 2026 - 08:30 AM",
+    location: "3517 W. Gray St. Utica, Pennsylvania 87867",
+    rideType: "Gravel",
+    speed: "33km/h",
+    distance: "180km",
+    participants: "18",
+    organizer: "Guy Hawkins"
+  }
+];
+
+interface RideProps {
+  clubId?: string | number;
+}
+
+const Ride: React.FC<RideProps> = ({ clubId }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
 
-  // Mock data matching the cards in your screenshot
-  const rides = [
-    {
-      id: 1,
-      title: "Run and Fit",
-      clubName: "Cyc Rock Cycle",
-      date: "20 Jan, 2026 - 10:00 AM",
-      location: "6391 Elgin St. Celina, Delaware 10299",
-      rideType: "Gravel",
-      speed: "28km/h",
-      distance: "80km",
-      participants: "10",
-      organizer: "Arlene McCoy"
-    },
-    {
-      id: 2,
-      title: "Coastal Cruise",
-      clubName: "Ocean Drive Riders",
-      date: "22 Jan, 2026 - 07:30 AM",
-      location: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
-      rideType: "Road",
-      speed: "32km/h",
-      distance: "120km",
-      participants: "24",
-      organizer: "Cody Fisher"
-    },
-    {
-      id: 3,
-      title: "Mountain Pass Express",
-      clubName: "Apex Ascents",
-      date: "24 Jan, 2026 - 06:00 AM",
-      location: "4140 Washington Ave. Manchester, Kentucky 39495",
-      rideType: "MTB",
-      speed: "18km/h",
-      distance: "45km",
-      participants: "8",
-      organizer: "Robert Fox"
-    },
-    {
-      id: 4,
-      title: "Urban Night Sprint",
-      date: "28 Jan, 2026 - 08:30 PM",
-      clubName: "Neon Hub",
-      location: "8502 Preston Rd. Inglewood, Maine 98380",
-      rideType: "Criterium",
-      speed: "45km/h",
-      distance: "30km",
-      participants: "15",
-      organizer: "Esther Howard"
-    },
-    {
-      id: 5,
-      title: "Early Bird Loop",
-      clubName: "Sunrise Spinners",
-      date: "28 Jan, 2026 - 08:30 AM",
-      location: "2718 Thornridge Cir. Syracuse, Connecticut 35624",
-      rideType: "Road",
-      speed: "26km/h",
-      distance: "80km",
-      participants: "12",
-      organizer: "Jenny Wilson"
-    },
-    {
-      id: 6,
-      title: "Gravel Grind XL",
-      clubName: "Dirty Spokes",
-      date: "28 Jan, 2026 - 08:30 AM",
-      location: "3517 W. Gray St. Utica, Pennsylvania 87867",
-      rideType: "Gravel",
-      speed: "33km/h",
-      distance: "180km",
-      participants: "18",
-      organizer: "Guy Hawkins"
-    }
-  ];
+  console.log("Active club ID context:", clubId);
 
   // Filtering Logic
-  const filteredRides = rides.filter(ride => {
+  const filteredRides = initialRides.filter(ride => {
     const query = searchQuery.trim().toLowerCase();
 
     const matchesSearch = 
@@ -109,11 +115,11 @@ const Ride = () => {
 
   // Navigates to the dynamic detailed RideJoining screen when clicked
   const handleJoinRide = (id: number | string) => {
-    navigate(`/dashboard/ride/${id}`); // Ensure your Router in App.tsx/routes.tsx handles this route properly
+    navigate(`/dashboard/ride/${id}`);
   };
 
   return (
-    <div className="min-h-screen text-white p-6 md:p-10 font-sans select-none ">
+    <div className="min-h-screen text-white p-6 md:p-10 font-sans select-none w-full">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}

@@ -263,15 +263,18 @@ const ProfileAccount = () => {
             Workspace & Support
           </h3>
           <div className={sectionCardStyle}>
-            <Link to="/support" className="block w-full">
-              <div className={rowItemStyle}>
-                <div className="flex items-center gap-4">
-                  <HelpCircle className="text-[#EB712B]" size={20} />
-                  <span className="font-medium text-sm">Support & Help</span>
-                </div>
-                <ChevronRight size={18} />
-              </div>
-            </Link>
+            <Link 
+  to={location.pathname.startsWith('/clubs') || location.pathname.startsWith('/my-promos') ? "/support/athlete" : "/support/owner"} 
+  className="block w-full"
+>
+  <div className={rowItemStyle}>
+    <div className="flex items-center gap-4">
+      <HelpCircle className="text-[#EB712B]" size={20} />
+      <span className="font-medium text-sm">Support & Help</span>
+    </div>
+    <ChevronRight size={18} />
+  </div>
+</Link>
             <div
               onClick={() => setIsLanguageModalOpen(true)}
               className={`${rowItemStyle} cursor-pointer hover:bg-white/[0.05]`}

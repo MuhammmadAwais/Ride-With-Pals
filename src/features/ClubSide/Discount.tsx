@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plus, Search, Tag, AlertCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// Shared database for Active items so both interfaces show exactly the same data
+// Shared database for Active items
 const SHARED_ACTIVE_DISCOUNTS = [
   { id: 1, title: 'Rock Life Title', code: '5245J64', expiry: '20 Jan, 2026', description: 'Applicable on all premium membership tiers. Requires a minimum spend of $50.' },
   { id: 2, title: 'Summer Essentials', code: 'SUMMER20', expiry: '30 Aug, 2026', description: 'Get 20% off on all summer collection items. This offer is valid exclusively for premium members.' },
@@ -25,7 +25,7 @@ const EXPIRED_DISCOUNTS = [
   { id: 15, title: 'Founders Week', code: 'FOUNDER50', expiry: '05 Jan, 2025', description: 'Historical promo code from our Founders Week.' }
 ];
 
-// Reusable Coupon Card matching the high-performance UI specs
+// Reusable Coupon Card matching UI specs
 const CouponCard = ({ title, code, expiry, description }: any) => (
   <div className="group relative bg-[#161616] border border-white/[0.05] rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-500 hover:border-[#EB712B]/30 shadow-xl">
     <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -55,7 +55,7 @@ const CouponCard = ({ title, code, expiry, description }: any) => (
             <span className="font-mono text-sm font-bold text-white tracking-widest block truncate">{code}</span>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-[9px] text-gray-600 uppercase font-bold mb-0.5 ">Expires</p>
+            <p className="text-[9px] text-gray-600 uppercase font-bold mb-0.5">Expires</p>
             <span className="text-xs font-medium text-red-700">{expiry}</span>
           </div>
         </div>
@@ -81,19 +81,20 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  // Filter shared active list based on athlete search query
+  // Filters out the promo with ID 1 for the Athlete user and applies keyword matching search query
   const filteredActivePromos = SHARED_ACTIVE_DISCOUNTS.filter(promo => 
-    promo.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    promo.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    promo.title.toLowerCase().includes(searchQuery.toLowerCase())
+    promo.id !== 1 && 
+    (promo.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     promo.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     promo.title.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   // ==========================================
-  // ATHLETE INTERFACE VIEW (Promo Wallet)
+  // ATHLETE INTERFACE VIEW (Promo Wallet & Public Club View)
   // ==========================================
   if (role === "athlete") {
     return (
-      <div className="px-4 py-8 md:p-8 min-h-screen  text-white w-full font-sans select-none">
+      <div className="px-4 py-8 md:p-8 min-h-screen text-white w-full font-sans select-none">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-white/5 pb-6">
             <div className="space-y-1.5">
@@ -117,59 +118,15 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
             {filteredActivePromos.length > 0 ? (
               filteredActivePromos.map((promo) => (
-                <div key={promo.id} className="group relative bg-[#161616] border border-white/[0.05] rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-500 hover:border-[#EB712B]/30 shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  <div className="relative z-10">
-                    <div className="flex justify-between items-start mb-6 gap-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-[#1a1a1a] flex items-center justify-center border border-white/[0.03]">
-                          <span className="text-lg">🏷️</span>
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-white text-sm truncate">{promo.title}</h3>
-                          <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">Promotion</p>
-                        </div>
-                      </div>
-                      <div className="bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20 shrink-0 flex items-center">
-                        <span className="text-[#EB712B] text-[10px] font-black uppercase tracking-wider">20% OFF</span>
-                      </div>
-                    </div>
-
-                    {/* Code & Expiry Block mirroring the organizer card */}
-                    <div className="bg-[#050505] p-4 rounded-2xl border border-white/[0.03] mb-4">
-                      <div className="flex justify-between items-center gap-4">
-                        <div className="min-w-0">
-                          <p className="text-[9px] text-gray-600 uppercase font-bold mb-0.5">Promo Code</p>
-                          <span className="font-mono text-sm font-bold text-white tracking-widest block truncate">{promo.code}</span>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <p className="text-[9px] text-gray-600 uppercase font-bold mb-0.5 ">Expires</p>
-                          <span className="text-xs font-medium text-red-700">{promo.expiry}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <h4 className="text-[10px] font-bold text-gray-300 uppercase tracking-wider mb-2">Description</h4>
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2 md:line-clamp-3 mb-4">
-                        {promo.description}
-                      </p>
-                    </div>
-
-                    <div className="bg-[#050505] border border-white/[0.03] px-4 py-2.5 rounded-2xl text-[10px] font-bold text-gray-400 flex items-center justify-end">
-                      <span className="text-emerald-400 uppercase tracking-widest font-black bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">Active</span>
-                    </div>
-                  </div>
-                </div>
+                <CouponCard key={promo.id} {...promo} />
               ))
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-20 text-center space-y-3 border border-dashed border-white/10 rounded-3xl">
                 <AlertCircle size={36} className="text-gray-600 animate-pulse" />
-                <p className="text-xs font-bold text-gray-400">No promo codes found matching your Discount.</p>
+                <p className="text-xs font-bold text-gray-400">No promo codes found matching your criteria.</p>
               </div>
             )}
           </div>
@@ -188,7 +145,9 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12 max-w-7xl mx-auto border-b border-white/5 pb-6">
         <div className="w-full lg:w-auto space-y-1.5">
-          <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3"><Tag className="text-[#eb712a]" size={28} /> Discounts & Promotions</h1>
+          <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
+            <Tag className="text-[#eb712a]" size={28} /> Discounts & Promotions
+          </h1>
           <p className="text-gray-500 text-xs md:text-sm max-w-lg leading-relaxed">
             Configure and monitor high-performance campaign protocols.
           </p>

@@ -35,9 +35,10 @@ import Discount from '../features/ClubSide/Discount';
 import AddDiscount from '../features/ClubSide/AddDiscount';
 
 import AboutApp from '../features/ClubSide/AboutApp';
-import SupportHelp from '../features/ClubSide/SupportHelp';
+// import SupportHelp from '../features/ClubSide/SupportHelp';
 import ManageClubHome from '../features/ClubSide/ManageClubHome';
 import EditClub from "../features/ClubSide/EditClub";
+import { OrganizerSupport, AthleteSupport } from '../features/ClubSide/SupportHelp';
 
 // Public side & Ride components
 import Clubs from '../features/public-club/pages/UserClub';
@@ -84,8 +85,11 @@ export const AppRouter = () => {
           {/* Athlete Promo Wallet Route */}
           <Route path="/my-promos" element={<DashBoard defaultView={<Discount role="athlete" />} />} />
 
-          <Route path="/support" element={<DashBoard defaultView={<SupportHelp />} />} />
-          
+         {/* Owner / Organizer Support Route */}
+<Route path="/support/owner" element={<DashBoard defaultView={<OrganizerSupport />} />} />
+
+{/* Athlete / User Support Route */}
+<Route path="/support/athlete" element={<DashBoard defaultView={<AthleteSupport />} />} />
           {/* Community/User Interface Route */}
           <Route path="/clubs" element={<DashBoard defaultView={<Clubs />} />} />
 
