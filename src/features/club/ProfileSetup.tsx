@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { Upload, ChevronDown, Sparkles, ArrowRight, Mail } from "lucide-react";
 import gsap from "gsap"; 
@@ -17,7 +17,7 @@ export default function ProfileSetup() {
   const [mission, setMission] = useState("");
   
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isTouched, setIsTouched] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // GSAP animation
@@ -46,12 +46,10 @@ export default function ProfileSetup() {
   };
 
   const handleBlur = () => {
-    setIsTouched(true);
     validate();
   };
 
   const handleSave = async () => {
-    setIsTouched(true);
     if (!validate()) {
       toast.error("Please fill in all required fields.");
       return;

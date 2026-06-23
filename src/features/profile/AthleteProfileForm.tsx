@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, ChevronDown, Calendar, AlertCircle } from "lucide-react";
+import { Camera, ChevronDown, Calendar } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import { ROUTES } from "@/Constants";
