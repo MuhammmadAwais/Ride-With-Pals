@@ -16,7 +16,6 @@
 import { useState, useRef } from 'react';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
@@ -97,6 +96,24 @@ const CreateAccount = () => {
 
   const handleSignUp = () => {
     if (validate()) {
+      const existingUsers = JSON.parse(localStorage.getItem('registered_users') || '[]');
+      const userExists = existingUsers.some((u: any) => u.email === email.trim().toLowerCase());
+      
+      if (userExists) {
+        toast.error('An account with this email already exists.');
+        setErrors((prev) => ({ ...prev, email: 'An account with this email already exists.' }));
+        return;
+      }
+
+      existingUsers.push({
+        id: `usr_${Math.random().toString(36).substr(2, 9)}`,
+        email: email.trim().toLowerCase(),
+        password: password,
+        name: email.split('@')[0], // Default name from email prefix
+      });
+      
+      localStorage.setItem('registered_users', JSON.stringify(existingUsers));
+      toast.success('Registration initiated successfully.');
       navigate(ROUTES.VERIFY_EMAIL, { state: { email } });
     }
   };
@@ -109,7 +126,7 @@ const CreateAccount = () => {
     /* overflow-hidden prevents any scroll on the auth page */
     <div className="auth-page" style={{ background: '#050505', color: '#fff' }}>
 
-      {/* ══ LEFT PANEL — background image + animated blobs ══ */}
+      {/* ══ LEFT PANEL — background image + clean overlay ══ */}
       <div className="hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
         {/* Background image — admin panel bg.jpg */}
         <div
@@ -120,21 +137,13 @@ const CreateAccount = () => {
             backgroundPosition: 'center',
           }}
         />
-        {/* Dark overlay */}
-        <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.62)' }} />
+        {/* Dark overlay — flat, solid, high contrast for maximum maturity */}
+        <div className="absolute inset-0" style={{ background: 'rgba(5,5,5,0.72)' }} />
 
-        {/* Animated ambient blobs (kept from original) */}
-        <motion.div
-          animate={{ x: [0, 50, 0], y: [0, -30, 0], scale: [1, 1.2, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/4 -left-20 w-96 h-96 rounded-full"
-          style={{ background: 'rgba(235,113,43,0.14)', filter: 'blur(120px)', pointerEvents: 'none' }}
-        />
-        <motion.div
-          animate={{ x: [0, -40, 0], y: [0, 40, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute bottom-1/4 -right-20 w-80 h-80 rounded-full"
-          style={{ background: 'rgba(59,130,246,0.06)', filter: 'blur(120px)', pointerEvents: 'none' }}
+        {/* Small subtle static accent glow in the left panel corner to feel premium but mature */}
+        <div
+          className="absolute -top-10 -left-10 w-60 h-60 rounded-full"
+          style={{ background: 'rgba(235,113,43,0.04)', filter: 'blur(60px)', pointerEvents: 'none' }}
         />
 
         {/* Content */}
@@ -152,10 +161,25 @@ const CreateAccount = () => {
 
       {/* ══ RIGHT PANEL — signup form ══ */}
       <div
-        className="w-full lg:w-1/2 flex items-center justify-center"
-        style={{ padding: '32px 20px', overflowY: 'auto', background: 'rgba(5,5,5,0.97)' }}
+        className="w-full lg:w-1/2 flex items-center justify-center relative"
+        style={{ padding: '32px 20px', overflowY: 'auto', background: '#050505' }}
       >
-        <div ref={containerRef} className="w-full" style={{ maxWidth: '460px', padding: '0 4px' }}>
+        {/* Faint elegant glow centered behind the form card to add depth without being flashy */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '360px',
+            height: '360px',
+            background: 'radial-gradient(circle, rgba(235,113,43,0.02) 0%, rgba(5,5,5,0) 70%)',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+
+        <div ref={containerRef} className="w-full relative z-10" style={{ maxWidth: '460px', padding: '0 4px' }}>
 
           {/* Mobile logo */}
           <div className="animate-item lg:hidden flex justify-center mb-8">

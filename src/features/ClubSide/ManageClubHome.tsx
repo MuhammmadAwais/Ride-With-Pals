@@ -171,7 +171,7 @@ const ManageClubHome = () => {
       </div>
 
       {/* Modern Container: full width (w-full) */}
-      <div className="w-full bg-[#141414]/80 backdrop-blur-xl rounded-3xl border border-white/[0.06] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] relative">
+      <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-white/[0.06] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] relative">
         {/* Decorative gradient sheen */}
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#EB712B]/50 to-transparent" />
 
@@ -192,7 +192,7 @@ const ManageClubHome = () => {
               <div className="flex items-center gap-5 w-full md:w-auto justify-between md:justify-start">
                 <div className="flex items-center gap-5">
                   {/* Premium Avatar Box */}
-                  <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] border border-white/10 shadow-lg flex items-center justify-center overflow-hidden relative shrink-0 transition-transform duration-500 group-hover/row:scale-105">
+                  <div className="w-12 h-12 rounded-2xl bg-hover border border-white/10 shadow-lg flex items-center justify-center overflow-hidden relative shrink-0 transition-transform duration-500 group-hover/row:scale-105">
                     <img
                       src={item.avatar}
                       alt={item.name}
@@ -318,7 +318,7 @@ const ManageClubHome = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#111] text-white p-4 sm:p-8 font-sans w-full">
+    <div className="min-h-screen bg-surface text-white p-4 sm:p-8 font-sans w-full">
       {/* Header Banner */}
       <div
         className="relative h-96 md:h-[420px] w-full rounded-3xl mb-8 border border-white/10 shadow-[0_10px_50px_-12px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col justify-between p-6 sm:p-8 transition-all duration-700 ease-in-out group/banner cursor-pointer bg-cover bg-center bg-no-repeat"
@@ -533,7 +533,7 @@ const ManageClubHome = () => {
             <div className="w-full flex justify-center">
               {!showMembershipForm ? (
                 /* Stripe Connect View */
-                <div className="w-full bg-[#141414]/80 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-8 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_40px_rgba(235,113,43,0.15)]">
+                <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-8 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_40px_rgba(235,113,43,0.15)]">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100" />
 
                   <div className="z-10 flex flex-col items-center max-w-md text-center">
@@ -588,7 +588,7 @@ const ManageClubHome = () => {
                         value={packageName}
                         onChange={(e) => setPackageName(e.target.value)}
                         placeholder="Annual Junior Membership"
-                        className="w-full bg-[#141414] border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
+                        className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
                         required
                       />
                     </div>
@@ -609,7 +609,7 @@ const ManageClubHome = () => {
                             placeholder="00.00"
                             value={price}
                             onChange={(e) => setPrice(e.target.value)}
-                            className="w-full bg-[#141414] border border-white/10 rounded-xl pl-8 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
+                            className="w-full bg-surface border border-white/10 rounded-xl pl-8 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
                             required
                           />
                         </div>
@@ -622,7 +622,7 @@ const ManageClubHome = () => {
                           <select
                             value={duration}
                             onChange={(e) => setDuration(e.target.value)}
-                            className="w-full bg-[#141414] border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] appearance-none cursor-pointer font-bold transition-all duration-500 ease-in-out hover:border-[#EB712B]/50 hover:shadow-[0_0_15px_rgba(235,113,43,0.1)]"
+                            className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] appearance-none cursor-pointer font-bold transition-all duration-500 ease-in-out hover:border-[#EB712B]/50 hover:shadow-[0_0_15px_rgba(235,113,43,0.1)]"
                           >
                             <option>1 Month</option>
                             <option>3 Months</option>
@@ -662,7 +662,7 @@ const ManageClubHome = () => {
                           <select
                             value={autoRenew}
                             onChange={(e) => setAutoRenew(e.target.value)}
-                            className="w-full bg-[#141414] border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/20"
+                            className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/20"
                           >
                             <option>Yes</option>
                             <option>No</option>
@@ -696,7 +696,7 @@ const ManageClubHome = () => {
                           placeholder="0%"
                           value={discount}
                           onChange={(e) => setDiscount(e.target.value)}
-                          className="w-full bg-[#141414] border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
+                          className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
                         />
                       </div>
                     </div>
@@ -712,7 +712,7 @@ const ManageClubHome = () => {
                           value={featureInput}
                           onChange={(e) => setFeatureInput(e.target.value)}
                           placeholder="Ex: Access to exclusive track days"
-                          className="flex-1 bg-[#141414] border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
+                          className="flex-1 bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
                         />
                         <button
                           type="button"
@@ -725,11 +725,11 @@ const ManageClubHome = () => {
 
                       {/* Interactive Feature Bullets */}
                       {featuresList.length > 0 && (
-                        <div className="mt-4 space-y-2.5 bg-[#141414]/60 border border-white/[0.03] rounded-2xl p-4 animate-in fade-in duration-200">
+                        <div className="mt-4 space-y-2.5 bg-surface/60 border border-white/[0.03] rounded-2xl p-4 animate-in fade-in duration-200">
                           {featuresList.map((feat, index) => (
                             <div
                               key={index}
-                              className="group/item flex items-center justify-between bg-[#1A1A1A] border border-white/5 py-2.5 px-3.5 rounded-xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 hover:translate-x-1"
+                              className="group/item flex items-center justify-between bg-hover border border-white/5 py-2.5 px-3.5 rounded-xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 hover:translate-x-1"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shadow-[0_0_8px_#EB712B] transition-transform duration-300 group-hover/item:scale-125" />
@@ -790,7 +790,7 @@ const ManageClubHome = () => {
               </h2>
 
               {membershipPlans.length === 0 ? (
-                <div className="w-full bg-[#141414]/50 backdrop-blur-xl border border-white/[0.04] rounded-3xl p-12 text-center transition-all duration-300 hover:border-white/10">
+                <div className="w-full bg-surface/50 backdrop-blur-xl border border-white/[0.04] rounded-3xl p-12 text-center transition-all duration-300 hover:border-white/10">
                   <p className="text-xs font-black text-gray-600 uppercase tracking-[0.15em]">
                     No membership plans added yet
                   </p>
@@ -880,7 +880,7 @@ const ManageClubHome = () => {
                     <div className="border-t border-white/5 my-5 transition-colors duration-300 group-hover:border-white/10" />
 
                     {/* Additional Status Details Grid */}
-                    <div className="grid grid-cols-2 gap-4 bg-[#141414]/50 border border-white/5 rounded-2xl p-4 text-[10px] font-extrabold uppercase tracking-[0.05em] transition-all duration-300 group-hover:bg-[#141414]/80">
+                    <div className="grid grid-cols-2 gap-4 bg-surface/50 border border-white/5 rounded-2xl p-4 text-[10px] font-extrabold uppercase tracking-[0.05em] transition-all duration-300 group-hover:bg-surface/80">
                       <div>
                         <span className="block text-gray-500 font-bold mb-1">
                           Auto-Renew

@@ -104,11 +104,11 @@ export default function EditClub() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-surface text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-3 text-gray-400 hover:text-white font-extrabold text-[10px] tracking-widest uppercase bg-[#1A1A1A] border border-white/5 px-6 py-3.5 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:border-white/10 cursor-pointer mb-10 shadow-xl"
+          className="flex items-center gap-3 text-gray-400 hover:text-white font-extrabold text-[10px] tracking-widest uppercase bg-hover border border-white/5 px-6 py-3.5 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:border-white/10 cursor-pointer mb-10 shadow-xl"
         >
           <ArrowLeft size={14} className="text-[#EB712B]" />
           <span>Back to Dashboard</span>

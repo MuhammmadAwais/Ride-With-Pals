@@ -2,8 +2,6 @@ import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   SquarePen,
-  ChevronRight,
-  ChevronLeft,
   ShoppingCart,
   ClipboardCheck,
   ArrowLeft,
@@ -21,6 +19,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
+import DataTable, { type Column } from "@/components/ui/DataTable";
 
 const chartData = [
   { name: "Jan", val1: 40, val2: 24 },
@@ -174,9 +173,7 @@ const products: ProductType[] = [
 const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-  const itemsPerPage = 5;
 
   const handleSelectProduct = (product: ProductType) => {
     setSelectedProduct(product);
@@ -184,24 +181,86 @@ const Product = () => {
     window.scrollTo(0, 0);
   };
 
-  const paginatedProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return products.slice(startIndex, startIndex + itemsPerPage);
-  }, [currentPage]);
+  const columns: Column<ProductType>[] = [
+    {
+      key: "name",
+      label: "Asset Description",
+      sortable: true,
+      render: (p) => (
+        <div className="flex items-center gap-4">
+          <img
+            src={p.image}
+            className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover border border-border"
+            alt={p.name}
+          />
+          <div>
+            <p className="font-bold text-xs text-text-main">{p.name}</p>
+            <p className="text-[9px] text-text-muted hidden md:block">{p.sku}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "category",
+      label: "Classification",
+      sortable: true,
+      render: (p) => (
+        <span className="bg-surface px-3 py-1 rounded w-fit text-[10px] border border-border hidden md:block text-text-muted">
+          {p.category}
+        </span>
+      ),
+    },
+    {
+      key: "price",
+      label: "Unit Value",
+      sortable: true,
+      render: (p) => <span className="font-bold text-sm text-[#c99277]">${p.price}</span>,
+    },
+    {
+      key: "status",
+      label: "Inventory Status",
+      sortable: true,
+      render: (p) => (
+        <div
+          className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}
+        >
+          {p.status}
+        </div>
+      ),
+    },
+    {
+      key: "actions",
+      label: "",
+      sortable: false,
+      render: (p) => (
+        <div className="flex justify-end">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleSelectProduct(p);
+            }}
+            className="bg-surface p-2 rounded-lg hover:bg-[#EB712B] hover:text-white text-text-muted transition-all cursor-pointer border border-border"
+          >
+            <SquarePen size={14} />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   if (selectedProduct) {
     return (
-      <div className="bg-[#111111] min-h-screen text-white p-6 md:p-12">
+      <div className="bg-main-bg min-h-screen text-text-main p-6 md:p-12">
         <button
           onClick={() => setSelectedProduct(null)}
-          className="text-gray-400 mb-8 hover:text-white flex items-center gap-2 text-sm transition-colors cursor-pointer"
+          className="text-text-muted mb-8 hover:text-text-main flex items-center gap-2 text-sm transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} /> Back to All Gear
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
           <div className="flex flex-col gap-4">
-            <div className="bg-[#111111] p-4 rounded-3xl border border-white/5">
+            <div className="bg-surface p-4 rounded-3xl border border-border">
               <img
                 src={activeImage || selectedProduct.image}
                 className="rounded-2xl w-full h-[300px] md:h-[400px] object-cover"
@@ -213,7 +272,7 @@ const Product = () => {
                 <div
                   key={i}
                   onClick={() => setActiveImage(img)}
-                  className={`bg-[#111111] p-2 rounded-2xl border cursor-pointer hover:border-[#EB712B] transition-colors ${activeImage === img ? "border-[#EB712B]" : "border-white/5"}`}
+                  className={`bg-surface p-2 rounded-2xl border cursor-pointer hover:border-[#EB712B] transition-colors ${activeImage === img ? "border-[#EB712B]" : "border-border"}`}
                 >
                   <img
                     src={img}
@@ -226,7 +285,7 @@ const Product = () => {
           </div>
 
           <div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-2">
+            <h1 className="text-3xl md:text-5xl font-bold mb-2 text-text-main">
               {selectedProduct.name}
             </h1>
 
@@ -239,7 +298,7 @@ const Product = () => {
               </span>
             </div>
 
-            <p className="text-gray-400 mb-8 leading-relaxed text-sm md:text-base">
+            <p className="text-text-muted mb-8 leading-relaxed text-sm md:text-base">
               Engineered for elite performance. Our triple-insulated stainless
               steel construction keeps hydration at temperature for 24 hours,
               even in extreme environments.
@@ -247,16 +306,16 @@ const Product = () => {
 
             {/* Display Club Code */}
             {selectedProduct.code && (
-              <div className="mb-6 bg-white/5 px-4 py-3 rounded-xl border border-white/10 w-fit">
-                <p className="text-[9px] text-gray-400 uppercase tracking-wider mb-0.5">Club Product Code</p>
+              <div className="mb-6 bg-surface px-4 py-3 rounded-xl border border-border w-fit">
+                <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Club Product Code</p>
                 <p className="font-mono text-sm font-bold text-[#EB712B]">{selectedProduct.code}</p>
               </div>
             )}
 
             {/* Owner Info Grid */}
-            <div className="grid grid-cols-3 gap-4 mb-10 pt-6 bg-[#111111] p-6 rounded-2xl border border-white/5">
+            <div className="grid grid-cols-3 gap-4 mb-10 pt-6 bg-surface p-6 rounded-2xl border border-border">
               <div>
-                <p className="text-[10px] text-gray-500 uppercase font-bold">
+                <p className="text-[10px] text-text-muted uppercase font-bold">
                   SKU
                 </p>
                 <p className="font-mono font-bold text-[#EB712B]">
@@ -264,22 +323,22 @@ const Product = () => {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-gray-500 uppercase font-bold">
+                <p className="text-[10px] text-text-muted uppercase font-bold">
                   TOTAL SALES
                 </p>
-                <p className="font-bold text-lg">
+                <p className="font-bold text-lg text-text-main">
                   {selectedProduct.sales || "1,248"}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-gray-500 uppercase font-bold">
+                <p className="text-[10px] text-text-muted uppercase font-bold">
                   LAST MODIFIED
                 </p>
-                <p className="font-bold text-sm">2 hours ago</p>
+                <p className="font-bold text-sm text-text-main">2 hours ago</p>
               </div>
             </div>
 
-            {/* Owner Controls Updated without /dashboard prefix */}
+            {/* Owner Controls */}
             <div className="flex flex-wrap gap-4 pt-8">
               <button
                 onClick={() => {
@@ -292,11 +351,11 @@ const Product = () => {
                     state: { product: productToEdit },
                   });
                 }}
-                className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Edit2 size={18} /> Edit
               </button>
-              <button className="flex-1 bg-[#111111] border border-white/10 hover:border-white/20 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <button className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer">
                 <Clipboard size={18} /> Stock
               </button>
             </div>
@@ -313,105 +372,35 @@ const Product = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 text-white font-sans max-w-[1400px] mx-auto">
+    <div className="min-h-screen p-4 md:p-8 text-text-main font-sans max-w-[1400px] mx-auto bg-main-bg">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h1 className="text-2xl md:text-3xl font-bold">
+        <h1 className="text-2xl md:text-3xl font-bold text-text-main">
           High Performance <span className="text-[#EB712B]">Gear</span>
         </h1>
-        {/* Changed to plain /add-product route */}
         <Link to="/add-product">
-          <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer">
+          <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer hover:bg-[#d66525]">
             <Plus size={18} /> Add new Product
           </button>
         </Link>
       </div>
 
-      <div className="bg-[#111111] p-4 md:p-6 rounded-2xl mb-8 border border-white/5 overflow-x-auto">
-        <div className="grid grid-cols-4 md:grid-cols-5 text-[#888] text-[10px] font-bold uppercase mb-6 px-4 min-w-[600px]">
-          <span>Asset Description</span>
-          <span className="hidden md:block">Classification</span>
-          <span>Unit Value</span>
-          <span>Inventory Status</span>
-          <span className="text-right">Operations</span>
-        </div>
-
-        {paginatedProducts.map((p) => (
-          <div
-            key={p.id}
-            className="grid grid-cols-4 md:grid-cols-5 items-center py-4 border-t border-white/5 px-4 hover:bg-white/5 rounded-xl group min-w-[600px]"
-          >
-            <div className="flex items-center gap-4">
-              <img
-                src={p.image}
-                className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover"
-                alt={p.name}
-              />
-              <div>
-                <p className="font-bold text-xs">{p.name}</p>
-                <p className="text-[9px] text-gray-500 hidden md:block">
-                  {p.sku}
-                </p>
-              </div>
-            </div>
-            <span className="bg-[#1a1a1a] px-3 py-1 rounded w-fit text-[10px] border border-white/5 hidden md:block">
-              {p.category}
-            </span>
-            <span className="font-bold text-sm text-[#c99277]">${p.price}</span>
-            <div
-              className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}
-            >
-              {p.status}
-            </div>
-            {/* Operations button appears on group hover */}
-            <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <button
-                onClick={() => handleSelectProduct(p)}
-                className="bg-white/5 p-2 rounded-lg hover:bg-[#EB712B] transition-all cursor-pointer"
-              >
-                <SquarePen size={14} />
-              </button>
-            </div>
-          </div>
-        ))}
-
-        <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-white/5">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <span className="text-xs font-bold text-gray-500">
-            Page {currentPage}
-          </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) =>
-                Math.min(prev + 1, Math.ceil(products.length / itemsPerPage)),
-              )
-            }
-            disabled={currentPage >= Math.ceil(products.length / itemsPerPage)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1a1a1a] border border-white/5 hover:border-[#EB712B] transition-all disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
+      <div className="bg-surface p-4 md:p-6 rounded-2xl mb-8 border border-border overflow-hidden shadow-2xl">
+        <DataTable data={products} columns={columns} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 bg-[#111111] p-4 md:p-6 rounded-2xl border border-white/5 h-[300px]">
+        <div className="md:col-span-2 bg-surface p-4 md:p-6 rounded-2xl border border-border h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
               <XAxis
                 dataKey="name"
-                stroke="#555"
+                stroke="#888"
                 fontSize={10}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                stroke="#555"
+                stroke="#888"
                 fontSize={10}
                 axisLine={false}
                 tickLine={false}
@@ -422,7 +411,8 @@ const Product = () => {
                 vertical={false}
               />
               <Tooltip
-                contentStyle={{ backgroundColor: "#111", border: "none" }}
+                contentStyle={{ backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-text-main)" }}
+                itemStyle={{ color: "var(--color-text-main)" }}
               />
               <Line
                 type="monotone"
@@ -442,17 +432,17 @@ const Product = () => {
           </ResponsiveContainer>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="bg-[#111111] p-6 rounded-2xl border border-[#EB712B]/50 flex justify-between items-center">
+          <div className="bg-surface p-6 rounded-2xl border border-[#EB712B]/50 flex justify-between items-center shadow-lg">
             <div>
-              <p className="text-gray-400 text-xs uppercase">Active Orders</p>
-              <h3 className="text-2xl md:text-3xl font-bold mt-2">124</h3>
+              <p className="text-text-muted text-xs uppercase font-bold">Active Orders</p>
+              <h3 className="text-2xl md:text-3xl font-bold mt-2 text-text-main">124</h3>
             </div>
             <ShoppingCart className="text-[#EB712B]" size={24} />
           </div>
-          <div className="bg-[#111111] p-6 rounded-2xl border border-green-500/50 flex justify-between items-center">
+          <div className="bg-surface p-6 rounded-2xl border border-green-500/50 flex justify-between items-center shadow-lg">
             <div>
-              <p className="text-gray-400 text-xs uppercase">Pending Audit</p>
-              <h3 className="text-2xl md:text-3xl font-bold mt-2">08</h3>
+              <p className="text-text-muted text-xs uppercase font-bold">Pending Audit</p>
+              <h3 className="text-2xl md:text-3xl font-bold mt-2 text-text-main">08</h3>
             </div>
             <ClipboardCheck className="text-green-500" size={24} />
           </div>

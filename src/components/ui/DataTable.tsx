@@ -50,6 +50,10 @@ export interface DataTableProps<T> {
   emptyMessage?: string;
   /** Allows the parent to pass a className to the table wrapper. */
   className?: string;
+  /** External sort configuration */
+  sortConfig?: SortConfig<T>;
+  /** External sort request handler */
+  onRequestSort?: (key: keyof T) => void;
 }
 
 // ─── Helper: Highlight matched text ──────────────────────────────────────────
@@ -114,8 +118,13 @@ function DataTable<T extends object>({
   isLoading = false,
   emptyMessage = 'No records found.',
   className,
+  sortConfig: externalSortConfig,
+  onRequestSort,
 }: DataTableProps<T>): React.ReactElement {
-  const { items, requestSort, sortConfig } = useTableSort(data);
+  const internalSort = useTableSort(data);
+  const sortConfig = externalSortConfig ?? internalSort.sortConfig;
+  const requestSort = onRequestSort ?? internalSort.requestSort;
+  const items = externalSortConfig ? data : internalSort.items;
   const tbodyRef = useRef<HTMLTableSectionElement>(null);
 
   // Client-side search filter

@@ -15,7 +15,8 @@ const MOCK_USER_PASSWORD = 'rider1234';
 
 /**
  * Simulates an async login API call with a 600ms delay.
- * Throws on invalid credentials so createAsyncThunk can call rejectWithValue.
+ * Checks registered users in localStorage, falls back to default credentials.
+ * Throws on invalid credentials.
  */
 export async function mockLogin(
   email: string,
@@ -24,8 +25,11 @@ export async function mockLogin(
   // Simulate network latency
   await new Promise((resolve) => setTimeout(resolve, 600));
 
+  const trimmedEmail = email.trim().toLowerCase();
+
+  // 1. Check default mock user
   if (
-    email.trim().toLowerCase() === MOCK_USER_EMAIL &&
+    trimmedEmail === MOCK_USER_EMAIL &&
     password === MOCK_USER_PASSWORD
   ) {
     const user: AppUser = {
@@ -33,6 +37,22 @@ export async function mockLogin(
       email: MOCK_USER_EMAIL,
       name:  'Alex Rider',
       role:  'organizer',
+    };
+    return { user };
+  }
+
+  // 2. Check users list in localStorage
+  const localUsers = JSON.parse(localStorage.getItem('registered_users') || '[]');
+  const matchedUser = localUsers.find(
+    (u: any) => u.email === trimmedEmail && u.password === password
+  );
+
+  if (matchedUser) {
+    const user: AppUser = {
+      id:    matchedUser.id || `usr_${Math.random().toString(36).substr(2, 9)}`,
+      email: matchedUser.email,
+      name:  matchedUser.name || 'New Rider',
+      role:  'athlete',
     };
     return { user };
   }

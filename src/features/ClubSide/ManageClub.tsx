@@ -11,6 +11,8 @@ import {
 import { motion, type Variants } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DataTable, { type Column } from "@/components/ui/DataTable";
+import { useTableSort } from "@/hooks/useTableSort";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -139,17 +141,107 @@ const ManageClub = () => {
     },
   ];
 
-  const currentClubs = allClubs.slice(
+  const { items: sortedClubs, requestSort, sortConfig } = useTableSort(allClubs);
+
+  const currentClubs = sortedClubs.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const columns: Column<typeof allClubs[0]>[] = [
+    {
+      key: 'name',
+      label: 'Club Information',
+      sortable: true,
+      render: (club) => (
+        <div className="flex items-center gap-4">
+          <img
+            src={club.logo}
+            alt={club.name}
+            className="w-12 h-12 bg-hover border border-border rounded object-cover"
+          />
+          <div>
+            <h3 className="font-bold text-sm">{club.name}</h3>
+            <p className="text-[10px] text-gray-500 uppercase font-bold">
+              {club.sub}
+            </p>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'owner',
+      label: 'Owner',
+      sortable: true,
+      render: (club) => (
+        <div className="text-sm flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-orange-900/30 flex items-center justify-center text-[10px] font-bold">
+            {club.avatar}
+          </div>
+          {club.owner}
+        </div>
+      )
+    },
+    {
+      key: 'count',
+      label: 'Member Count',
+      sortable: true,
+      render: (club) => (
+        <div className="text-sm font-bold">
+          {club.count}
+          <p className="text-[10px] text-green-500 font-normal">
+            {club.trend}
+          </p>
+        </div>
+      )
+    },
+    {
+      key: 'rank',
+      label: 'Global Rank',
+      sortable: true,
+      render: (club) => (
+        <div className="text-sm font-bold text-[#EB712B]">
+          {club.rank}
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: () => (
+        <span className="flex items-center gap-1.5 px-2 py-1 bg-green-900/20 text-green-500 text-[10px] font-bold rounded border border-green-900/30 w-fit">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>{" "}
+          ACTIVE
+        </span>
+      )
+    },
+    {
+      key: 'rank', // just a key, rendered completely by render fn
+      label: 'Actions',
+      headerClass: 'text-right',
+      cellClass: 'text-right',
+      render: (club) => (
+        <button
+          onClick={() => {
+            localStorage.setItem("selectedClubBanner", club.img);
+            localStorage.setItem("selectedClubLogo", club.logo);
+            localStorage.setItem("selectedClubName", club.name);
+            navigate("/manage-club-home");
+          }}
+          className="px-5 py-2.5 bg-hover border border-border rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer inline-block"
+        >
+          MANAGE
+        </button>
+      )
+    }
+  ];
 
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="min-h-screen bg-[#0a0a0a] text-white p-8 font-sans overflow-x-hidden"
+      className="text-text-main p-8 font-sans overflow-x-hidden"
     >
       {/* Hide Scrollbars Global Style */}
       <style>{`
@@ -162,13 +254,13 @@ const ManageClub = () => {
         <div className="flex items-center gap-4">
           <a
             href="/profile"
-            className="p-2 bg-[#222] rounded-full hover:bg-[#333] transition border border-[#333]"
+            className="p-2 bg-[#222] rounded-full hover:bg-[#333] transition border border-border"
           >
             <ArrowLeft size={24} />
           </a>
           <div>
-            <h1 className="text-3xl font-bold mb-1">MANAGE CLUBS</h1>
-            <p className="text-gray-500 text-sm">
+            <h1 className="text-3xl font-bold mb-1 text-text-main">MANAGE CLUBS</h1>
+            <p className="text-text-muted text-sm">
               High-performance oversight for your athletic organizations.
             </p>
           </div>
@@ -205,13 +297,13 @@ const ManageClub = () => {
         ].map((stat, i) => (
           <div
             key={i}
-            className="bg-[#111111] p-6 border border-white/10 hover:border-[#EB712B]/50 transition-all duration-300 flex flex-col justify-between"
+            className="bg-surface p-6 border border-border hover:border-[#EB712B]/50 transition-all duration-300 flex flex-col justify-between"
           >
             <div className="flex justify-between items-start mb-4">
-              <p className="text-[23px] text-gray-500 font-bold uppercase tracking-wider">
+              <p className="text-[23px] text-text-muted font-bold uppercase tracking-wider">
                 {stat.label}
               </p>
-              <stat.icon size={35} className="text-gray-600" />
+              <stat.icon size={35} className="text-text-muted opacity-60" />
             </div>
             <div>
               <p className="text-4xl font-bold mb-1">{stat.value}</p>
@@ -223,18 +315,18 @@ const ManageClub = () => {
         ))}
         <div className="bg-[#EB712B]/5 p-6 border border-[#EB712B]/20 flex flex-col justify-between">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
               GROWTH FORECAST
             </p>
             <BarChart3 size={16} className="text-[#EB712B]" />
           </div>
           <div>
-            <p className="text-xl font-bold mb-1 leading-tight text-white">
+            <p className="text-xl font-bold mb-1 leading-tight text-text-main">
               Projected +2,500
               <br />
               members
             </p>
-            <div className="mt-4 w-full h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
+            <div className="mt-4 w-full h-1 bg-hover rounded-full overflow-hidden">
               <div className="w-3/4 h-full bg-[#EB712B]" />
             </div>
           </div>
@@ -242,108 +334,40 @@ const ManageClub = () => {
       </div>
 
       {/* Directory Table */}
-      <div className="bg-[#111111] border border-[#222] mb-8 overflow-x-auto no-scrollbar">
-        <div className="min-w-[800px]">
-          <div className="grid grid-cols-12 px-6 py-4 border-b border-[#222] text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-            <div className="col-span-4">Club Information</div>
-            <div className="col-span-2">Owner</div>
-            <div className="col-span-2">Member Count</div>
-            <div className="col-span-1">Global Rank</div>
-            <div className="col-span-1">Status</div>
-            <div className="col-span-2 text-right">Actions</div>
-          </div>
-
-          {currentClubs.map((club, i) => (
-            <div
-              key={i}
-              className="grid grid-cols-12 p-6 border-b border-[#222] items-center hover:bg-[#161616]"
+      <div className="mb-8 overflow-hidden">
+        <DataTable data={currentClubs} columns={columns} sortConfig={sortConfig} onRequestSort={requestSort} />
+        {/* Pagination */}
+        <div className="p-4 flex justify-between items-center text-[10px] font-bold uppercase text-text-muted bg-surface border border-border border-t-0 rounded-b-xl">
+          <p>Page {currentPage} of 2</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+              className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
             >
-              <div className="col-span-4 flex items-center gap-4">
-                <img
-                  src={club.logo}
-                  alt={club.name}
-                  className="w-12 h-12 bg-[#1a1a1a] border border-[#222] rounded object-cover"
-                />
-                <div>
-                  <h3 className="font-bold text-sm">{club.name}</h3>
-                  <p className="text-[10px] text-gray-500 uppercase font-bold">
-                    {club.sub}
-                  </p>
-                </div>
-              </div>
-              <div className="col-span-2 text-sm flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-orange-900/30 flex items-center justify-center text-[10px] font-bold">
-                  {club.avatar}
-                </div>
-                {club.owner}
-              </div>
-              <div className="col-span-2 text-sm font-bold">
-                {club.count}
-                <p className="text-[10px] text-green-500 font-normal">
-                  {club.trend}
-                </p>
-              </div>
-              <div className="col-span-1 text-sm font-bold text-[#EB712B]">
-                {club.rank}
-              </div>
-              <div className="col-span-1">
-                <span className="flex items-center gap-1.5 px-2 py-1 bg-green-900/20 text-green-500 text-[10px] font-bold rounded border border-green-900/30 w-fit">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>{" "}
-                  ACTIVE
-                </span>
-              </div>
-
-              {/* Action Button */}
-              <div className="col-span-2 flex justify-end items-center">
-                <button
-                  onClick={() => {
-                    // Send updated localstorage banner/logo dynamically if it exists
-                    localStorage.setItem("selectedClubBanner", club.img);
-                    localStorage.setItem("selectedClubLogo", club.logo);
-                    localStorage.setItem("selectedClubName", club.name);
-                    navigate("/manage-club-home");
-                  }}
-                  className="px-5 py-2.5 bg-[#1a1a1a] border border-[#222] rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer"
-                >
-                  MANAGE
-                </button>
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          <div className="p-4 flex justify-between items-center text-[10px] font-bold uppercase text-gray-500">
-            <p>Page {currentPage} of 2</p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-                className="p-2 border border-[#222] rounded hover:bg-[#222] disabled:opacity-20 cursor-pointer"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                onClick={() => setCurrentPage(2)}
-                disabled={currentPage === 2}
-                className="p-2 border border-[#222] rounded hover:bg-[#222] disabled:opacity-20 cursor-pointer"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={() => setCurrentPage(2)}
+              disabled={currentPage === 2}
+              className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
         </div>
       </div>
 
       {/* Intelligence & Standing Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <div className="bg-[#111111] p-10 border border-[#222] border-l-4 border-l-[#EB712B]">
+        <div className="bg-surface p-10 border border-border border-l-4 border-l-[#EB712B]">
           <div className="flex gap-6 items-start">
-            <div className="p-4 bg-[#1a1a1a] rounded-lg h-fit border border-[#222]">
+            <div className="p-4 bg-hover rounded-lg h-fit border border-border">
               <TrendingUp className="text-[#EB712B]" size={32} />
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-3">Club Intelligence</h3>
-              <p className="text-gray-400 ">
+              <h3 className="text-xl font-bold mb-3 text-text-main">Club Intelligence</h3>
+              <p className="text-text-muted">
                 Your managed entities have maintained a{" "}
                 <span className="text-[#EB712B] font-bold">
                   98% technical compliance
@@ -355,14 +379,14 @@ const ManageClub = () => {
             </div>
           </div>
         </div>
-        <div className="bg-[#111111] p-10 border border-[#222] border-l-4 border-l-emerald-600">
+        <div className="bg-surface p-10 border border-border border-l-4 border-l-emerald-600">
           <div className="flex gap-6 items-start">
-            <div className="p-4 bg-[#1a1a1a] rounded-lg h-fit border border-[#222]">
+            <div className="p-4 bg-hover rounded-lg h-fit border border-border">
               <Award className="text-emerald-500" size={32} />
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-3">Global Standing</h3>
-              <p className="text-gray-400">
+              <h3 className="text-xl font-bold mb-3 text-text-main">Global Standing</h3>
+              <p className="text-text-muted">
                 Elite status verified across all portfolios. Your operational
                 efficiency is currently ranked in the top{" "}
                 <span className="text-emerald-600 font-bold">

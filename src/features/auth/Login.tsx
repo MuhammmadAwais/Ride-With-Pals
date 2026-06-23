@@ -21,7 +21,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { loginUser } from '@/features/auth/slices/authSlice';
 import { cn } from '@/lib/utils';
@@ -105,19 +104,13 @@ const Login = () => {
             backgroundPosition: 'center',
           }}
         />
-        <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.65)' }} />
+        {/* Dark overlay — flat, solid, high contrast for maximum maturity */}
+        <div className="absolute inset-0" style={{ background: 'rgba(5,5,5,0.72)' }} />
 
-        {/* Ambient blob */}
-        <motion.div
-          animate={{ x: [0, 40, 0], y: [0, -25, 0], scale: [1, 1.15, 1] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          style={{
-            position: 'absolute', top: '25%', left: '-80px',
-            width: '320px', height: '320px',
-            background: 'rgba(235,113,43,0.12)',
-            filter: 'blur(100px)', borderRadius: '50%',
-            pointerEvents: 'none',
-          }}
+        {/* Small subtle static accent glow in the left panel corner to feel premium but mature */}
+        <div
+          className="absolute -top-10 -left-10 w-60 h-60 rounded-full"
+          style={{ background: 'rgba(235,113,43,0.04)', filter: 'blur(60px)', pointerEvents: 'none' }}
         />
 
         <div className="relative z-10 text-center px-12 max-w-md">
@@ -133,10 +126,25 @@ const Login = () => {
 
       {/* ══ RIGHT PANEL ══ */}
       <div
-        className="w-full lg:w-1/2 flex items-center justify-center"
-        style={{ padding: '40px 20px', overflowY: 'auto', background: 'rgba(5,5,5,0.97)' }}
+        className="w-full lg:w-1/2 flex items-center justify-center relative"
+        style={{ padding: '40px 20px', overflowY: 'auto', background: '#050505' }}
       >
-        <div ref={containerRef} className="w-full" style={{ maxWidth: '460px', padding: '0 4px' }}>
+        {/* Faint elegant glow centered behind the form card to add depth without being flashy */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '360px',
+            height: '360px',
+            background: 'radial-gradient(circle, rgba(235,113,43,0.02) 0%, rgba(5,5,5,0) 70%)',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+
+        <div ref={containerRef} className="w-full relative z-10" style={{ maxWidth: '460px', padding: '0 4px' }}>
 
           {/* Mobile logo */}
           <div className="animate-item lg:hidden flex justify-center mb-8">

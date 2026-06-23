@@ -151,12 +151,12 @@ const ProfileAccount = () => {
   
 
   const sectionCardStyle =
-    "bg-white dark:bg-[#111111] p-4 md:p-6 rounded-2xl border border-gray-200 dark:border-white/5 transition-colors";
+    "bg-surface p-4 md:p-6 rounded-2xl border border-border transition-colors";
   const rowItemStyle =
     "flex items-center justify-between py-4 border-b border-gray-100 dark:border-white/5 last:border-0 hover:bg-gray-50 dark:hover:bg-white/[0.05] px-2 md:px-4 -mx-4 transition-colors cursor-pointer group";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#121212] text-gray-900 dark:text-white p-4 md:p-12 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-main-bg text-text-main p-4 md:p-12 font-sans transition-colors duration-300">
       <div className="max-w-4xl mx-auto w-full">
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
@@ -170,7 +170,7 @@ const ProfileAccount = () => {
           </div>
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center gap-2 bg-gray-200 dark:bg-[#111111] px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all"
+            className="flex items-center gap-2 bg-surface px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all"
           >
             {theme === "dark" ? (
               <Sun size={16} className="text-yellow-500" />
@@ -182,9 +182,9 @@ const ProfileAccount = () => {
         </div>
 
         {/* User Card */}
-        <div className="bg-white dark:bg-[#111111] p-6 rounded-2xl border border-gray-200 dark:border-white/5 flex items-center justify-between mb-10">
+        <div className="bg-surface p-6 rounded-2xl border border-border flex items-center justify-between mb-10">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-[#1a1a1a] flex items-center justify-center">
+            <div className="w-14 h-14 rounded-2xl bg-hover flex items-center justify-center">
               👤
             </div>
             <div>
@@ -316,7 +316,7 @@ const ProfileAccount = () => {
       {/* Password Handler */}
       {isPasswordModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-[#1a1a1a] border border-white/10 p-8 rounded-2xl w-full max-w-lg shadow-2xl">
+          <div className="bg-hover border border-white/10 p-8 rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-xl font-bold text-white">
@@ -342,7 +342,7 @@ const ProfileAccount = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Current Password"
-                    className={`w-full bg-[#111111] p-3 rounded-lg border ${errors.current ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
+                    className={`w-full bg-surface p-3 rounded-lg border ${errors.current ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
                     onChange={(e) => {
                       setPasswordData({
                         ...passwordData,
@@ -372,7 +372,7 @@ const ProfileAccount = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="New Password"
-                    className={`w-full bg-[#111111] p-3 rounded-lg border ${errors.new ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
+                    className={`w-full bg-surface p-3 rounded-lg border ${errors.new ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
                     onChange={(e) => {
                       setPasswordData({ ...passwordData, new: e.target.value });
                       if (errors.new) setErrors({ ...errors, new: "" });
@@ -399,7 +399,7 @@ const ProfileAccount = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Confirm New Password"
-                    className={`w-full bg-[#111111] p-3 rounded-lg border ${errors.confirm ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
+                    className={`w-full bg-surface p-3 rounded-lg border ${errors.confirm ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
                     onChange={(e) => {
                       setPasswordData({
                         ...passwordData,
@@ -425,7 +425,7 @@ const ProfileAccount = () => {
             </div>
 
             {/* Info Box */}
-            <div className="flex gap-3 bg-[#111111] p-4 rounded-lg mt-6 border border-white/5 text-gray-400 text-xs">
+            <div className="flex gap-3 bg-surface p-4 rounded-lg mt-6 border border-white/5 text-gray-400 text-xs">
               <AlertCircle size={32} className="text-[#EB712B] shrink-0" />
               <p>
                 Use at least 8 characters, including a mix of letters, numbers,
@@ -456,7 +456,7 @@ const ProfileAccount = () => {
       {/* Permissions Model */}
       {isPermissionsModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-[#111111] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl">
             <div className="flex justify-between items-start mb-8">
               <div>
                 <h2 className="text-xl font-bold text-white">Permissions</h2>
@@ -497,7 +497,7 @@ const ProfileAccount = () => {
                       handleOpenUserModal();
                     }
                   }}
-                  className={`p-4 rounded-2xl border transition-all text-left ${selectedRole === item.id ? "bg-[#1A1A1A] border-[#EB712B]" : "bg-[#1A1A1A] border-white/5"}`}
+                  className={`p-4 rounded-2xl border transition-all text-left ${selectedRole === item.id ? "bg-hover border-[#EB712B]" : "bg-hover border-white/5"}`}
                 >
                   <item.icon className="text-[#EB712B] mb-3" size={24} />
                   <h3 className="text-sm font-bold text-white mb-1">
@@ -513,11 +513,11 @@ const ProfileAccount = () => {
             {/* Restored Section */}
             <button
               onClick={() => setIsMemberPickerOpen(true)}
-              className={`w-full p-4 rounded-2xl border flex items-center justify-between mb-8 transition-all ${fullAccess ? "bg-[#1A1A1A] border-[#EB712B]" : "bg-[#1A1A1A] border-white/5"}`}
+              className={`w-full p-4 rounded-2xl border flex items-center justify-between mb-8 transition-all ${fullAccess ? "bg-hover border-[#EB712B]" : "bg-hover border-white/5"}`}
             >
               <div className="flex items-center gap-4">
                 <div
-                  className={`p-2 rounded-lg ${fullAccess ? "bg-[#EB712B]" : "bg-[#1A1A1A]"}`}
+                  className={`p-2 rounded-lg ${fullAccess ? "bg-[#EB712B]" : "bg-hover"}`}
                 >
                   <Shield
                     size={20}
@@ -549,7 +549,7 @@ const ProfileAccount = () => {
       {/* Professional Admin*/}
       {isAdminSettingsOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[70] p-4 animate-in fade-in duration-300">
-          <div className="bg-[#0f0f0f] border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
             {/* Decorative Gradient Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#EB712B] to-transparent" />
 
@@ -601,7 +601,7 @@ const ProfileAccount = () => {
               ].map((item) => (
                 <div
                   key={item.key}
-                  className="group bg-[#151515] p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-white/10 transition-all"
+                  className="group bg-surface p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-white/10 transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-2 rounded-xl bg-white/5 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-all">
@@ -664,7 +664,7 @@ const ProfileAccount = () => {
       {/* userModel */}
       {isUserModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[70] p-4 animate-in fade-in duration-300">
-          <div className="bg-[#0f0f0f] border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
             {/* Decorative Gradient Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-500 to-transparent" />
 
@@ -697,7 +697,7 @@ const ProfileAccount = () => {
               ].map((item) => (
                 <div
                   key={item.key}
-                  className="group bg-[#151515] p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-white/10 transition-all"
+                  className="group bg-surface p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-white/10 transition-all"
                 >
                   <div className="flex items-center gap-4">
                     {/* Icon container with hover animation */}
@@ -748,7 +748,7 @@ const ProfileAccount = () => {
 
       {isMemberPickerOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[80] p-4 animate-in fade-in duration-300">
-          <div className="bg-[#121212] border border-white/10 p-6 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+          <div className="bg-surface border border-white/10 p-6 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.3)]">
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
               <button
@@ -780,8 +780,8 @@ const ProfileAccount = () => {
                   className={`w-full p-4 rounded-2xl border transition-all flex items-center gap-3 
               ${
                 memberSelectionType === item.id
-                  ? "border-[#EB712B] bg-[#1a1a1a]"
-                  : "border-white/5 bg-[#1a1a1a] hover:border-white/10"
+                  ? "border-[#EB712B] bg-hover"
+                  : "border-white/5 bg-hover hover:border-white/10"
               }`}
                 >
                   <div
@@ -810,7 +810,7 @@ const ProfileAccount = () => {
                   />
                   <input
                     placeholder="Search members..."
-                    className="w-full bg-[#1a1a1a] p-3 pl-11 rounded-xl border border-white/5 text-sm text-white placeholder:text-gray-600 focus:border-[#EB712B] outline-none transition-colors"
+                    className="w-full bg-hover p-3 pl-11 rounded-xl border border-white/5 text-sm text-white placeholder:text-gray-600 focus:border-[#EB712B] outline-none transition-colors"
                   />
                 </div>
 
@@ -821,7 +821,7 @@ const ProfileAccount = () => {
                       className="flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#1a1a1a] border border-white/5" />
+                        <div className="w-9 h-9 rounded-full bg-hover border border-white/5" />
                         <span className="text-sm font-semibold text-white">
                           {m.name}
                         </span>
@@ -869,7 +869,7 @@ const ProfileAccount = () => {
       {/* Language Modal */}
       {isLanguageModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
-          <div className="bg-[#0f0f0f] border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
             {/* Decorative Gradient Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-500 to-transparent" />
 
@@ -900,8 +900,8 @@ const ProfileAccount = () => {
                   onClick={() => setSelectedLanguage(lang.name)}
                   className={`cursor-pointer transition-all p-6 rounded-2xl flex flex-col items-center ${
                     selectedLanguage === lang.name
-                      ? "bg-[#151515] border-2 border-[#EB712B]"
-                      : "bg-[#151515] border border-white/5 opacity-50 hover:opacity-100"
+                      ? "bg-surface border-2 border-[#EB712B]"
+                      : "bg-surface border border-white/5 opacity-50 hover:opacity-100"
                   }`}
                 >
                   <Globe
@@ -920,7 +920,7 @@ const ProfileAccount = () => {
               ))}
             </div>
 
-            <div className="bg-[#151515] p-4 rounded-xl border border-white/5 flex gap-3 mb-8">
+            <div className="bg-surface p-4 rounded-xl border border-white/5 flex gap-3 mb-8">
               <AlertCircle className="text-[#EB712B] shrink-0" size={16} />
               <p className="text-[10px] text-gray-400">
                 System re-initialization is required to apply localization

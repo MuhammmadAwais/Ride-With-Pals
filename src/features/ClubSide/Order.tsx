@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DataTable, { type Column } from "@/components/ui/DataTable";
 
 const productCatalog = [
   { name: 'Bicycle', cat: 'Carbon Fiber Pro', img: '/Images/CycleImage.png', price: 100.00 },
@@ -28,9 +29,7 @@ const allOrders = Array.from({ length: 38 }, (_, i) => {
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 5;
   const navigate = useNavigate();
 
   // Combined filtering logic: checks both the tab status and the search query string
@@ -48,53 +47,105 @@ const Order = () => {
     });
   }, [activeTab, searchQuery]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage));
-  
-  // Reset current page if search/tab state shrinks the list beyond bounds
-  useMemo(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(1);
+  const columns: Column<typeof allOrders[0]>[] = [
+    {
+      key: 'productName',
+      label: 'Product',
+      sortable: true,
+      render: (order) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-hover flex items-center justify-center overflow-hidden border border-border">
+            <img src={order.image} alt={order.productName} className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <h3 className="text-xs md:text-sm font-bold text-text-main">{order.productName}</h3>
+            <p className="text-[9px] md:text-[10px] text-text-muted font-medium uppercase">{order.category}</p>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'orderId',
+      label: 'Order ID',
+      sortable: true,
+      render: (order) => <p className="text-xs font-mono text-text-muted">#{order.orderId}</p>
+    },
+    {
+      key: 'price',
+      label: 'Price',
+      sortable: true,
+      render: (order) => <p className="text-sm font-semibold text-text-main">{order.price}</p>
+    },
+    {
+      key: 'recipient',
+      label: 'Recipient',
+      sortable: true,
+      render: (order) => <p className="font-medium text-text-main">{order.recipient}</p>
+    },
+    {
+      key: 'date',
+      label: 'Date',
+      sortable: true,
+      render: (order) => <p className="text-xs text-text-muted">{order.date}</p>
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      sortable: true,
+      render: (order) => (
+        <div className="flex justify-end">
+          {order.status === 'Delivered' ? (
+            <button 
+              onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
+              className="px-3 py-2 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
+            >
+              Delivered
+            </button>
+          ) : (
+            <button 
+              onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
+              className="px-4 py-2 rounded-lg bg-surface border border-border text-[10px] font-bold uppercase hover:bg-[#EB712B] hover:text-white hover:border-[#EB712B] transition-all cursor-pointer text-text-main"
+            >
+              Details
+            </button>
+          )}
+        </div>
+      )
     }
-  }, [totalPages, currentPage]);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
+  ];
 
   return (
-    <div className="w-full text-white font-sans bg-[#111111] min-h-screen p-4 md:p-8 overflow-x-hidden">
+    <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8 overflow-x-hidden">
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Order Management</h1>
-          <p className="text-zinc-500 text-xs md:text-sm">Oversee real-time logistics and athlete fulfillment streams.</p>
+          <p className="text-text-muted text-xs md:text-sm">Oversee real-time logistics and athlete fulfillment streams.</p>
         </div>
         
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full xl:w-auto">
           {/* Search Bar Container */}
           <div className="relative w-full sm:w-72">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
             <input
               type="text"
               placeholder="Search orders, athletes..."
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1); // Reset pagination on search
-              }}
-              className="w-full bg-[#161616] border border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-zinc-500 font-medium focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-main placeholder-text-muted font-medium focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300"
             />
           </div>
 
           {/* Tab Buttons Container */}
-          <div className="bg-[#161616] p-1 rounded-xl border border-zinc-800 flex self-end shrink-0">
+          <div className="bg-surface p-1 rounded-xl border border-border flex self-end shrink-0">
             <button 
-              onClick={() => { setActiveTab('Active'); setCurrentPage(1); }} 
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Active' ? 'bg-[#EB712B] text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+              onClick={() => setActiveTab('Active')} 
+              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Active' ? 'bg-[#EB712B] text-white' : 'text-text-muted hover:text-text-main'}`}
             >
               Active
             </button>
             <button 
-              onClick={() => { setActiveTab('Delivered'); setCurrentPage(1); }} 
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Delivered' ? 'bg-[#EB712B] text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+              onClick={() => setActiveTab('Delivered')} 
+              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Delivered' ? 'bg-[#EB712B] text-white' : 'text-text-muted hover:text-text-main'}`}
             >
               Delivered
             </button>
@@ -102,83 +153,15 @@ const Order = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 md:grid-cols-7 px-4 py-3 text-[9px] md:text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">
-        <div className="col-span-2">Product</div>
-        <div className="hidden md:block">Order ID</div>
-        <div className="hidden md:block">Price</div>
-        <div className="hidden md:block">Recipient</div>
-        <div className="hidden md:block">Date</div>
-        <div className="text-right col-span-2 md:col-span-1">Status</div>
-      </div>
-
-      <div className="space-y-3">
-        {currentOrders.length > 0 ? (
-          currentOrders.map((order) => (
-            <div key={order.id} className="group relative grid grid-cols-4 md:grid-cols-7 items-center p-4 md:p-5 rounded-2xl bg-[#121212] border border-white/[0.03] transition-all duration-500 hover:border-[#EB712B]/40 hover:bg-[#141414]">
-              <div className="col-span-2 flex items-center gap-3 md:gap-5 z-10">
-                <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-[#1A1A1A] flex items-center justify-center overflow-hidden">
-                  <img src={order.image} alt={order.productName} className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <h3 className="text-xs md:text-sm font-bold text-zinc-100">{order.productName}</h3>
-                  <p className="text-[9px] md:text-[10px] text-zinc-500 font-medium uppercase">{order.category}</p>
-                </div>
-              </div>
-              
-              <p className="hidden md:block text-xs font-mono text-zinc-500">#{order.orderId}</p>
-              <p className="hidden md:block text-sm font-semibold text-zinc-300">{order.price}</p>
-              <div className="hidden md:block text-xs">
-                <p className="font-medium text-zinc-300">{order.recipient}</p>
-              </div>
-              <p className="hidden md:block text-xs text-zinc-500">{order.date}</p>
-              
-              <div className="flex justify-end col-span-2 md:col-span-1 z-10">
-                {order.status === 'Delivered' ? (
-                  <button 
-                    onClick={() => navigate(`/order/${order.orderId}`, { state: { order } })}
-                    className="px-3 py-2 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
-                  >
-                    Delivered
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => navigate(`/order/${order.orderId}`, { state: { order } })}
-                    className="px-4 py-2 rounded-lg bg-[#1A1A1A] border border-zinc-800 text-[10px] font-bold uppercase hover:bg-[#EB712B] hover:text-white transition-all cursor-pointer"
-                  >
-                    Details
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
+      <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl">
+        {filteredOrders.length > 0 ? (
+          <DataTable data={filteredOrders} columns={columns} />
         ) : (
-          <div className="text-center py-16 text-zinc-600 font-medium text-sm bg-[#121212] rounded-2xl border border-white/[0.03]">
+          <div className="text-center py-16 text-text-muted font-medium text-sm">
             No orders found under "{activeTab}" matching your filter.
           </div>
         )}
       </div>
-
-      {currentOrders.length > 0 && (
-        <div className="flex justify-between items-center mt-8 text-xs text-zinc-500">
-          <p>Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredOrders.length)} of {filteredOrders.length}</p>
-          <div className="flex gap-2">
-            <button 
-              disabled={currentPage === 1} 
-              onClick={() => setCurrentPage(p => p - 1)} 
-              className="w-8 h-8 flex items-center justify-center border border-zinc-800 rounded-lg disabled:opacity-30 hover:bg-zinc-800 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={14} />
-            </button>
-            <button 
-              disabled={currentPage === totalPages || totalPages === 0} 
-              onClick={() => setCurrentPage(p => p + 1)} 
-              className="w-8 h-8 flex items-center justify-center border border-zinc-800 rounded-lg disabled:opacity-30 hover:bg-zinc-800 cursor-pointer disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={14} />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

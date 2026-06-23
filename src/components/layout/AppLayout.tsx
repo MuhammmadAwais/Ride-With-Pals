@@ -71,7 +71,7 @@ const AppLayout: React.FC = () => {
           />
 
           {/* Main content column */}
-          <div className="flex flex-col flex-1 min-w-0 relative">
+          <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[288px]">
 
             {/* Sticky Navbar */}
             <div className="sticky top-0 left-0 right-0 z-30">

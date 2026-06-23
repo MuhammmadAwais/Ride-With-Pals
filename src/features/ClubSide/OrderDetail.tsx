@@ -10,14 +10,14 @@ const OrderDetail = () => {
   const order = location.state?.order;
 
   return (
-    <div className="w-full min-h-screen text-zinc-100 font-sans p-6 md:p-10">
+    <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10">
       {/* Navigation Header - fixed route to point to plain /order */}
       <div className="flex items-center gap-4 mb-8">
         <button 
           onClick={() => navigate('/order')} 
-          className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-all cursor-pointer"
+          className="group flex items-center gap-2 text-text-muted hover:text-text-main transition-all cursor-pointer"
         >
-          <div className="p-2 rounded-full bg-[#161616] group-hover:bg-[#1f1f1f] border border-white/5">
+          <div className="p-2 rounded-full bg-surface group-hover:bg-hover border border-border">
             <ChevronLeft size={18} />
           </div>
           <span className="text-xs font-medium uppercase tracking-widest">Back to Orders</span>
@@ -29,7 +29,7 @@ const OrderDetail = () => {
         <div>
           <div className="text-[10px] text-[#EB712B] font-bold uppercase tracking-[0.2em] mb-2">Order Reference</div>
           {/* Dynamically displaying the correct ID */}
-          <h1 className="text-4xl font-extrabold text-white">#{id}</h1>
+          <h1 className="text-4xl font-extrabold text-text-main">#{id}</h1>
         </div>
         
         <div className="flex items-center gap-3">
@@ -47,17 +47,17 @@ const OrderDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="relative h-96 rounded-3xl overflow-hidden bg-[#161616] border border-white/5 group">
+          <div className="relative h-96 rounded-3xl overflow-hidden bg-surface border border-border group shadow-xl">
             <img src={order?.image || "/Images/BottleImage4.png"} alt="Product" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent" />
             <div className="absolute bottom-0 p-10">
-              <h2 className="text-3xl font-bold mb-2">{order?.productName || "Product Name"}</h2>
-              <p className="text-zinc-400">{order?.category || "Category"}</p>
+              <h2 className="text-3xl font-bold mb-2 text-text-main">{order?.productName || "Product Name"}</h2>
+              <p className="text-text-muted">{order?.category || "Category"}</p>
             </div>
           </div>
 
-          <div className="bg-[#161616] p-10 rounded-3xl border border-white/5">
-            <h3 className="text-lg font-semibold mb-8 flex items-center gap-2">Technical Specifications</h3>
+          <div className="bg-surface p-10 rounded-3xl border border-border shadow-xl">
+            <h3 className="text-lg font-semibold mb-8 flex items-center gap-2 text-text-main">Technical Specifications</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4">
               {[
                 { l: 'Material', v: 'BPA-Free Polymer' }, { l: 'Capacity', v: '750ml' }, 
@@ -65,8 +65,8 @@ const OrderDetail = () => {
                 { l: 'SKU', v: id }, { l: 'Status', v: 'Pristine' }
               ].map((s) => (
                 <div key={s.l}>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-2">{s.l}</p>
-                  <p className="text-sm font-medium text-zinc-200">{s.v}</p>
+                  <p className="text-[10px] text-text-muted uppercase tracking-widest mb-2">{s.l}</p>
+                  <p className="text-sm font-medium text-text-main">{s.v}</p>
                 </div>
               ))}
             </div>
@@ -75,8 +75,8 @@ const OrderDetail = () => {
 
         {/* Right Column */}
         <div className="space-y-8">
-          <div className="bg-[#161616] p-5 rounded-3xl border border-white/5">
-            <h3 className="text-lg font-semibold mb-6">Order Summary</h3>
+          <div className="bg-surface p-5 rounded-3xl border border-border shadow-xl">
+            <h3 className="text-lg font-semibold mb-6 text-text-main">Order Summary</h3>
             <div className="space-y-6 mb-8">
               {[
                 { icon: <Package size={16}/>, l: 'Customer', v: order?.recipient || 'N/A' },
@@ -84,17 +84,17 @@ const OrderDetail = () => {
                 { icon: <Calendar size={16}/>, l: 'Date', v: order?.date || 'Oct 24, 2024' }
               ].map((i) => (
                 <div key={i.l} className="flex items-center gap-4">
-                  <div className="text-zinc-600">{i.icon}</div>
+                  <div className="text-text-muted">{i.icon}</div>
                   <div className="flex-1 flex justify-between">
-                    <span className="text-sm text-zinc-500">{i.l}</span>
-                    <span className="text-sm font-medium">{i.v}</span>
+                    <span className="text-sm text-text-muted">{i.l}</span>
+                    <span className="text-sm font-medium text-text-main">{i.v}</span>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="p-6 rounded-2xl bg-[#0a0a0a] border border-white/5 mb-6 flex justify-between items-center">
-              <span className="text-zinc-400 font-medium">Total Amount</span>
+            <div className="p-6 rounded-2xl bg-main-bg border border-border mb-6 flex justify-between items-center">
+              <span className="text-text-muted font-medium">Total Amount</span>
               <span className="text-2xl font-bold text-[#EB712B]">{order?.price || "$0.00"}</span>
             </div>
 
@@ -109,16 +109,16 @@ const OrderDetail = () => {
             )}
           </div>
 
-          <div className="bg-[#161616] p-8 rounded-3xl border border-white/5">
-            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+          <div className="bg-surface p-8 rounded-3xl border border-border shadow-xl">
+            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 text-text-main">
               <Clock size={18} /> Timeline
             </h3>
-            <div className="relative border-l border-white/10 ml-2 space-y-8">
+            <div className="relative border-l border-border ml-2 space-y-8">
               {['Order Placed', 'Processing', 'In Transit'].map((step, i) => (
                 <div key={step} className="relative pl-6">
-                  <div className={`absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full ${i < 2 ? 'bg-emerald-500' : 'bg-white/20'}`} />
-                  <p className={`text-sm font-semibold ${i < 2 ? 'text-white' : 'text-zinc-500'}`}>{step}</p>
-                  <p className="text-[10px] text-zinc-600 mt-1 uppercase tracking-wider">{order?.date || "Oct 24, 2024"}</p>
+                  <div className={`absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full ${i < 2 ? 'bg-emerald-500' : 'bg-border'}`} />
+                  <p className={`text-sm font-semibold ${i < 2 ? 'text-text-main' : 'text-text-muted'}`}>{step}</p>
+                  <p className="text-[10px] text-text-muted mt-1 uppercase tracking-wider">{order?.date || "Oct 24, 2024"}</p>
                 </div>
               ))}
             </div>

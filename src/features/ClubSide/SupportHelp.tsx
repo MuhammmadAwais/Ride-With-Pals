@@ -74,17 +74,17 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
   const selectedChat = chats.find(c => c.id === selectedChatId);
 
   return (
-    <div className="h-full w-full flex text-white overflow-hidden rounded-2xl border border-white/10 bg-[#161616]">
+    <div className="h-full w-full flex text-text-main overflow-hidden rounded-2xl border border-border bg-main-bg">
       {/* Sidebar / Inbox - Expanded width */}
-      <div className="w-[380px] min-w-[380px] border-r border-white/5 flex flex-col p-6 bg-[#111111]">
+      <div className="w-[380px] min-w-[380px] border-r border-border flex flex-col p-6 bg-surface">
         <h2 className="font-bold text-base mb-4 px-2">Messages</h2>
         <div className="relative mb-4 px-2 group">
-          <Search className="absolute left-6 top-3.5 text-gray-500 group-hover:text-[#EB712B] transition-colors" size={18} />
-          <input className="w-full bg-[#1A1A1A] rounded-xl py-4 pl-12 pr-4 border border-white/5 outline-none text-xs focus:border-[#EB712B]/50 transition-all" placeholder="Search messages..." />
+          <Search className="absolute left-6 top-3.5 text-text-muted group-hover:text-[#EB712B] transition-colors" size={18} />
+          <input className="w-full bg-main-bg rounded-xl py-4 pl-12 pr-4 border border-border outline-none text-xs focus:border-[#EB712B]/50 transition-all text-text-main placeholder-text-muted" placeholder="Search messages..." />
         </div>
         <div className="flex-1 overflow-y-auto space-y-2 px-2 custom-scrollbar">
           {chats.map(c => (
-            <div key={c.id} onClick={() => setSelectedChatId(c.id)} className={`group flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all ${selectedChatId === c.id ? 'bg-[#1A1A1A] border-white/10' : 'hover:bg-[#1A1A1A]/30'}`}>
+            <div key={c.id} onClick={() => setSelectedChatId(c.id)} className={`group flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all ${selectedChatId === c.id ? 'bg-hover border-border' : 'hover:bg-hover/30'}`}>
               <img src={c.avatar} alt={c.name} className="w-12 h-12 rounded-full object-cover" />
               <div className="flex-1 overflow-hidden">
                 <div className="flex justify-between items-center mb-1.5">
@@ -107,7 +107,7 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
                     </button>
                   )}
                 </div>
-                <p className="text-[11px] text-gray-500 truncate">View chat...</p>
+                <p className="text-[11px] text-text-muted truncate">View chat...</p>
               </div>
             </div>
           ))}
@@ -115,51 +115,51 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
       </div>
 
       {/* Main Chat Window */}
-      <div className="flex-1 flex flex-col bg-[#161616] overflow-hidden">
+      <div className="flex-1 flex flex-col bg-main-bg overflow-hidden">
         {selectedChat ? (
           <>
-            <div className="px-8 py-6 border-b border-white/5 flex justify-between items-center bg-[#161616]">
+            <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-surface">
               <div className="flex items-center gap-4">
                 <img src={selectedChat.avatar} className="w-12 h-12 rounded-full object-cover" alt="avatar" />
                 <div>
-                  <p className="font-bold text-sm">{role === 'athlete' ? 'Customer Support Team' : selectedChat.name}</p>
+                  <p className="font-bold text-sm text-text-main">{role === 'athlete' ? 'Customer Support Team' : selectedChat.name}</p>
                   <p className="text-[11px] text-[#EB712B] tracking-wide font-medium mt-0.5">{role === 'athlete' ? 'Always here to help' : selectedChat.status}</p>
                 </div>
               </div>
-              <div className="flex gap-6 text-gray-400">
+              <div className="flex gap-6 text-text-muted">
                 <Video size={22} className="hover:text-[#EB712B] cursor-pointer transition-colors" />
                 <Phone size={22} className="hover:text-[#EB712B] cursor-pointer transition-colors" />
                 <MoreVertical size={22} className="hover:text-[#EB712B] cursor-pointer transition-colors" />
               </div>
             </div>
             
-            <div ref={scrollRef} className="flex-1 px-8 py-6 overflow-y-auto space-y-6 bg-[#161616]">
+            <div ref={scrollRef} className="flex-1 px-8 py-6 overflow-y-auto space-y-6 bg-main-bg">
               {selectedChat.messages.map(m => (
                 <div key={m.id} className={`flex ${m.sender === "me" ? "justify-end" : "justify-start"}`}>
-                  <div className={`p-4 px-6 rounded-2xl max-w-[75%] ${m.sender === "me" ? "bg-[#EB712B] text-white rounded-br-none" : "bg-[#252525] text-white rounded-bl-none border border-white/5 shadow-lg"}`}>
+                  <div className={`p-4 px-6 rounded-2xl max-w-[75%] ${m.sender === "me" ? "bg-[#EB712B] text-white rounded-br-none" : "bg-surface text-text-main rounded-bl-none border border-border shadow-lg"}`}>
                     <p className="text-sm leading-relaxed">{m.text}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="px-8 py-6 border-t border-white/5 bg-[#161616]">
-              <div className="flex items-center gap-4 bg-[#1A1A1A] px-6 py-4 rounded-2xl border border-white/5 focus-within:border-[#EB712B]/50 transition-all">
-                <Paperclip className="text-gray-400 cursor-pointer hover:text-white transition-colors" size={20} />
-                <input className="flex-1 bg-transparent outline-none text-sm text-white placeholder-gray-500" placeholder={role === 'athlete' ? "Ask support a question..." : "Type a message..."} value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()} />
-                <Mic className="text-gray-400 cursor-pointer hover:text-white transition-colors" size={20} />
+            <div className="px-8 py-6 border-t border-border bg-surface">
+              <div className="flex items-center gap-4 bg-main-bg px-6 py-4 rounded-2xl border border-border focus-within:border-[#EB712B]/50 transition-all">
+                <Paperclip className="text-text-muted cursor-pointer hover:text-text-main transition-colors" size={20} />
+                <input className="flex-1 bg-transparent outline-none text-sm text-text-main placeholder-text-muted" placeholder={role === 'athlete' ? "Ask support a question..." : "Type a message..."} value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()} />
+                <Mic className="text-text-muted cursor-pointer hover:text-text-main transition-colors" size={20} />
                 <button onClick={handleSendMessage} className="bg-[#EB712B] p-3.5 rounded-xl hover:bg-[#d66525] transition-all text-white"><Send size={18} /></button>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-10">
-            <div className="w-28 h-28 bg-[#1A1A1A] rounded-full flex items-center justify-center mb-8 border border-white/5">
+          <div className="flex-1 flex flex-col items-center justify-center p-10 bg-main-bg">
+            <div className="w-28 h-28 bg-surface rounded-full flex items-center justify-center mb-8 border border-border">
               <MessageSquare size={50} className="text-[#EB712B]" />
             </div>
-            <h2 className="text-2xl font-bold mb-2">Customer Support</h2>
-            <p className="text-gray-400 text-sm mb-8 text-center max-w-xs">Select a conversation from the sidebar to start messaging or helping out.</p>
-            <button className="border border-[#EB712B] text-[#EB712B] px-8 py-3 rounded-xl font-bold hover:bg-[#EB712B] hover:text-white transition-all">Open Session</button>
+            <h2 className="text-2xl font-bold mb-2 text-text-main">Customer Support</h2>
+            <p className="text-text-muted text-sm mb-8 text-center max-w-xs">Select a conversation from the sidebar to start messaging or helping out.</p>
+            <button className="border border-[#EB712B] text-[#EB712B] px-8 py-3 rounded-xl font-bold hover:bg-[#EB712B] hover:text-white transition-all cursor-pointer">Open Session</button>
           </div>
         )}
       </div>

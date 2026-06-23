@@ -31,9 +31,9 @@ const AnalyticsGrid = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-      <div className="bg-[#161616] p-6 rounded-3xl border border-white/5">
+      <div className="bg-surface p-6 rounded-3xl border border-border">
         <div className="flex justify-between items-start mb-6">
-          <h3 className="font-bold">Member Growth</h3>
+          <h3 className="font-bold text-text-main">Member Growth</h3>
           <span className="text-[10px] bg-green-500/10 text-green-400 px-2 py-1 rounded">+24%</span>
         </div>
         <div className="h-32">
@@ -45,9 +45,9 @@ const AnalyticsGrid = () => {
           </ResponsiveContainer>
         </div>
       </div>
-      <div className="bg-[#161616] p-6 rounded-3xl border border-white/5 flex flex-col items-center">
-        <h3 className="font-bold w-full mb-2">Target Segments</h3>
-        <p className="text-gray-400 text-[10px] w-full mb-6 uppercase">Distribution Breakdown</p>
+      <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col items-center">
+        <h3 className="font-bold w-full mb-2 text-text-main">Target Segments</h3>
+        <p className="text-text-muted text-[10px] w-full mb-6 uppercase">Distribution Breakdown</p>
         <div className="relative flex items-center justify-center">
           <svg width={size} height={size} className="rotate-[-90deg]">
             {segments.map((segment, index) => {
@@ -58,13 +58,13 @@ const AnalyticsGrid = () => {
               );
             })}
           </svg>
-          <div className="absolute text-center"><p className="text-2xl font-bold">1k</p><p className="text-[10px] uppercase text-gray-500 font-bold">Total</p></div>
+          <div className="absolute text-center"><p className="text-2xl font-bold text-text-main">1k</p><p className="text-[10px] uppercase text-text-muted font-bold">Total</p></div>
         </div>
       </div>
-      <div className="bg-[#161616] p-6 rounded-3xl border border-white/5">
-        <h3 className="font-bold">Revenue Forecast</h3>
-        <p className="text-[10px] text-gray-500 mb-6">Projected Q4 Earnings</p>
-        <p className="text-3xl font-black mb-2">$12,450.00</p>
+      <div className="bg-surface p-6 rounded-3xl border border-border">
+        <h3 className="font-bold text-text-main">Revenue Forecast</h3>
+        <p className="text-[10px] text-text-muted mb-6">Projected Q4 Earnings</p>
+        <p className="text-3xl font-black mb-2 text-text-main">$12,450.00</p>
         <p className="text-[10px] text-green-400 flex items-center gap-1 mb-4">↗ Expected 15% increase</p>
       </div>
     </div>
@@ -81,19 +81,19 @@ export const DashboardOverview = () => (
       <KPICard title="Balance" value="$10,000" icon={<Wallet size={32} className="text-[#EB712B]" />} />
     </div>
 
-    {/* Elegant White Divider Line */}
-    <div className="w-full border-t border-white/10 my-8 shadow-sm" />
+    {/* Elegant Divider Line */}
+    <div className="w-full border-t border-border my-8 shadow-sm" />
 
     {/* Marketplace Sales and Analytics */}
-    <div className="bg-[#161616] p-8 rounded-3xl border border-white/5 w-full">
-      <h2 className="text-xl font-bold mb-6">Marketplace Sales</h2>
+    <div className="bg-surface p-8 rounded-3xl border border-border w-full">
+      <h2 className="text-xl font-bold mb-6 text-text-main">Marketplace Sales</h2>
       <div className="h-64 lg:h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
             <defs><linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#EB712B" stopOpacity={0.4}/><stop offset="95%" stopColor="#EB712B" stopOpacity={0}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} stroke="#666" />
-            <YAxis axisLine={false} tickLine={false} fontSize={12} stroke="#666" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+            <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} stroke="var(--color-secondary-text)" />
+            <YAxis axisLine={false} tickLine={false} fontSize={12} stroke="var(--color-secondary-text)" />
             <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#EB712B', strokeWidth: 2, strokeDasharray: '4 4' }} />
             <Area type="monotone" dataKey="val" stroke="#EB712B" strokeWidth={3} fill="url(#colorVal)" />
           </AreaChart>
@@ -120,22 +120,22 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
   };
 
   return (
-    <div className="flex w-full h-screen bg-[#111111] text-white overflow-hidden">
+    <div className="flex w-full h-screen bg-main-bg text-text-main overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <main className="flex-1 h-full overflow-y-auto p-8 relative">
         <header className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 bg-[#161616] rounded-xl border border-white/5"><Menu size={20} /></button>
+            <button onClick={() => setIsSidebarOpen(true)} className="lg:hidden p-2 bg-surface rounded-xl border border-border"><Menu size={20} /></button>
             <h2 className="text-4xl font-bold capitalize">{getPageTitle()}</h2>
           </div>
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center bg-[#161616] px-4 py-2 rounded-xl border border-white/5"><Search size={16} className="text-gray-500 mr-2" /><input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search..." className="bg-transparent border-none outline-none text-sm w-40" /></div>
-            <button className="text-gray-400 hover:text-[#EB712B]"><Mail size={20} /></button>
-            <button className="text-gray-400 hover:text-[#EB712B]"><Bell size={20} /></button>
+            <div className="hidden md:flex items-center bg-surface px-4 py-2 rounded-xl border border-border"><Search size={16} className="text-text-muted mr-2" /><input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search..." className="bg-transparent border-none outline-none text-sm w-40 text-text-main placeholder-text-muted" /></div>
+            <button className="text-text-muted hover:text-[#EB712B]"><Mail size={20} /></button>
+            <button className="text-text-muted hover:text-[#EB712B]"><Bell size={20} /></button>
           </div>
         </header>
         
-        <div className="w-full border-t border-white/10 my-8" />  
+        <div className="w-full border-t border-border my-8" />  
         
         <div className="w-full">
           {defaultView ? defaultView : <DashboardOverview />}
@@ -147,10 +147,10 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
 
 function KPICard({ title, value, icon }: any) {
   return (
-    <div className="bg-[#161616] p-6 rounded-3xl border border-white/5 hover:border-[#EB712B] transition-colors duration-300 w-full cursor-pointer">
+    <div className="bg-surface p-6 rounded-3xl border border-border hover:border-[#EB712B] transition-colors duration-300 w-full cursor-pointer">
       {icon}
-      <h3 className="text-gray-400 text-xs uppercase font-semibold mt-4">{title}</h3>
-      <p className="text-2xl font-black mt-1">{value}</p>
+      <h3 className="text-text-muted text-xs uppercase font-semibold mt-4">{title}</h3>
+      <p className="text-2xl text-text-main font-black mt-1">{value}</p>
     </div>
   );
 }

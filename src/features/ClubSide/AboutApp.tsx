@@ -52,7 +52,7 @@ const PrivacyProtocol = () => {
   const deleteBlock = (id: string) => setBlocks(blocks.filter(b => b.id !== id));
 
   return (
-    <div className="flex h-screen w-full bg-[#050505] text-white overflow-hidden">
+    <div className="flex h-screen w-full bg-main-bg text-text-main overflow-hidden">
       <div className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         <button className="lg:hidden absolute top-4 right-4" onClick={() => setIsSidebarOpen(false)}><X size={24} /></button>
@@ -60,17 +60,17 @@ const PrivacyProtocol = () => {
 
       <main className="flex-1 h-full overflow-y-auto">
         <div className="p-6 flex items-center gap-4 lg:hidden">
-          <button onClick={() => setIsSidebarOpen(true)} className="text-gray-400"><Menu size={24} /></button>
+          <button onClick={() => setIsSidebarOpen(true)} className="text-text-muted"><Menu size={24} /></button>
         </div>
 
         <div className="p-6 md:p-12 lg:p-16 max-w-5xl mx-auto pb-20">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-500 hover:text-white mb-8">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-text-main mb-8">
             <ArrowLeft size={18} /> <span className="font-bold text-xs uppercase tracking-widest">Back</span>
           </button>
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
-            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white">Privacy <span className="text-[#EB712B]">Protocol</span></h1>
-            <button onClick={() => setIsEditing(!isEditing)} className="p-4 bg-[#111] hover:bg-[#1a1a1a] rounded-2xl transition-all border border-white/5">
+            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-text-main">Privacy <span className="text-[#EB712B]">Protocol</span></h1>
+            <button onClick={() => setIsEditing(!isEditing)} className="p-4 bg-surface hover:bg-hover rounded-2xl transition-all border border-border">
               {isEditing ? <Eye size={20} className="text-[#EB712B]" /> : <Edit2 size={20} />}
             </button>
           </div>
@@ -82,25 +82,25 @@ const PrivacyProtocol = () => {
               { label: 'DATA CONTROLLER', value: protocolData.controller, key: 'controller', icon: Database },
               { label: 'LEGAL STATUS', value: protocolData.status, key: 'status', icon: Shield }
             ].map((item, i) => (
-              <div key={i} className="bg-[#111] p-6 rounded-2xl border border-white/5">
+              <div key={i} className="bg-surface p-6 rounded-2xl border border-border shadow-sm">
                 <p className="text-[10px] font-bold text-[#EB712B] tracking-widest mb-2 flex items-center gap-2"><item.icon size={12} /> {item.label}</p>
                 {isEditing ? (
-                  <input className="w-full bg-[#0a0a0a] text-sm font-semibold p-2 border border-white/10 rounded" value={item.value} onChange={(e) => setProtocolData({...protocolData, [item.key]: e.target.value})} />
-                ) : <p className="text-sm font-semibold truncate">{item.value}</p>}
+                  <input className="w-full bg-main-bg text-sm font-semibold p-2 border border-border rounded text-text-main" value={item.value} onChange={(e) => setProtocolData({...protocolData, [item.key]: e.target.value})} />
+                ) : <p className="text-sm font-semibold truncate text-text-main">{item.value}</p>}
               </div>
             ))}
           </div>
 
           {/* Executive Summary Area */}
-          <div className="bg-[#111] border border-white/5 rounded-3xl p-6 md:p-10">
+          <div className="bg-surface border border-border rounded-3xl p-6 md:p-10 shadow-sm">
             <h3 className="text-[#EB712B] font-bold text-xs uppercase tracking-widest mb-8 flex items-center gap-2">
               <span className="w-1.5 h-4 bg-[#EB712B] rounded-full"></span> Executive Summary & Policies
             </h3>
             <div className="space-y-4">
               <AnimatePresence>
                 {blocks.map((block) => (
-                  <motion.div key={block.id} className="group flex items-center gap-4 p-2 rounded-2xl hover:bg-white/[0.02]">
-                    <GripVertical className={`text-gray-700 ${isEditing ? 'cursor-grab' : 'hidden'}`} size={18} />
+                  <motion.div key={block.id} className="group flex items-center gap-4 p-2 rounded-2xl hover:bg-hover">
+                    <GripVertical className={`text-text-muted ${isEditing ? 'cursor-grab' : 'hidden'}`} size={18} />
                     <div
                       contentEditable={isEditing}
                       suppressContentEditableWarning={true}
@@ -108,7 +108,7 @@ const PrivacyProtocol = () => {
                         const newContent = e.currentTarget.innerText;
                         setBlocks(blocks.map(b => b.id === block.id ? {...b, content: newContent} : b));
                       }}
-                      className={`flex-1 bg-transparent p-3 text-sm md:text-base outline-none ${isEditing ? 'border border-[#EB712B]/30 rounded-lg' : ''}`}
+                      className={`flex-1 bg-transparent p-3 text-sm md:text-base outline-none text-text-main ${isEditing ? 'border border-[#EB712B]/30 rounded-lg' : ''}`}
                     >
                       {block.content}
                     </div>
@@ -119,8 +119,8 @@ const PrivacyProtocol = () => {
             </div>
 
             {isEditing && (
-              <div className="mt-10 flex gap-4 pt-8 border-t border-white/5">
-                <button onClick={addBlock} className="flex-1 py-4 border border-white/10 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 text-gray-400 font-bold text-sm">
+              <div className="mt-10 flex gap-4 pt-8 border-t border-border">
+                <button onClick={addBlock} className="flex-1 py-4 border border-border rounded-2xl flex items-center justify-center gap-2 hover:bg-hover text-text-muted font-bold text-sm cursor-pointer">
                   <Plus size={16} /> Add New Section
                 </button>
                 <button onClick={handleSave} className="flex-[2] py-4 bg-[#EB712B] hover:bg-[#ff8c4a] rounded-2xl font-black uppercase tracking-widest text-white transition-all flex items-center justify-center gap-2">

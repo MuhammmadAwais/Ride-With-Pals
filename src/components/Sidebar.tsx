@@ -251,7 +251,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       <aside
         id="sidebar"
         className={cn(
-          'fixed top-0 left-0 z-50 lg:static lg:translate-x-0',
+          'fixed top-0 left-0 z-50 lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full',
         )}
         style={{
@@ -260,7 +260,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           display: 'flex',
           flexDirection: 'column',
           height: '100vh',
-          position: undefined, // let className handle it
           backdropFilter: 'blur(40px)',
           WebkitBackdropFilter: 'blur(40px)',
           borderRight: '1px solid var(--color-border)',
@@ -277,12 +276,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             draggable={false}
             onClick={() => navigate(ROUTES.DASHBOARD)}
           />
-          {/* Section label (mobile only visible area) */}
-          <div className="hidden sm:flex flex-col items-end">
-            <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-secondary-text)' }}>
-              {sectionLabel}
-            </span>
-          </div>
           <button
             onClick={onClose}
             aria-label="Close navigation"
@@ -306,6 +299,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           className="custom-scrollbar"
           style={{ position: 'relative', flex: 1, overflowY: 'auto', padding: '20px 16px' }}
         >
+          {/* Section Label */}
+          <div style={{ padding: '0 16px 12px', opacity: 0.8 }}>
+            <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-secondary-text)' }}>
+              {sectionLabel}
+            </span>
+          </div>
+
           {/* GSAP Floating Orange Pill (active indicator) */}
           <div
             ref={pillRef}
