@@ -1,123 +1,250 @@
-import { useState, useRef } from "react";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+/**
+ * @fileoverview Login — Polished glassmorphism sign-in page.
+ *
+ * Enhancements over the original:
+ *  - GSAP stagger entry on all form elements
+ *  - Real Redux loginUser thunk (with loading state + error feedback)
+ *  - Sonner toasts for success/error
+ *  - Full email validation + password required check
+ *  - overflow: hidden (no scroll on auth page)
+ *  - Browser password reveal removed via CSS
+ *  - CycleRock background image on left panel
+ *  - Keeps original flow: Login → SelectRole
+ *
+ * Mock credentials:
+ *   Email:    rider@ridewithpals.com
+ *   Password: rider1234
+ */
+import { useState, useRef } from 'react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { loginUser } from '@/features/auth/slices/authSlice';
+import { cn } from '@/lib/utils';
+import { ROUTES, LOGIN_COPY, APP_NAME } from '@/Constants';
 
 interface FormErrors {
   email?: string;
   password?: string;
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 const Login = () => {
-  const navigate = useNavigate();
+  const dispatch    = useAppDispatch();
+  const navigate    = useNavigate();
+  const location    = useLocation();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [email,        setEmail]        = useState('');
+  const [password,     setPassword]     = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const container = useRef(null);
+  const [isLoading,    setIsLoading]    = useState(false);
+  const [errors,       setErrors]       = useState<FormErrors>({});
 
-  // States
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<FormErrors>({});
+  /* ── GSAP stagger entry ── */
+  useGSAP(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.fromTo('.brand-side', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.2 })
+      .fromTo('.animate-item', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 }, '-=0.7');
+  }, { scope: containerRef });
 
-  const validateForm = () => {
-    let newErrors: FormErrors = {};
-    if (!email.includes("@")) newErrors.email = "Please enter a valid email address";
-    if (!password) newErrors.password = "Password is required";
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  /* ── Validation ── */
+  const validate = (): boolean => {
+    const errs: FormErrors = {};
+    if (!EMAIL_REGEX.test(email.trim())) errs.email = 'Please enter a valid email address.';
+    if (!password) errs.password = 'Password is required.';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
-  const handleLogin = () => {
-    if (validateForm()) {
-      navigate("/select-role");
+  const clearError = (field: keyof FormErrors) => {
+    if (errors[field]) setErrors((p) => ({ ...p, [field]: undefined }));
+  };
+
+  /* ── Submit ── */
+  const handleLogin = async () => {
+    if (!validate()) return;
+
+    setIsLoading(true);
+    try {
+      const result = await dispatch(loginUser({ email: email.trim().toLowerCase(), password }));
+      if (loginUser.fulfilled.match(result)) {
+        toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
+        // Navigate to intended route or select-role
+        const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+        navigate(from ?? ROUTES.SELECT_ROLE, { replace: true });
+      } else {
+        const errorMsg = (result.payload as string) ?? LOGIN_COPY.INVALID_CREDENTIALS;
+        toast.error(errorMsg);
+        setErrors({ password: errorMsg });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.fromTo(".brand-side", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.2 })
-      .fromTo(".animate-item", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15 }, "-=0.8");
-  }, { scope: container });
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleLogin();
+  };
 
   return (
-    <div ref={container} className="min-h-screen bg-black text-white flex overflow-hidden font-sans">
-      
-      {/* LEFT SIDE */}
-      <div className="hidden lg:flex w-1/2 bg-[#050505] items-center justify-center p-12 relative overflow-hidden border-r border-[#1a1a1a] brand-side">
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-orange-600/10 rounded-full blur-[120px]" />
-        <div className="relative z-10 text-center max-w-sm">
-          <img src="/Images/Logo.png" alt="Logo" className="w-56 mb-10 mx-auto" />
-          <h1 className="text-5xl font-extrabold mb-6">Welcome Back</h1>
-          <p className="text-gray-400 text-lg">Hi! Welcome back, you’ve been missed.</p>
+    <div className="auth-page" style={{ background: '#050505', color: '#fff' }}>
+
+      {/* ══ LEFT PANEL ══ */}
+      <div className="brand-side hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/Images/CycleRock2.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.65)' }} />
+
+        {/* Ambient blob */}
+        <motion.div
+          animate={{ x: [0, 40, 0], y: [0, -25, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            position: 'absolute', top: '25%', left: '-80px',
+            width: '320px', height: '320px',
+            background: 'rgba(235,113,43,0.12)',
+            filter: 'blur(100px)', borderRadius: '50%',
+            pointerEvents: 'none',
+          }}
+        />
+
+        <div className="relative z-10 text-center px-12 max-w-md">
+          <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '196px', marginBottom: '40px', display: 'block', margin: '0 auto 40px' }} draggable={false} />
+          <h1 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '52px', lineHeight: 1.1, marginBottom: '16px' }}>
+            {LOGIN_COPY.HEADING}
+          </h1>
+          <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '16px', color: 'rgba(255,255,255,0.60)', lineHeight: 1.7 }}>
+            {LOGIN_COPY.LEFT_TAGLINE}
+          </p>
         </div>
       </div>
 
-      {/* RIGHT SIDE  for Mobile*/}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-black">
-        <div className="w-full max-w-md">
-          <div className="mb-8 lg:hidden flex flex-col items-center text-center animate-item">
-            <img src="/Images/Logo.png" alt="Logo" className="w-70 mb-4" />
+      {/* ══ RIGHT PANEL ══ */}
+      <div
+        className="w-full lg:w-1/2 flex items-center justify-center"
+        style={{ padding: '40px 20px', overflowY: 'auto', background: 'rgba(5,5,5,0.97)' }}
+      >
+        <div ref={containerRef} className="w-full" style={{ maxWidth: '460px', padding: '0 4px' }}>
+
+          {/* Mobile logo */}
+          <div className="animate-item lg:hidden flex justify-center mb-8">
+            <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '180px' }} draggable={false} />
           </div>
 
-          <h2 className="text-3xl font-bold mb-8 animate-item">Log in</h2>
+          {/* Heading */}
+          <div className="animate-item mb-8">
+            <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '34px', marginBottom: '6px' }}>
+              {LOGIN_COPY.SUBHEADING}
+            </h2>
+            <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)' }}>
+              {LOGIN_COPY.SUBHEADING}
+            </p>
+          </div>
 
-          <div className="space-y-4 animate-item">
-            {/* Email Field */}
-            <div>
-              <label className="text-xs text-gray-400 ml-1">Email</label>
-              <div className="relative mt-1">
-                <Mail className={`absolute left-4 top-3.5 transition-all ${errors.email ? "text-[#EB712B]" : "text-gray-600"}`} size={18} />
-                <input 
-                  type="email" 
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+
+            {/* Email */}
+            <div className="animate-item">
+              <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
+                {LOGIN_COPY.EMAIL_LABEL}
+              </label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={17} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: errors.email ? '#ef4444' : 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} />
+                <input
+                  type="email"
                   value={email}
-                  onChange={(e) => {setEmail(e.target.value); setErrors({...errors, email: ""})}}
-                  placeholder="abcxyz@mail.com" 
-                  className={`w-full h-12 rounded-xl bg-[#111111] border pl-12 pr-4 outline-none transition-all ${errors.email ? "border-[#EB712B]" : "border-[#222] focus:border-[#EB712B]"}`} 
+                  onChange={(e) => { setEmail(e.target.value); clearError('email'); }}
+                  onKeyDown={handleKeyDown}
+                  placeholder={LOGIN_COPY.EMAIL_PLACEHOLDER}
+                  autoComplete="email"
+                  className={cn('field', errors.email && 'field-error')}
+                  style={{ paddingLeft: '44px' }}
+                  disabled={isLoading}
                 />
               </div>
-              {errors.email && <p className="text-[#EB712B] text-xs mt-1 ml-1">{errors.email}</p>}
+              {errors.email && <p className="field-error-text"><AlertCircle size={12} /> {errors.email}</p>}
             </div>
 
-            {/* Password Field */}
-            <div>
-              <label className="text-xs text-gray-400 ml-1">Password</label>
-              <div className="relative mt-1">
-                <Lock className={`absolute left-4 top-3.5 transition-all ${errors.password ? "text-[#EB712B]" : "text-gray-600"}`} size={18} />
-                <input 
-                  type={showPassword ? "text" : "password"} 
+            {/* Password */}
+            <div className="animate-item">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', alignItems: 'center' }}>
+                <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px' }}>
+                  {LOGIN_COPY.PASSWORD_LABEL}
+                </label>
+                <span
+                  onClick={() => navigate(ROUTES.FORGOT_PASSWORD)}
+                  style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'rgba(255,255,255,0.35)', cursor: 'pointer', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+                >
+                  Forgot password?
+                </span>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <Lock size={17} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: errors.password ? '#ef4444' : 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={(e) => {setPassword(e.target.value); setErrors({...errors, password: ""})}}
-                  placeholder="Enter your password" 
-                  className={`w-full h-12 rounded-xl bg-[#111111] border pl-12 pr-12 outline-none transition-all ${errors.password ? "border-[#EB712B]" : "border-[#222] focus:border-[#EB712B]"}`} 
+                  onChange={(e) => { setPassword(e.target.value); clearError('password'); }}
+                  onKeyDown={handleKeyDown}
+                  placeholder={LOGIN_COPY.PASSWORD_PLACEHOLDER}
+                  autoComplete="current-password"
+                  className={cn('field', errors.password && 'field-error')}
+                  style={{ paddingLeft: '44px', paddingRight: '48px' }}
+                  disabled={isLoading}
                 />
-                <div className="absolute right-4 top-3.5 text-gray-500 cursor-pointer hover:text-[#EB712B]" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', background: 'transparent', border: 'none', padding: '4px', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+                >
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
               </div>
-              {errors.password && <p className="text-[#EB712B] text-xs mt-1 ml-1">{errors.password}</p>}
+              {errors.password && <p className="field-error-text"><AlertCircle size={12} /> {errors.password}</p>}
             </div>
 
-            <p className="text-right text-xs mt-1">
-              <span onClick={() => navigate("/forgot-password")} className="text-gray-500 hover:text-[#EB712B] cursor-pointer">
-                Forget password?
+            {/* Submit */}
+            <button
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="animate-item btn-primary"
+              style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  {LOGIN_COPY.SUBMITTING_LABEL}
+                </>
+              ) : LOGIN_COPY.SUBMIT_LABEL}
+            </button>
+
+            {/* Sign up link */}
+            <p className="animate-item" style={{ textAlign: 'center', fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.40)', marginTop: '4px' }}>
+              Don't have an account?{' '}
+              <span
+                onClick={() => navigate(ROUTES.SIGNUP)}
+                style={{ color: '#EB712B', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px' }}
+              >
+                Sign up
               </span>
-            </p>           
+            </p>
           </div>
-
-          <button 
-            onClick={handleLogin} 
-            className="w-full mt-6 py-4 rounded-xl bg-[#EB712B] hover:bg-[#d16226] font-bold transition-all animate-item"
-          >
-            Log in
-          </button>
-
-          <p className="text-center text-sm text-gray-500 mt-8 animate-item">
-            Don't have an account?{" "}
-            <span onClick={() => navigate("/")} className="text-orange-500 font-bold cursor-pointer hover:underline">
-              Sign up
-            </span>
-          </p>
         </div>
       </div>
     </div>
