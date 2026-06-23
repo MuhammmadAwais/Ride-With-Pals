@@ -79,16 +79,16 @@ export default function Overviews({ }: OverviewsProps) {
       
       <div className="lg:col-span-2 space-y-8">
         
-        <div className="bg-[#141414] border border-white/5 rounded-3xl p-8 space-y-5 relative overflow-hidden backdrop-blur-xl transition-all duration-300 hover:border-white/10">
+        <div className="bg-[#141414] border border-white/5 rounded-3xl p-8 space-y-5 relative overflow-hidden backdrop-blur-xl transition-all duration-300 hover:border-border">
           <div className="absolute -right-20 -top-20 w-40 h-40 bg-[#EB712B]/5 rounded-full blur-3xl" />
           
-          <h2 className="text-sm font-black uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
+          <h2 className="text-sm font-black uppercase tracking-[0.15em] text-text-main flex items-center gap-2.5">
             <span className="w-1.5 h-4 bg-[#EB712B] rounded-full" />
             Club Description
           </h2>
-          <div className="space-y-4 text-gray-300 text-xs leading-relaxed font-medium">
+          <div className="space-y-4 text-text-muted text-xs leading-relaxed font-medium">
             {description.map((paragraph, index) => (
-              <p key={index} className="text-gray-400">
+              <p key={index} className="text-text-muted">
                 {paragraph}
               </p>
             ))}
@@ -97,7 +97,7 @@ export default function Overviews({ }: OverviewsProps) {
 
         {/* Administrator Section */}
         <div className="space-y-5">
-          <h2 className="text-sm font-black uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
+          <h2 className="text-sm font-black uppercase tracking-[0.15em] text-text-main flex items-center gap-2.5">
             <span className="w-1.5 h-4 bg-[#EB712B] rounded-full" />
             Administrators
           </h2>
@@ -110,19 +110,19 @@ export default function Overviews({ }: OverviewsProps) {
                 <img 
                   src={admin.avatar} 
                   alt={admin.name} 
-                  className="w-14 h-14 rounded-2xl object-cover border border-white/10 shadow-inner"
+                  className="w-14 h-14 rounded-2xl object-cover border border-border shadow-inner"
                 />
                 <div className="flex-1 overflow-hidden">
                   <div className="flex items-center gap-1.5">
-                    <h4 className="text-xs font-black uppercase tracking-tight text-white truncate">
+                    <h4 className="text-xs font-black uppercase tracking-tight text-text-main truncate">
                       {admin.name}
                     </h4>
                     <ShieldCheck size={16} className="text-[#EB712B] shrink-0" />
                   </div>
-                  <p className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.05em] mt-0.5 truncate">
+                  <p className="text-[9px] font-bold text-text-muted uppercase tracking-[0.05em] mt-0.5 truncate">
                     {admin.joined}
                   </p>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 text-gray-300 border border-white/5 rounded-xl text-[9px] font-black uppercase tracking-wider mt-3">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-hover text-text-muted border border-white/5 rounded-xl text-[9px] font-black uppercase tracking-wider mt-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> {admin.status}
                   </span>
                 </div>
@@ -136,22 +136,22 @@ export default function Overviews({ }: OverviewsProps) {
       <div className="space-y-6">
         
         {/* Location Card */}
-        <div className="bg-[#141414] border border-white/5 rounded-3xl p-6 space-y-4 transition-all duration-300 hover:border-white/10">
+        <div className="bg-[#141414] border border-white/5 rounded-3xl p-6 space-y-4 transition-all duration-300 hover:border-border">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
+            <h3 className="text-xs font-black uppercase tracking-[0.15em] text-text-main flex items-center gap-2.5">
               <MapPin size={18} className="text-[#EB712B]" /> Location
             </h3>
-            <button className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white cursor-pointer transition-colors bg-white/5 px-2.5 py-1.5 rounded-lg border border-white/5">
+            <button className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-text-muted hover:text-text-main cursor-pointer transition-colors bg-hover px-2.5 py-1.5 rounded-lg border border-white/5">
               Map <ExternalLink size={10} />
             </button>
           </div>
-          <div className="bg-black/20 p-4 rounded-2xl border border-white/5 space-y-2">
-            <h4 className="text-xs font-black uppercase tracking-wide text-white">{location.city}</h4>
-            <p className="text-[10px] font-medium text-gray-400 leading-relaxed">
+          <div className="bg-main-bg/20 p-4 rounded-2xl border border-white/5 space-y-2">
+            <h4 className="text-xs font-black uppercase tracking-wide text-text-main">{location.city}</h4>
+            <p className="text-[10px] font-medium text-text-muted leading-relaxed">
               {location.address}
             </p>
             <div className="pt-2 border-t border-white/5">
-              <span className="block text-[9px] font-bold text-gray-500 uppercase tracking-wider">
+              <span className="block text-[9px] font-bold text-text-muted uppercase tracking-wider">
                 {location.type}
               </span>
             </div>
@@ -159,24 +159,24 @@ export default function Overviews({ }: OverviewsProps) {
         </div>
 
         {/* Members Statistics Card */}
-        <div className="bg-[#141414] border border-white/5 rounded-3xl p-6 space-y-5 transition-all duration-300 hover:border-white/10">
+        <div className="bg-[#141414] border border-white/5 rounded-3xl p-6 space-y-5 transition-all duration-300 hover:border-border">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase tracking-[0.15em] text-white flex items-center gap-2.5">
+            <h3 className="text-xs font-black uppercase tracking-[0.15em] text-text-main flex items-center gap-2.5">
               <Users size={18} className="text-[#EB712B]" /> Membership
             </h3>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black tracking-tight text-white">{stats.totalMembers}</span>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">registered</span>
+              <span className="text-3xl font-black tracking-tight text-text-main">{stats.totalMembers}</span>
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">registered</span>
             </div>
-            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">
+            <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider">
               Club capacity status indicator
             </p>
 
             {/* Capacity Bar */}
-            <div className="w-full h-2.5 bg-white/5 rounded-full mt-5 overflow-hidden relative flex items-center">
+            <div className="w-full h-2.5 bg-hover rounded-full mt-5 overflow-hidden relative flex items-center">
               <div 
                 className="h-full bg-gradient-to-r from-[#EB712B] to-[#ff8f50] rounded-full relative overflow-hidden transition-all duration-500" 
                 style={{ width: `${stats.capacityPercentage}%` }}
@@ -184,22 +184,22 @@ export default function Overviews({ }: OverviewsProps) {
                 <div className="absolute inset-0 bg-white/20 skew-x-[-45deg] w-10 animate-[ping_2s_infinite]" />
               </div>
             </div>
-            <div className="flex justify-between text-[9px] font-black text-gray-500 uppercase tracking-widest mt-1">
+            <div className="flex justify-between text-[9px] font-black text-text-muted uppercase tracking-widest mt-1">
               <span>0</span>
               <span className="text-[#EB712B]">{stats.capacityPercentage}% Capacity</span>
               <span>Max</span>
             </div>
 
             <div className="grid grid-cols-2 gap-4 border-t border-white/5 pt-5 mt-2">
-              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/5">
-                <span className="block text-[8px] font-black text-gray-400 uppercase tracking-wider">Passionate Ride</span>
+              <div className="bg-hover p-3.5 rounded-2xl border border-white/5">
+                <span className="block text-[8px] font-black text-text-muted uppercase tracking-wider">Passionate Ride</span>
                 <span className="block text-xs font-black text-[#EB712B] uppercase tracking-wide mt-1.5 flex items-center gap-1">
                   <Activity size={12} /> {stats.passionateRide}
                 </span>
               </div>
-              <div className="bg-white/5 p-3.5 rounded-2xl border border-white/5">
-                <span className="block text-[8px] font-black text-gray-400 uppercase tracking-wider">Avg Session</span>
-                <span className="block text-xs font-black text-white uppercase tracking-wide mt-1.5">
+              <div className="bg-hover p-3.5 rounded-2xl border border-white/5">
+                <span className="block text-[8px] font-black text-text-muted uppercase tracking-wider">Avg Session</span>
+                <span className="block text-xs font-black text-text-main uppercase tracking-wide mt-1.5">
                   {stats.avgSession}
                 </span>
               </div>

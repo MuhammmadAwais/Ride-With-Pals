@@ -94,10 +94,10 @@ export default function Shop({ }: ShopProps) {
       {/* Header Section: Title & View Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-black uppercase tracking-wide text-white">
+          <h1 className="text-2xl md:text-3xl font-black uppercase tracking-wide text-text-main">
             Premium Equipment
           </h1>
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mt-1.5">
+          <p className="text-xs font-bold uppercase tracking-wider text-text-muted mt-1.5">
             Showing {filteredProducts.length} items from elite verified sellers
           </p>
         </div>
@@ -105,27 +105,27 @@ export default function Shop({ }: ShopProps) {
         {/* Controls: Search, Filter, & View Toggles */}
         <div className="flex items-center gap-3">
           <div className="relative flex-1 md:w-64">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 
               type="text" 
               placeholder="Search gear or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 pl-11 pr-4 bg-[#141414] border border-white/5 rounded-2xl text-xs font-medium text-white placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-colors"
+              className="w-full h-10 pl-11 pr-4 bg-surface border border-border rounded-2xl text-xs font-medium text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-colors"
             />
           </div>
 
-          <button className="h-10 px-4 bg-[#141414] border border-white/5 hover:border-white/15 rounded-2xl flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-300 transition-all cursor-pointer">
+          <button className="h-10 px-4 bg-surface border border-border hover:border-text-muted rounded-2xl flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-muted transition-all cursor-pointer">
             <Filter size={14} /> Filter
           </button>
 
-          <div className="flex bg-[#141414] border border-white/5 rounded-2xl p-1.5 gap-1">
+          <div className="flex bg-surface border border-border rounded-2xl p-1.5 gap-1">
             <button 
               onClick={() => setViewMode("grid")}
               className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all ${
                 viewMode === "grid" 
-                  ? "bg-white/10 text-white" 
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-white/10 text-text-main" 
+                  : "text-text-muted hover:text-text-muted"
               }`}
             >
               <Grid3X3 size={16} />
@@ -134,8 +134,8 @@ export default function Shop({ }: ShopProps) {
               onClick={() => setViewMode("list")}
               className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all ${
                 viewMode === "list" 
-                  ? "bg-white/10 text-white" 
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-white/10 text-text-main" 
+                  : "text-text-muted hover:text-text-muted"
               }`}
             >
               <List size={16} />
@@ -146,8 +146,8 @@ export default function Shop({ }: ShopProps) {
 
       {/* Product Grid / List */}
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-12 bg-[#141414] border border-white/5 rounded-3xl">
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">No equipment found matching your search</p>
+        <div className="text-center py-12 bg-surface border border-border rounded-3xl">
+          <p className="text-sm font-bold text-text-muted uppercase tracking-wider">No equipment found matching your search</p>
         </div>
       ) : (
         <div className={
@@ -160,7 +160,7 @@ export default function Shop({ }: ShopProps) {
             return (
               <div 
                 key={product.id}
-                className={`bg-[#141414] border border-white/5 rounded-3xl p-4 space-y-4 transition-all duration-300 hover:border-[#EB712B]/30 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-[#EB712B]/5 flex flex-col justify-between ${
+                className={`bg-surface border border-border rounded-3xl p-4 space-y-4 transition-all duration-300 hover:border-[#EB712B]/30 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-[#EB712B]/5 flex flex-col justify-between ${
                   viewMode === "list" ? "sm:flex-row sm:items-center sm:gap-6 sm:space-y-0 p-4" : ""
                 }`}
               >
@@ -170,7 +170,7 @@ export default function Shop({ }: ShopProps) {
                 }`}>
                   {imageErrors[product.id] ? (
                     // Fallback placeholder if image fails to load
-                    <div className="w-full h-full bg-[#161616] flex flex-col items-center justify-center gap-1.5 text-gray-500">
+                    <div className="w-full h-full bg-main-bg flex flex-col items-center justify-center gap-1.5 text-text-muted">
                       <span className="font-black text-[10px] uppercase tracking-wider">Premium Gear</span>
                     </div>
                   ) : (
@@ -186,10 +186,10 @@ export default function Shop({ }: ShopProps) {
                   {/* Favorite/Like Heart */}
                   <button 
                     onClick={(e) => toggleFavorite(product.id, e)}
-                    className={`absolute top-3 right-3 w-8 h-8 bg-[#141414]/80 backdrop-blur-md border rounded-xl flex items-center justify-center transition-all cursor-pointer group/btn shadow-md ${
+                    className={`absolute top-3 right-3 w-8 h-8 bg-surface/80 backdrop-blur-md border rounded-xl flex items-center justify-center transition-all cursor-pointer group/btn shadow-md ${
                       isLiked 
                         ? "text-red-500 border-red-500/30 bg-red-500/10" 
-                        : "text-gray-400 border-white/10 hover:text-red-500 hover:border-red-500/20"
+                        : "text-text-muted border-border hover:text-red-500 hover:border-red-500/20"
                     }`}
                   >
                     <Heart 
@@ -204,7 +204,7 @@ export default function Shop({ }: ShopProps) {
                   <div>
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-xs font-black uppercase tracking-tight text-white line-clamp-1">
+                        <h3 className="text-xs font-black uppercase tracking-tight text-text-main line-clamp-1">
                           {product.name}
                         </h3>
                       </div>
@@ -215,14 +215,14 @@ export default function Shop({ }: ShopProps) {
 
                     {/* Small modified button sitting inline with the location */}
                     <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/5 mt-3">
-                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate max-w-[60%]">
-                        <MapPin size={12} className="shrink-0 text-gray-500" />
+                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted uppercase tracking-wider truncate max-w-[60%]">
+                        <MapPin size={12} className="shrink-0 text-text-muted" />
                         <span className="truncate">{product.location}</span>
                       </div>
                       
                       <button 
                         onClick={() => setSelectedProduct(product)}
-                        className="py-1.5 px-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#EB712B]/10 shrink-0"
+                        className="py-1.5 px-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-text-main rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#EB712B]/10 shrink-0"
                       >
                         <ShoppingBag size={11} /> Buy Now
                       </button>
@@ -238,8 +238,8 @@ export default function Shop({ }: ShopProps) {
 
       {/* Checkout/Buy Now Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-[#141414] border border-white/10 rounded-3xl p-6 relative shadow-2xl space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/70 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-surface border border-border rounded-3xl p-6 relative shadow-2xl space-y-6">
             
             {/* Conditional Display: Success Screen vs Purchase Screen */}
             {isSuccess ? (
@@ -248,11 +248,11 @@ export default function Shop({ }: ShopProps) {
                   <CheckCircle2 size={32} className="animate-bounce" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-white uppercase tracking-wider">Order Confirmed!</h3>
-                  <p className="text-xs font-medium text-gray-400 mt-1.5">
+                  <h3 className="text-base font-black text-text-main uppercase tracking-wider">Order Confirmed!</h3>
+                  <p className="text-xs font-medium text-text-muted mt-1.5">
                     Thank you for purchasing <strong className="text-[#EB712B]">{selectedProduct.name}</strong>.
                   </p>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-4">Redirecting you back...</p>
+                  <p className="text-[10px] text-text-muted uppercase tracking-wider mt-4">Redirecting you back...</p>
                 </div>
               </div>
             ) : (
@@ -260,25 +260,25 @@ export default function Shop({ }: ShopProps) {
                 {/* Close Button */}
                 <button 
                   onClick={() => setSelectedProduct(null)}
-                  className="absolute top-5 right-5 text-gray-400 hover:text-white cursor-pointer transition-colors"
+                  className="absolute top-5 right-5 text-text-muted hover:text-text-main cursor-pointer transition-colors"
                 >
                   <X size={20} />
                 </button>
 
                 <div>
-                  <h2 className="text-lg font-black uppercase tracking-wider text-white pr-6">Complete Purchase</h2>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1">Review your item and proceed to checkout</p>
+                  <h2 className="text-lg font-black uppercase tracking-wider text-text-main pr-6">Complete Purchase</h2>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mt-1">Review your item and proceed to checkout</p>
                 </div>
 
                 {/* Selected Product Summary */}
-                <div className="flex gap-4 bg-[#161616] p-3 rounded-2xl border border-white/5 items-center">
+                <div className="flex gap-4 bg-main-bg p-3 rounded-2xl border border-border items-center">
                   <img 
                     src={selectedProduct.image} 
                     alt={selectedProduct.name} 
-                    className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
+                    className="w-16 h-16 object-cover rounded-xl border border-border shrink-0"
                   />
                   <div className="overflow-hidden space-y-1">
-                    <h3 className="text-xs font-bold uppercase text-white truncate">{selectedProduct.name}</h3>
+                    <h3 className="text-xs font-bold uppercase text-text-main truncate">{selectedProduct.name}</h3>
                     <span className="text-[10px] font-extrabold text-[#EB712B] block">{selectedProduct.price}</span>
                   </div>
                 </div>
@@ -286,7 +286,7 @@ export default function Shop({ }: ShopProps) {
                 {/* Payment Details / Disclaimer */}
                 <div className="bg-[#EB712B]/5 border border-[#EB712B]/10 rounded-2xl p-4 space-y-2">
                   <span className="text-[10px] font-black text-[#EB712B] uppercase tracking-wider block">Secured Checkout</span>
-                  <p className="text-[10px] text-gray-300 leading-relaxed">
+                  <p className="text-[10px] text-text-muted leading-relaxed">
                     You are purchasing <strong>{selectedProduct.name}</strong> from a verified elite seller. 
                     Your payment method will be charged securely.
                   </p>
@@ -296,7 +296,7 @@ export default function Shop({ }: ShopProps) {
                 <div className="flex gap-3">
                   <button 
                     onClick={() => setSelectedProduct(null)}
-                    className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-xs font-extrabold text-gray-300 uppercase tracking-wider cursor-pointer transition-all"
+                    className="flex-1 py-3.5 bg-hover hover:bg-white/10 border border-border rounded-2xl text-xs font-extrabold text-text-muted uppercase tracking-wider cursor-pointer transition-all"
                   >
                     Cancel
                   </button>
@@ -305,7 +305,7 @@ export default function Shop({ }: ShopProps) {
                       // Trigger professional success UI display
                       setIsSuccess(true);
                     }}
-                    className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20"
+                    className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-text-main rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20"
                   >
                     Pay {selectedProduct.price}
                   </button>

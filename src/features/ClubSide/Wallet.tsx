@@ -2,8 +2,7 @@ import { useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
-  Download,
-  Wallet,
+  Wallet as WalletIcon,
   CreditCard,
   ArrowUpRight,
   ArrowDownRight,
@@ -306,7 +305,7 @@ export default function WalletDashboard() {
           <div className="absolute top-0 right-0 w-48 h-48 bg-[#EB712B]/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-[#EB712B]/20 transition-all duration-500" />
           <div className="relative z-10">
             <div className="flex items-center gap-2 text-text-muted mb-2 font-medium tracking-wide text-sm uppercase">
-              <WalletIcon size={16} className="text-[#EB712B]" />
+              <WalletIcon size={24} className="text-[#EB712B]" />
               Available Balance
             </div>
             <h2 className="text-4xl lg:text-5xl font-black text-text-main mb-6">
@@ -324,7 +323,7 @@ export default function WalletDashboard() {
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-xl font-bold text-text-main">Revenue Overview</h2>
             <div className="flex bg-hover rounded-lg p-1">
-              {(["7D", "30D", "1Y"] as const).map((period) => (
+              {(["90D", "30D", "1Y"] as const).map((period) => (
                 <button
                   key={period}
                   onClick={() => setRange(period)}

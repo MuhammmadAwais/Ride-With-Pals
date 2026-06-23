@@ -1,5 +1,6 @@
 import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
-import DataTable, { type Column } from "@/components/ui/DataTable";
+import DataTable from "@/components/ui/DataTable";
+import type { Column } from "@/components/ui/DataTable";
 
 const LEADERBOARD_DATA = [
   { id: 1, name: "Savannah Nguyen", role: "Elite Rookie", team: "Pro Team Alpha", rides: 12, attendance: "100%", status: "Active" },

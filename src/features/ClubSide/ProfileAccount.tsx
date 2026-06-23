@@ -27,7 +27,11 @@ import {
   Bike,
 } from "lucide-react";
 
-const ProfileAccount = () => {
+interface ProfileAccountProps {
+  role?: 'organizer' | 'athlete';
+}
+
+const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -204,58 +208,42 @@ const ProfileAccount = () => {
 
         {/* Account Management */}
         <section className="mb-8">
-  <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
-    Account Management
-  </h3>
-  <div className={sectionCardStyle}>
-    {[
-      {
-        icon: Users,
-        title: "Manage Club",
-        path: "/manage-club",
-      },
-      {
-        icon: Lock,
-        title: "Change Password",
-        action: () => setIsPasswordModalOpen(true),
-      },
-      {
-        icon: ShieldCheck,
-        title: "Admin Modules",
-        action: handleOpenAdminModal,
-      },
-      {
-        icon: Bike,
-        title: "User Modules",
-        action: handleOpenUserModal,
-      },
-      { 
-        icon: Wallet, 
-        title: "Wallet", 
-        path: "/wallet" 
-      },
-      {
-        icon: CreditCard,
-        title: "Subscription",
-        path: "/subscription",
-      },
-    ].map((item, idx) => (
-      <div
-        key={idx}
-        onClick={
-          item.action || (() => item.path && navigate(item.path))
-        }
-        className={rowItemStyle}
-      >
-        <div className="flex items-center gap-4">
-          <item.icon className="text-[#EB712B]" size={20} />
-          <span className="font-medium text-sm">{item.title}</span>
-        </div>
-        <ChevronRight size={18} className="text-gray-400" />
-      </div>
-    ))}
-  </div>
-</section>
+          <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
+            Account Management
+          </h3>
+          <div className={sectionCardStyle}>
+            {[
+              ...(role === 'organizer' ? [
+                { icon: Users, title: "Manage Club", path: "/manage-club" },
+                { icon: ShieldCheck, title: "Admin Modules", action: handleOpenAdminModal },
+                { icon: Bike, title: "User Modules", action: handleOpenUserModal },
+                { icon: CreditCard, title: "Subscription", path: "/subscription" },
+              ] : []),
+              {
+                icon: Lock,
+                title: "Change Password",
+                action: () => setIsPasswordModalOpen(true),
+              },
+              { 
+                icon: Wallet, 
+                title: "Wallet", 
+                path: role === 'organizer' ? "/wallet" : "/athlete/wallet" 
+              },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                onClick={item.action || (() => item.path && navigate(item.path))}
+                className={rowItemStyle}
+              >
+                <div className="flex items-center gap-4">
+                  <item.icon className="text-[#EB712B]" size={20} />
+                  <span className="font-medium text-sm">{item.title}</span>
+                </div>
+                <ChevronRight size={18} className="text-gray-400" />
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Workspace & Support */}
         <section className="mb-8">

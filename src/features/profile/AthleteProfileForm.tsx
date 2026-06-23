@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Camera, ChevronDown, Calendar, AlertCircle } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
+import { ROUTES } from "@/Constants";
 
 const AthleteProfileForm = () => {
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ const AthleteProfileForm = () => {
 
     localStorage.setItem('athlete_profile', JSON.stringify(athleteProfile));
     toast.success("Profile saved successfully!");
-    navigate("/select-role"); 
+    navigate(ROUTES.CLUBS); 
   };
 
   return (
@@ -158,7 +159,7 @@ const AthleteProfileForm = () => {
                <button
                 type="button"
                 onClick={() => toggleDropdown('country')}
-                className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors"
+                className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors relative z-10"
               >
                 <span className="text-white">{country}</span>
                 <ChevronDown 
@@ -168,16 +169,18 @@ const AthleteProfileForm = () => {
               </button>
 
               {openDropdown === 'country' && (
-                <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden mt-1">
-                  {['Germany', 'Pakistan', 'USA', 'Canada'].map((option) => (
-                    <div
-                      key={option}
-                      className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
-                      onClick={() => { setCountry(option); toggleDropdown(null); }}
-                    >
-                      {option}
-                    </div>
-                  ))}
+                <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl shadow-2xl overflow-hidden mt-1" style={{ zIndex: 100 }}>
+                  <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                    {['United States', 'Germany', 'United Kingdom', 'Canada', 'Australia', 'Pakistan', 'France', 'Spain', 'Italy', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Switzerland', 'Austria', 'Japan', 'South Korea'].sort().map((option) => (
+                      <div
+                        key={option}
+                        className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors border-b border-[#222] last:border-0"
+                        onClick={() => { setCountry(option); toggleDropdown(null); }}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

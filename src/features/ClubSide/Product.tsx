@@ -19,7 +19,8 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import DataTable, { type Column } from "@/components/ui/DataTable";
+import DataTable from "@/components/ui/DataTable";
+import type { Column } from "@/components/ui/DataTable";
 
 const chartData = [
   { name: "Jan", val1: 40, val2: 24 },

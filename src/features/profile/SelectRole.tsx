@@ -17,7 +17,7 @@ const SelectRole = () => {
   }, { scope: container });
 
   const handleGetInside = () => {
-    navigate("/clubs"); 
+    navigate("/create-profile"); 
   };
 
   return (
@@ -47,7 +47,7 @@ const SelectRole = () => {
         </button>
         <button 
           type="button"
-          onClick={() => navigate("/club-profile-setup")}
+          onClick={() => navigate("/auth-subscription")}
           className="w-full border border-white/10 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all cursor-pointer"
         >
           Create a new club <PlusCircle size={20} />

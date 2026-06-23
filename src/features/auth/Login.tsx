@@ -74,9 +74,17 @@ const Login = () => {
       const result = await dispatch(loginUser({ email: email.trim().toLowerCase(), password }));
       if (loginUser.fulfilled.match(result)) {
         toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
-        // Navigate to intended route or select-role
+        
+        // Dynamic Routing based on user role
+        const userRole = result.payload.user.role;
+        let defaultRoute: string = ROUTES.CLUBS; // default to Athlete Hub
+        if (userRole === 'organizer' || userRole === 'owner') {
+          defaultRoute = ROUTES.MANAGE_CLUB_HOME;
+        }
+        
+        // Navigate to intended route or role-specific dashboard
         const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-        navigate(from ?? ROUTES.SELECT_ROLE, { replace: true });
+        navigate(from ?? defaultRoute, { replace: true });
       } else {
         const errorMsg = (result.payload as string) ?? LOGIN_COPY.INVALID_CREDENTIALS;
         toast.error(errorMsg);

@@ -17,7 +17,7 @@ import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
   Settings, ChevronUp, LogOut, Compass, Bike,
-  TicketPercent, MessageSquare, Headphones,
+  TicketPercent, MessageSquare, Headphones, FileText, ShieldCheck
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -57,17 +57,27 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Leaderboard',      route: ROUTES.LEADERBOARD,      icon: <Trophy size={ICON_SIZE} /> },
   { label: 'Discount',         route: ROUTES.DISCOUNT,         icon: <Percent size={ICON_SIZE} /> },
   { label: 'Joining Requests', route: ROUTES.JOINING_REQUESTS, icon: <UserPlus size={ICON_SIZE} /> },
+  { label: 'Members',          route: ROUTES.MEMBERS,          icon: <Users size={ICON_SIZE} /> },
   { type: 'divider' },
+  { label: 'Terms & Conditions', route: ROUTES.TERMS,          icon: <FileText size={ICON_SIZE} /> },
+  { label: 'Privacy Policy',     route: ROUTES.PRIVACY,        icon: <ShieldCheck size={ICON_SIZE} /> },
   { label: 'Chat Support',     route: ROUTES.SUPPORT_OWNER,    icon: <Headphones size={ICON_SIZE} /> },
   { label: 'Profile',          route: ROUTES.PROFILE,          icon: <UserCircle size={ICON_SIZE} /> },
 ];
 
 /** Athlete Interface nav (community users). */
 const ATHLETE_NAV_ITEMS: NavEntry[] = [
-  { label: 'Explore Clubs', route: ROUTES.CLUBS,          icon: <Compass size={ICON_SIZE} /> },
-  { label: 'Ride',          route: ROUTES.RIDE,           icon: <Bike size={ICON_SIZE} /> },
-  { label: 'Discount',      route: ROUTES.MY_PROMOS,      icon: <TicketPercent size={ICON_SIZE} /> },
-  { label: 'Chat Support',  route: ROUTES.SUPPORT_ATHLETE, icon: <MessageSquare size={ICON_SIZE} /> },
+  { label: 'Explore Clubs',    route: ROUTES.CLUBS,               icon: <Compass size={ICON_SIZE} /> },
+  { label: 'Rides',            route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
+  { label: 'Marketplace',      route: ROUTES.MARKETPLACE,         icon: <Car size={ICON_SIZE} /> },
+  { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
+  { label: 'Wallet',           route: ROUTES.WALLET_ATHLETE,      icon: <Wallet size={ICON_SIZE} /> },
+  { label: 'Leaderboard',      route: ROUTES.LEADERBOARD_ATHLETE, icon: <Trophy size={ICON_SIZE} /> },
+  { label: 'News',             route: ROUTES.NEWS_ATHLETE,        icon: <Newspaper size={ICON_SIZE} /> },
+  { label: 'Discount',         route: ROUTES.MY_PROMOS,           icon: <TicketPercent size={ICON_SIZE} /> },
+  { type: 'divider' },
+  { label: 'Chat Support',     route: ROUTES.SUPPORT_ATHLETE,     icon: <MessageSquare size={ICON_SIZE} /> },
+  { label: 'Profile',          route: ROUTES.PROFILE_ATHLETE,     icon: <UserCircle size={ICON_SIZE} /> },
 ];
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -193,7 +203,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const isAthleteSide =
     location.pathname.startsWith('/clubs') ||
     location.pathname.startsWith('/my-promos') ||
-    location.pathname.startsWith('/dashboard/ride') ||
+    location.pathname.startsWith('/athlete') ||
     location.pathname.startsWith('/support/athlete');
 
   const navItems = isAthleteSide ? ATHLETE_NAV_ITEMS : CLUB_NAV_ITEMS;

@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import DataTable, { type Column } from "@/components/ui/DataTable";
+import DataTable from "@/components/ui/DataTable";
+import type { Column } from "@/components/ui/DataTable";
 
 const productCatalog = [
   { name: 'Bicycle', cat: 'Carbon Fiber Pro', img: '/Images/CycleImage.png', price: 100.00 },

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Check, X } from 'lucide-react';
-import DataTable, { type Column } from "@/components/ui/DataTable";
+import DataTable from "@/components/ui/DataTable";
+import type { Column } from "@/components/ui/DataTable";
 
 const initialRequests = [
   { id: 'ATH-90210', name: 'Albert Flores', org: 'Mountain Ride', image: '/Images/GirlImage11.png', status: 'pending' },

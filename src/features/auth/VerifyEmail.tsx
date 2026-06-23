@@ -83,7 +83,7 @@ const VerifyEmail = () => {
     }
     setError('');
     toast.success('Email verified! Redirecting...');
-    navigate(ROUTES.AUTH_SUBSCRIPTION);
+    navigate(ROUTES.SELECT_ROLE);
   };
 
   const handleResend = () => {

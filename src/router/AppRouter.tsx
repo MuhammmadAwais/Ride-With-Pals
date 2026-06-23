@@ -9,6 +9,11 @@
 import { createBrowserRouter, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
 
 // ── Layouts & Guards ──
+import Members from '@/features/ClubSide/Members';
+import TermsConditions from '@/features/ClubSide/TermsConditions';
+import PrivacyPolicy from '@/features/ClubSide/PrivacyPolicy';
+import MyPurchases from '@/features/public-club/pages/MyPurchases';
+import { ROUTES } from '@/Constants';
 import AppLayout from '@/components/layout/AppLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
@@ -48,6 +53,7 @@ import AddDiscount from '@/features/ClubSide/AddDiscount';
 import Clubs from '@/features/public-club/pages/UserClub';
 import Ride from '@/features/public-club/pages/Ride';
 import RideJoining from '@/features/public-club/pages/RideJoining';
+import Marketplace from '@/features/public-club/pages/Marketplace';
 
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';
@@ -99,19 +105,32 @@ export const router = createBrowserRouter(
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/subscription/payment" element={<SubPaymentDet />} />
         <Route path="/joining-requests" element={<ClubJoiningReq />} />
-        <Route path="/leader-board" element={<Leaderboard />} />
+        <Route path={ROUTES.LEADERBOARD} element={<Leaderboard />} />
+        <Route path={ROUTES.MEMBERS} element={<Members />} />
+        <Route path={ROUTES.TERMS} element={<TermsConditions />} />
+        <Route path={ROUTES.PRIVACY} element={<PrivacyPolicy />} />
         <Route path="/news" element={<News />} />
         <Route path="/news/add" element={<NewsAdded />} />
         
         <Route path="/discount" element={<Discount role="organizer" />} />
         <Route path="/discount/add" element={<AddDiscount />} />
         <Route path="/my-promos" element={<Discount role="athlete" />} />
+        <Route path="/athlete/promos" element={<Discount role="athlete" />} />
 
         {/* Support Pages — Route to the new polished Support component */}
         <Route path="/support/owner" element={<Support />} />
         <Route path="/support/athlete" element={<Support />} />
 
+        {/* Athlete specific routes */}
         <Route path="/clubs" element={<Clubs />} />
+        <Route path="/athlete/rides" element={<Ride />} />
+        <Route path="/athlete/marketplace" element={<Marketplace />} />
+        <Route path="/athlete/purchases" element={<MyPurchases />} />
+        <Route path="/athlete/wallet" element={<Wallet />} />
+        <Route path="/athlete/leaderboard" element={<Leaderboard />} />
+        <Route path="/athlete/news" element={<News />} />
+        <Route path="/athlete/profile" element={<ProfileAccount role="athlete" />} />
+        
         <Route path="/clubs/Ride" element={<Ride />} />
         <Route path="/dashboard/ride/:id" element={<RideJoining />} />
       </Route>

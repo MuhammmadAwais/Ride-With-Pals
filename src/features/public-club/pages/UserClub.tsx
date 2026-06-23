@@ -209,19 +209,19 @@ export default function UserClub() {
     // const currentRole: "organizer" | "athlete" = isDiscoverContext ? "athlete" : "organizer";
 
     return (
-      <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8">
+      <div className="flex min-h-screen text-text-main font-sans w-full justify-center p-4 sm:p-8">
         <div className="flex-1 transition-all max-w-7xl w-full mx-auto space-y-8">
           
           {/* Back button */}
           <button
             onClick={handleBackToHub}
-            className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-xs font-bold tracking-wider uppercase cursor-pointer transition-all bg-[#141414] px-5 py-3 rounded-xl border border-white/5"
+            className="inline-flex items-center gap-2 text-text-muted hover:text-text-main text-xs font-bold tracking-wider uppercase cursor-pointer transition-all bg-surface px-5 py-3 rounded-xl border border-border"
           >
             <ArrowLeft size={16} /> Back to Hub
           </button>
 
           {/* Large Hero/Banner Section */}
-          <div className="relative h-64 w-full rounded-3xl overflow-hidden border border-white/10">
+          <div className="relative h-64 w-full rounded-3xl overflow-hidden border border-border">
             <img 
               src={selectedClub.logo} 
               alt={selectedClub.name} 
@@ -245,7 +245,7 @@ export default function UserClub() {
                     {selectedClub.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {selectedClub.status}
                   </span>
                   <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">{selectedClub.name}</h2>
-                  <p className="text-gray-300 text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Activity: {selectedClub.activityType}</p>
+                  <p className="text-text-muted text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Activity: {selectedClub.activityType}</p>
                 </div>
               </div>
 
@@ -259,7 +259,7 @@ export default function UserClub() {
               )}
 
               {isMember && (
-                <div className="px-6 py-3.5 bg-white/5 border border-white/10 text-gray-400 rounded-xl text-xs font-black tracking-widest uppercase cursor-default shrink-0">
+                <div className="px-6 py-3.5 bg-hover border border-border text-text-muted rounded-xl text-xs font-black tracking-widest uppercase cursor-default shrink-0">
                   ✓ Joined
                 </div>
               )}
@@ -268,11 +268,11 @@ export default function UserClub() {
 
           {/* SCREEN 2: Code Verification (Modern Popup) */}
           {showCodeScreen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-              <div className="bg-[#141414] border border-white/10 p-8 rounded-3xl w-full max-w-sm space-y-6 shadow-2xl relative">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/60 backdrop-blur-sm animate-fade-in">
+              <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-sm space-y-6 shadow-2xl relative">
                 <div className="text-center">
                   <h3 className="text-xl font-black uppercase tracking-tight">Join Verification</h3>
-                  <p className="text-gray-400 text-[10px] mt-1 tracking-wider">Please enter the club join code (Hint: 111)</p>
+                  <p className="text-text-muted text-[10px] mt-1 tracking-wider">Please enter the club join code (Hint: 111)</p>
                 </div>
                 <form onSubmit={handleVerifyCode} className="space-y-4">
                   <input
@@ -281,7 +281,7 @@ export default function UserClub() {
                     maxLength={3}
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value)}
-                    className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-[#EB712B] text-white placeholder-gray-600"
+                    className="w-full bg-main-bg border border-border rounded-xl p-4 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-[#EB712B] text-text-main placeholder-gray-600"
                   />
                   
                   {/* Professional Inline Error Message */}
@@ -296,7 +296,7 @@ export default function UserClub() {
                     <button
                       type="button"
                       onClick={() => setShowCodeScreen(false)}
-                      className="flex-1 py-4 bg-[#1A1A1A] hover:bg-[#222222] text-gray-400 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-white/5"
+                      className="flex-1 py-4 bg-hover hover:bg-border text-text-muted rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-border"
                     >
                       Cancel
                     </button>
@@ -314,8 +314,8 @@ export default function UserClub() {
 
           {/* SCREEN 3: Deposit Modal (Sleek Overlay Form with secure fields) */}
           {showDepositScreen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-              <div className="bg-[#141414] border border-white/10 p-8 rounded-3xl w-full max-w-md space-y-6 my-8 shadow-2xl relative">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/60 backdrop-blur-sm overflow-y-auto">
+              <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-md space-y-6 my-8 shadow-2xl relative">
                 
                 {paymentSuccess ? (
                   <div className="flex flex-col items-center justify-center py-12 space-y-4 text-center animate-fade-in">
@@ -323,77 +323,77 @@ export default function UserClub() {
                       <CheckCircle2 size={48} className="animate-bounce" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-black uppercase tracking-tight text-white">Payment Successful!</h3>
-                      <p className="text-gray-400 text-[10px] mt-1 tracking-wider">Redirecting you to your club dashboard...</p>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-text-main">Payment Successful!</h3>
+                      <p className="text-text-muted text-[10px] mt-1 tracking-wider">Redirecting you to your club dashboard...</p>
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="text-center">
                       <h3 className="text-xl font-black uppercase tracking-tight">Secure Checkout</h3>
-                      <p className="text-gray-400 text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${selectedClub.price}</span></p>
+                      <p className="text-text-muted text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${selectedClub.price}</span></p>
                     </div>
                     
                     <form onSubmit={handleDepositConfirm} className="space-y-4 text-xs font-bold tracking-wider">
                       <div>
-                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Card number</label>
+                        <label className="block text-[10px] text-text-muted uppercase mb-1">Card number</label>
                         <input
                           type="text"
                           placeholder="1111 1111 1111 1111"
                           maxLength={19}
                           value={cardNumber}
                           onChange={handleCardChange}
-                          className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                          className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[10px] text-gray-400 uppercase mb-1">Expiry Date</label>
+                          <label className="block text-[10px] text-text-muted uppercase mb-1">Expiry Date</label>
                           <input
                             type="text"
                             placeholder="12/26"
                             maxLength={5}
                             value={expiryDate}
                             onChange={handleExpiryChange}
-                            className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                            className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] text-gray-400 uppercase mb-1">CVV</label>
+                          <label className="block text-[10px] text-text-muted uppercase mb-1">CVV</label>
                           <input
                             type="text"
                             placeholder="XXX"
                             maxLength={4}
                             value={cvv}
                             onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
-                            className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                            className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Account holder</label>
+                        <label className="block text-[10px] text-text-muted uppercase mb-1">Account holder</label>
                         <input
                           type="text"
                           placeholder="Full name on card"
                           value={accountHolder}
                           onChange={(e) => setAccountHolder(e.target.value)}
-                          className="w-full bg-[#161616] border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-[#EB712B]"
+                          className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] text-gray-400 uppercase mb-1">Amount to pay</label>
+                        <label className="block text-[10px] text-text-muted uppercase mb-1">Amount to pay</label>
                         <input
                           type="text"
                           disabled
                           value={`$${selectedClub.price}`}
-                          className="w-full bg-[#1a1a1a] border border-white/5 rounded-xl p-4 text-gray-500 focus:outline-none cursor-not-allowed"
+                          className="w-full bg-hover border border-border rounded-xl p-4 text-text-muted focus:outline-none cursor-not-allowed"
                         />
                       </div>
                       <div className="pt-2 flex gap-3">
                         <button
                           type="button"
                           onClick={() => setShowDepositScreen(false)}
-                          className="w-full py-4 bg-[#1A1A1A] hover:bg-[#222222] text-gray-400 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-white/5"
+                          className="w-full py-4 bg-hover hover:bg-border text-text-muted rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-border"
                         >
                           Cancel
                         </button>
@@ -417,15 +417,15 @@ export default function UserClub() {
           )}
 
           {/* NAVIGATION TABS - Unlocks/locks content dynamically using optional chaining */}
-          <div className="flex bg-[#111111] border border-white/5 rounded-2xl p-2 gap-2 w-full md:w-fit overflow-x-auto mt-6">
+          <div className="flex bg-main-bg border border-border rounded-2xl p-2 gap-2 w-full md:w-fit overflow-x-auto mt-6">
             {(["rides", "news", "leaderboard", "shop", "discounts", "marketplace", "overviews"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`relative flex-1 md:flex-initial px-6 py-4 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all text-center whitespace-nowrap ${
                   activeTab === tab 
-                    ? "text-white bg-white/5" 
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    ? "text-text-main bg-hover" 
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
               >
                 {tab}
@@ -449,7 +449,7 @@ export default function UserClub() {
                 {activeTab === "overviews" && <Overviews clubId={selectedClub?.id} />}
               </>
             ) : (
-              <div className="bg-[#141414] border border-white/5 rounded-3xl p-12 text-center text-gray-400 text-xs font-bold tracking-wider">
+              <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
                 Join this club to view its {activeTab}.
               </div>
             )}
@@ -462,7 +462,7 @@ export default function UserClub() {
 
   // --- DEFAULT VIEW: HUB & SEARCH ---
   return (
-    <div className="flex min-h-screen text-white font-sans w-full justify-center p-4 sm:p-8 ">
+    <div className="flex min-h-screen text-text-main font-sans w-full justify-center p-4 sm:p-8 ">
       <div className="flex-1 p-4 transition-all max-w-7xl w-full mx-auto space-y-12">
         
         {/* Top Header & Overview */}
@@ -472,10 +472,10 @@ export default function UserClub() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] animate-pulse" />
               Community Hub
             </span>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-gray-400">
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase text-text-main">
               Athletic Clubs
             </h1>
-            <p className="text-gray-400 text-xs tracking-wide mt-2 font-medium max-w-lg">
+            <p className="text-text-muted text-xs tracking-wide mt-2 font-medium max-w-lg">
               Manage your personal hubs or discover elite training communities around the region.
             </p>
           </div>
@@ -491,7 +491,7 @@ export default function UserClub() {
         {/* Search Input Bar */}
         <div className="relative w-full">
           <Search
-            className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted"
             size={20}
           />
           <input
@@ -499,7 +499,7 @@ export default function UserClub() {
             placeholder="Search communities by name or activity type (e.g. Biking, Running)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#141414] border border-white/10 rounded-2xl py-5 pl-14 pr-6 text-sm focus:outline-none focus:border-[#EB712B] transition-all duration-300 text-white placeholder-gray-500 shadow-inner"
+            className="w-full bg-surface border border-border rounded-2xl py-5 pl-14 pr-6 text-sm focus:outline-none focus:border-[#EB712B] transition-all duration-300 text-text-main placeholder-gray-500 shadow-inner"
           />
         </div>
 
@@ -509,13 +509,13 @@ export default function UserClub() {
             <h2 className="text-xl font-black tracking-wide uppercase">
               My Clubs
             </h2>
-            <p className="text-gray-500 text-[10px] font-bold tracking-widest uppercase mt-0.5">
+            <p className="text-text-muted text-[10px] font-bold tracking-widest uppercase mt-0.5">
               Communities you manage
             </p>
           </div>
 
           {filteredMyClubs.length === 0 ? (
-            <div className="bg-[#141414] border border-white/5 rounded-3xl p-12 text-center text-gray-500 text-xs font-bold tracking-wider">
+            <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
               No matching clubs found in your inventory.
             </div>
           ) : (
@@ -523,7 +523,7 @@ export default function UserClub() {
               {filteredMyClubs.map((club) => (
                 <div
                   key={club.id}
-                  className="bg-[#141414] border border-white/[0.06] rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
+                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
                 >
                   <div className="absolute inset-0 bg-zinc-950">
                     <img
@@ -535,7 +535,7 @@ export default function UserClub() {
                   </div>
 
                   <div className="relative z-10 p-6 flex justify-between items-start">
-                    <span className="px-4 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
+                    <span className="px-4 py-1.5 bg-[#EB712B] text-text-main rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
                       {club.activityType}
                     </span>
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
@@ -551,7 +551,7 @@ export default function UserClub() {
                     <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase">
                       {club.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-[10px] text-gray-400 font-extrabold tracking-[0.1em] uppercase">
+                    <div className="flex items-center gap-2 text-[10px] text-text-muted font-extrabold tracking-[0.1em] uppercase">
                       <svg
                         width="14"
                         height="14"
@@ -568,8 +568,8 @@ export default function UserClub() {
                       <span>Las Vegas, NV</span>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
-                      <div className="flex items-center gap-2 text-[10px] text-gray-300 font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between border-t border-border pt-4 mt-4">
+                      <div className="flex items-center gap-2 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <svg
                           width="16"
                           height="16"
@@ -608,19 +608,19 @@ export default function UserClub() {
               <h2 className="text-xl font-black tracking-wide uppercase">
                 Discover All Clubs
               </h2>
-              <p className="text-gray-500 text-[10px] font-bold tracking-widest uppercase mt-0.5">
+              <p className="text-text-muted text-[10px] font-bold tracking-widest uppercase mt-0.5">
                 Explore external communities
               </p>
             </div>
 
             {/* List / Grid Toggle View */}
-            <div className="flex bg-[#141414] border border-white/10 rounded-xl p-1 gap-1 w-fit">
+            <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 w-fit">
               <button
                 onClick={() => setViewMode("grid")}
                 className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
                   viewMode === "grid"
-                    ? "bg-white/10 text-white shadow-inner"
-                    : "text-gray-500 hover:text-white hover:bg-white/5"
+                    ? "bg-white/10 text-text-main shadow-inner"
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="Grid View"
               >
@@ -630,8 +630,8 @@ export default function UserClub() {
                 onClick={() => setViewMode("list")}
                 className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
                   viewMode === "list"
-                    ? "bg-white/10 text-white shadow-inner"
-                    : "text-gray-500 hover:text-white hover:bg-white/5"
+                    ? "bg-white/10 text-text-main shadow-inner"
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="List View"
               >
@@ -641,7 +641,7 @@ export default function UserClub() {
           </div>
 
           {filteredDiscoverClubs.length === 0 ? (
-            <div className="bg-[#141414] border border-white/5 rounded-3xl p-12 text-center text-gray-500 text-xs font-bold tracking-wider">
+            <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
               No matching clubs found in public directory.
             </div>
           ) : viewMode === "grid" ? (
@@ -649,7 +649,7 @@ export default function UserClub() {
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}
-                  className="bg-[#141414] border border-white/[0.06] rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
+                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
                 >
                   <div className="absolute inset-0 bg-zinc-950">
                     <img
@@ -661,7 +661,7 @@ export default function UserClub() {
                   </div>
 
                   <div className="relative z-10 p-6 flex justify-between items-start">
-                    <span className="px-4 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
+                    <span className="px-4 py-1.5 bg-[#EB712B] text-text-main rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
                       {comm.activityType}
                     </span>
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
@@ -677,7 +677,7 @@ export default function UserClub() {
                     <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase">
                       {comm.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-[10px] text-gray-400 font-extrabold tracking-[0.1em] uppercase">
+                    <div className="flex items-center gap-2 text-[10px] text-text-muted font-extrabold tracking-[0.1em] uppercase">
                       <svg
                         width="14"
                         height="14"
@@ -694,8 +694,8 @@ export default function UserClub() {
                       <span>Las Vegas, NV</span>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
-                      <div className="flex items-center gap-2 text-[10px] text-gray-300 font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between border-t border-border pt-4 mt-4">
+                      <div className="flex items-center gap-2 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <svg
                           width="16"
                           height="16"
@@ -729,7 +729,7 @@ export default function UserClub() {
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}
-                  className="bg-[#141414] border border-white/[0.06] rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
+                  className="bg-surface border border-border rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
                 >
                   <div className="flex items-center gap-6 w-full">
                     <img
@@ -739,7 +739,7 @@ export default function UserClub() {
                     />
                     <div className="space-y-1.5 w-full">
                       <div className="flex items-center gap-3">
-                        <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
+                        <span className="px-3.5 py-1 bg-[#EB712B] text-text-main rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
                           {comm.activityType}
                         </span>
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
@@ -753,7 +753,7 @@ export default function UserClub() {
                       <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase">
                         {comm.name}
                       </h3>
-                      <p className="text-[10px] text-gray-400 font-bold tracking-wider uppercase">
+                      <p className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
                         {comm.members}
                       </p>
                     </div>

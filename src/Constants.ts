@@ -39,12 +39,21 @@ export const ROUTES = {
   LEADERBOARD:        '/leader-board',
   NEWS:               '/news',
   DISCOUNT:           '/discount',
+  MEMBERS:            '/members',
+  TERMS:              '/terms-conditions',
+  PRIVACY:            '/privacy-policy',
   SUPPORT_OWNER:      '/support/owner',
 
   // ── Athlete Interface (protected, in AppLayout shell) ──
   CLUBS:              '/clubs',
-  RIDE:               '/clubs/Ride',
-  MY_PROMOS:          '/my-promos',
+  RIDE:               '/athlete/rides',
+  MARKETPLACE:        '/athlete/marketplace',
+  PURCHASES:          '/athlete/purchases',
+  WALLET_ATHLETE:     '/athlete/wallet',
+  LEADERBOARD_ATHLETE:'/athlete/leaderboard',
+  NEWS_ATHLETE:       '/athlete/news',
+  MY_PROMOS:          '/athlete/promos',
+  PROFILE_ATHLETE:    '/athlete/profile',
   SUPPORT_ATHLETE:    '/support/athlete',
 
   // ── Standalone (no shell) ──
