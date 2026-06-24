@@ -11,7 +11,7 @@
  *
  * To add a nav item: add to CLUB_NAV_ITEMS or ATHLETE_NAV_ITEMS arrays below.
  */
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
@@ -199,6 +199,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const navContainerRef = useRef<HTMLElement>(null);
   const pillRef         = useRef<HTMLDivElement>(null);
+  const roleDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close role switcher dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (roleDropdownRef.current && !roleDropdownRef.current.contains(event.target as Node)) {
+        setRoleMenuOpen(false);
+      }
+    }
+    if (roleMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [roleMenuOpen]);
 
   // Determine which nav section to show based on current route
   const isAthleteSide = location.pathname.startsWith('/view/userside');
@@ -306,11 +322,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           style={{ position: 'relative', flex: 1, overflowY: 'auto', padding: '20px 16px' }}
         >
           {/* Section Selector Dropdown */}
-          <div className="relative px-2 pb-4">
+          <div className="relative pb-4" ref={roleDropdownRef}>
             <button
               onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-              className="w-full flex items-center justify-between bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] p-3.5 rounded-2xl transition-all duration-200"
-              style={{ cursor: 'pointer', background: 'transparent' }}
+              className="w-full flex items-center justify-between bg-hover border border-border py-3.5 px-5 rounded-xl transition-all duration-200"
+              style={{ cursor: 'pointer' }}
             >
               <div className="flex items-center gap-2.5">
                 {isAthleteSide ? (
@@ -318,13 +334,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 ) : (
                   <LayoutDashboard size={16} className="text-[#EB712B]" />
                 )}
-                <span className="font-poppins font-bold text-xs text-white tracking-wide">
+                <span className="font-poppins font-bold text-xs text-text-main tracking-wide">
                   {isAthleteSide ? 'Athlete Interface' : 'Club Management'}
                 </span>
               </div>
               <ChevronUp
                 size={14}
-                className="text-gray-500 transition-transform duration-300"
+                className="text-text-muted transition-transform duration-300"
                 style={{
                   transform: roleMenuOpen ? 'rotate(0deg)' : 'rotate(180deg)',
                 }}
@@ -333,7 +349,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             {roleMenuOpen && (
               <div
-                className="absolute left-2 right-2 mt-2 bg-[#141414]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-1.5 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+                className="absolute left-0 right-0 mt-2 bg-white dark:bg-[#282828] border border-border rounded-xl shadow-2xl p-1.5 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
               >
                 <button
                   onClick={() => {
@@ -343,18 +359,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-xl text-left text-xs font-semibold font-poppins transition-all duration-200 border-none",
                     isAthleteSide
-                      ? "text-white bg-[#EB712B]/10"
-                      : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                      ? "text-text-main bg-accent/10"
+                      : "text-text-muted hover:text-text-main hover:bg-hover"
                   )}
                   style={{ cursor: 'pointer', background: isAthleteSide ? undefined : 'transparent' }}
                 >
                   <Compass size={16} className="text-[#EB712B]" />
                   <div className="flex flex-col">
                     <span>Athlete Interface</span>
-                    <span className="text-[10px] text-gray-500 font-normal mt-0.5">Explore clubs & rides</span>
+                    <span className="text-[10px] text-text-muted font-normal mt-0.5">Explore clubs & rides</span>
                   </div>
                 </button>
-                <div className="h-[1px] bg-white/5 my-1.5" />
+                <div className="h-[1px] bg-border my-1.5" />
                 <button
                   onClick={() => {
                     setRoleMenuOpen(false);
@@ -363,15 +379,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-xl text-left text-xs font-semibold font-poppins transition-all duration-200 border-none",
                     !isAthleteSide
-                      ? "text-white bg-[#EB712B]/10"
-                      : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                      ? "text-text-main bg-accent/10"
+                      : "text-text-muted hover:text-text-main hover:bg-hover"
                   )}
                   style={{ cursor: 'pointer', background: !isAthleteSide ? undefined : 'transparent' }}
                 >
                   <LayoutDashboard size={16} className="text-[#EB712B]" />
                   <div className="flex flex-col">
                     <span>Club Management</span>
-                    <span className="text-[10px] text-gray-500 font-normal mt-0.5">Manage community & gear</span>
+                    <span className="text-[10px] text-text-muted font-normal mt-0.5">Manage community & gear</span>
                   </div>
                 </button>
               </div>

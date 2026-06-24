@@ -162,7 +162,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 onClick={() => setSelectedType(type)}
                 className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
                   selectedType === type 
-                    ? "bg-[#EB712B] border-[#EB712B] text-text-main shadow-[0_0_15px_rgba(235,113,43,0.3)]" 
+                    ? "bg-[#EB712B] border-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)]" 
                     : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
                 }`}
               >
@@ -238,7 +238,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 <div className="flex items-center justify-between gap-2 border-t border-border pt-4 z-10">
                   <button 
                     onClick={() => handleJoinRide(ride.id)}
-                    className="flex-1 bg-[#EB712B] hover:bg-[#d66525] py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(235,113,43,0.2)] cursor-pointer text-text-main"
+                    className="flex-1 bg-[#EB712B] hover:bg-[#d66525] py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(235,113,43,0.2)] cursor-pointer text-white"
                   >
                     Click to Join Ride <ArrowRight size={14} />
                   </button>

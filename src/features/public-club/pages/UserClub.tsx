@@ -232,7 +232,7 @@ export default function UserClub() {
               alt={selectedClub.name} 
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#161616] via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
             
             <div className="absolute inset-x-6 bottom-6 flex flex-wrap items-end justify-between gap-4">
               <div className="flex items-center gap-5">
@@ -249,8 +249,8 @@ export default function UserClub() {
                   }`}>
                     {selectedClub.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {selectedClub.status}
                   </span>
-                  <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">{selectedClub.name}</h2>
-                  <p className="text-text-muted text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Activity: {selectedClub.activityType}</p>
+                  <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl text-white">{selectedClub.name}</h2>
+                  <p className="text-white/70 text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Activity: {selectedClub.activityType}</p>
                 </div>
               </div>
 
@@ -405,10 +405,10 @@ export default function UserClub() {
                         <button
                           type="submit"
                           disabled={!isFormValid}
-                          className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg ${
+                          className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all border shadow-lg ${
                             isFormValid 
-                              ? "bg-[#EB712B] hover:bg-[#ff8036] text-white cursor-pointer shadow-[#EB712B]/10" 
-                              : "bg-[#222222] text-gray-600 cursor-not-allowed border border-white/5 shadow-none"
+                              ? "bg-[#EB712B] hover:bg-[#ff8036] text-white border-transparent cursor-pointer shadow-[#EB712B]/10" 
+                              : "bg-hover text-text-muted border-border cursor-not-allowed shadow-none"
                           }`}
                         >
                           Pay Securely
@@ -561,10 +561,10 @@ export default function UserClub() {
                   </div>
 
                   <div className="relative z-10 p-6 backdrop-blur-[2px]">
-                    <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase">
+                    <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase text-white">
                       {club.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-[10px] text-text-muted font-extrabold tracking-[0.1em] uppercase">
+                    <div className="flex items-center gap-2 text-[10px] text-white/60 font-extrabold tracking-[0.1em] uppercase">
                       <svg
                         width="14"
                         height="14"
@@ -581,8 +581,8 @@ export default function UserClub() {
                       <span>Las Vegas, NV</span>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-border pt-4 mt-4">
-                      <div className="flex items-center gap-2 text-[10px] text-text-muted font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
+                      <div className="flex items-center gap-2 text-[10px] text-white/60 font-bold uppercase tracking-wider">
                         <svg
                           width="16"
                           height="16"
@@ -687,10 +687,10 @@ export default function UserClub() {
                   </div>
 
                   <div className="relative z-10 p-6 backdrop-blur-[2px]">
-                    <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase">
+                    <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase text-white">
                       {comm.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-[10px] text-text-muted font-extrabold tracking-[0.1em] uppercase">
+                    <div className="flex items-center gap-2 text-[10px] text-white/60 font-extrabold tracking-[0.1em] uppercase">
                       <svg
                         width="14"
                         height="14"
@@ -707,8 +707,8 @@ export default function UserClub() {
                       <span>Las Vegas, NV</span>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-border pt-4 mt-4">
-                      <div className="flex items-center gap-2 text-[10px] text-text-muted font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
+                      <div className="flex items-center gap-2 text-[10px] text-white/60 font-bold uppercase tracking-wider">
                         <svg
                           width="16"
                           height="16"

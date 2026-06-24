@@ -124,8 +124,8 @@ export default function Shop({ }: ShopProps) {
               onClick={() => setViewMode("grid")}
               className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all ${
                 viewMode === "grid" 
-                  ? "bg-white/10 text-text-main" 
-                  : "text-text-muted hover:text-text-muted"
+                  ? "bg-hover text-text-main" 
+                  : "text-text-muted hover:text-text-main"
               }`}
             >
               <Grid3X3 size={16} />
@@ -134,8 +134,8 @@ export default function Shop({ }: ShopProps) {
               onClick={() => setViewMode("list")}
               className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all ${
                 viewMode === "list" 
-                  ? "bg-white/10 text-text-main" 
-                  : "text-text-muted hover:text-text-muted"
+                  ? "bg-hover text-text-main" 
+                  : "text-text-muted hover:text-text-main"
               }`}
             >
               <List size={16} />
@@ -165,7 +165,7 @@ export default function Shop({ }: ShopProps) {
                 }`}
               >
                 {/* Product Image Wrapper */}
-                <div className={`relative aspect-square bg-zinc-950 rounded-2xl overflow-hidden border border-white/5 flex items-center justify-center group shrink-0 ${
+                <div className={`relative aspect-square bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${
                   viewMode === "list" ? "w-28 h-28" : "w-full"
                 }`}>
                   {imageErrors[product.id] ? (
@@ -214,7 +214,7 @@ export default function Shop({ }: ShopProps) {
                     </div>
 
                     {/* Small modified button sitting inline with the location */}
-                    <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/5 mt-3">
+                    <div className="flex items-center justify-between gap-2 pt-3 border-t border-border mt-3">
                       <div className="flex items-center gap-1.5 text-[10px] font-bold text-text-muted uppercase tracking-wider truncate max-w-[60%]">
                         <MapPin size={12} className="shrink-0 text-text-muted" />
                         <span className="truncate">{product.location}</span>
@@ -222,7 +222,7 @@ export default function Shop({ }: ShopProps) {
                       
                       <button 
                         onClick={() => setSelectedProduct(product)}
-                        className="py-1.5 px-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-text-main rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#EB712B]/10 shrink-0"
+                        className="py-1.5 px-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#EB712B]/10 shrink-0"
                       >
                         <ShoppingBag size={11} /> Buy Now
                       </button>
@@ -305,7 +305,7 @@ export default function Shop({ }: ShopProps) {
                       // Trigger professional success UI display
                       setIsSuccess(true);
                     }}
-                    className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-text-main rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20"
+                    className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20"
                   >
                     Pay {selectedProduct.price}
                   </button>

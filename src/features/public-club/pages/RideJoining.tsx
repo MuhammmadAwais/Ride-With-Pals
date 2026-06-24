@@ -81,10 +81,10 @@ const RideJoining = () => {
   );
 
   return (
-    <div className="min-h-screen text-white p-4 md:p-8 font-sans select-none relative antialiased">
+    <div className="min-h-screen text-text-main p-4 md:p-8 font-sans select-none relative antialiased">
       
       <div 
-        className={`fixed bottom-6 right-6 bg-[#121212] border border-[#EB712B]/40 text-white px-5 py-3.5 rounded-2xl shadow-[0_10px_40px_-15px_rgba(235,113,43,0.3)] flex items-center gap-3 z-50 transition-all duration-300 transform ${
+        className={`fixed bottom-6 right-6 bg-surface border border-[#EB712B]/40 text-text-main px-5 py-3.5 rounded-2xl shadow-[0_10px_40px_-15px_rgba(235,113,43,0.3)] flex items-center gap-3 z-50 transition-all duration-300 transform ${
           showToast ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
         }`}
       >
@@ -99,7 +99,7 @@ const RideJoining = () => {
         {/* Back Button */}
         <button 
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2.5 text-gray-400 hover:text-white font-bold text-xs bg-[#121212] border border-white/5 px-5 py-3.5 rounded-2xl w-max transition-all duration-300 cursor-pointer hover:border-[#EB712B]/40 hover:bg-[#1a1a1a] hover:-translate-y-0.5 active:translate-y-0"
+          className="flex items-center gap-2.5 text-text-muted hover:text-text-main font-bold text-xs bg-surface border border-border px-5 py-3.5 rounded-2xl w-max transition-all duration-300 cursor-pointer hover:border-[#EB712B]/40 hover:bg-hover hover:-translate-y-0.5 active:translate-y-0"
         >
           <ArrowLeft size={16} /> Back to rides
         </button>
@@ -110,12 +110,12 @@ const RideJoining = () => {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Interactive Dark Landscape Map View */}
-            <div className="relative h-[380px] w-full bg-[#121212] border border-white/5 rounded-3xl p-2.5 overflow-hidden shadow-2xl group">
+            <div className="relative h-[380px] w-full bg-surface border border-border rounded-3xl p-2.5 overflow-hidden shadow-2xl group">
               <MapContainer 
                 center={mapCenter} 
                 zoom={11} 
                 scrollWheelZoom={false}
-                className="h-full w-full rounded-2xl z-0 invert-[92%] hue-rotate-[180deg] brightness-[92%] contrast-[85%]"
+                className="h-full w-full rounded-2xl z-0 dark:invert-[92%] dark:hue-rotate-[180deg] dark:brightness-[92%] dark:contrast-[85%]"
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -142,7 +142,7 @@ const RideJoining = () => {
             </div>
 
             {/* Event Title & Metadata */}
-            <div className="bg-[#121212] border border-white/5 rounded-3xl p-8 space-y-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-white/10">
+            <div className="bg-surface border border-border rounded-3xl p-8 space-y-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-border">
               <div className="absolute top-0 right-0 w-56 h-56 bg-[#EB712B]/5 rounded-full blur-3xl pointer-events-none" />
 
               <div className="flex justify-between items-start gap-4 z-10 relative">
@@ -150,11 +150,11 @@ const RideJoining = () => {
                   <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-wider text-[#eb712a]">
                     <Zap size={12} /> {rideDetails.type} • {rideDetails.date}
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-text-main leading-tight">
                     {rideDetails.title}
                   </h1>
-                  <p className="text-xs font-bold text-gray-400 tracking-wide">
-                    Hosted by <span className="text-white">{rideDetails.host}</span>
+                  <p className="text-xs font-bold text-text-muted tracking-wide">
+                    Hosted by <span className="text-text-main font-semibold">{rideDetails.host}</span>
                   </p>
                 </div>
 
@@ -162,14 +162,14 @@ const RideJoining = () => {
                 <div className="flex gap-2 shrink-0">
                   <button 
                     onClick={handleShare}
-                    className="w-11 h-11 bg-[#1a1a1a] hover:bg-white/5 border border-white/5 rounded-2xl flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 cursor-pointer hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-11 h-11 bg-hover border border-border rounded-2xl flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer hover:border-border hover:-translate-y-0.5 active:translate-y-0"
                     title="Share Ride"
                   >
                     <Share2 size={16} />
                   </button>
                   <button 
                     onClick={handleShare}
-                    className="w-11 h-11 bg-[#1a1a1a] hover:bg-white/5 border border-white/5 rounded-2xl flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 cursor-pointer hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-11 h-11 bg-hover border border-border rounded-2xl flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer hover:border-border hover:-translate-y-0.5 active:translate-y-0"
                     title="Copy Link"
                   >
                     <Copy size={16} />
@@ -180,36 +180,36 @@ const RideJoining = () => {
               {/* Clickable Quick-Copy Link Box */}
               <div 
                 onClick={handleShare}
-                className="flex items-center justify-between bg-[#1a1a1a] border border-white/5 px-5 py-3.5 rounded-2xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 group hover:shadow-[0_0_25px_rgba(235,113,43,0.1)]"
+                className="flex items-center justify-between bg-hover border border-border px-5 py-3.5 rounded-2xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 group hover:shadow-[0_0_25px_rgba(235,113,43,0.1)]"
               >
-                <span className="text-[11px] text-gray-400 font-mono truncate select-all group-hover:text-white">
+                <span className="text-[11px] text-text-muted font-mono truncate select-all group-hover:text-text-main">
                   https://velohub.cc/ride/{rideDetails.id}
                 </span>
-                <span className="text-[9px] font-extrabold uppercase tracking-wider bg-white/5 text-gray-300 px-3 py-1.5 rounded-xl group-hover:bg-[#EB712B] group-hover:text-white transition-colors">
+                <span className="text-[9px] font-extrabold uppercase tracking-wider bg-[#EB712B]/10 text-text-muted px-3 py-1.5 rounded-xl group-hover:bg-[#EB712B] group-hover:text-white transition-colors">
                   Tap to Copy
                 </span>
               </div>
 
               {/* Metrics row */}
               <div className="grid grid-cols-3 gap-4 pt-2 z-10 relative">
-                <div className="bg-[#1a1a1a] border border-white/5 p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-white/20">
+                <div className="bg-hover border border-border p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-border">
                   <div className="text-base font-extrabold text-[#EB712B] tracking-tight">{rideDetails.avgPace}</div>
-                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-gray-500">Average Pace</div>
+                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Average Pace</div>
                 </div>
-                <div className="bg-[#1a1a1a] border border-white/5 p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-white/20">
-                  <div className="text-base font-extrabold text-white tracking-tight">{rideDetails.distance}</div>
-                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-gray-500">Total Distance</div>
+                <div className="bg-hover border border-border p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-border">
+                  <div className="text-base font-extrabold text-text-main tracking-tight">{rideDetails.distance}</div>
+                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Total Distance</div>
                 </div>
-                <div className="bg-[#1a1a1a] border border-white/5 p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-white/20">
-                  <div className="text-base font-extrabold text-white tracking-tight">{rideDetails.activeParticipants}</div>
-                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-gray-500">Participants</div>
+                <div className="bg-hover border border-border p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-border">
+                  <div className="text-base font-extrabold text-text-main tracking-tight">{rideDetails.activeParticipants}</div>
+                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Participants</div>
                 </div>
               </div>
 
               {/* Detailed Description */}
-              <div className="space-y-4 border-t border-white/5 pt-6 z-10 relative">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-gray-300">Ride Description</h4>
-                <p className="text-xs text-gray-400 leading-relaxed whitespace-pre-line font-medium border-l-2 border-[#EB712B]/40 pl-4 py-1">
+              <div className="space-y-4 border-t border-border pt-6 z-10 relative">
+                <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Ride Description</h4>
+                <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line font-medium border-l-2 border-[#EB712B]/40 pl-4 py-1">
                   {rideDetails.description}
                 </p>
               </div>
@@ -220,58 +220,58 @@ const RideJoining = () => {
           <div className="space-y-6">
             
             {/* Recommended Bike & Join Card */}
-            <div className="bg-[#121212] border border-white/5 rounded-3xl p-8 space-y-6 shadow-xl transition-all duration-300 hover:border-white/10">
+            <div className="bg-surface border border-border rounded-3xl p-8 space-y-6 shadow-xl transition-all duration-300 hover:border-border">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <span className="text-[8px] font-extrabold uppercase tracking-wider text-gray-500">Recommended Bike</span>
-                  <h3 className="text-xs font-extrabold text-[#eb712a] tracking-tight bg-[#1a1a1a] border border-[#EB712B]/20 px-4 py-2 rounded-xl w-max">
+                  <span className="text-[8px] font-extrabold uppercase tracking-wider text-text-muted">Recommended Bike</span>
+                  <h3 className="text-xs font-extrabold text-[#eb712a] tracking-tight bg-hover border border-[#EB712B]/20 px-4 py-2 rounded-xl w-max">
                     {rideDetails.recommendedBike}
                   </h3>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-[#1a1a1a] border border-white/5 flex items-center justify-center shrink-0 shadow-inner">
-                  <Bike size={22} className="text-gray-300" />
+                <div className="w-12 h-12 rounded-2xl bg-hover border border-border flex items-center justify-center shrink-0 shadow-inner">
+                  <Bike size={22} className="text-text-muted" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 bg-[#1a1a1a] p-5 rounded-2xl border border-white/5 text-xs">
+              <div className="grid grid-cols-2 gap-4 bg-hover p-5 rounded-2xl border border-border text-xs">
                 <div>
-                  <div className="text-[9px] font-extrabold uppercase text-gray-500 tracking-wider">Max Slope</div>
-                  <div className="font-extrabold text-white mt-1 tracking-tight text-sm">{rideDetails.maxSlope}</div>
+                  <div className="text-[9px] font-extrabold uppercase text-text-muted tracking-wider">Max Slope</div>
+                  <div className="font-extrabold text-text-main mt-1 tracking-tight text-sm">{rideDetails.maxSlope}</div>
                 </div>
                 <div>
-                  <div className="text-[9px] font-extrabold uppercase text-gray-500 tracking-wider">Support Car</div>
-                  <div className="font-extrabold text-green-400 mt-1 tracking-tight text-sm">{rideDetails.supportCar}</div>
+                  <div className="text-[9px] font-extrabold uppercase text-text-muted tracking-wider">Support Car</div>
+                  <div className="font-extrabold text-green-500 mt-1 tracking-tight text-sm">{rideDetails.supportCar}</div>
                 </div>
               </div>
 
               <button 
                 onClick={handleJoinClick}
-                className="w-full bg-[#eb712a] hover:bg-[#d66525] py-5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.2)] cursor-pointer tracking-wide hover:-translate-y-1 active:translate-y-0"
+                className="w-full bg-[#eb712a] hover:bg-[#d66525] py-5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.2)] cursor-pointer tracking-wide hover:-translate-y-1 active:translate-y-0 text-white"
               >
                 🚴 Join Elite Ride
               </button>
 
-              <div className="text-[9px] font-bold text-center text-gray-500 tracking-wide italic">
+              <div className="text-[9px] font-bold text-center text-text-muted tracking-wide italic">
                 *Act fast! Limited availability to secure your spot.
               </div>
             </div>
 
             {/* Ride Leaders */}
-            <div className="bg-[#121212] border border-white/5 rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-white/10">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-gray-300">Ride Leaders</h4>
+            <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-border">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Ride Leaders</h4>
               <div className="space-y-3">
                 {rideDetails.leaders.map((leader, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-[#1a1a1a] p-4 rounded-2xl border border-white/5 transition-all duration-300 hover:border-white/20">
+                  <div key={idx} className="flex items-center justify-between bg-hover p-4 rounded-2xl border border-border transition-all duration-300 hover:border-border">
                     <div className="flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-2xl bg-[#222] border border-white/10 flex items-center justify-center font-extrabold text-[11px] text-gray-300 shadow-md uppercase tracking-wider">
+                      <div className="w-10 h-10 rounded-2xl bg-main-bg border border-border flex items-center justify-center font-extrabold text-[11px] text-text-main shadow-md uppercase tracking-wider">
                         {leader.name.split(" ").map(n => n[0]).join("")}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs font-extrabold text-white leading-tight tracking-tight">{leader.name}</span>
-                        <span className="text-[8px] font-extrabold text-gray-500 uppercase tracking-wider mt-1">{leader.role}</span>
+                        <span className="text-xs font-extrabold text-text-main leading-tight tracking-tight">{leader.name}</span>
+                        <span className="text-[8px] font-extrabold text-text-muted uppercase tracking-wider mt-1">{leader.role}</span>
                       </div>
                     </div>
-                    <div className="w-7 h-7 rounded-xl bg-[#222] border border-white/10 flex items-center justify-center text-[9px] text-emerald-400">
+                    <div className="w-7 h-7 rounded-xl bg-main-bg border border-border flex items-center justify-center text-[9px] text-emerald-500">
                       <Award size={12} />
                     </div>
                   </div>
@@ -280,9 +280,9 @@ const RideJoining = () => {
             </div>
 
             {/* Participants Grid Widget */}
-            <div className="bg-[#121212] border border-white/5 rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-white/10">
+            <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-border">
               <div className="flex justify-between items-center">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-gray-300">Participants</h4>
+                <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Participants</h4>
                 <span className="text-[9px] font-extrabold bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#eb712a] tracking-wider px-3 py-1.5 rounded-xl flex items-center gap-1.5">
                   <Users size={10} /> {rideDetails.participants.length} Active
                 </span>
@@ -292,7 +292,7 @@ const RideJoining = () => {
                 {rideDetails.participants.slice(0, 8).map((initials, idx) => (
                   <div 
                     key={idx} 
-                    className="w-10 h-10 rounded-2xl bg-[#1a1a1a] border border-white/20 flex items-center justify-center font-extrabold text-[10px] text-gray-300 shadow-md hover:scale-110 hover:border-[#EB712B]/40 transition-all duration-300 cursor-pointer ring-1 ring-black/20"
+                    className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main shadow-md hover:scale-110 hover:border-[#EB712B]/40 transition-all duration-300 cursor-pointer ring-1 ring-black/20"
                     title={initials}
                   >
                     {initials}
@@ -301,7 +301,7 @@ const RideJoining = () => {
                 {rideDetails.participants.length > 8 && (
                   <div 
                     onClick={() => setIsRosterOpen(true)}
-                    className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-extrabold text-[10px] text-white cursor-pointer hover:bg-white/15 transition-all duration-300 hover:scale-110"
+                    className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main cursor-pointer hover:bg-border transition-all duration-300 hover:scale-110"
                   >
                     +{rideDetails.participants.length - 8}
                   </div>
@@ -310,7 +310,7 @@ const RideJoining = () => {
 
               <button 
                 onClick={() => setIsRosterOpen(true)}
-                className="w-full bg-[#1a1a1a] hover:bg-white/5 border border-white/5 py-4 rounded-2xl text-xs font-extrabold text-white transition-all duration-300 cursor-pointer tracking-tight flex items-center justify-center gap-2.5 hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full bg-hover hover:bg-border border border-border py-4 rounded-2xl text-xs font-extrabold text-text-main transition-all duration-300 cursor-pointer tracking-tight flex items-center justify-center gap-2.5 hover:border-border hover:-translate-y-0.5 active:translate-y-0"
               >
                 <Users size={14} /> View Full Roster
               </button>
@@ -329,31 +329,31 @@ const RideJoining = () => {
           />
 
           {/* Drawer Panel */}
-          <div className="relative w-full max-w-md h-full bg-[#121212] border-l border-white/10 shadow-2xl flex flex-col animate-slide-in-right overflow-hidden">
+          <div className="relative w-full max-w-md h-full bg-surface border-l border-border shadow-2xl flex flex-col animate-slide-in-right overflow-hidden">
             
             {/* Drawer Header */}
-            <div className="p-6 border-b border-white/5 flex items-center justify-between shrink-0">
+            <div className="p-6 border-b border-border flex items-center justify-between shrink-0">
               <div className="space-y-1">
-                <h3 className="font-extrabold text-white text-base tracking-tight">Ride Roster</h3>
-                <p className="text-[10px] text-gray-400 font-medium">Manage and view registered participants</p>
+                <h3 className="font-extrabold text-text-main text-base tracking-tight">Ride Roster</h3>
+                <p className="text-[10px] text-text-muted font-medium">Manage and view registered participants</p>
               </div>
               <button 
                 onClick={() => setIsRosterOpen(false)}
-                className="w-11 h-11 rounded-2xl bg-[#1a1a1a] hover:bg-white/10 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 cursor-pointer"
+                className="w-11 h-11 rounded-2xl bg-hover hover:bg-border border border-border flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
             {/* Global Roster Search */}
-            <div className="p-5 border-b border-white/5 relative shrink-0">
-              <Search className="absolute left-8 top-1/2 transform -translate-y-1/2 text-gray-500" size={14} />
+            <div className="p-5 border-b border-border relative shrink-0">
+              <Search className="absolute left-8 top-1/2 transform -translate-y-1/2 text-text-muted" size={14} />
               <input 
                 type="text" 
                 placeholder="Search participant name..." 
                 value={searchQuery} 
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-white/5 pl-10 pr-4 py-3.5 rounded-2xl text-xs font-bold text-white placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/40 transition-colors"
+                className="w-full bg-hover border border-border pl-10 pr-4 py-3.5 rounded-2xl text-xs font-bold text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/40 transition-colors"
               />
             </div>
 
@@ -363,15 +363,15 @@ const RideJoining = () => {
                 filteredRoster.map((user, idx) => (
                   <div 
                     key={idx} 
-                    className="flex items-center justify-between bg-[#1a1a1a] p-4.5 rounded-2xl border border-white/5 group hover:border-white/20 transition-all duration-300 hover:shadow-lg"
+                    className="flex items-center justify-between bg-hover p-4.5 rounded-2xl border border-border group hover:border-border transition-all duration-300 hover:shadow-lg"
                   >
                     <div className="flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-2xl bg-[#222] border border-white/10 flex items-center justify-center font-extrabold text-xs text-gray-300 shadow-md uppercase tracking-wider shrink-0">
+                      <div className="w-10 h-10 rounded-2xl bg-main-bg border border-border flex items-center justify-center font-extrabold text-xs text-text-main shadow-md uppercase tracking-wider shrink-0">
                         {user.initials}
                       </div>
                       <div className="flex flex-col space-y-0.5">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-extrabold text-white leading-tight tracking-tight">
+                          <span className="text-xs font-extrabold text-text-main leading-tight tracking-tight">
                             {user.name}
                           </span>
                           {user.verified && (
@@ -380,30 +380,30 @@ const RideJoining = () => {
                             </span>
                           )}
                         </div>
-                        <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider">
+                        <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider">
                           {user.role}
                         </span>
                       </div>
                     </div>
 
-                    <div className="text-[8px] font-extrabold text-gray-400 tracking-wider bg-[#121212] px-3 py-1.5 rounded-xl border border-white/5">
+                    <div className="text-[8px] font-extrabold text-text-main tracking-wider bg-main-bg px-3 py-1.5 rounded-xl border border-border">
                       Joined: {user.joinedDate}
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center space-y-3">
-                  <ShieldAlert size={36} className="text-gray-600 animate-pulse" />
-                  <p className="text-xs font-bold text-gray-400">No matching athlete found</p>
+                  <ShieldAlert size={36} className="text-text-muted animate-pulse" />
+                  <p className="text-xs font-bold text-text-muted">No matching athlete found</p>
                 </div>
               )}
             </div>
 
             {/* Drawer Footer Status */}
-            <div className="p-6 border-t border-white/5 bg-[#1a1a1a]/40 flex items-center justify-between shrink-0">
+            <div className="p-6 border-t border-border bg-hover/40 flex items-center justify-between shrink-0">
               <div className="flex flex-col">
-                <span className="text-[8px] font-extrabold text-gray-400 uppercase tracking-wider">Ride Operated By</span>
-                <span className="text-xs font-extrabold text-white mt-0.5">{rideDetails.host}</span>
+                <span className="text-[8px] font-extrabold text-text-muted uppercase tracking-wider">Ride Operated By</span>
+                <span className="text-xs font-extrabold text-text-main mt-0.5">{rideDetails.host}</span>
               </div>
               <button 
                 onClick={() => setIsRosterOpen(false)}
@@ -416,12 +416,8 @@ const RideJoining = () => {
         </div>
       )}
 
-      {/* Inline animations and scrollbar design */}
+      {/* Inline animations */}
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
         @keyframes slideInRight {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }

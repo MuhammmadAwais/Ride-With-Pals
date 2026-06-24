@@ -112,7 +112,7 @@ function PurchaseModal({ item, onCancel, onConfirm }: PurchaseModalProps) {
         <div className="relative w-full h-48 bg-main-bg rounded-2xl overflow-hidden border border-border mb-5 flex items-center justify-center">
           <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/90 to-transparent flex items-end p-4 justify-between">
-            <span className="text-base font-black text-text-main tracking-tight line-clamp-1">{item.name}</span>
+            <span className="text-base font-black text-white tracking-tight line-clamp-1">{item.name}</span>
             <span className="text-lg font-black text-[#EB712B] shrink-0">{item.price}</span>
           </div>
         </div>
@@ -153,7 +153,7 @@ function PurchaseModal({ item, onCancel, onConfirm }: PurchaseModalProps) {
           </button>
           <button 
             onClick={() => onConfirm(item.name)}
-            className="flex-1 py-3.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-text-main text-xs font-black tracking-wider uppercase transition-colors cursor-pointer shadow-lg shadow-[#EB712B]/20"
+            className="flex-1 py-3.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black tracking-wider uppercase transition-colors cursor-pointer shadow-lg shadow-[#EB712B]/20"
           >
             Pay {item.price}
           </button>
@@ -335,7 +335,7 @@ export default function Marketplace({ }: MarketplaceProps) {
 
                 <button 
                   onClick={() => setPurchasingItem(product)}
-                  className={`w-full py-3 bg-[#EB712B] hover:bg-[#d05c19] text-text-main text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer ${
+                  className={`w-full py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer ${
                     viewMode === "list" ? "max-w-[160px] !mt-0 shrink-0" : "mt-4"
                   }`}
                 >
