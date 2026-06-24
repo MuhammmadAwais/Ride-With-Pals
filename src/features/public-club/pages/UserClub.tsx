@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { setUser } from "@/features/auth/slices/authSlice";
 
 import Ride from "./Ride";
 import News from "../../ClubSide/News";
@@ -81,6 +84,8 @@ type TabType = "rides" | "news" | "leaderboard" | "shop" | "discounts" | "market
 
 export default function UserClub() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((s) => s.auth.user);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   
@@ -481,7 +486,15 @@ export default function UserClub() {
           </div>
 
           <button
-            onClick={() => navigate("/dashboard/create-club")}
+            onClick={() => {
+              if (user) {
+                dispatch(setUser({
+                  ...user,
+                  role: 'owner'
+                }));
+              }
+              navigate("/club-profile-setup");
+            }}
             className="w-full md:w-auto px-6 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 hover:scale-105 active:scale-95 text-center shrink-0 border border-[#EB712B]/30"
           >
             + Create Club

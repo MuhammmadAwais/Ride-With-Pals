@@ -1,13 +1,19 @@
 import  { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, Lock, Crown, Car, Sparkles } from "lucide-react";
+import { useAppSelector } from "@/hooks/useAppSelector";
 
 const AuthSubscription = () => {
   const navigate = useNavigate();
+  const user = useAppSelector((s) => s.auth.user);
   const [selectedPlan, setSelectedPlan] = useState<string>("yearly");
 
   const handleNavigation = () => {
-    navigate("/create-profile");
+    if (user?.role === 'owner' || user?.role === 'organizer') {
+      navigate("/club-profile-setup");
+    } else {
+      navigate("/create-profile");
+    }
   };
 
   return (

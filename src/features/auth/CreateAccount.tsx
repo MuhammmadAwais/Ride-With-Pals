@@ -13,7 +13,7 @@
  *  - Animated background blobs (Framer Motion, kept from original)
  *  - Admin panel bg.jpg used on left panel
  */
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
@@ -21,6 +21,7 @@ import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, SIGNUP_COPY, APP_NAME } from '@/Constants';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
 /* ── Validation helpers ──────────────────────────────────────────────────── */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -49,6 +50,15 @@ function getPasswordStrength(password: string): { label: string; color: string; 
 
 const CreateAccount = () => {
   const navigate = useNavigate();
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const user = useAppSelector((s) => s.auth.user);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(user.role === 'owner' || user.role === 'organizer' ? ROUTES.DASHBOARD : ROUTES.CLUBS);
+    }
+  }, [isAuthenticated, user, navigate]);
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [email,           setEmail]           = useState('');

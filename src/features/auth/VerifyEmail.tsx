@@ -16,10 +16,13 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
 import { ROUTES, APP_NAME } from '@/Constants';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { setUser } from '@/features/auth/slices/authSlice';
 
 const VerifyEmail = () => {
   const navigate   = useNavigate();
   const location   = useLocation();
+  const dispatch   = useAppDispatch();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRefs  = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -82,6 +85,16 @@ const VerifyEmail = () => {
       return;
     }
     setError('');
+
+    // Log the user in with a default athlete role
+    const loggedInUser = {
+      id: `usr_${Math.random().toString(36).substr(2, 9)}`,
+      email: userEmail,
+      name: userEmail.split('@')[0],
+      role: 'athlete' as const,
+    };
+    dispatch(setUser(loggedInUser));
+
     toast.success('Email verified! Redirecting...');
     navigate(ROUTES.SELECT_ROLE);
   };

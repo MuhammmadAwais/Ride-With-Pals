@@ -15,13 +15,14 @@
  *   Email:    rider@ridewithpals.com
  *   Password: rider1234
  */
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { useAppSelector } from '@/hooks/useAppSelector';
 import { loginUser } from '@/features/auth/slices/authSlice';
 import { cn } from '@/lib/utils';
 import { ROUTES, LOGIN_COPY, APP_NAME } from '@/Constants';
@@ -37,6 +38,16 @@ const Login = () => {
   const dispatch    = useAppDispatch();
   const navigate    = useNavigate();
   const location    = useLocation();
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const user            = useAppSelector((s) => s.auth.user);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const defaultRoute = user.role === 'owner' || user.role === 'organizer' ? ROUTES.DASHBOARD : ROUTES.CLUBS;
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+      navigate(from ?? defaultRoute, { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, location]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [email,        setEmail]        = useState('');

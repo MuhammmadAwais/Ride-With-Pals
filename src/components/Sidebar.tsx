@@ -195,19 +195,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const [profileMenuOpen,  setProfileMenuOpen]  = useState(false);
   const [logoutModalOpen,  setLogoutModalOpen]  = useState(false);
+  const [roleMenuOpen,     setRoleMenuOpen]     = useState(false);
 
   const navContainerRef = useRef<HTMLElement>(null);
   const pillRef         = useRef<HTMLDivElement>(null);
 
   // Determine which nav section to show based on current route
-  const isAthleteSide =
-    location.pathname.startsWith('/clubs') ||
-    location.pathname.startsWith('/my-promos') ||
-    location.pathname.startsWith('/athlete') ||
-    location.pathname.startsWith('/support/athlete');
+  const isAthleteSide = location.pathname.startsWith('/view/userside');
 
   const navItems = isAthleteSide ? ATHLETE_NAV_ITEMS : CLUB_NAV_ITEMS;
-  const sectionLabel = isAthleteSide ? 'Athlete Interface' : 'Club Management';
 
   // ── GSAP Floating Pill — slides to the active link ──────────────────────
   useGSAP(
@@ -309,11 +305,77 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           className="custom-scrollbar"
           style={{ position: 'relative', flex: 1, overflowY: 'auto', padding: '20px 16px' }}
         >
-          {/* Section Label */}
-          <div style={{ padding: '0 16px 12px', opacity: 0.8 }}>
-            <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-secondary-text)' }}>
-              {sectionLabel}
-            </span>
+          {/* Section Selector Dropdown */}
+          <div className="relative px-2 pb-4">
+            <button
+              onClick={() => setRoleMenuOpen(!roleMenuOpen)}
+              className="w-full flex items-center justify-between bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] p-3.5 rounded-2xl transition-all duration-200"
+              style={{ cursor: 'pointer', background: 'transparent' }}
+            >
+              <div className="flex items-center gap-2.5">
+                {isAthleteSide ? (
+                  <Compass size={16} className="text-[#EB712B]" />
+                ) : (
+                  <LayoutDashboard size={16} className="text-[#EB712B]" />
+                )}
+                <span className="font-poppins font-bold text-xs text-white tracking-wide">
+                  {isAthleteSide ? 'Athlete Interface' : 'Club Management'}
+                </span>
+              </div>
+              <ChevronUp
+                size={14}
+                className="text-gray-500 transition-transform duration-300"
+                style={{
+                  transform: roleMenuOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+                }}
+              />
+            </button>
+
+            {roleMenuOpen && (
+              <div
+                className="absolute left-2 right-2 mt-2 bg-[#141414]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-1.5 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+              >
+                <button
+                  onClick={() => {
+                    setRoleMenuOpen(false);
+                    navigate(ROUTES.CLUBS); // userside entry page
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 rounded-xl text-left text-xs font-semibold font-poppins transition-all duration-200 border-none",
+                    isAthleteSide
+                      ? "text-white bg-[#EB712B]/10"
+                      : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                  )}
+                  style={{ cursor: 'pointer', background: isAthleteSide ? undefined : 'transparent' }}
+                >
+                  <Compass size={16} className="text-[#EB712B]" />
+                  <div className="flex flex-col">
+                    <span>Athlete Interface</span>
+                    <span className="text-[10px] text-gray-500 font-normal mt-0.5">Explore clubs & rides</span>
+                  </div>
+                </button>
+                <div className="h-[1px] bg-white/5 my-1.5" />
+                <button
+                  onClick={() => {
+                    setRoleMenuOpen(false);
+                    navigate(ROUTES.DASHBOARD); // clubside entry page
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 rounded-xl text-left text-xs font-semibold font-poppins transition-all duration-200 border-none",
+                    !isAthleteSide
+                      ? "text-white bg-[#EB712B]/10"
+                      : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                  )}
+                  style={{ cursor: 'pointer', background: !isAthleteSide ? undefined : 'transparent' }}
+                >
+                  <LayoutDashboard size={16} className="text-[#EB712B]" />
+                  <div className="flex flex-col">
+                    <span>Club Management</span>
+                    <span className="text-[10px] text-gray-500 font-normal mt-0.5">Manage community & gear</span>
+                  </div>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* GSAP Floating Orange Pill (active indicator) */}

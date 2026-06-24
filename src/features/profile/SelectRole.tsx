@@ -3,9 +3,14 @@ import { ArrowRight, PlusCircle, Activity, Users, ShieldCheck } from "lucide-rea
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { setUser } from "@/features/auth/slices/authSlice";
 
 const SelectRole = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((s) => s.auth.user);
   const container = useRef(null);
 
   useGSAP(() => {
@@ -17,7 +22,31 @@ const SelectRole = () => {
   }, { scope: container });
 
   const handleGetInside = () => {
+    const activeUser = user || {
+      id: `usr_${Math.random().toString(36).substr(2, 9)}`,
+      email: 'rider@ridewithpals.com',
+      name: 'Rider',
+      role: 'athlete' as const
+    };
+    dispatch(setUser({
+      ...activeUser,
+      role: 'athlete'
+    }));
     navigate("/create-profile"); 
+  };
+
+  const handleCreateClub = () => {
+    const activeUser = user || {
+      id: `usr_${Math.random().toString(36).substr(2, 9)}`,
+      email: 'rider@ridewithpals.com',
+      name: 'Rider',
+      role: 'owner' as const
+    };
+    dispatch(setUser({
+      ...activeUser,
+      role: 'owner'
+    }));
+    navigate("/auth-subscription");
   };
 
   return (
@@ -47,7 +76,7 @@ const SelectRole = () => {
         </button>
         <button 
           type="button"
-          onClick={() => navigate("/auth-subscription")}
+          onClick={handleCreateClub}
           className="w-full border border-white/10 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all cursor-pointer"
         >
           Create a new club <PlusCircle size={20} />

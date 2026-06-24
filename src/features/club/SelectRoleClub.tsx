@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Zap, Globe, Shield } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ROUTES } from "@/Constants";
 
 export default function SelectRoleClub() {
   const navigate = useNavigate();
@@ -40,14 +41,14 @@ export default function SelectRoleClub() {
       <div className="reveal-item bg-[#161616] border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl mb-8">
         <button 
   
-  onClick={() => navigate("/dashboard")} 
+  onClick={() => navigate(ROUTES.DASHBOARD)} 
   className="w-full bg-[#EB712B] hover:bg-[#d16226] text-black font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all mb-4 hover:scale-[1.02] active:scale-[0.98]"
 >
-  Link your Strip account <ArrowRight size={20} />
+  Link your Stripe account <ArrowRight size={20} />
 </button>
         
         <button 
-          onClick={() => navigate("/create-club")}
+          onClick={() => navigate(ROUTES.DASHBOARD)}
           className="w-full bg-transparent border border-white/10 hover:border-white/30 text-white font-medium py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all hover:bg-white/5"
         >
           I’ll do it later <ArrowRight size={20} />
