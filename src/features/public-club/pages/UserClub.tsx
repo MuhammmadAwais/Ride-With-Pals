@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle, MapPin, Users } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
@@ -606,69 +606,49 @@ export default function UserClub() {
               {filteredMyClubs.map((club) => (
                 <div
                   key={club.id}
-                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
+                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col h-[320px] transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_12px_30px_rgba(235,113,43,0.08)]"
                 >
-                  <div className="absolute inset-0 bg-zinc-950">
+                  {/* Top Image Banner */}
+                  <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
                       src={club.logo}
                       alt={club.name}
-                      className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-all duration-700"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-black/40 to-transparent" />
+                    {/* Subtle dark gradient overlay to ensure floating badges are readable */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
+                    
+                    {/* Floating Badges */}
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+                      <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
+                        {club.activityType}
+                      </span>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
+                        club.status === "PUBLIC" 
+                          ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
+                          : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
+                      }`}>
+                        {club.status === "PUBLIC" ? <Globe size={11} /> : <Lock size={11} />} {club.status}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="relative z-10 p-6 flex justify-between items-start">
-                    <span className="px-4 py-1.5 bg-[#EB712B] text-text-main rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                      {club.activityType}
-                    </span>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
-                      club.status === "PUBLIC" 
-                        ? "bg-green-500/10 text-green-300 border-green-500/30 shadow-green-950/20 shadow-sm" 
-                        : "bg-rose-500/10 text-rose-300 border-rose-500/30 shadow-rose-950/20 shadow-sm"
-                    }`}>
-                      {club.status === "PUBLIC" ? <Globe size={12} /> : <Lock size={12} />} {club.status}
-                    </span>
-                  </div>
-
-                  <div className="relative z-10 p-6 backdrop-blur-[2px]">
-                    <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase text-white">
-                      {club.name}
-                    </h3>
-                    <div className="flex items-center gap-2 text-[10px] text-white/60 font-extrabold tracking-[0.1em] uppercase">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                      </svg>
-                      <span>Las Vegas, NV</span>
+                  {/* Bottom Details Content */}
+                  <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
+                    <div className="space-y-1.5">
+                      <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
+                        {club.name}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase">
+                        <MapPin size={12} className="text-text-muted" />
+                        <span>Las Vegas, NV</span>
+                      </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
-                      <div className="flex items-center gap-2 text-[10px] text-white/60 font-bold uppercase tracking-wider">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
-                          <circle cx="9" cy="7" r="4"></circle>
-                          <path d="M23 21v-2a4 4 0 00-3-3.87"></path>
-                          <path d="M16 3.13a4 4 0 010 7.75"></path>
-                        </svg>
-                        {club.members} Pals joined
+                    <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
+                        <Users size={13} className="text-text-muted" />
+                        <span>{club.members} Pals joined</span>
                       </div>
                       <span 
                         onClick={() => handleSelectMyClub(club)} 
@@ -732,69 +712,49 @@ export default function UserClub() {
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}
-                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col justify-between h-72 relative transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.08)]"
+                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col h-[320px] transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_12px_30px_rgba(235,113,43,0.08)]"
                 >
-                  <div className="absolute inset-0 bg-zinc-950">
+                  {/* Top Image Banner */}
+                  <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
                       src={comm.logo}
                       alt={comm.name}
-                      className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-all duration-700"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-black/40 to-transparent" />
+                    {/* Subtle dark gradient overlay to ensure floating badges are readable */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
+                    
+                    {/* Floating Badges */}
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+                      <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
+                        {comm.activityType}
+                      </span>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
+                        comm.status === "PUBLIC" 
+                          ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
+                          : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
+                      }`}>
+                        {comm.status === "PUBLIC" ? <Globe size={11} /> : <Lock size={11} />} {comm.status}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="relative z-10 p-6 flex justify-between items-start">
-                    <span className="px-4 py-1.5 bg-[#EB712B] text-text-main rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                      {comm.activityType}
-                    </span>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
-                      comm.status === "PUBLIC" 
-                        ? "bg-green-500/10 text-green-300 border-green-500/30 shadow-green-950/20 shadow-sm" 
-                        : "bg-rose-500/10 text-rose-300 border-rose-500/30 shadow-rose-950/20 shadow-sm"
-                    }`}>
-                      {comm.status === "PUBLIC" ? <Globe size={12} /> : <Lock size={12} />} {comm.status}
-                    </span>
-                  </div>
-
-                  <div className="relative z-10 p-6 backdrop-blur-[2px]">
-                    <h3 className="text-xl font-black tracking-tight mb-2 group-hover:text-[#EB712B] transition-colors uppercase text-white">
-                      {comm.name}
-                    </h3>
-                    <div className="flex items-center gap-2 text-[10px] text-white/60 font-extrabold tracking-[0.1em] uppercase">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                      </svg>
-                      <span>Las Vegas, NV</span>
+                  {/* Bottom Details Content */}
+                  <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
+                    <div className="space-y-1.5">
+                      <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
+                        {comm.name}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase">
+                        <MapPin size={12} className="text-text-muted" />
+                        <span>Las Vegas, NV</span>
+                      </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
-                      <div className="flex items-center gap-2 text-[10px] text-white/60 font-bold uppercase tracking-wider">
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
-                          <circle cx="9" cy="7" r="4"></circle>
-                          <path d="M23 21v-2a4 4 0 00-3-3.87"></path>
-                          <path d="M16 3.13a4 4 0 010 7.75"></path>
-                        </svg>
-                        {comm.members}
+                    <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
+                        <Users size={13} className="text-text-muted" />
+                        <span>{comm.members}</span>
                       </div>
                       <span 
                         onClick={() => handleSelectDiscoverClub(comm)} 
@@ -822,13 +782,13 @@ export default function UserClub() {
                     />
                     <div className="space-y-1.5 w-full">
                       <div className="flex items-center gap-3">
-                        <span className="px-3.5 py-1 bg-[#EB712B] text-text-main rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
+                        <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
                           {comm.activityType}
                         </span>
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
                           comm.status === "PUBLIC" 
-                            ? "bg-green-500/10 text-green-300 border-green-500/30" 
-                            : "bg-rose-500/10 text-rose-300 border-rose-500/30"
+                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
+                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10"
                         }`}>
                           {comm.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {comm.status}
                         </span>
