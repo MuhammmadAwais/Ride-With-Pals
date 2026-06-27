@@ -47,6 +47,39 @@ const MOCK_PRODUCTS: Product[] = [
     sellerName: "Eleanor Pena",
     sellerAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
     description: "High-performance breathable cycling gloves with gel-padded palms for superior grip and vibration dampening. Brand new with tags attached."
+  },
+  {
+    id: "4",
+    name: "Carbon Fiber Pro Bike",
+    price: "$2,500",
+    condition: "USED",
+    location: "Seattle, WA",
+    image: "/Images/CycleImage.png",
+    sellerName: "Albert Flores",
+    sellerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+    description: "Full carbon frame, electronic shifting, hydraulic disc brakes. Raced for one season, meticulously maintained."
+  },
+  {
+    id: "5",
+    name: "Speed Glasses",
+    price: "$35",
+    condition: "NEW",
+    location: "Portland, OR",
+    image: "/Images/SpeedGlassesImage.jpg",
+    sellerName: "Cody Fisher",
+    sellerAvatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150",
+    description: "High-definition polarized cycling sunglasses. Shatterproof lenses, 100% UV protection, and adjustable nose pads for security."
+  },
+  {
+    id: "6",
+    name: "Aero Helmet V2",
+    price: "$120",
+    condition: "NEW",
+    location: "Denver, CO",
+    image: "/Images/headImage.png",
+    sellerName: "Bessie Cooper",
+    sellerAvatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
+    description: "Aerodynamic road cycling helmet. Lightweight, featuring MIPS security system, and integrated sunglasses dock."
   }
 ];
 
@@ -263,7 +296,7 @@ export default function Marketplace({ }: MarketplaceProps) {
       ) : (
         <div className={
           viewMode === "grid" 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" 
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
             : "flex flex-col gap-4"
         }>
           {filteredProducts.map((product) => {
@@ -276,8 +309,8 @@ export default function Marketplace({ }: MarketplaceProps) {
                 }`}
               >
                 <div className={`flex gap-4 w-full ${viewMode === "list" ? "!flex-row !w-auto !items-center" : "flex-col"}`}>
-                  <div className={`relative aspect-square bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${
-                    viewMode === "list" ? "w-28 h-28" : "w-full"
+                  <div className={`relative bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${
+                    viewMode === "list" ? "w-28 h-28 aspect-square" : "w-full aspect-[4/3]"
                   }`}>
                     {imageErrors[product.id] ? (
                       <div className="w-full h-full bg-surface flex flex-col items-center justify-center gap-1.5 text-text-muted">

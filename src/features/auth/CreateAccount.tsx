@@ -134,36 +134,64 @@ const CreateAccount = () => {
 
   return (
     /* overflow-hidden prevents any scroll on the auth page */
-    <div className="auth-page" style={{ background: '#050505', color: '#fff' }}>
-
+    <div className="auth-page" style={{ background: "#050505", color: "#fff" }}>
       {/* ══ LEFT PANEL — background image + clean overlay ══ */}
       <div className="hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
         {/* Background image — admin panel bg.jpg */}
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: 'url(/Images/CycleRock.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundImage: "url(/Images/CycleRock.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         />
         {/* Dark overlay — flat, solid, high contrast for maximum maturity */}
-        <div className="absolute inset-0" style={{ background: 'rgba(5,5,5,0.72)' }} />
+        <div
+          className="absolute inset-0"
+          style={{ background: "rgba(5,5,5,0.72)" }}
+        />
 
         {/* Small subtle static accent glow in the left panel corner to feel premium but mature */}
         <div
           className="absolute -top-10 -left-10 w-60 h-60 rounded-full"
-          style={{ background: 'rgba(235,113,43,0.04)', filter: 'blur(60px)', pointerEvents: 'none' }}
+          style={{
+            background: "rgba(235,113,43,0.04)",
+            filter: "blur(60px)",
+            pointerEvents: "none",
+          }}
         />
 
         {/* Content */}
         <div className="relative z-10 text-center px-12 max-w-lg">
-          <img src="/Images/Logo.png" alt={APP_NAME} className="w-52 mb-10 mx-auto" draggable={false} />
-          <h1 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '56px', lineHeight: 1.1, marginBottom: '16px' }}>
-            {SIGNUP_COPY.LEFT_TITLE}{' '}
-            <span style={{ color: '#EB712B' }}>{SIGNUP_COPY.LEFT_HIGHLIGHT}</span>
+          <img
+            src="/Images/Logo.png"
+            alt={APP_NAME}
+            className="w-52 mb-10 mx-auto"
+            draggable={false}
+          />
+          <h1
+            style={{
+              fontFamily: "var(--font-poppins)",
+              fontWeight: 800,
+              fontSize: "56px",
+              lineHeight: 1.1,
+              marginBottom: "16px",
+            }}
+          >
+            {SIGNUP_COPY.LEFT_TITLE}{" "}
+            <span style={{ color: "#EB712B" }}>
+              {SIGNUP_COPY.LEFT_HIGHLIGHT}
+            </span>
           </h1>
-          <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '16px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.7 }}>
+          <p
+            style={{
+              fontFamily: "var(--font-roboto)",
+              fontSize: "16px",
+              color: "rgba(255,255,255,0.65)",
+              lineHeight: 1.7,
+            }}
+          >
             {SIGNUP_COPY.LEFT_TAGLINE}
           </p>
         </div>
@@ -172,64 +200,107 @@ const CreateAccount = () => {
       {/* ══ RIGHT PANEL — signup form ══ */}
       <div
         className="w-full lg:w-1/2 flex items-center justify-center relative"
-        style={{ padding: '32px 20px', overflowY: 'auto', background: '#050505' }}
+        style={{
+          padding: "32px 20px",
+          overflowY: "auto",
+          background: "#050505",
+        }}
       >
         {/* Faint elegant glow centered behind the form card to add depth without being flashy */}
         <div
           style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '360px',
-            height: '360px',
-            background: 'radial-gradient(circle, rgba(235,113,43,0.02) 0%, rgba(5,5,5,0) 70%)',
-            pointerEvents: 'none',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "360px",
+            height: "360px",
+            background:
+              "radial-gradient(circle, rgba(235,113,43,0.02) 0%, rgba(5,5,5,0) 70%)",
+            pointerEvents: "none",
             zIndex: 0,
           }}
         />
 
-        <div ref={containerRef} className="w-full relative z-10" style={{ maxWidth: '460px', padding: '0 4px' }}>
-
+        <div
+          ref={containerRef}
+          className="w-full relative z-10"
+          style={{ maxWidth: "460px", padding: "0 4px" }}
+        >
           {/* Mobile logo */}
           <div className="animate-item lg:hidden flex justify-center mb-8">
-            <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '180px' }} draggable={false} />
+            <img
+              src="/Images/Logo.png"
+              alt={APP_NAME}
+              style={{ width: "180px" }}
+              draggable={false}
+            />
           </div>
 
           {/* Heading */}
           <div className="animate-item mb-8">
-            <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '34px', marginBottom: '6px' }}>
+            <h2
+              style={{
+                fontFamily: "var(--font-poppins)",
+                fontWeight: 800,
+                fontSize: "34px",
+                marginBottom: "6px",
+              }}
+            >
               {SIGNUP_COPY.HEADING}
             </h2>
-            <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.50)' }}>
+            <p
+              style={{
+                fontFamily: "var(--font-roboto)",
+                fontSize: "14px",
+                color: "rgba(255,255,255,0.50)",
+              }}
+            >
               {SIGNUP_COPY.SUBHEADING}
             </p>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "18px" }}
+          >
             {/* Email */}
             <div className="animate-item">
-              <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
+              <label
+                style={{
+                  fontFamily: "var(--font-roboto)",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.55)",
+                  marginLeft: "4px",
+                  display: "block",
+                  marginBottom: "6px",
+                }}
+              >
                 Email Address
               </label>
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: "relative" }}>
                 <Mail
                   size={17}
                   style={{
-                    position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)',
-                    color: errors.email ? '#ef4444' : 'rgba(255,255,255,0.3)',
-                    transition: 'color 0.2s',
+                    position: "absolute",
+                    left: "16px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: errors.email ? "#ef4444" : "rgba(255,255,255,0.3)",
+                    transition: "color 0.2s",
                   }}
                 />
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); clearError('email'); }}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    clearError("email");
+                  }}
                   placeholder="rider@ridewithpals.com"
                   autoComplete="email"
-                  className={cn('field', errors.email && 'field-error')}
-                  style={{ paddingLeft: '44px', paddingRight: '16px' }}
+                  className={cn("field", errors.email && "field-error")}
+                  style={{ paddingLeft: "44px", paddingRight: "16px" }}
                 />
               </div>
               {errors.email && (
@@ -241,39 +312,68 @@ const CreateAccount = () => {
 
             {/* Password */}
             <div className="animate-item">
-              <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
+              <label
+                style={{
+                  fontFamily: "var(--font-roboto)",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.55)",
+                  marginLeft: "4px",
+                  display: "block",
+                  marginBottom: "6px",
+                }}
+              >
                 Password
               </label>
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: "relative" }}>
                 <Lock
                   size={17}
                   style={{
-                    position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)',
-                    color: errors.password ? '#ef4444' : 'rgba(255,255,255,0.3)',
-                    transition: 'color 0.2s',
+                    position: "absolute",
+                    left: "16px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: errors.password
+                      ? "#ef4444"
+                      : "rgba(255,255,255,0.3)",
+                    transition: "color 0.2s",
                   }}
                 />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => { setPassword(e.target.value); clearError('password'); }}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearError("password");
+                  }}
                   placeholder="Min 8 characters"
                   autoComplete="new-password"
-                  className={cn('field', errors.password && 'field-error')}
-                  style={{ paddingLeft: '44px', paddingRight: '48px' }}
+                  className={cn("field", errors.password && "field-error")}
+                  style={{ paddingLeft: "44px", paddingRight: "48px" }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   style={{
-                    position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
-                    color: 'rgba(255,255,255,0.35)', background: 'transparent', border: 'none',
-                    padding: '4px', display: 'flex', alignItems: 'center',
-                    transition: 'color 0.2s',
+                    position: "absolute",
+                    right: "14px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "rgba(255,255,255,0.35)",
+                    background: "transparent",
+                    border: "none",
+                    padding: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    transition: "color 0.2s",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#EB712B")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "rgba(255,255,255,0.35)")
+                  }
                 >
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -281,11 +381,33 @@ const CreateAccount = () => {
 
               {/* Password strength bar */}
               {password && (
-                <div style={{ marginTop: '8px', paddingLeft: '4px' }}>
-                  <div style={{ height: '3px', borderRadius: '999px', background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: strength.width, background: strength.color, borderRadius: '999px', transition: 'width 0.3s, background 0.3s' }} />
+                <div style={{ marginTop: "8px", paddingLeft: "4px" }}>
+                  <div
+                    style={{
+                      height: "3px",
+                      borderRadius: "999px",
+                      background: "rgba(255,255,255,0.1)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: strength.width,
+                        background: strength.color,
+                        borderRadius: "999px",
+                        transition: "width 0.3s, background 0.3s",
+                      }}
+                    />
                   </div>
-                  <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '11px', color: strength.color, marginTop: '4px' }}>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-roboto)",
+                      fontSize: "11px",
+                      color: strength.color,
+                      marginTop: "4px",
+                    }}
+                  >
                     {strength.label}
                   </p>
                 </div>
@@ -299,47 +421,92 @@ const CreateAccount = () => {
 
             {/* Confirm Password */}
             <div className="animate-item">
-              <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
+              <label
+                style={{
+                  fontFamily: "var(--font-roboto)",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.55)",
+                  marginLeft: "4px",
+                  display: "block",
+                  marginBottom: "6px",
+                }}
+              >
                 Confirm Password
               </label>
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: "relative" }}>
                 <Lock
                   size={17}
                   style={{
-                    position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)',
-                    color: errors.confirmPassword ? '#ef4444' : confirmPassword && password === confirmPassword ? '#22c55e' : 'rgba(255,255,255,0.3)',
-                    transition: 'color 0.2s',
+                    position: "absolute",
+                    left: "16px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: errors.confirmPassword
+                      ? "#ef4444"
+                      : confirmPassword && password === confirmPassword
+                        ? "#22c55e"
+                        : "rgba(255,255,255,0.3)",
+                    transition: "color 0.2s",
                   }}
                 />
                 <input
-                  type={showConfirm ? 'text' : 'password'}
+                  type={showConfirm ? "text" : "password"}
                   value={confirmPassword}
-                  onChange={(e) => { setConfirmPassword(e.target.value); clearError('confirmPassword'); }}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    clearError("confirmPassword");
+                  }}
                   placeholder="Re-enter your password"
                   autoComplete="new-password"
                   className={cn(
-                    'field',
-                    errors.confirmPassword && 'field-error',
-                    !errors.confirmPassword && confirmPassword && password === confirmPassword && 'border-green-500',
+                    "field",
+                    errors.confirmPassword && "field-error",
+                    !errors.confirmPassword &&
+                      confirmPassword &&
+                      password === confirmPassword &&
+                      "border-green-500",
                   )}
-                  style={{ paddingLeft: '44px', paddingRight: '48px' }}
+                  style={{ paddingLeft: "44px", paddingRight: "48px" }}
                 />
                 {/* Match check icon */}
-                {confirmPassword && password === confirmPassword && !errors.confirmPassword && (
-                  <CheckCircle size={17} style={{ position: 'absolute', right: '44px', top: '50%', transform: 'translateY(-50%)', color: '#22c55e' }} />
-                )}
+                {confirmPassword &&
+                  password === confirmPassword &&
+                  !errors.confirmPassword && (
+                    <CheckCircle
+                      size={17}
+                      style={{
+                        position: "absolute",
+                        right: "44px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "#22c55e",
+                      }}
+                    />
+                  )}
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                  aria-label={showConfirm ? "Hide password" : "Show password"}
                   style={{
-                    position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
-                    color: 'rgba(255,255,255,0.35)', background: 'transparent', border: 'none',
-                    padding: '4px', display: 'flex', alignItems: 'center',
-                    transition: 'color 0.2s',
+                    position: "absolute",
+                    right: "14px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "rgba(255,255,255,0.35)",
+                    background: "transparent",
+                    border: "none",
+                    padding: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    transition: "color 0.2s",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#EB712B")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "rgba(255,255,255,0.35)")
+                  }
                 >
                   {showConfirm ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
@@ -352,57 +519,121 @@ const CreateAccount = () => {
             </div>
 
             {/* Submit */}
-            <button onClick={handleSignUp} className="animate-item btn-primary" style={{ marginTop: '4px' }}>
+            <button
+              onClick={handleSignUp}
+              className="animate-item btn-primary"
+              style={{ marginTop: "4px" }}
+            >
               Create Account
             </button>
 
             {/* Divider */}
-            <div className="animate-item" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-              <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)' }}>
+            <div
+              className="animate-item"
+              style={{ display: "flex", alignItems: "center", gap: "12px" }}
+            >
+              <div
+                style={{
+                  flex: 1,
+                  height: "1px",
+                  background: "rgba(255,255,255,0.08)",
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: "var(--font-roboto)",
+                  fontSize: "11px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.3)",
+                }}
+              >
                 Or sign up with
               </span>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+              <div
+                style={{
+                  flex: 1,
+                  height: "1px",
+                  background: "rgba(255,255,255,0.08)",
+                }}
+              />
             </div>
 
             {/* Social buttons */}
-            <div className="animate-item" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div
+              className="animate-item"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "12px",
+              }}
+            >
               {[
-                { src: '/Images/google-logo.png', label: 'Google' },
-                { src: '/Images/apple-logo.png', label: 'Apple' },
+                { src: "/Images/google-logo.png", label: "Google" },
+                { src: "/Images/apple-logo.png", label: "Apple" },
               ].map(({ src, label }) => (
                 <button
                   key={label}
                   type="button"
                   style={{
-                    height: '48px', borderRadius: '14px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-                    fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.8)',
-                    transition: 'all 0.2s',
+                    height: "48px",
+                    borderRadius: "14px",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    fontFamily: "var(--font-roboto)",
+                    fontSize: "14px",
+                    color: "rgba(255,255,255,0.8)",
+                    transition: "all 0.2s",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(235,113,43,0.45)';
-                    e.currentTarget.style.background = 'rgba(235,113,43,0.06)';
+                    e.currentTarget.style.borderColor = "rgba(235,113,43,0.45)";
+                    e.currentTarget.style.background = "rgba(235,113,43,0.06)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                    e.currentTarget.style.borderColor =
+                      "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
                   }}
                 >
-                  <img src={src} alt={label} style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                  <img
+                    src={src}
+                    alt={label}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      objectFit: "contain",
+                    }}
+                  />
                   {label}
                 </button>
               ))}
             </div>
 
             {/* Login link */}
-            <p className="animate-item" style={{ textAlign: 'center', fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)', marginTop: '4px' }}>
-              Already have an account?{' '}
+            <p
+              className="animate-item "
+              style={{
+                textAlign: "center",
+                fontFamily: "var(--font-roboto)",
+                fontSize: "14px",
+                color: "rgba(255,255,255,0.45)",
+                marginTop: "4px",
+              }}
+            >
+              Already have an account?{" "}
               <span
                 onClick={() => navigate(ROUTES.LOGIN)}
-                style={{ color: '#EB712B', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px' }}
+                className="hover:cursor-pointer"
+                style={{
+                  color: "#EB712B",
+                  fontWeight: 600,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "2px",
+                }}
               >
                 Sign in
               </span>

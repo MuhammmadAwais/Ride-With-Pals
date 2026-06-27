@@ -45,6 +45,26 @@ const myClubsData: ClubData[] = [
     isPaid: false,
     price: "0"
   },
+  {
+    id: "3",
+    name: "Desert Trail Riders",
+    activityType: "Biking",
+    status: "PUBLIC",
+    members: "184",
+    logo: "/Images/CycleImage3.png",
+    isPaid: false,
+    price: "0"
+  },
+  {
+    id: "4",
+    name: "Windrunners Track Club",
+    activityType: "Running",
+    status: "PRIVATE",
+    members: "76",
+    logo: "/Images/MountainImage.png",
+    isPaid: true,
+    price: "15.00"
+  }
 ];
 
 const discoverClubsData: ClubData[] = [
@@ -78,6 +98,56 @@ const discoverClubsData: ClubData[] = [
     isPaid: true,
     price: "25.00"
   },
+  {
+    id: "5",
+    name: "Desert Trail Riders",
+    activityType: "Biking",
+    status: "PUBLIC",
+    members: "184 Pals joined",
+    logo: "/Images/CycleImage3.png",
+    isPaid: false,
+    price: "0"
+  },
+  {
+    id: "6",
+    name: "Windrunners Track Club",
+    activityType: "Running",
+    status: "PRIVATE",
+    members: "76 Pals joined",
+    logo: "/Images/MountainImage.png",
+    isPaid: true,
+    price: "15.00"
+  },
+  {
+    id: "7",
+    name: "Sierra Climbing Guild",
+    activityType: "Climbing",
+    status: "PUBLIC",
+    members: "54 Pals joined",
+    logo: "/Images/HikingPicture.jpg",
+    isPaid: false,
+    price: "0"
+  },
+  {
+    id: "8",
+    name: "Vegas Velo Road Racing",
+    activityType: "Biking",
+    status: "PUBLIC",
+    members: "310 Pals joined",
+    logo: "/Images/CycleRock2.jpg",
+    isPaid: true,
+    price: "80.00"
+  },
+  {
+    id: "9",
+    name: "Apex Aero Triathletes",
+    activityType: "Triathlon",
+    status: "PRIVATE",
+    members: "88 Pals joined",
+    logo: "/Images/PersonImage.png",
+    isPaid: true,
+    price: "120.00"
+  }
 ];
 
 type TabType = "rides" | "news" | "leaderboard" | "shop" | "discounts" | "marketplace" | "members" | "overviews";
@@ -532,7 +602,7 @@ export default function UserClub() {
               No matching clubs found in your inventory.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredMyClubs.map((club) => (
                 <div
                   key={club.id}
@@ -658,7 +728,7 @@ export default function UserClub() {
               No matching clubs found in public directory.
             </div>
           ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}

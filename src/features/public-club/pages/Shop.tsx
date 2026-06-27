@@ -30,6 +30,27 @@ const MOCK_PRODUCTS: Product[] = [
     price: "$80",
     location: "London, UK",
     image: "/Images/cyclingGloveImage.png" 
+  },
+  {
+    id: "4",
+    name: "Carbon Fiber Pro Bike",
+    price: "$2,500",
+    location: "Seattle, WA",
+    image: "/Images/CycleImage.png"
+  },
+  {
+    id: "5",
+    name: "Speed Glasses",
+    price: "$35",
+    location: "Portland, OR",
+    image: "/Images/SpeedGlassesImage.jpg"
+  },
+  {
+    id: "6",
+    name: "Aero Helmet V2",
+    price: "$120",
+    location: "Denver, CO",
+    image: "/Images/headImage.png"
   }
 ];
 
@@ -152,7 +173,7 @@ export default function Shop({ }: ShopProps) {
       ) : (
         <div className={
           viewMode === "grid" 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" 
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
             : "flex flex-col gap-4"
         }>
           {filteredProducts.map((product) => {
@@ -165,8 +186,8 @@ export default function Shop({ }: ShopProps) {
                 }`}
               >
                 {/* Product Image Wrapper */}
-                <div className={`relative aspect-square bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${
-                  viewMode === "list" ? "w-28 h-28" : "w-full"
+                <div className={`relative bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${
+                  viewMode === "list" ? "w-28 h-28 aspect-square" : "w-full aspect-[4/3]"
                 }`}>
                   {imageErrors[product.id] ? (
                     // Fallback placeholder if image fails to load
