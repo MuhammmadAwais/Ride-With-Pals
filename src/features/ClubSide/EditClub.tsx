@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ClubService } from '@/features/club/services/clubService';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   MapPin,
@@ -88,19 +90,33 @@ export default function EditClub() {
     localStorage.removeItem("logoUrl");
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Saving club profile...", {
-      clubName,
-      email,
-      phone,
-      visibility,
-      clubType,
-      location,
-      description,
-    });
+    
+    try {
+      const clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) {
+        toast.error("No club selected");
+        return;
+      }
 
-    navigate(-1);
+      await ClubService.editClub({
+        clubId: Number(clubIdStr),
+        clubName,
+        email,
+        phone,
+        visibility,
+        clubType,
+        location,
+        description
+      });
+
+      toast.success("Club profile updated successfully!");
+      navigate(-1);
+    } catch (err: any) {
+      console.error("Failed to save club profile:", err);
+      toast.error(err?.response?.data?.message || "Failed to update club.");
+    }
   };
 
   return (

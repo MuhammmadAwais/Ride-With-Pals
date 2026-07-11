@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Heart, MapPin, Grid3X3, List, Search, Filter } from "lucide-react";
 
 interface Product {
@@ -13,75 +13,11 @@ interface Product {
   description?: string;
 }
 
-// Mock Data enriched with seller info and descriptions
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "S-Works Prevail 3 Helmet",
-    price: "$250",
-    condition: "NEW",
-    location: "San Francisco, CA",
-    image: "/Images/HelmetImage4.jpg",
-    sellerName: "Jane Doe",
-    sellerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-    description: "Lightly used premium cycling helmet, optimized for aerodynamics, comfort, and maximum ventilation during intense rides. Excellent condition, no crashes."
-  },
-  {
-    id: "2",
-    name: "Aero Hydro Stealth XL",
-    price: "$45",
-    condition: "USED",
-    location: "Austin, TX",
-    image: "/Images/WaterBottle.jpg",
-    sellerName: "Robert Fox",
-    sellerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-    description: "Aero Hydro insulated water bottle designed to retain cold temperatures on long cycling tours. Matte stealth finish, minor scuffs on the base but fully functional."
-  },
-  {
-    id: "3",
-    name: "Pro Grip Elite Gloves",
-    price: "$80",
-    condition: "NEW",
-    location: "London, UK",
-    image: "/Images/Glove.jpg",
-    sellerName: "Eleanor Pena",
-    sellerAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-    description: "High-performance breathable cycling gloves with gel-padded palms for superior grip and vibration dampening. Brand new with tags attached."
-  },
-  {
-    id: "4",
-    name: "Carbon Fiber Pro Bike",
-    price: "$2,500",
-    condition: "USED",
-    location: "Seattle, WA",
-    image: "/Images/CycleImage.png",
-    sellerName: "Albert Flores",
-    sellerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-    description: "Full carbon frame, electronic shifting, hydraulic disc brakes. Raced for one season, meticulously maintained."
-  },
-  {
-    id: "5",
-    name: "Speed Glasses",
-    price: "$35",
-    condition: "NEW",
-    location: "Portland, OR",
-    image: "/Images/SpeedGlassesImage.jpg",
-    sellerName: "Cody Fisher",
-    sellerAvatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150",
-    description: "High-definition polarized cycling sunglasses. Shatterproof lenses, 100% UV protection, and adjustable nose pads for security."
-  },
-  {
-    id: "6",
-    name: "Aero Helmet V2",
-    price: "$120",
-    condition: "NEW",
-    location: "Denver, CO",
-    image: "/Images/headImage.png",
-    sellerName: "Bessie Cooper",
-    sellerAvatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-    description: "Aerodynamic road cycling helmet. Lightweight, featuring MIPS security system, and integrated sunglasses dock."
-  }
-];
+import { ClubService } from "@/features/club/services/clubService";
+
+// ==========================================
+// MOCK DATA REMOVED - NOW USING API
+// ==========================================
 
 interface MarketplaceProps {
   clubId?: string;
@@ -199,7 +135,7 @@ function PurchaseModal({ item, onCancel, onConfirm }: PurchaseModalProps) {
 // ==========================================
 // 3. MAIN MARKETPLACE COMPONENT
 // ==========================================
-export default function Marketplace({ }: MarketplaceProps) {
+export default function Marketplace({ clubId }: MarketplaceProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -208,6 +144,42 @@ export default function Marketplace({ }: MarketplaceProps) {
   const [purchasingItem, setPurchasingItem] = useState<Product | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [purchasedItemName, setPurchasedItemName] = useState("");
+  
+  // API Data States
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+        // If clubId is undefined, we might fetch global or default to 0
+        const idToFetch = clubId ? parseInt(clubId, 10) : 0;
+        const res = await ClubService.getAllMarketPlaceItems(idToFetch);
+        // Assuming res.response or res.data contains the array
+        const items = res?.response?.data || res?.data || res || [];
+        
+        const mappedProducts = items.map((item: any) => ({
+          id: item.id?.toString() || Math.random().toString(),
+          name: item.name || item.title || "Unknown Item",
+          price: item.price ? `$${item.price}` : "Free",
+          condition: item.condition || "USED",
+          location: item.location || "N/A",
+          image: item.image || item.imageUrl || "/Images/HelmetImage4.jpg",
+          sellerName: item.seller?.name || item.sellerName || "Unknown Seller",
+          sellerAvatar: item.seller?.avatar || item.sellerAvatar,
+          description: item.description || "No description provided."
+        }));
+        
+        setProducts(mappedProducts);
+      } catch (err) {
+        console.error("Failed to fetch marketplace items:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
+  }, [clubId]);
 
   const handleImageError = (id: string) => {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
@@ -226,7 +198,7 @@ export default function Marketplace({ }: MarketplaceProps) {
     });
   };
 
-  const filteredProducts = MOCK_PRODUCTS.filter((product) => 
+  const filteredProducts = products.filter((product) => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -289,7 +261,12 @@ export default function Marketplace({ }: MarketplaceProps) {
       </div>
 
       {/* Product List */}
-      {filteredProducts.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 bg-surface border border-border rounded-3xl">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B] mx-auto"></div>
+          <p className="text-sm font-bold text-text-muted uppercase tracking-wider mt-4">Loading Premium Gear...</p>
+        </div>
+      ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12 bg-surface border border-border rounded-3xl">
           <p className="text-sm font-bold text-text-muted uppercase tracking-wider">No equipment found matching your search</p>
         </div>

@@ -2,31 +2,14 @@ import { useState } from 'react';
 import { Plus, Search, Tag, AlertCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// Shared database for Active items
-const SHARED_ACTIVE_DISCOUNTS = [
-  { id: 1, title: 'Rock Life Title', code: '5245J64', expiry: '20 Jan, 2026', description: 'Applicable on all premium membership tiers. Requires a minimum spend of $50.' },
-  { id: 2, title: 'Summer Essentials', code: 'SUMMER20', expiry: '30 Aug, 2026', description: 'Get 20% off on all summer collection items. This offer is valid exclusively for premium members.' },
-  { id: 3, title: 'Early Bird Access', code: 'BIRD26', expiry: '15 Feb, 2026', description: 'Early registration bonus for the upcoming 2026 annual gala.' },
-  { id: 4, title: 'Weekend Special', code: 'WKND50', expiry: '10 Mar, 2026', description: 'Flat 50% discount on all weekend facility bookings.' },
-  { id: 5, title: 'New Member Gift', code: 'WELCOME10', expiry: '01 Apr, 2026', description: 'A welcome gift for our newly registered members. Enjoy 10% off your first three purchases.' },
-  { id: 6, title: 'Referral Bonus', code: 'REF500', expiry: '20 May, 2026', description: 'Refer a friend to join our club and receive a $500 credit toward your next subscription renewal.' },
-  { id: 7, title: 'VIP Exclusive', code: 'VIPGOLD', expiry: '15 Jun, 2026', description: 'Special pricing for Gold tier members on luxury amenity rentals.' },
-  { id: 8, title: 'Flash Sale', code: 'FLASH24', expiry: '05 Jul, 2026', description: 'Limited time flash sale valid for 24 hours only. Applicable on select inventory items.' },
-  { id: 9, title: 'Monthly Reward', code: 'MONTHLY10', expiry: '30 Jul, 2026', description: 'Monthly loyalty reward for consistent club visitors.' },
-];
+// Shared database for Active items fallback
+const SHARED_ACTIVE_DISCOUNTS: any[] = [];
 
-// Organizer Expired Database
-const EXPIRED_DISCOUNTS = [
-  { id: 10, title: 'Old Winter Promo', code: 'WINTER10', expiry: '01 Jan, 2026', description: 'This promotion offered a flat 10% discount during the winter solstice event.' },
-  { id: 11, title: 'Black Friday 2025', code: 'BLACKFRI25', expiry: '29 Nov, 2025', description: 'Expired site-wide discount code.' },
-  { id: 12, title: 'Holiday Bash', code: 'PARTY2025', expiry: '25 Dec, 2025', description: 'End of year holiday party voucher.' },
-  { id: 13, title: 'Spring Kickoff', code: 'SPRING25', expiry: '20 Mar, 2025', description: 'Seasonal kickoff offer for the spring season.' },
-  { id: 14, title: 'Loyalty Trial', code: 'TRIAL99', expiry: '15 Feb, 2025', description: 'A limited-time trial period for new members.' },
-  { id: 15, title: 'Founders Week', code: 'FOUNDER50', expiry: '05 Jan, 2025', description: 'Historical promo code from our Founders Week.' }
-];
+// Organizer Expired Database fallback
+const EXPIRED_DISCOUNTS: any[] = [];
 
 // Reusable Coupon Card matching UI specs
-const CouponCard = ({ title, code, expiry, description }: any) => (
+const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
   <div className="group relative bg-surface border border-border rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-500 hover:border-[#EB712B]/30 shadow-xl">
     <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     
@@ -43,7 +26,7 @@ const CouponCard = ({ title, code, expiry, description }: any) => (
           </div>
         </div>
         <div className="bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20 shrink-0 flex items-center">
-          <span className="text-[#EB712B] text-[10px] font-black uppercase tracking-wider">20% OFF</span>
+          <span className="text-[#EB712B] text-[10px] font-black uppercase tracking-wider">{percentage || 20}% OFF</span>
         </div>
       </div>
     
@@ -76,18 +59,43 @@ interface DiscountProps {
   role?: "organizer" | "athlete";
 }
 
+import { useEffect } from 'react';
+import { ClubService } from '@/features/club/services/clubService';
+
 const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
   const [activeTab, setActiveTab] = useState<'active' | 'expired'>('active');
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  // Filters out the promo with ID 1 for the Athlete user and applies keyword matching search query
-  const filteredActivePromos = SHARED_ACTIVE_DISCOUNTS.filter(promo => 
-    promo.id !== 1 && 
-    (promo.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-     promo.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-     promo.title.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const [discounts, setDiscounts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      const clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) return;
+      try {
+        const res = await ClubService.getClubDiscounts(Number(clubIdStr), searchQuery);
+        const mapped = (res?.data || res || []).map((d: any) => ({
+          id: d.id,
+          title: d.title,
+          code: d.discountCode,
+          expiry: d.validTill ? new Date(d.validTill).toLocaleDateString() : 'N/A',
+          description: d.description,
+          isActive: d.isActive,
+          percentage: d.discountPercentage
+        }));
+        setDiscounts(mapped);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchDiscounts();
+  }, [searchQuery]);
+
+  const activeDiscounts = discounts.filter(d => d.isActive !== false);
+  const expiredDiscounts = discounts.filter(d => d.isActive === false);
+
+  const filteredActivePromos = activeDiscounts;
 
   // ==========================================
   // ATHLETE INTERFACE VIEW (Promo Wallet & Public Club View)
@@ -138,7 +146,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
   // ==========================================
   // CLUB MANAGEMENT / ORGANIZER VIEW
   // ==========================================
-  const discountsToDisplay = activeTab === 'active' ? SHARED_ACTIVE_DISCOUNTS : EXPIRED_DISCOUNTS;
+  const discountsToDisplay = activeTab === 'active' ? activeDiscounts : expiredDiscounts;
 
   return (
     <div className="px-4 py-8 md:p-8 min-h-screen text-text-main font-sans select-none w-full">

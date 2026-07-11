@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Calendar, 
@@ -12,80 +12,20 @@ import {
   Compass
 } from "lucide-react";
 
-const initialRides = [
-  {
-    id: 1,
-    title: "Run and Fit",
-    clubName: "Cyc Rock Cycle",
-    date: "20 Jan, 2026 - 10:00 AM",
-    location: "6391 Elgin St. Celina, Delaware 10299",
-    rideType: "Gravel",
-    speed: "28km/h",
-    distance: "80km",
-    participants: "10",
-    organizer: "Arlene McCoy"
-  },
-  {
-    id: 2,
-    title: "Coastal Cruise",
-    clubName: "Ocean Drive Riders",
-    date: "22 Jan, 2026 - 07:30 AM",
-    location: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
-    rideType: "Road",
-    speed: "32km/h",
-    distance: "120km",
-    participants: "24",
-    organizer: "Cody Fisher"
-  },
-  {
-    id: 3,
-    title: "Mountain Pass Express",
-    clubName: "Apex Ascents",
-    date: "24 Jan, 2026 - 06:00 AM",
-    location: "4140 Washington Ave. Manchester, Kentucky 39495",
-    rideType: "MTB",
-    speed: "18km/h",
-    distance: "45km",
-    participants: "8",
-    organizer: "Robert Fox"
-  },
-  {
-    id: 4,
-    title: "Urban Night Sprint",
-    date: "28 Jan, 2026 - 08:30 PM",
-    clubName: "Neon Hub",
-    location: "8502 Preston Rd. Inglewood, Maine 98380",
-    rideType: "Criterium",
-    speed: "45km/h",
-    distance: "30km",
-    participants: "15",
-    organizer: "Esther Howard"
-  },
-  {
-    id: 5,
-    title: "Early Bird Loop",
-    clubName: "Sunrise Spinners",
-    date: "28 Jan, 2026 - 08:30 AM",
-    location: "2718 Thornridge Cir. Syracuse, Connecticut 35624",
-    rideType: "Road",
-    speed: "26km/h",
-    distance: "80km",
-    participants: "12",
-    organizer: "Jenny Wilson"
-  },
-  {
-    id: 6,
-    title: "Gravel Grind XL",
-    clubName: "Dirty Spokes",
-    date: "28 Jan, 2026 - 08:30 AM",
-    location: "3517 W. Gray St. Utica, Pennsylvania 87867",
-    rideType: "Gravel",
-    speed: "33km/h",
-    distance: "180km",
-    participants: "18",
-    organizer: "Guy Hawkins"
-  }
-];
+import { ClubService } from "@/features/club/services/clubService";
+
+interface RideItem {
+  id: number;
+  title: string;
+  clubName: string;
+  date: string;
+  location: string;
+  rideType: string;
+  speed: string;
+  distance: string;
+  participants: string;
+  organizer: string;
+}
 
 interface RideProps {
   clubId?: string | number;
@@ -95,10 +35,49 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
+  
+  const [rides, setRides] = useState<RideItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   console.log("Active club ID context:", clubId);
 
-  const filteredRides = initialRides.filter(ride => {
+  useEffect(() => {
+    const fetchRides = async () => {
+      try {
+        setLoading(true);
+        let res;
+        if (clubId) {
+          res = await ClubService.getClubRides(parseInt(clubId.toString()), 'active', '', 50, 0);
+        } else {
+          res = await ClubService.getPublicRides('', 50, 0);
+        }
+        
+        const items = res?.response?.data || res?.data || res || [];
+        
+        const mappedRides = items.map((item: any) => ({
+          id: item.id || item.rideId,
+          title: item.title || item.name || "Ride Event",
+          clubName: item.club?.name || item.clubName || "Independent",
+          date: item.startDate || item.date || "TBD",
+          location: item.location || "TBD",
+          rideType: item.type || item.rideType || "Road",
+          speed: item.speed || item.averageSpeed || "N/A",
+          distance: item.distance || "N/A",
+          participants: item.participantsCount?.toString() || "0",
+          organizer: item.organizer?.name || item.organizerName || "Organizer"
+        }));
+        
+        setRides(mappedRides);
+      } catch (error) {
+        console.error("Failed to fetch rides:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRides();
+  }, [clubId]);
+
+  const filteredRides = rides.filter(ride => {
     const query = searchQuery.trim().toLowerCase();
 
     const matchesSearch = 
@@ -172,7 +151,12 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           </div>
         </div>
 
-        {filteredRides.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#EB712B]"></div>
+            <p className="text-sm font-bold text-text-muted mt-4 uppercase tracking-wider">Loading Rides...</p>
+          </div>
+        ) : filteredRides.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRides.map((ride) => (
               <div 

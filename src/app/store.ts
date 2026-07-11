@@ -19,13 +19,15 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/es/storage';
 import authReducer from '@/features/auth/slices/authSlice';
+import clubReducer from '@/features/club/slices/clubSlice';
 import { STORAGE_KEYS } from '@/Constants';
 
 // ─── Root Reducer ─────────────────────────────────────────────────────────────
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  // Add new feature slices here (e.g., clubs: clubsReducer)
+  club: clubReducer,
+  // Add new feature slices here (e.g., news: newsReducer)
 });
 
 // ─── Persist Config ───────────────────────────────────────────────────────────

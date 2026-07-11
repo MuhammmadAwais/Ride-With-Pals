@@ -7,6 +7,9 @@ import './index.css';
 import App from './App.tsx';
 import { store, persistor } from './app/store';
 import { ThemeProvider } from './components/providers/ThemeProvider';
+import { setupApiStore } from './api/backendApi';
+
+setupApiStore(store);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

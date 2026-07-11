@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import News from "./News";
 import Leaderboard from "./Leaderboard";
 import Discount from "./Discount";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { fetchClubMembers } from "@/features/club/slices/clubSlice";
+import { ClubService } from "@/features/club/services/clubService";
 
 interface MembershipPlan {
   id: string;
@@ -30,6 +33,27 @@ const ManageClubHome = () => {
     section: string;
     index: number;
   } | null>(null);
+
+  const dispatch = useAppDispatch();
+  const { currentClubMembers } = useAppSelector((state) => state.club);
+
+  useEffect(() => {
+    const clubIdStr = localStorage.getItem("selectedClubId");
+    if (clubIdStr) {
+      dispatch(fetchClubMembers({ clubId: Number(clubIdStr) }));
+    }
+  }, [dispatch]);
+
+  const formatMember = (m: any) => ({
+    name: (m.firstName || '') + ' ' + (m.lastName || '') || m.username || 'Unnamed',
+    role: m.role || 'Member',
+    status: 'Active Now',
+    avatar: m.profileImage || "/Images/ProfileImage.png"
+  });
+
+  const clubOwners = currentClubMembers?.filter((m: any) => m.role === 'owner').map(formatMember) || [];
+  const clubAdmins = currentClubMembers?.filter((m: any) => m.role === 'organizer' || m.role === 'admin').map(formatMember) || [];
+  const generalMembers = currentClubMembers?.filter((m: any) => !['owner', 'organizer', 'admin'].includes(m.role)).map(formatMember) || [];
 
   // State for Membership Cards (Left-Form interacting with Right-Cards)
   const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>([]);
@@ -96,44 +120,78 @@ const ManageClubHome = () => {
     setFeaturesList(featuresList.filter((_, index) => index !== indexToRemove));
   };
 
-  // Create or Update Membership Plan Flow (2-way updating)
-  const handleCreatePlan = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Fetch memberships
+  useEffect(() => {
+    const clubIdStr = localStorage.getItem("selectedClubId");
+    if (clubIdStr) {
+      ClubService.getClubMembershipPlans(Number(clubIdStr))
+        .then((res) => {
+           // Mapping backend response to frontend MembershipPlan format
+           const plans = (res?.data || res || []).map((p: any) => ({
+             id: p.id.toString(),
+             packageName: p.name || p.packageName,
+             price: p.price.toString(),
+             duration: p.duration || "1 Month",
+             autoRenew: p.autoRenew ? "Yes" : "No",
+             discount: p.discount || "",
+             featuresList: p.features || []
+           }));
+           setMembershipPlans(plans);
+        })
+        .catch(console.error);
+    }
+  }, []);
 
-    const payload: MembershipPlan = {
-      id: editingPlanId ? editingPlanId : Date.now().toString(),
-      packageName,
-      price,
+  const handleCreatePlan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const clubIdStr = localStorage.getItem("selectedClubId");
+    if (!clubIdStr) return;
+
+    const payload = {
+      clubId: Number(clubIdStr),
+      name: packageName,
+      price: Number(price),
       duration,
-      autoRenew,
+      autoRenew: autoRenew === "Yes",
       discount,
-      featuresList,
+      features: featuresList,
     };
 
-    if (editingPlanId) {
-      // Update existing card data
-      setMembershipPlans(
-        membershipPlans.map((p) => (p.id === editingPlanId ? payload : p)),
-      );
-      console.log("Successfully Updated Membership Plan:", payload);
-    } else {
-      // Create new card data
-      setMembershipPlans([...membershipPlans, payload]);
-      console.log("Successfully Created Membership Plan:", payload);
-    }
+    try {
+      if (editingPlanId) {
+        await ClubService.updateClubMembershipPlan({ id: Number(editingPlanId), ...payload });
+      } else {
+        await ClubService.createClubMembershipPlan(payload);
+      }
+      
+      // Refresh list
+      const res = await ClubService.getClubMembershipPlans(Number(clubIdStr));
+      const plans = (res?.data || res || []).map((p: any) => ({
+        id: p.id.toString(),
+        packageName: p.name || p.packageName,
+        price: p.price.toString(),
+        duration: p.duration || "1 Month",
+        autoRenew: p.autoRenew ? "Yes" : "No",
+        discount: p.discount || "",
+        featuresList: p.features || []
+      }));
+      setMembershipPlans(plans);
 
-    // Reset Form & Exit Editing Mode
-    setEditingPlanId(null);
-    setPackageName("");
-    setPrice("");
-    setDuration("1 Month");
-    setAutoRenew("Yes");
-    setDiscount("");
-    setFeaturesList([
-      "Cycling license included",
-      "Paid activates included",
-      "Free coffee in our coffeeshop",
-    ]);
+      // Reset Form
+      setEditingPlanId(null);
+      setPackageName("");
+      setPrice("");
+      setDuration("1 Month");
+      setAutoRenew("Yes");
+      setDiscount("");
+      setFeaturesList([
+        "Cycling license included",
+        "Paid activates included",
+        "Free coffee in our coffeeshop",
+      ]);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Load selected membership plan into the form
@@ -150,8 +208,15 @@ const ManageClubHome = () => {
   };
 
   // Delete associated membership plan
-  const handleDeletePlan = (id: string) => {
-    setMembershipPlans(membershipPlans.filter((plan) => plan.id !== id));
+  const handleDeletePlan = async (id: string) => {
+    const clubIdStr = localStorage.getItem("selectedClubId");
+    if (!clubIdStr) return;
+    try {
+      await ClubService.deleteClubMembershipPlan(Number(clubIdStr), Number(id));
+      setMembershipPlans(membershipPlans.filter((plan) => plan.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
     setOpenCardMenuId(null);
   };
 
@@ -450,80 +515,11 @@ const ManageClubHome = () => {
       <div className="w-full">
         {activeTab === "Members" && (
           <div className="space-y-12 w-full animate-in fade-in duration-300">
-            {renderSection("Club Owners", "02 MEMBERS", [
-              {
-                name: "Sarah Lane",
-                role: "Founder/Leader",
-                status: "Active Now",
-                avatar: "/Images/GirlImage11.png",
-              },
-              {
-                name: "Albert Rane",
-                role: "Co-Founder",
-                status: "Active Now",
-                avatar: "/Images/Girlmage3.png",
-              },
-            ])}
+            {renderSection("Club Owners", "02 MEMBERS", clubOwners)}
 
-            {renderSection("Administrators", "04 STAFF", [
-              {
-                name: "Marcus Cole",
-                role: "System Architect",
-                status: "Active Now",
-                avatar: "/Images/Girlmage4.png",
-              },
-              {
-                name: "Murphy Antone",
-                role: "Event Coordinator",
-                status: "Active Now",
-                avatar: "/Images/Girlmage5.png",
-              },
-              {
-                name: "Elena Frost",
-                role: "Community Lead",
-                status: "Active Now",
-                avatar: "/Images/Girlmage6.png",
-              },
-              {
-                name: "David Chen",
-                role: "Safety Officer",
-                status: "Active Now",
-                avatar: "/Images/Girlmage1.png",
-              },
-            ])}
+            {renderSection("Administrators", "04 STAFF", clubAdmins)}
 
-            {renderSection("Club Members", "05 MEMBERS", [
-              {
-                name: "Jordan Smith",
-                role: "Trail Runner",
-                status: "Active Now",
-                avatar: "/Images/GirlImage10.png",
-              },
-              {
-                name: "Alice Wong",
-                role: "Alpine Hiker",
-                status: "Away",
-                avatar: "/Images/GirlImage11.png",
-              },
-              {
-                name: "Sam Rivera",
-                role: "Trail Runner",
-                status: "Active Now",
-                avatar: "/Images/Girlmage4.png",
-              },
-              {
-                name: "Chloe Kim",
-                role: "Alpine Hiker",
-                status: "Active Now",
-                avatar: "/Images/ProfileImage.png",
-              },
-              {
-                name: "Travis Bell",
-                role: "Ultra Marathoner",
-                status: "Active Now",
-                avatar: "/Images/GrilImage11.png",
-              },
-            ])}
+            {renderSection("Club Members", "05 MEMBERS", generalMembers)}
           </div>
         )}
 

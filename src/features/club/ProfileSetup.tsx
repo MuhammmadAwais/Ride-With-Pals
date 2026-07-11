@@ -4,6 +4,7 @@ import { Upload, ChevronDown, Sparkles, ArrowRight, Mail } from "lucide-react";
 import gsap from "gsap"; 
 import { useGSAP } from "@gsap/react";
 import { toast } from "sonner";
+import { useClub } from "./hooks/useClub";
 
 export default function ProfileSetup() {
   const navigate = useNavigate(); 
@@ -18,7 +19,7 @@ export default function ProfileSetup() {
   
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { handleCreateClub, isCreating } = useClub();
 
   // GSAP animation
   useGSAP(() => {
@@ -55,22 +56,25 @@ export default function ProfileSetup() {
       return;
     }
 
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    const clubProfile = {
+    const payload = {
       clubName,
-      clubType,
+      clubPrivacyId: 1, // default public
+      clubTypeId: 1, // mapping based on string could be added later
       email,
-      phone,
       location,
-      mission
+      description: mission,
+      logo: "", // handle image upload later
+      coverImage: "", // handle image upload later
+      restrictUnpaidMembers: false,
+      restrictClubShop: false,
+      restrictJoinActivities: false
     };
-    localStorage.setItem("club_profile", JSON.stringify(clubProfile));
-    toast.success("Club profile setup complete!");
-    setIsSubmitting(false);
+
+    const success = await handleCreateClub(payload);
     
-    navigate("/club-subscriptions"); 
+    if (success) {
+      navigate("/manage-club"); 
+    }
   };
 
   return (
@@ -205,11 +209,11 @@ export default function ProfileSetup() {
             <button 
               type="button" 
               onClick={handleSave}
-              disabled={isSubmitting}
+              disabled={isCreating}
               className="group bg-[#EB712B] text-white px-6 py-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 hover:bg-[#d16226] active:scale-[0.98] transition-all shadow-lg shadow-orange-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{isSubmitting ? "Saving..." : "Complete Profile"}</span>
-              {!isSubmitting && (
+              <span>{isCreating ? "Saving..." : "Complete Profile"}</span>
+              {!isCreating && (
                 <ArrowRight 
                   size={14} 
                   className="group-hover:translate-x-1 transition-transform duration-200" 

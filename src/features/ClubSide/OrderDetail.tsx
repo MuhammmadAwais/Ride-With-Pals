@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { ClubService } from '@/features/club/services/clubService';
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -8,6 +10,22 @@ const OrderDetail = () => {
   
   // Get the order data passed from the navigation state
   const order = location.state?.order;
+
+  const [loading, setLoading] = useState(false);
+  const [isDelivered, setIsDelivered] = useState(order?.status === 'Delivered');
+
+  const handleMarkDelivered = async () => {
+    if (!order?.originalOrder?.id) return;
+    setLoading(true);
+    try {
+      await ClubService.updateOrderStatus(order.originalOrder.id, 4); // 4 = Delivered
+      setIsDelivered(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10">
@@ -98,13 +116,21 @@ const OrderDetail = () => {
               <span className="text-2xl font-bold text-[#EB712B]">{order?.price || "$0.00"}</span>
             </div>
 
-            {order?.status === 'Delivered' ? (
+            {order?.status === 'Delivered' || isDelivered ? (
               <div className="w-full py-4 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-center font-bold text-sm uppercase tracking-widest">
                 Delivered
               </div>
             ) : (
-              <button className="w-full py-4 rounded-xl bg-[#EB712B] text-white font-bold text-sm hover:bg-[#d66525] transition-colors mb-3 cursor-pointer">
-                Mark as Delivered
+              <button 
+                onClick={handleMarkDelivered}
+                disabled={loading}
+                className={`w-full py-4 rounded-xl font-bold text-sm transition-colors mb-3 cursor-pointer ${
+                  loading 
+                    ? 'bg-[#EB712B]/50 text-white cursor-not-allowed' 
+                    : 'bg-[#EB712B] text-white hover:bg-[#d66525]'
+                }`}
+              >
+                {loading ? 'Updating...' : 'Mark as Delivered'}
               </button>
             )}
           </div>

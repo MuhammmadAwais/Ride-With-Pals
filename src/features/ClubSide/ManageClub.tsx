@@ -14,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useTableSort } from "@/hooks/useTableSort";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { fetchMyClubs } from "@/features/club/slices/clubSlice";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -28,128 +31,35 @@ const ManageClub = () => {
   // Retrieve values from LocalStorage (updates dynamically if edited in EditClub)
   const updatedCycRockName = localStorage.getItem("clubName");
  
+  const dispatch = useAppDispatch();
+  const { myClubs, isLoading } = useAppSelector((state) => state.club);
 
-  const allClubs = [
-    {
-      name: "Track Wolf",
-      img: "/Images/HikingPicture.jpg",
-      logo: "/Images/HikingPicture.jpg",
-      sub: "FOUNDED 2021 • TECHNICAL",
-      owner: "Brooklyn Simmons",
-      avatar: "BS",
-      count: "4,822",
-      trend: "+2.4%",
-      rank: "#42 ↑",
-    },
-    {
-      name: updatedCycRockName || "Cyc Rock Club",
-      img: "/Images/CyclingPicture.jpg",
-      logo: "/Images/CyclingPicture.jpg",
-      sub: "FOUNDED 2019 • EXTREME",
-      owner: "Jerome Steward",
-      avatar: "JS",
-      count: "3,105",
-      trend: "Steady",
-      rank: "#118 -",
-    },
-    {
-      name: "Night Ghost",
-      img: "/Images/Girlmage2.png",
-      logo: "/Images/Girlmage2.png",
-      sub: "FOUNDED 2023 • STEALTH",
-      owner: "Leslie Murphy",
-      avatar: "LM",
-      count: "6,277",
-      trend: "+4.8%",
-      rank: "#12 ↑",
-    },
-    {
-      name: "Neon Riders",
-      img: "/Images/Girlmage3.png",
-      logo: "/Images/Girlmage3.png",
-      sub: "FOUNDED 2022 • URBAN",
-      owner: "Alex Rivera",
-      avatar: "AR",
-      count: "2,940",
-      trend: "+1.2%",
-      rank: "#88 ↑",
-    },
-    {
-      name: "Iron Grip",
-      img: "/Images/Girlmage4.png",
-      logo: "/Images/Girlmage4.png",
-      sub: "FOUNDED 2020 • POWER",
-      owner: "Sam Taylor",
-      avatar: "ST",
-      count: "5,100",
-      trend: "-0.5%",
-      rank: "#55 ↓",
-    },
-    {
-      name: "Sky Dwellers",
-      img: "/Images/Girlmage5.png",
-      logo: "/Images/Girlmage5.png",
-      sub: "FOUNDED 2024 • AERIAL",
-      owner: "Jordan Lee",
-      avatar: "JL",
-      count: "1,200",
-      trend: "+10%",
-      rank: "#205 ↑",
-    },
-    {
-      name: "Deep Sea",
-      img: "/Images/Girlmage6.png",
-      logo: "/Images/Girlmage6.png",
-      sub: "FOUNDED 2018 • MARINE",
-      owner: "Casey Smith",
-      avatar: "CS",
-      count: "4,300",
-      trend: "+3.1%",
-      rank: "#60 ↑",
-    },
-    {
-      name: "Volt Runners",
-      img: "/Images/Girlmage7.png",
-      logo: "/Images/Girlmage7.png",
-      sub: "FOUNDED 2021 • SPEED",
-      owner: "Taylor Reed",
-      avatar: "TR",
-      count: "3,890",
-      trend: "Steady",
-      rank: "#92 -",
-    },
-    {
-      name: "Peak Climbers",
-      img: "/Images/Girlmage8.png",
-      logo: "/Images/Girlmage8.png",
-      sub: "FOUNDED 2019 • ALPINIST",
-      owner: "Morgan Hill",
-      avatar: "MH",
-      count: "7,450",
-      trend: "+5.2%",
-      rank: "#8 ↑",
-    },
-    {
-      name: "Core Kinetic",
-      img: "/Images/GrilImage11.png",
-      logo: "/Images/GrilImage11.png",
-      sub: "FOUNDED 2023 • AGILITY",
-      owner: "Riley Quinn",
-      avatar: "RQ",
-      count: "2,100",
-      trend: "+0.8%",
-      rank: "#150 ↑",
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchMyClubs());
+  }, [dispatch]);
 
-  const { items: sortedClubs, requestSort, sortConfig } = useTableSort(allClubs);
+  // Map API data to table format
+  const mappedClubs = myClubs.map(club => ({
+    id: club.id,
+    name: club.clubName || "Unnamed Club",
+    img: club.coverImage || "/Images/CyclingPicture.jpg",
+    logo: club.logo || "/Images/CyclingPicture.jpg",
+    sub: `TYPE ID ${club.clubTypeId}`,
+    owner: club.ownerId ? `Owner ${club.ownerId}` : "N/A",
+    avatar: "O",
+    count: club.memberCount?.toString() || "0",
+    trend: "-",
+    rank: "-",
+  }));
+
+  const { items: sortedClubs, requestSort, sortConfig } = useTableSort(mappedClubs);
 
   const currentClubs = sortedClubs.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const columns: Column<typeof allClubs[0]>[] = [
+  const columns: Column<typeof mappedClubs[0]>[] = [
     {
       key: 'name',
       label: 'Club Information',
@@ -224,6 +134,7 @@ const ManageClub = () => {
       render: (club) => (
         <button
           onClick={() => {
+            localStorage.setItem("selectedClubId", club.id.toString());
             localStorage.setItem("selectedClubBanner", club.img);
             localStorage.setItem("selectedClubLogo", club.logo);
             localStorage.setItem("selectedClubName", club.name);
@@ -266,7 +177,10 @@ const ManageClub = () => {
             </p>
           </div>
         </div>
-        <button className="bg-[#EB712B] flex items-center gap-2 px-6 py-2 rounded text-sm font-bold hover:bg-orange-600 transition cursor-pointer">
+        <button 
+          onClick={() => navigate('/profile-setup')}
+          className="bg-[#EB712B] flex items-center gap-2 px-6 py-2 rounded text-sm font-bold hover:bg-orange-600 transition cursor-pointer"
+        >
           <Plus size={18} /> Register New Club
         </button>
       </div>

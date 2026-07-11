@@ -1,6 +1,7 @@
 import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { ClubService } from '@/features/club/services/clubService';
 
 function AddDiscount() {
   const navigate = useNavigate();
@@ -8,25 +9,48 @@ function AddDiscount() {
   const [formData, setFormData] = useState({
     title: '',
     percentage: '',
-    amount: '',
     description: '',
-    code: ''
+    code: '',
+    validTill: ''
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let newErrors: Record<string, string> = {};
 
     if (!formData.title) newErrors.title = "Discount title is required";
     if (!formData.code) newErrors.code = "Discount code is required";
+    if (!formData.percentage) newErrors.percentage = "Percentage is required";
+    if (!formData.validTill) newErrors.validTill = "Valid till date is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return; 
     }
 
-    navigate('/dashboard/discount');
+    const clubIdStr = localStorage.getItem("selectedClubId");
+    if (!clubIdStr) return;
+
+    setLoading(true);
+    try {
+      await ClubService.addClubDiscount({
+        clubId: Number(clubIdStr),
+        title: formData.title,
+        discountCode: formData.code,
+        discountPercentage: Number(formData.percentage),
+        description: formData.description,
+        validTill: new Date(formData.validTill).toISOString(),
+        isActive: true
+      });
+      navigate('/dashboard/discount');
+    } catch (err) {
+      console.error(err);
+      setErrors({ global: "Failed to create discount" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,6 +63,7 @@ function AddDiscount() {
         <h1 className="text-4xl font-black mb-8">Add New Discount</h1>
 
         <div className="bg-surface border border-border rounded-[32px] p-10 shadow-2xl">
+          {errors.global && <p className="text-[#EB712B] text-sm font-bold mb-4">{errors.global}</p>}
           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
             
             {/* Column 1 */}
@@ -57,11 +82,24 @@ function AddDiscount() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-3">
                   <label className="text-xs uppercase font-bold text-text-muted tracking-widest">PERCENTAGE</label>
-                  <input placeholder="00 %" className="w-full h-14 bg-main-bg border border-border rounded-2xl px-4 text-md focus:border-[#EB712B] outline-none text-text-main placeholder-text-muted" />
+                  <input 
+                    placeholder="00" 
+                    type="number"
+                    value={formData.percentage}
+                    onChange={(e) => setFormData({...formData, percentage: e.target.value})}
+                    className="w-full h-14 bg-main-bg border border-border rounded-2xl px-4 text-md focus:border-[#EB712B] outline-none text-text-main placeholder-text-muted" 
+                  />
+                  {errors.percentage && <p className="text-[#EB712B] text-xs font-semibold">{errors.percentage}</p>}
                 </div>
                 <div className="space-y-3">
-                  <label className="text-xs uppercase font-bold text-text-muted tracking-widest">AMOUNT</label>
-                  <input placeholder="$ 00.0" className="w-full h-14 bg-main-bg border border-border rounded-2xl px-4 text-md focus:border-[#EB712B] outline-none text-text-main placeholder-text-muted" />
+                  <label className="text-xs uppercase font-bold text-text-muted tracking-widest">VALID TILL</label>
+                  <input 
+                    type="date"
+                    value={formData.validTill}
+                    onChange={(e) => setFormData({...formData, validTill: e.target.value})}
+                    className="w-full h-14 bg-main-bg border border-border rounded-2xl px-4 text-md focus:border-[#EB712B] outline-none text-text-main placeholder-text-muted" 
+                  />
+                  {errors.validTill && <p className="text-[#EB712B] text-xs font-semibold">{errors.validTill}</p>}
                 </div>
               </div>
             </div>
@@ -70,7 +108,12 @@ function AddDiscount() {
             <div className="space-y-6">
               <div className="space-y-3">
                 <label className="text-xs uppercase font-bold text-text-muted tracking-widest">DESCRIPTION</label>
-                <textarea placeholder="Details..." className="w-full h-[148px] bg-main-bg border border-border rounded-2xl p-4 text-md focus:border-[#EB712B] outline-none resize-none text-text-main placeholder-text-muted" />
+                <textarea 
+                  placeholder="Details..." 
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full h-[148px] bg-main-bg border border-border rounded-2xl p-4 text-md focus:border-[#EB712B] outline-none resize-none text-text-main placeholder-text-muted" 
+                />
               </div>
             </div>
 

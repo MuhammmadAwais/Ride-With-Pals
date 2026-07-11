@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ClubService } from "@/features/club/services/clubService";
 import { 
   ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert
 } from "lucide-react";
@@ -41,30 +42,53 @@ const RideJoining = () => {
 
   const mapCenter: [number, number] = [45.9184, 6.5862];
 
-  const rideDetails = {
-    id: id || "1",
-    title: "Mountain Pass Express",
-    host: "Cody Fisher + Pro Cycling Elite",
-    date: "May 14, 2026 • 08:00 AM",
-    type: "Premium Endurance Ride",
-    avgPace: "28km/h",
-    distance: "80km",
-    activeParticipants: "10 Riders",
-    maxSlope: "12%",
-    supportCar: "Available",
-    description: `Experience the ultimate alpine challenge with VeloHub's premier "Mountain Ride." This route is specifically designed for high-performance athletes looking to test their endurance across the legendary peaks of the Haute-Savoie. \n\nThe journey begins in the valley with a crisp 15km warm-up before hitting the primary ascent. Our route leaders will maintain a steady 28km/h pace, ensuring the group remains cohesive through the technical hairpins. Expect high-altitude gradients exceeding 12% in the final 5km. Post-ride nutrition and support vehicles are provided for all registered members.`,
-    recommendedBike: "Gravel / Road Pro",
-    leaders: [
-      { name: "Arlene McCoy", role: "Lead Pacer + 12k Uts" },
-      { name: "Cody Fisher", role: "Host + Senior Member" }
-    ],
-    participants: [
-      "AM", "CF", "RF", "EH", "JW", "GH", "BM", "JS", "DL", "KB"
-    ]
-  };
+  const [rideDetails, setRideDetails] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleJoinClick = () => {
-    navigate(`/ride/confirmation/${rideDetails.id}`);
+  useEffect(() => {
+    const fetchRide = async () => {
+      try {
+        setLoading(true);
+        if (id) {
+          const res = await ClubService.getRideDetailsById(parseInt(id));
+          const data = res?.response?.data || res?.data || res || {};
+          
+          setRideDetails({
+            id: data.id || data.rideId || id,
+            title: data.title || data.name || "Ride Event",
+            host: data.organizer?.name || data.hostName || "Organizer",
+            date: data.startDate || data.date || "TBD",
+            type: data.type || data.rideType || "Ride",
+            avgPace: data.speed || data.averageSpeed || "N/A",
+            distance: data.distance || "N/A",
+            activeParticipants: `${data.participantsCount || 0} Riders`,
+            maxSlope: data.maxSlope || "N/A",
+            supportCar: data.supportCar ? "Available" : "Not Available",
+            description: data.description || "No description provided.",
+            recommendedBike: data.recommendedBike || "Any",
+            leaders: data.leaders || [{ name: data.organizer?.name || "Organizer", role: "Host" }],
+            participants: data.participants || []
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch ride details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRide();
+  }, [id]);
+
+  const handleJoinClick = async () => {
+    try {
+      if (id) {
+        await ClubService.joinPublicRide(parseInt(id));
+        navigate(`/ride/confirmation/${id}`);
+      }
+    } catch (error) {
+      console.error("Failed to join ride:", error);
+      // maybe show an error toast here
+    }
   };
 
   const handleShare = async () => {
@@ -79,6 +103,17 @@ const RideJoining = () => {
   const filteredRoster = FULL_ROSTER_DB.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading || !rideDetails) {
+    return (
+      <div className="min-h-screen text-text-main p-4 md:p-8 flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#EB712B]"></div>
+          <p className="mt-4 text-xs font-bold text-text-muted uppercase tracking-wider">Loading Ride Details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-text-main p-4 md:p-8 font-sans select-none relative antialiased">

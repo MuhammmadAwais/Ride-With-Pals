@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { fetchClubMembers } from "@/features/club/slices/clubSlice";
 
 export interface Member {
   id: string;
@@ -15,25 +17,40 @@ export interface Member {
   status: 'Active' | 'Suspended';
 }
 
-const MOCK_MEMBERS: Member[] = [
-  { id: '1', profilePhoto: '', name: 'Alexa George', phoneNo: '+92 300 1234567', email: 'alexa@gmail.com', role: 'Admin', subscriptionPlan: 'Silver', joinDate: '20-05-2025', status: 'Active' },
-  { id: '2', profilePhoto: '', name: 'Ali Khan', phoneNo: '+92 312 9876543', email: 'alikhan@gmail.com', role: 'Member', subscriptionPlan: 'Gold', joinDate: '15-04-2025', status: 'Active' },
-  { id: '3', profilePhoto: '', name: 'Sara Ahmed', phoneNo: '+92 333 4567890', email: 'sara.ahmed@yahoo.com', role: 'Member', subscriptionPlan: 'Diamond', joinDate: '01-01-2025', status: 'Active' },
-  { id: '4', profilePhoto: '', name: 'Zainab Abbas', phoneNo: '+92 345 1122334', email: 'zainab.a@hotmail.com', role: 'Member', subscriptionPlan: 'Silver', joinDate: '10-06-2025', status: 'Suspended' },
-  { id: '5', profilePhoto: '', name: 'Bilal Saeed', phoneNo: '+92 301 5566778', email: 'bilals@gmail.com', role: 'Member', subscriptionPlan: 'Gold', joinDate: '22-03-2025', status: 'Active' },
-  { id: '6', profilePhoto: '', name: 'Fatima Noor', phoneNo: '+92 321 8899000', email: 'fatima.n@gmail.com', role: 'Admin', subscriptionPlan: 'Diamond', joinDate: '05-05-2025', status: 'Active' },
-  { id: '7', profilePhoto: '', name: 'Usman Tariq', phoneNo: '+92 311 2233445', email: 'usman.tariq@outlook.com', role: 'Member', subscriptionPlan: 'Silver', joinDate: '12-08-2025', status: 'Active' },
-];
-
 const Members = () => {
   const [searchInput, setSearchInput] = useState('');
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
+  const dispatch = useAppDispatch();
+  const { currentClubMembers } = useAppSelector((state) => state.club);
+
+  useEffect(() => {
+    const clubIdStr = localStorage.getItem("selectedClubId");
+    if (clubIdStr) {
+      dispatch(fetchClubMembers({ clubId: Number(clubIdStr) }));
+    }
+  }, [dispatch]);
+
+  const formattedMembers = useMemo<Member[]>(() => {
+    if (!currentClubMembers) return [];
+    return currentClubMembers.map((m: any) => ({
+      id: m.id?.toString(),
+      profilePhoto: m.profileImage || "",
+      name: ((m.firstName || '') + ' ' + (m.lastName || '')).trim() || m.username || 'Unnamed',
+      phoneNo: m.phoneNumber || 'N/A',
+      email: m.email || 'N/A',
+      role: (m.role === 'Admin' ? 'Admin' : 'Member'),
+      subscriptionPlan: (['Silver', 'Gold', 'Diamond'].includes(m.subscriptionPlan) ? m.subscriptionPlan : 'Silver') as 'Silver' | 'Gold' | 'Diamond',
+      joinDate: m.createdAt ? new Date(m.createdAt).toLocaleDateString() : 'N/A',
+      status: 'Active',
+    }));
+  }, [currentClubMembers]);
+
   const filteredMembers = useMemo(() => {
-    if (!searchInput) return MOCK_MEMBERS;
+    if (!searchInput) return formattedMembers;
     
     const lowerSearch = searchInput.toLowerCase();
-    return MOCK_MEMBERS.filter((member) => {
+    return formattedMembers.filter((member) => {
       return (
         member.name.toLowerCase().includes(lowerSearch) ||
         member.phoneNo.toLowerCase().includes(lowerSearch) ||
@@ -41,7 +58,7 @@ const Members = () => {
         member.role.toLowerCase().includes(lowerSearch)
       );
     });
-  }, [searchInput]);
+  }, [searchInput, formattedMembers]);
 
   const toggleMenu = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();

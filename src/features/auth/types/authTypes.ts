@@ -2,11 +2,18 @@
 
 /** Represents an authenticated web app user. */
 export interface AppUser {
-  id: string;
+  id: string | number;
   email: string;
-  name: string;
-  role: 'organizer' | 'athlete' | 'owner';
+  name?: string;
+  token: string;
+  isAthleteProfile?: boolean | number;
+  role?: 'organizer' | 'athlete' | 'owner'; // Computed or fallback
   avatar?: string;
+  // Other potential fields from upsert profile
+  profileImage?: string;
+  fullName?: string;
+  dob?: string;
+  country?: string;
 }
 
 /** Redux auth slice shape. */

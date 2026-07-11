@@ -22,6 +22,9 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, SIGNUP_COPY, APP_NAME } from '@/Constants';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { registerUser } from '@/features/auth/slices/authSlice';
+import { Loader2 } from 'lucide-react';
 
 /* ── Validation helpers ──────────────────────────────────────────────────── */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -50,8 +53,10 @@ function getPasswordStrength(password: string): { label: string; color: string; 
 
 const CreateAccount = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user = useAppSelector((s) => s.auth.user);
+  const isLoading = useAppSelector((s) => s.auth.isLoading);
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -104,27 +109,23 @@ const CreateAccount = () => {
     return true;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validate()) {
-      const existingUsers = JSON.parse(localStorage.getItem('registered_users') || '[]');
-      const userExists = existingUsers.some((u: any) => u.email === email.trim().toLowerCase());
-      
-      if (userExists) {
-        toast.error('An account with this email already exists.');
-        setErrors((prev) => ({ ...prev, email: 'An account with this email already exists.' }));
-        return;
-      }
+      const result = await dispatch(
+        registerUser({ email: email.trim().toLowerCase(), password })
+      );
 
-      existingUsers.push({
-        id: `usr_${Math.random().toString(36).substr(2, 9)}`,
-        email: email.trim().toLowerCase(),
-        password: password,
-        name: email.split('@')[0], // Default name from email prefix
-      });
-      
-      localStorage.setItem('registered_users', JSON.stringify(existingUsers));
-      toast.success('Registration initiated successfully.');
-      navigate(ROUTES.VERIFY_EMAIL, { state: { email } });
+      if (registerUser.fulfilled.match(result)) {
+        toast.success('Registration successful. Welcome!');
+        // Usually, the useEffect above will catch the isAuthenticated=true and redirect.
+        // But if you still need email verification step, you can redirect there instead.
+        // Since API returns a token immediately on signup, user is logged in.
+        // navigate(ROUTES.VERIFY_EMAIL, { state: { email } });
+      } else {
+        const errorMsg = (result.payload as string) || 'An error occurred during registration.';
+        toast.error(errorMsg);
+        setErrors((prev) => ({ ...prev, email: errorMsg }));
+      }
     }
   };
 
@@ -521,10 +522,18 @@ const CreateAccount = () => {
             {/* Submit */}
             <button
               onClick={handleSignUp}
+              disabled={isLoading}
               className="animate-item btn-primary"
-              style={{ marginTop: "4px" }}
+              style={{ marginTop: "4px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
             >
-              Create Account
+              {isLoading ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </button>
 
             {/* Divider */}

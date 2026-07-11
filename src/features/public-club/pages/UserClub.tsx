@@ -1,9 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle, MapPin, Users } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
+import { fetchMyClubs, fetchExploreClubs } from "@/features/club/slices/clubSlice";
+import { useClub } from "@/features/club/hooks/useClub";
 
 import Ride from "./Ride";
 import News from "../../ClubSide/News";
@@ -24,131 +26,7 @@ interface ClubData {
   price: string;
 }
 
-const myClubsData: ClubData[] = [
-  {
-    id: "1",
-    name: "Red Rock Cyclists",
-    activityType: "Mountain Biking",
-    status: "PUBLIC",
-    members: "248",
-    logo: "/Images/CycleImage2.png",
-    isPaid: true,
-    price: "50.00"
-  },
-  {
-    id: "2",
-    name: "Apex Running Club",
-    activityType: "Running",
-    status: "PRIVATE",
-    members: "112",
-    logo: "/Images/PersonImage.png",
-    isPaid: false,
-    price: "0"
-  },
-  {
-    id: "3",
-    name: "Desert Trail Riders",
-    activityType: "Biking",
-    status: "PUBLIC",
-    members: "184",
-    logo: "/Images/CycleImage3.png",
-    isPaid: false,
-    price: "0"
-  },
-  {
-    id: "4",
-    name: "Windrunners Track Club",
-    activityType: "Running",
-    status: "PRIVATE",
-    members: "76",
-    logo: "/Images/MountainImage.png",
-    isPaid: true,
-    price: "15.00"
-  }
-];
 
-const discoverClubsData: ClubData[] = [
-  {
-    id: "1",
-    name: "Red Rock Cyclists",
-    activityType: "Biking",
-    status: "PUBLIC",
-    members: "248 Pals joined",
-    logo: "/Images/CyclingPicture.jpg",
-    isPaid: true,
-    price: "50.00"
-  },
-  {
-    id: "2",
-    name: "Apex Running Club",
-    activityType: "Running",
-    status: "PUBLIC",
-    members: "112 Pals joined",
-    logo: "/Images/CyclingPicture.jpg",
-    isPaid: false,
-    price: "0"
-  },
-  {
-    id: "4",
-    name: "Private Elite Runners",
-    activityType: "Running",
-    status: "PRIVATE",
-    members: "45 Pals joined",
-    logo: "/Images/CyclingPicture.jpg",
-    isPaid: true,
-    price: "25.00"
-  },
-  {
-    id: "5",
-    name: "Desert Trail Riders",
-    activityType: "Biking",
-    status: "PUBLIC",
-    members: "184 Pals joined",
-    logo: "/Images/CycleImage3.png",
-    isPaid: false,
-    price: "0"
-  },
-  {
-    id: "6",
-    name: "Windrunners Track Club",
-    activityType: "Running",
-    status: "PRIVATE",
-    members: "76 Pals joined",
-    logo: "/Images/MountainImage.png",
-    isPaid: true,
-    price: "15.00"
-  },
-  {
-    id: "7",
-    name: "Sierra Climbing Guild",
-    activityType: "Climbing",
-    status: "PUBLIC",
-    members: "54 Pals joined",
-    logo: "/Images/HikingPicture.jpg",
-    isPaid: false,
-    price: "0"
-  },
-  {
-    id: "8",
-    name: "Vegas Velo Road Racing",
-    activityType: "Biking",
-    status: "PUBLIC",
-    members: "310 Pals joined",
-    logo: "/Images/CycleRock2.jpg",
-    isPaid: true,
-    price: "80.00"
-  },
-  {
-    id: "9",
-    name: "Apex Aero Triathletes",
-    activityType: "Triathlon",
-    status: "PRIVATE",
-    members: "88 Pals joined",
-    logo: "/Images/PersonImage.png",
-    isPaid: true,
-    price: "120.00"
-  }
-];
 
 type TabType = "rides" | "news" | "leaderboard" | "shop" | "discounts" | "marketplace" | "members" | "overviews";
 
@@ -156,10 +34,18 @@ export default function UserClub() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
+  const { myClubs, exploreClubs, isLoading } = useAppSelector((s) => s.club);
+  const { handleJoinClub, isJoining } = useClub();
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   
-  const [selectedClub, setSelectedClub] = useState<ClubData | null>(null);
+  const [selectedClub, setSelectedClub] = useState<any | null>(null);
+
+  React.useEffect(() => {
+    dispatch(fetchMyClubs());
+    dispatch(fetchExploreClubs());
+  }, [dispatch]);
   // const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
 
   const [isMember, setIsMember] = useState(false);
@@ -177,19 +63,19 @@ export default function UserClub() {
 
   const [activeTab, setActiveTab] = useState<TabType>("overviews");
 
-  const filteredMyClubs = myClubsData.filter(
+  const filteredMyClubs = myClubs.filter(
     (club) =>
-      club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      club.activityType.toLowerCase().includes(searchQuery.toLowerCase())
+      club.clubName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      club.location?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredDiscoverClubs = discoverClubsData.filter(
+  const filteredDiscoverClubs = exploreClubs.filter(
     (comm) =>
-      comm.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comm.activityType.toLowerCase().includes(searchQuery.toLowerCase())
+      comm.clubName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      comm.location?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSelectMyClub = (club: ClubData) => {
+  const handleSelectMyClub = (club: any) => {
     // setIsDiscoverContext(false); 
     setSelectedClub(club);
     setIsMember(true);
@@ -198,10 +84,10 @@ export default function UserClub() {
     setCodeError("");
   };
 
-  const handleSelectDiscoverClub = (comm: ClubData) => {
+  const handleSelectDiscoverClub = (comm: any) => {
     // setIsDiscoverContext(true); 
     setSelectedClub(comm);
-    setIsMember(comm.status === "PRIVATE" ? false : true);
+    setIsMember(comm.clubPrivacyId === 2 ? false : true); // PrivacyId 2 is private
     setShowCodeScreen(false);
     setShowDepositScreen(false);
     setJoinCode("");
@@ -221,28 +107,30 @@ export default function UserClub() {
     setAccountHolder("");
   };
 
-  const handleJoinClubClick = () => {
-    if (selectedClub?.status === "PRIVATE") {
+  const handleJoinClubClick = async () => {
+    if (selectedClub?.clubPrivacyId === 2) {
       setShowCodeScreen(true);
-    } else if (selectedClub?.isPaid) {
+    } else if (selectedClub?.restrictUnpaidMembers) {
       setShowDepositScreen(true);
     } else {
-      setIsMember(true);
+      const success = await handleJoinClub(selectedClub.id);
+      if (success) setIsMember(true);
     }
   };
 
-  const handleVerifyCode = (e: React.FormEvent) => {
+  const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (joinCode === "111") {
+    const success = await handleJoinClub(selectedClub.id, joinCode);
+    if (success) {
       setCodeError("");
       setShowCodeScreen(false);
-      if (selectedClub?.isPaid) {
+      if (selectedClub?.restrictUnpaidMembers) {
         setShowDepositScreen(true);
       } else {
         setIsMember(true);
       }
     } else {
-      setCodeError("Incorrect code entered. Please use '111' to proceed.");
+      setCodeError("Failed to join with code.");
     }
   };
 
@@ -268,13 +156,15 @@ export default function UserClub() {
 
   const isFormValid = isCardComplete && isExpiryComplete && isCvvComplete && isHolderComplete;
 
-  const handleDepositConfirm = (e: React.FormEvent) => {
+  const handleDepositConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) return;
     
+    // Perform "payment" and then actually join
     setPaymentSuccess(true);
-    setTimeout(() => {
-      setIsMember(true);
+    setTimeout(async () => {
+      const success = await handleJoinClub(selectedClub.id);
+      if (success) setIsMember(true);
       setShowDepositScreen(false);
       setPaymentSuccess(false);
     }, 2000);
@@ -313,23 +203,24 @@ export default function UserClub() {
                 />
                 <div>
                   <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border mb-1.5 ${
-                    selectedClub.status === "PUBLIC" 
+                    selectedClub.clubPrivacyId === 1 
                       ? "bg-green-500/10 text-green-300 border-green-500/30" 
                       : "bg-rose-500/10 text-rose-300 border-rose-500/30"
                   }`}>
-                    {selectedClub.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {selectedClub.status}
+                    {selectedClub.clubPrivacyId === 1 ? <Globe size={10} /> : <Lock size={10} />} {selectedClub.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                   </span>
-                  <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl text-white">{selectedClub.name}</h2>
-                  <p className="text-white/70 text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Activity: {selectedClub.activityType}</p>
+                  <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl text-white">{selectedClub.clubName}</h2>
+                  <p className="text-white/70 text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Location: {selectedClub.location}</p>
                 </div>
               </div>
 
               {!isMember && !showCodeScreen && !showDepositScreen && (
                 <button 
                   onClick={handleJoinClubClick}
+                  disabled={isJoining}
                   className="px-6 py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black tracking-widest uppercase cursor-pointer shadow-lg transition-all duration-300 hover:scale-105 shrink-0"
                 >
-                  Join Club
+                  {isJoining ? "Joining..." : "Join Club"}
                 </button>
               )}
 
@@ -406,7 +297,7 @@ export default function UserClub() {
                   <>
                     <div className="text-center">
                       <h3 className="text-xl font-black uppercase tracking-tight">Secure Checkout</h3>
-                      <p className="text-text-muted text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${selectedClub.price}</span></p>
+                      <p className="text-text-muted text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${selectedClub.price || 50}</span></p>
                     </div>
                     
                     <form onSubmit={handleDepositConfirm} className="space-y-4 text-xs font-bold tracking-wider">
@@ -460,7 +351,7 @@ export default function UserClub() {
                         <input
                           type="text"
                           disabled
-                          value={`$${selectedClub.price}`}
+                          value={`$${selectedClub.price || 50}`}
                           className="w-full bg-hover border border-border rounded-xl p-4 text-text-muted focus:outline-none cursor-not-allowed"
                         />
                       </div>
@@ -611,8 +502,8 @@ export default function UserClub() {
                   {/* Top Image Banner */}
                   <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
-                      src={club.logo}
-                      alt={club.name}
+                      src={club.logo || club.coverImage || "/Images/CycleImage2.png"}
+                      alt={club.clubName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                     />
                     {/* Subtle dark gradient overlay to ensure floating badges are readable */}
@@ -621,14 +512,14 @@ export default function UserClub() {
                     {/* Floating Badges */}
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
                       <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                        {club.activityType}
+                        {club.location}
                       </span>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
-                        club.status === "PUBLIC" 
+                        club.clubPrivacyId === 1 
                           ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
                           : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
                       }`}>
-                        {club.status === "PUBLIC" ? <Globe size={11} /> : <Lock size={11} />} {club.status}
+                        {club.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                       </span>
                     </div>
                   </div>
@@ -637,7 +528,7 @@ export default function UserClub() {
                   <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
                     <div className="space-y-1.5">
                       <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
-                        {club.name}
+                        {club.clubName}
                       </h3>
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase">
                         <MapPin size={12} className="text-text-muted" />
@@ -648,7 +539,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{club.members} Pals joined</span>
+                        <span>{club.memberCount || 0} Pals joined</span>
                       </div>
                       <span 
                         onClick={() => handleSelectMyClub(club)} 
@@ -717,8 +608,8 @@ export default function UserClub() {
                   {/* Top Image Banner */}
                   <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
-                      src={comm.logo}
-                      alt={comm.name}
+                      src={comm.logo || comm.coverImage || "/Images/CycleImage2.png"}
+                      alt={comm.clubName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                     />
                     {/* Subtle dark gradient overlay to ensure floating badges are readable */}
@@ -727,14 +618,14 @@ export default function UserClub() {
                     {/* Floating Badges */}
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
                       <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                        {comm.activityType}
+                        {comm.location}
                       </span>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
-                        comm.status === "PUBLIC" 
+                        comm.clubPrivacyId === 1 
                           ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
                           : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
                       }`}>
-                        {comm.status === "PUBLIC" ? <Globe size={11} /> : <Lock size={11} />} {comm.status}
+                        {comm.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                       </span>
                     </div>
                   </div>
@@ -743,7 +634,7 @@ export default function UserClub() {
                   <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
                     <div className="space-y-1.5">
                       <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
-                        {comm.name}
+                        {comm.clubName}
                       </h3>
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase">
                         <MapPin size={12} className="text-text-muted" />
@@ -754,7 +645,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{comm.members}</span>
+                        <span>{comm.memberCount || 0}</span>
                       </div>
                       <span 
                         onClick={() => handleSelectDiscoverClub(comm)} 
@@ -776,28 +667,28 @@ export default function UserClub() {
                 >
                   <div className="flex items-center gap-6 w-full">
                     <img
-                      src={comm.logo}
-                      alt={comm.name}
+                      src={comm.logo || comm.coverImage || "/Images/CycleImage2.png"}
+                      alt={comm.clubName}
                       className="w-20 h-20 rounded-2xl object-cover shrink-0"
                     />
                     <div className="space-y-1.5 w-full">
                       <div className="flex items-center gap-3">
                         <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
-                          {comm.activityType}
+                          {comm.location}
                         </span>
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
-                          comm.status === "PUBLIC" 
+                          comm.clubPrivacyId === 1 
                             ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
                             : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10"
                         }`}>
-                          {comm.status === "PUBLIC" ? <Globe size={10} /> : <Lock size={10} />} {comm.status}
+                          {comm.clubPrivacyId === 1 ? <Globe size={10} /> : <Lock size={10} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                         </span>
                       </div>
                       <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase">
-                        {comm.name}
+                        {comm.clubName}
                       </h3>
                       <p className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                        {comm.members}
+                        {comm.memberCount || 0} Pals joined
                       </p>
                     </div>
                   </div>

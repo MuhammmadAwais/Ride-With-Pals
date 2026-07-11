@@ -1,26 +1,47 @@
-import { useState, useMemo } from 'react';
-import { Search, ShoppingBag, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, ShoppingBag, CheckCircle2, Loader2 } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-
-const mockPurchases = [
-  { id: 'ORD-001', product: 'Carbon Fiber Pro Bike', category: 'Equipment', price: '$2,500.00', date: 'Oct 24, 2026', status: 'Delivered', img: '/Images/CycleImage.png' },
-  { id: 'ORD-002', product: 'Aero Helmet V2', category: 'Protection', price: '$120.00', date: 'Oct 18, 2026', status: 'Processing', img: '/Images/GirlImage11.png' },
-  { id: 'ORD-003', product: 'Pro Gloves', category: 'Apparel', price: '$45.00', date: 'Oct 10, 2026', status: 'Delivered', img: '/Images/CycleGloves.jfif' },
-  { id: 'ORD-004', product: 'Hydration Pack', category: 'Accessories', price: '$65.00', date: 'Sep 28, 2026', status: 'Delivered', img: '/Images/BottleImage4.png' },
-];
+import { ClubService } from '@/features/club/services/clubService';
 
 const MyPurchases = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [purchases, setPurchases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredPurchases = useMemo(() => {
-    return mockPurchases.filter(p => 
-      p.product.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.id.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        setLoading(true);
+        // Pass empty array for statusId to get all, or however the backend handles it
+        const res = await ClubService.getMyPurchases([], searchQuery);
+        
+        // Map the API response if it differs from the format, assuming we get rows or array
+        const items = res?.rows || res?.data || res || [];
+        const mapped = items.map((item: any) => ({
+          id: item.id?.toString() || item.orderId || Math.random().toString(),
+          product: item.product?.name || item.itemName || 'Unknown Item',
+          category: item.product?.category || item.category || 'Gear',
+          price: item.price ? `$${item.price}` : '$0.00',
+          date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
+          status: item.status || 'Processing',
+          img: item.product?.image || item.image || '/Images/CycleImage.png',
+        }));
+        
+        setPurchases(mapped);
+      } catch (err) {
+        console.error("Failed to fetch purchases", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    // In a real app we might debounce searchQuery, but for now we fetch on changes
+    // Alternatively, we can fetch once and filter locally
+    fetchPurchases();
   }, [searchQuery]);
 
-  const columns: Column<typeof mockPurchases[0]>[] = [
+  const columns: Column<any>[] = [
     {
       key: 'product',
       label: 'Item',
@@ -97,8 +118,13 @@ const MyPurchases = () => {
         </div>
 
         <div className="bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden">
-          {filteredPurchases.length > 0 ? (
-            <DataTable data={filteredPurchases} columns={columns} />
+          {loading ? (
+            <div className="py-20 flex flex-col items-center justify-center text-center px-4">
+              <Loader2 className="animate-spin text-[#EB712B] mb-4" size={48} />
+              <h3 className="text-lg font-bold text-text-main">Loading purchases...</h3>
+            </div>
+          ) : purchases.length > 0 ? (
+            <DataTable data={purchases} columns={columns} />
           ) : (
             <div className="py-20 flex flex-col items-center justify-center text-center px-4">
               <ShoppingBag size={48} className="text-border mb-4" />

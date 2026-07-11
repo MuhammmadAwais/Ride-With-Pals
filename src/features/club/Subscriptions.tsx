@@ -1,12 +1,50 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, ArrowRight, ArrowLeft } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { SubscriptionService } from "@/features/subscriptions/services/subscriptionService";
+import { toast } from "sonner";
 
 export default function Subscriptions() {
   const navigate = useNavigate();
   const container = useRef(null);
+  const [plans, setPlans] = useState<any[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    SubscriptionService.getClubSubscriptionPlans().then((res: any) => {
+      setPlans(res?.response || []);
+    }).catch(console.error);
+  }, []);
+
+  const handleCheckout = async () => {
+    const clubId = localStorage.getItem("selectedClubId");
+    if (!clubId) {
+      toast.error("No club selected.");
+      return;
+    }
+    
+    const paidPlan = plans.find(p => p.price > 0);
+    if (!paidPlan) {
+      toast.error("Paid plan not found");
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      const res = await SubscriptionService.checkoutClubSubscription(parseInt(clubId), paidPlan.id);
+      if (res?.response?.url) {
+        window.location.href = res.response.url;
+      } else {
+        toast.error("Could not initiate checkout.");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to start checkout");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   useGSAP(() => {
     gsap.fromTo(".card-reveal", 
@@ -100,10 +138,11 @@ export default function Subscriptions() {
 
           <div className="pt-8 border-t border-white/10">
             <button 
-  onClick={() => navigate("/select-role-club")} 
-  className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)]"
+  onClick={handleCheckout} 
+  disabled={isProcessing}
+  className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)] disabled:opacity-50"
 >
-  GO PREMIUM NOW <ArrowRight size={16} />
+  {isProcessing ? "PROCESSING..." : "GO PREMIUM NOW"} <ArrowRight size={16} />
 </button>
           </div>
         </div>

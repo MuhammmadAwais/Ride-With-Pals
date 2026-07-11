@@ -1,54 +1,51 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-
-const productCatalog = [
-  { name: 'Bicycle', cat: 'Carbon Fiber Pro', img: '/Images/CycleImage.png', price: 100.00 },
-  { name: 'Pro Gloves', cat: 'Apparel', img: '/Images/CycleGloves.jfif', price: 25.00 },
-  { name: 'Aero Helmet', cat: 'Protection', img: '/Images/GirlImage11.png', price: 55.00 },
-  { name: 'Racing Shoes', cat: 'Footwear', img: '/Images/shoesImage.png', price: 80.00 },
-  { name: 'Hydration Pack', cat: 'Accessories', img: '/Images/BottleImage4.png', price: 30.00 }
-];
-
-const allOrders = Array.from({ length: 38 }, (_, i) => {
-  const randomProduct = productCatalog[Math.floor(Math.random() * productCatalog.length)];
-  return {
-    id: `${i + 1}`,
-    orderId: `EP-294${80 + i}`,
-    productName: randomProduct.name, 
-    category: randomProduct.cat,
-    image: randomProduct.img,
-    price: `$ ${randomProduct.price.toFixed(2)}`,
-    recipient: i % 2 === 0 ? 'Cameron Williamson' : 'Jane Cooper',
-    address: '6391 Elgin St. Celina, DE',
-    date: 'Oct 24, 2024',
-    status: i % 3 === 0 ? 'Delivered' : 'Active',
-  };
-});
+import { ClubService } from '@/features/club/services/clubService';
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
   const [searchQuery, setSearchQuery] = useState("");
+  const [orders, setOrders] = useState<any[]>([]);
   const navigate = useNavigate();
 
-  // Combined filtering logic: checks both the tab status and the search query string
-  const filteredOrders = useMemo(() => {
-    return allOrders.filter(order => {
-      const matchesTab = activeTab === 'Active' 
-        ? order.status !== 'Delivered' 
-        : order.status === 'Delivered';
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) return;
       
-      const matchesSearch = order.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            order.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            order.orderId.toLowerCase().includes(searchQuery.toLowerCase());
-
-      return matchesTab && matchesSearch;
-    });
+      const statusIds = activeTab === 'Active' ? [2] : [4];
+      try {
+        const res = await ClubService.getClubOrdersList(statusIds, Number(clubIdStr), searchQuery, 50, 0);
+        
+        const mappedOrders = (res?.data || res || []).map((o: any) => ({
+          id: o.id?.toString(),
+          orderId: o.orderNumber || o.id?.toString(),
+          productName: o.shopItem?.title || 'Unknown Product',
+          category: o.shopItem?.category?.name || 'Uncategorized',
+          image: o.shopItem?.images?.[0] || '/Images/CycleImage.png',
+          price: `$ ${o.amount?.toFixed(2) || o.totalAmount?.toFixed(2) || '0.00'}`,
+          recipient: o.user?.firstName ? `${o.user.firstName} ${o.user.lastName}` : 'Unknown User',
+          address: o.shippingAddress || 'N/A',
+          date: new Date(o.createdAt).toLocaleDateString(),
+          status: activeTab,
+          originalOrder: o
+        }));
+        
+        setOrders(mappedOrders);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    fetchOrders();
   }, [activeTab, searchQuery]);
 
-  const columns: Column<typeof allOrders[0]>[] = [
+  const filteredOrders = orders;
+
+  const columns: Column<any>[] = [
     {
       key: 'productName',
       label: 'Product',

@@ -3,13 +3,13 @@
  *
  * State: user (AppUser | null), isAuthenticated, isLoading, error.
  * Actions: logout, clearError, setUser.
- * Thunk: loginUser (async, uses mockLogin service).
+ * Thunk: loginUser, registerUser (async, uses real AuthService).
  *
  * Persisted via redux-persist (auth key whitelisted in store.ts).
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { mockLogin } from '@/features/auth/services/authService';
+import { AuthService } from '@/features/auth/services/authService';
 import type {
   AuthState,
   AppUser,
@@ -26,12 +26,10 @@ const initialState: AuthState = {
   error:           null,
 };
 
-// ─── Async Thunk — Login ──────────────────────────────────────────────────────
+// ─── Async Thunks ─────────────────────────────────────────────────────────────
 
 /**
  * Authenticates the user via the auth service.
- * On success → stores user in Redux (persisted via redux-persist).
- * On failure → rejectWithValue triggers the rejected case below.
  */
 export const loginUser = createAsyncThunk<
   LoginSuccessPayload,
@@ -41,9 +39,66 @@ export const loginUser = createAsyncThunk<
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
-      return await mockLogin(credentials.email, credentials.password);
+      return await AuthService.login(credentials.email, credentials.password);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Authentication failed.';
+      return rejectWithValue(message);
+    }
+  },
+);
+
+/**
+ * Registers a new user via the auth service.
+ */
+export const registerUser = createAsyncThunk<
+  LoginSuccessPayload,
+  LoginFormValues,
+  { rejectValue: string }
+>(
+  'auth/registerUser',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      return await AuthService.signup(credentials.email, credentials.password);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Registration failed.';
+      return rejectWithValue(message);
+    }
+  },
+);
+
+/**
+ * Firebase login via ID token
+ */
+export const firebaseLoginThunk = createAsyncThunk<
+  LoginSuccessPayload,
+  string, // idToken
+  { rejectValue: string }
+>(
+  'auth/firebaseLogin',
+  async (idToken, { rejectWithValue }) => {
+    try {
+      return await AuthService.firebaseLogin(idToken);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Firebase login failed.';
+      return rejectWithValue(message);
+    }
+  },
+);
+
+/**
+ * Refresh user info
+ */
+export const refreshUserInfo = createAsyncThunk<
+  AppUser,
+  void,
+  { rejectValue: string }
+>(
+  'auth/refreshUserInfo',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await AuthService.userInfo();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch user info.';
       return rejectWithValue(message);
     }
   },
@@ -66,8 +121,7 @@ const authSlice = createSlice({
       state.error = null;
     },
     /**
-     * Directly set user (e.g., after OTP/SSO flow where credentials don't
-     * go through the loginUser thunk).
+     * Directly set user (e.g., after OTP/SSO flow or profile update).
      */
     setUser(state, action: PayloadAction<AppUser>) {
       state.user            = action.payload;
@@ -75,6 +129,7 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Login
     builder
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -90,6 +145,58 @@ const authSlice = createSlice({
         state.isLoading      = false;
         state.isAuthenticated = false;
         state.error          = action.payload ?? 'An unexpected error occurred.';
+      });
+    
+    // Register
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.error     = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading      = false;
+        state.user           = action.payload.user;
+        state.isAuthenticated = true;
+        state.error          = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading      = false;
+        state.isAuthenticated = false;
+        state.error          = action.payload ?? 'An unexpected error occurred.';
+      });
+
+    // Firebase Login
+    builder
+      .addCase(firebaseLoginThunk.pending, (state) => {
+        state.isLoading = true;
+        state.error     = null;
+      })
+      .addCase(firebaseLoginThunk.fulfilled, (state, action) => {
+        state.isLoading      = false;
+        state.user           = action.payload.user;
+        state.isAuthenticated = true;
+        state.error          = null;
+      })
+      .addCase(firebaseLoginThunk.rejected, (state, action) => {
+        state.isLoading      = false;
+        state.isAuthenticated = false;
+        state.error          = action.payload ?? 'An unexpected error occurred.';
+      });
+
+    // Refresh User Info
+    builder
+      .addCase(refreshUserInfo.pending, (state) => {
+        // Silently refresh info without blocking UI
+        state.error = null;
+      })
+      .addCase(refreshUserInfo.fulfilled, (state, action) => {
+        state.user = action.payload;
+        // Keep existing isAuthenticated state
+        if (state.user) state.isAuthenticated = true;
+      })
+      .addCase(refreshUserInfo.rejected, (state, action) => {
+        // Don't log out the user on a simple info fetch fail, just store error
+        state.error = action.payload ?? 'An unexpected error occurred while fetching user info.';
       });
   },
 });

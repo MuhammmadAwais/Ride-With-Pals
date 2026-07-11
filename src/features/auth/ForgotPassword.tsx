@@ -9,24 +9,32 @@
  *  - Overflow hidden
  */
 import { useState, useRef } from 'react';
-import { Mail, ArrowLeft, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Mail, ArrowLeft, AlertCircle, CheckCircle, Loader2, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, APP_NAME } from '@/Constants';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { handleForgotPassword, handleValidateOtp, handleChangePassword, isLoading } = useAuth();
 
-  const [email,     setEmail]     = useState('');
-  const [error,     setError]     = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  
+  // Steps: 'email' -> 'otp' -> 'password' -> 'success'
+  const [step, setStep] = useState<'email' | 'otp' | 'password' | 'success'>('email');
+  const [tempToken, setTempToken] = useState(''); // Token received after sending OTP
+  const [resetToken, setResetToken] = useState(''); // Token received after validating OTP
 
   useGSAP(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -34,19 +42,48 @@ const ForgotPassword = () => {
       .fromTo('.animate-item', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 }, '-=0.65');
   }, { scope: containerRef });
 
-  const handleReset = async () => {
+  const handleSendOtp = async () => {
     if (!EMAIL_REGEX.test(email.trim())) {
       setError('Please enter a valid email address.');
       return;
     }
     setError('');
-    setIsLoading(true);
+    try {
+      const token = await handleForgotPassword(email.trim());
+      setTempToken(token);
+      setStep('otp');
+    } catch (err) {
+      // Error is already toasted by useAuth
+    }
+  };
 
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 900));
-    setIsLoading(false);
-    setSubmitted(true);
-    toast.success('Password reset link sent! Check your inbox.');
+  const handleVerifyOtp = async () => {
+    if (otp.length < 4) {
+      setError('Please enter a valid OTP.');
+      return;
+    }
+    setError('');
+    try {
+      const token = await handleValidateOtp(Number(otp), tempToken);
+      setResetToken(token);
+      setStep('password');
+    } catch (err) {
+      // Error handled
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    setError('');
+    try {
+      await handleChangePassword(newPassword, resetToken);
+      setStep('success');
+    } catch (err) {
+      // Error handled
+    }
   };
 
   return (
@@ -80,7 +117,7 @@ const ForgotPassword = () => {
             <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '180px' }} draggable={false} />
           </div>
 
-          {!submitted ? (
+          {step === 'email' && (
             <>
               {/* Back + Heading */}
               <div className="animate-item" style={{ marginBottom: '32px' }}>
@@ -103,7 +140,7 @@ const ForgotPassword = () => {
                   Forgot Password?
                 </h2>
                 <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>
-                  Enter your email and we'll send you a secure link to reset your password.
+                  Enter your email and we'll send you an OTP to reset your password.
                 </p>
               </div>
 
@@ -118,7 +155,7 @@ const ForgotPassword = () => {
                     type="email"
                     value={email}
                     onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                    onKeyDown={(e) => e.key === 'Enter' && handleReset()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendOtp()}
                     placeholder="rider@ridewithpals.com"
                     autoComplete="email"
                     className={cn('field', error && 'field-error')}
@@ -131,16 +168,107 @@ const ForgotPassword = () => {
 
               {/* Submit */}
               <button
-                onClick={handleReset}
+                onClick={handleSendOtp}
                 disabled={isLoading}
                 className="animate-item btn-primary"
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
               >
-                {isLoading ? <><Loader2 size={18} className="animate-spin" /> Sending Link...</> : 'Send Reset Link'}
+                {isLoading ? <><Loader2 size={18} className="animate-spin" /> Sending...</> : 'Send OTP'}
               </button>
             </>
-          ) : (
-            /* Success state */
+          )}
+
+          {step === 'otp' && (
+            <>
+              <div className="animate-item" style={{ marginBottom: '32px' }}>
+                <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '34px', marginBottom: '8px' }}>
+                  Enter OTP
+                </h2>
+                <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>
+                  We sent a code to <span style={{ color: '#EB712B' }}>{email}</span>.
+                </p>
+              </div>
+
+              <div className="animate-item" style={{ marginBottom: '20px' }}>
+                <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
+                  OTP Code
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => { setOtp(e.target.value); setError(''); }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleVerifyOtp()}
+                    placeholder="Enter OTP"
+                    className={cn('field', error && 'field-error')}
+                    style={{ paddingLeft: '16px' }}
+                    disabled={isLoading}
+                  />
+                </div>
+                {error && <p className="field-error-text"><AlertCircle size={12} /> {error}</p>}
+              </div>
+
+              <button
+                onClick={handleVerifyOtp}
+                disabled={isLoading}
+                className="animate-item btn-primary"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
+                {isLoading ? <><Loader2 size={18} className="animate-spin" /> Verifying...</> : 'Verify OTP'}
+              </button>
+            </>
+          )}
+
+          {step === 'password' && (
+            <>
+              <div className="animate-item" style={{ marginBottom: '32px' }}>
+                <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '34px', marginBottom: '8px' }}>
+                  New Password
+                </h2>
+                <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7 }}>
+                  Create a new strong password.
+                </p>
+              </div>
+
+              <div className="animate-item" style={{ marginBottom: '20px' }}>
+                <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
+                  New Password
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <Lock size={17} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: error ? '#ef4444' : 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => { setNewPassword(e.target.value); setError(''); }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleUpdatePassword()}
+                    placeholder="Min 8 characters"
+                    className={cn('field', error && 'field-error')}
+                    style={{ paddingLeft: '44px', paddingRight: '48px' }}
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)', background: 'transparent', border: 'none' }}
+                  >
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </div>
+                {error && <p className="field-error-text"><AlertCircle size={12} /> {error}</p>}
+              </div>
+
+              <button
+                onClick={handleUpdatePassword}
+                disabled={isLoading}
+                className="animate-item btn-primary"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
+                {isLoading ? <><Loader2 size={18} className="animate-spin" /> Updating...</> : 'Update Password'}
+              </button>
+            </>
+          )}
+
+          {step === 'success' && (
             <div className="animate-item text-center">
               <div style={{
                 width: '72px', height: '72px', borderRadius: '20px',
@@ -152,12 +280,10 @@ const ForgotPassword = () => {
                 <CheckCircle size={34} color="#22c55e" />
               </div>
               <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '28px', marginBottom: '8px' }}>
-                Email Sent!
+                Password Updated!
               </h2>
               <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.50)', lineHeight: 1.7, marginBottom: '32px' }}>
-                We sent a password reset link to{' '}
-                <span style={{ color: '#EB712B', fontWeight: 600 }}>{email}</span>.
-                Check your inbox (and spam folder).
+                Your password has been successfully reset.
               </p>
               <button onClick={() => navigate(ROUTES.LOGIN)} className="btn-primary">
                 Back to Sign In

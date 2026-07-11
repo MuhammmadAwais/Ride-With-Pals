@@ -1,18 +1,50 @@
-import  { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Lock, Crown, Car, Sparkles } from "lucide-react";
+import { Check, Lock, Crown, Car, Sparkles, Loader2 } from "lucide-react";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import { SubscriptionService } from "@/features/subscriptions/services/subscriptionService";
+import { toast } from "sonner";
 
 const AuthSubscription = () => {
   const navigate = useNavigate();
   const user = useAppSelector((s) => s.auth.user);
   const [selectedPlan, setSelectedPlan] = useState<string>("yearly");
+  const [plans, setPlans] = useState<any[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleNavigation = () => {
-    if (user?.role === 'owner' || user?.role === 'organizer') {
-      navigate("/club-profile-setup");
+  useEffect(() => {
+    SubscriptionService.getSubscriptionPlans().then((res: any) => {
+      setPlans(res?.response || []);
+    }).catch(console.error);
+  }, []);
+
+  const handleNavigation = async () => {
+    if (selectedPlan === "free") {
+      if (user?.role === 'owner' || user?.role === 'organizer') {
+        navigate("/club-profile-setup");
+      } else {
+        navigate("/create-profile");
+      }
     } else {
-      navigate("/create-profile");
+      // Find a paid plan (usually yearly/monthly)
+      const paidPlan = plans.find(p => p.price > 0);
+      if (paidPlan) {
+        try {
+          setIsProcessing(true);
+          const res = await SubscriptionService.checkoutSubscription(paidPlan.id);
+          if (res?.response?.url) {
+            window.location.href = res.response.url; // Redirect to Stripe
+          } else {
+            toast.error("Could not initiate checkout.");
+          }
+        } catch (err: any) {
+          toast.error(err.message || "Failed to start checkout");
+        } finally {
+          setIsProcessing(false);
+        }
+      } else {
+        toast.error("Paid plan not found");
+      }
     }
   };
 

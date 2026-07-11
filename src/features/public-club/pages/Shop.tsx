@@ -9,56 +9,17 @@ interface Product {
   image: string;
 }
 
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "S-Works Prevail 3 Helmet",
-    price: "$250",
-    location: "San Francisco, CA",
-    image: "/Images/HelmetImage4.jpg" 
-  },
-  {
-    id: "2",
-    name: "Cycling Jeresy",
-    price: "$45",
-    location: "Austin, TX",
-    image: "/Images/Jeresy (1).jpg" 
-  },
-  {
-    id: "3",
-    name: "Pro Grip Elite Gloves",
-    price: "$80",
-    location: "London, UK",
-    image: "/Images/cyclingGloveImage.png" 
-  },
-  {
-    id: "4",
-    name: "Carbon Fiber Pro Bike",
-    price: "$2,500",
-    location: "Seattle, WA",
-    image: "/Images/CycleImage.png"
-  },
-  {
-    id: "5",
-    name: "Speed Glasses",
-    price: "$35",
-    location: "Portland, OR",
-    image: "/Images/SpeedGlassesImage.jpg"
-  },
-  {
-    id: "6",
-    name: "Aero Helmet V2",
-    price: "$120",
-    location: "Denver, CO",
-    image: "/Images/headImage.png"
-  }
-];
+import { ClubService } from "@/features/club/services/clubService";
+
+// ==========================================
+// MOCK DATA REMOVED - NOW USING API
+// ==========================================
 
 interface ShopProps {
   clubId?: string;
 }
 
-export default function Shop({ }: ShopProps) {
+export default function Shop({ clubId }: ShopProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -73,6 +34,36 @@ export default function Shop({ }: ShopProps) {
   
   // State for professional order success screen
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // API Data States
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+        const idToFetch = clubId ? parseInt(clubId, 10) : 0;
+        const res = await ClubService.getAllShopItems(idToFetch);
+        const items = res?.response?.data || res?.data || res || [];
+        
+        const mappedProducts = items.map((item: any) => ({
+          id: item.id?.toString() || Math.random().toString(),
+          name: item.name || item.title || "Unknown Shop Item",
+          price: item.price ? `$${item.price}` : "Free",
+          location: item.location || "Club Store",
+          image: item.image || item.imageUrl || "/Images/HelmetImage4.jpg"
+        }));
+        
+        setProducts(mappedProducts);
+      } catch (err) {
+        console.error("Failed to fetch shop items:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
+  }, [clubId]);
 
   // Auto-close success screen after 2.5 seconds and close modal
   useEffect(() => {
@@ -104,7 +95,7 @@ export default function Shop({ }: ShopProps) {
   };
 
   // Filter products based on the search query (filters by name or location)
-  const filteredProducts = MOCK_PRODUCTS.filter((product) => 
+  const filteredProducts = products.filter((product) => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -166,7 +157,12 @@ export default function Shop({ }: ShopProps) {
       </div>
 
       {/* Product Grid / List */}
-      {filteredProducts.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-12 bg-surface border border-border rounded-3xl">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B] mx-auto"></div>
+          <p className="text-sm font-bold text-text-muted uppercase tracking-wider mt-4">Loading Shop Items...</p>
+        </div>
+      ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12 bg-surface border border-border rounded-3xl">
           <p className="text-sm font-bold text-text-muted uppercase tracking-wider">No equipment found matching your search</p>
         </div>

@@ -46,134 +46,40 @@ interface ProductType {
   code?: string;
 }
 
-const products: ProductType[] = [
-  {
-    id: 1,
-    name: "Water Bottle",
-    sku: "SKU-01",
-    code: "WB-001",
-    category: "EQUIPMENT",
-    price: "20.00",
-    status: "IN STOCK",
-    image: "/Images/BottleImage.png",
-    gallery: [
-      "/Images/BottleImage.png",
-      "/Images/BottleImage2.png",
-      "/Images/BottleImage4.png",
-    ],
-  },
-  {
-    id: 2,
-    name: "Bicycle Helmet",
-    sku: "SKU-02",
-    code: "HL-002",
-    category: "SAFETY",
-    price: "20.00",
-    status: "LIMITED",
-    image: "/Images/headImage.png",
-    gallery: [
-      "/Images/headImage.png",
-      "/Images/HelmetImage3.jpg",
-      "/Images/HelmetImage4.jpg",
-    ],
-  },
-  {
-    id: 3,
-    name: "Pro Gloves",
-    sku: "SKU-03",
-    code: "GL-003",
-    category: "APPAREL",
-    price: "20.00",
-    status: "IN STOCK",
-    image: "/Images/cyclingGloveImage.png",
-    gallery: [
-      "/Images/cyclingGloveImage.png",
-      "/Images/CycleGloves.jfif",
-      "/Images/CycleGloves2.jfif",
-    ],
-  },
-  {
-    id: 4,
-    name: "Tech Jersey",
-    sku: "SKU-04",
-    code: "JR-004",
-    category: "APPAREL",
-    price: "45.00",
-    status: "IN STOCK",
-    image: "/Images/cycleJeresyImage.jfif",
-    gallery: ["/Images/cycleJeresyImage.jfif"],
-  },
-  {
-    id: 5,
-    name: "Cycling Shoes",
-    sku: "SKU-05",
-    code: "SH-005",
-    category: "EQUIPMENT",
-    price: "120.00",
-    status: "IN STOCK",
-    image: "/Images/shoesImage.png",
-    gallery: ["/Images/shoesImage.png"],
-  },
-  {
-    id: 6,
-    name: "Repair Kit",
-    sku: "SKU-06",
-    code: "RK-006",
-    category: "EQUIPMENT",
-    price: "15.00",
-    status: "IN STOCK",
-    image: "/Images/repairImage.jpg",
-    gallery: ["/Images/repairImage.jpg"],
-  },
-  {
-    id: 7,
-    name: "Speed Glasses",
-    sku: "SKU-07",
-    code: "SG-007",
-    category: "SAFETY",
-    price: "35.00",
-    status: "LIMITED",
-    image: "/Images/SpeedGlassesImage.jpg",
-    gallery: ["/Images/SpeedGlassesImage.jpg"],
-  },
-  {
-    id: 8,
-    name: "Smart Watch",
-    sku: "SKU-08",
-    code: "SW-008",
-    category: "EQUIPMENT",
-    price: "199.00",
-    status: "LIMITED",
-    image: "/Images/SmartWatch.jpg",
-    gallery: ["/Images/SmartWatch.jpg"],
-  },
-  {
-    id: 9,
-    name: "Bike Pump",
-    sku: "SKU-09",
-    code: "BP-009",
-    category: "EQUIPMENT",
-    price: "30.00",
-    status: "IN STOCK",
-    image: "/Images/CyclePump.jpg",
-    gallery: ["/Images/CyclePump.jpg"],
-  },
-  {
-    id: 10,
-    name: "Cycle",
-    sku: "SKU-10",
-    code: "CY-010",
-    category: "Ride",
-    price: "100.00",
-    status: "LIMITED",
-    image: "/Images/cycleImage6.png",
-    gallery: ["/Images/cycleImage6.png"],
-  },
-];
+import { useEffect } from "react";
+import { ClubService } from '@/features/club/services/clubService';
 
 const Product = () => {
+  const [products, setProducts] = useState<ProductType[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) return;
+      try {
+        const res = await ClubService.getAllShopItems(Number(clubIdStr), "", 50, 0);
+        const mapped = (res?.data || res || []).map((p: any) => ({
+          id: p.id,
+          name: p.title,
+          sku: p.sku || `SKU-${p.id}`,
+          code: p.code || `PROD-${p.id}`,
+          category: p.category?.name || "General",
+          price: p.price?.toString() || "0.00",
+          status: p.stockQuantity > 0 ? "IN STOCK" : "LIMITED",
+          image: p.images?.[0] || "/Images/BottleImage.png",
+          gallery: p.images?.length ? p.images : ["/Images/BottleImage.png"],
+          units: p.stockQuantity || 0,
+          sales: "0"
+        }));
+        setProducts(mapped);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchProducts();
+  }, []);
   const navigate = useNavigate();
 
   const handleSelectProduct = (product: ProductType) => {

@@ -1,0 +1,106 @@
+﻿Onboarding & Profile/Signup [POST] http://85.31.238.214:8084/api/user/signup
+Onboarding & Profile/Forgot Password [GET] {{local}}user/forgot/password?email=tech54qi@gmail.com
+Onboarding & Profile/Resend OTP [PUT] {{local}}user/resend/otp
+Onboarding & Profile/Validate OTP [PUT] {{local}}user/validate/otp
+Onboarding & Profile/Change Password [PUT] {{local}}user/change/password
+Onboarding & Profile/Login [POST] {{local}}user/login
+Onboarding & Profile/Update Password [PUT] {{local}}user/update/password
+Onboarding & Profile/Upsert Athlete Profile [PUT] {{LIVE}}user/update/athlete/profile
+Onboarding & Profile/User Info [GET] {{local}}user/info
+Onboarding & Profile/Upload File [POST] https://api.ridewithpals.com/api/user/upload/file
+Onboarding & Profile/Firebase login [POST] {{LIVE}}user/login/firebase
+Onboarding & Profile/Update Fcm Token [PUT] {{local}}user/fcm-token
+Onboarding & Profile/Update Scale Unit Settings [PUT] {{local}}user/unit/settings
+Onboarding & Profile/Check Email Existence [GET] {{local}}user/check-email?email=tech54qi@gmail.com
+Onboarding & Profile/Get Other User Info [GET] {{local}}user/details?userId=2
+Club/Club Info/Get Club Rides [GET] {{local}}user/club/rides?clubId=2&status=completed
+Club/Activities & Calendar tab/Get Activities Data [GET] {{local}}user/activity/rides/public
+Club/Activities & Calendar tab/Get Calendar tab data [GET] {{local}}user/activity/rides/by-date?date=2025-02-15
+Club/Leaderboard/Strava/Connect Strava Account [GET] {{local}}user/strava/connect
+Club/Leaderboard/Strava/Check Strava Status [GET] {{local}}user/strava/status
+Club/Leaderboard/Strava/Disconnect strava account [DELETE] {{LIVE}}user/strava/disconnect
+Club/Leaderboard/Strava/Get Strava leaderboard Data [GET] {{local}}user/club/leaderboard/km?clubId=2&period=year
+Club/Leaderboard/Get Club Leaderboard App Rides [GET] {{local}}user/club/leaderboard/rides?clubId=2
+Club/Terms&Condition/Get Club Terms [GET] {{local}}user/club/terms?clubId=2
+Club/Terms&Condition/Add Club Terms [POST] {{local}}user/club/terms
+Club/Terms&Condition/Update Club Terms [PUT] {{local}}user/club/terms
+Club/Create Club Profile [POST] {{local}}user/club/profile
+Club/Add Rides [POST] {{local}}user/ride
+Club/Get Own Rides [GET] {{local}}user/rides
+Club/Get Ride Info By ID [GET] {{local}}user/ride?rideId=1
+Club/Update Ride Info [PUT] {{local}}user/ride
+Club/Clubs [GET] {{local}}user/clubs/all?owned=true
+Club/Join Club [POST] {{LIVE}}user/club/join
+Club/Get Joined Clubs [GET] {{local}}user/clubs
+Club/Leave Club [PUT] {{local}}user/club/leave
+Club/Join Ride [POST] {{local}}user/ride/join
+Club/Get Club Members List [GET] {{LIVE}}user/club/members?clubId=1
+Club/Get Club Join Request [GET] {{local}}user/club/join-requests?clubId=2
+Club/Manage Join Group Request [POST] {{local}}user/club/join-request/respond
+Club/Get Club Dashboard Stats [GET] {{local}}user/club/dashboard/stats?clubId=1
+Club/Get Club Info By ID [GET] {{LIVE}}user/club?clubId=2
+Club/Update Club Info By id [PUT] {{LIVE}}user/club
+Club/Remove Club Member [DELETE] {{local}}user/club/member
+News/News Comments/Add comment [POST] {{local}}user/club/news/comment
+News/News Comments/Get All News Comments [GET] {{local}}user/club/news/comment/all?newsId=3&limit=10&offset=0
+News/News Comments/Update News comment [PUT] {{local}}user/club/news/comment
+News/News Comments/Del comment [DELETE] {{local}}user/club/news/comment
+News/Add News [POST] {{local}}user/club/news
+News/Get News By Id [GET] {{local}}user/club/news?id=1
+News/Update News [PUT] {{local}}user/club/news
+News/Delete News [DELETE] {{local}}user/club/news
+News/Get All News [GET] {{local}}user/club/news/all?clubId=2
+Shop/Add item to Shop [POST] {{local}}user/club/shop
+Shop/Update item to Shop [PUT] {{local}}user/club/shop
+Shop/Get the shop Items [GET] {{local}}user/club/shop?clubId=3&limit=10&offset=0
+Shop/Delete shop item [DELETE] {{local}}user/club/shop
+Shop/Get the Shop Item By ID [GET] {{local}}user/club/shop/item?shopItemId=1
+Shop Orders/Club owner: Order management/For Club Owner: Order List [GET] {{local}}user/club/shop/orders?clubId=3
+Shop Orders/Club owner: Order management/For club owner: update order status [PUT] {{local}}user/club/shop/order/status
+Shop Orders/Buy shop item [POST] {{local}}user/club/shop/buy
+Shop Orders/Get My purchases list [GET] {{local}}user/club/shop/purchases?statusIds=1,2
+Shop Orders/Update shop order status [PUT] {{local}}user/club/shop/order/cancel
+MarketPlace/Get Marketplace List [GET] {{LIVE}}user/club/marketplace?clubId=4
+MarketPlace/Add MarketPlace Item [POST] {{LIVE}}user/club/marketplace
+MarketPlace/Update MarketPlace Item [PUT] {{local}}user/club/marketplace
+MarketPlace/Get Marketplace Item info [GET] {{local}}user/club/marketplace/item?marketPlaceItemId=1
+MarketPlace/Delete MarketPlace Item [DELETE] {{local}}user/club/marketplace
+MarketPlace/Get Own Listings [GET] {{local}}user/club/marketplace/my-listings
+MarketPlace/Share MarketPlace Item [POST] {{local}}user/club/marketplace/share
+Save Rides/Save Ride [POST] {{local}}user/ride/save
+Save Rides/Unsave Ride [PUT] {{local}}user/ride/unsave
+Save Rides/Get Saved Rides List [GET] {{local}}user/rides/saved
+Discounts/Get Club Discounts [GET] {{local}}user/club/shop/discount?clubId=1
+Discounts/Add Discount [POST] {{local}}user/club/shop/discount
+Discounts/Update Discount [PUT] {{local}}user/club/shop/discount
+Discounts/Delete Discount [DELETE] {{local}}user/club/shop/discount
+Club Permissions/Get Club Permissions [GET] {{local}}user/club/permissions?clubId=1
+Club Permissions/save permissions for Admin or User role [PUT] {{local}}user/club/permissions/role
+Club Permissions/apply permission toggles for selected members [PUT] {{local}}user/club/permissions/members
+Club Permissions/grant/revoke full club access for one member [PUT] {{local}}user/club/permissions/full-access
+Club Permissions/Assign Role to Member [POST] {{local}}uuser/club/member/role
+Club Permissions/Remove fullAccess Permission [PUT] {{local}}user/club/permissions/remove-full-access
+Subscription/Club/List Club Subscription [GET] {{local}}user/club/subscription/plans
+Subscription/Club/My subscription [GET] {{local}}user/club/subscription/me?clubId=2
+Subscription/Club/Subscribe to club Plan [POST] {{local}}user/club/subscription/subscribe
+Subscription/Club/Club Customer Portal [POST] {{local}}user/club/subscription/customer-portal
+Subscription/Get My Subscription [GET] {{local}}user/subscription/me
+Subscription/Subscription Plan List [GET] {{LIVE}}user/subscription/plans
+Subscription/Subscribe to any Plan [POST] {{LIVE}}user/subscription/subscribe
+Subscription/Create Customer Portal [GET] {{local}}user/subscription/customer-portal?type=club&clubId=1
+Connect Stripe Account/Connect Stripe [GET] {{local}}user/club/stripe/connect?clubId=1
+Connect Stripe Account/Check stripe account status [GET] {{local}}user/club/stripe/status?clubId=1
+Club Membership/Subscribe Club Membership/Subscribe to Membership Plan [POST] {{local}}user/club/membership/subscribe
+Club Membership/Subscribe Club Membership/Get My Membership Info [GET] {{local}}user/club/membership/me?clubId=1
+Club Membership/Create Club Membership Plan [POST] {{local}}user/club/membership/plan
+Club Membership/Update Club Membership Plan [PUT] {{local}}user/club/membership/plan
+Club Membership/Delete Membership Plan [DELETE] {{local}}user/club/membership/plan
+Club Membership/List Membership Plans [GET] {{local}}user/club/membership/plans?clubId=7
+Club Membership/Membership Plan Info By ID [GET] {{local}}user/club/membership/plan?clubId=1&planId=2
+Club Membership/List subscribed Member [GET] {{local}}user/club/membership/subscribers?clubId=1&limit=10&offset=0
+Club Membership/Change Club Member Fee Status [POST] {{LIVE}}user/club/membership/manual-pay
+Notifications/Get User Notification [GET] {{local}}user/notifications
+Notifications/Get Club Notifications [GET] {{local}}user/club/notifications?clubId=1
+Notifications/Mark as Read- Notifications [PUT] {{local}}user/notifications/read
+Notifications/Send Subscription Reminder [POST] {{local}}user/club/membership/remind
+Notifications/Send Subscription Reminder to Everyone.. [POST] {{local}}user/club/membership/remind-all

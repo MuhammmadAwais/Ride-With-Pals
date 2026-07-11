@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu } from 'lucide-react';
+import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Sidebar from '../../components/Sidebar';
+import { ClubService } from '@/features/club/services/clubService';
 
-const data = [
+const fallbackData = [
   { name: 'Jan', val: 4000 }, { name: 'Feb', val: 10500 }, { name: 'Mar', val: 6200 },
   { name: 'Apr', val: 7800 }, { name: 'May', val: 5500 }, { name: 'Jun', val: 13000 },
   { name: 'Jul', val: 10500 }, { name: 'Aug', val: 7500 }, { name: 'Sep', val: 10000 },
@@ -18,7 +19,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const AnalyticsGrid = () => {
+const AnalyticsGrid = ({ stats }: { stats: any }) => {
   const size = 120;
   const strokeWidth = 12;
   const radius = (size - strokeWidth) / 2;
@@ -29,6 +30,8 @@ const AnalyticsGrid = () => {
     { color: '#F97316', value: 40, label: 'Solo' },      
   ];
 
+  const chartData = stats?.monthlyGrowth || fallbackData;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
       <div className="bg-surface p-6 rounded-3xl border border-border">
@@ -38,7 +41,7 @@ const AnalyticsGrid = () => {
         </div>
         <div className="h-32">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
+            <AreaChart data={chartData}>
               <defs><linearGradient id="growth" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#EB712B" stopOpacity={0.3}/><stop offset="95%" stopColor="#EB712B" stopOpacity={0}/></linearGradient></defs>
               <Area type="monotone" dataKey="val" stroke="#EB712B" fill="url(#growth)" />
             </AreaChart>
@@ -63,46 +66,49 @@ const AnalyticsGrid = () => {
       </div>
       <div className="bg-surface p-6 rounded-3xl border border-border">
         <h3 className="font-bold text-text-main">Revenue Forecast</h3>
-        <p className="text-[10px] text-text-muted mb-6">Projected Q4 Earnings</p>
-        <p className="text-3xl font-black mb-2 text-text-main">$12,450.00</p>
-        <p className="text-[10px] text-green-400 flex items-center gap-1 mb-4">↗ Expected 15% increase</p>
+        <p className="text-[10px] text-text-muted mb-6">Projected Earnings</p>
+        <p className="text-3xl font-black mb-2 text-text-main">${stats?.revenueForecast || '12,450.00'}</p>
+        <p className="text-[10px] text-green-400 flex items-center gap-1 mb-4">↗ Expected increase</p>
       </div>
     </div>
   );
 };
 
-export const DashboardOverview = () => (
-  <div className="w-full">
-    {/* KPI Cards Grid */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 mb-10">
-      <KPICard title="Total Members" value="456" icon={<Users size={32} className="text-[#EB712B]" />} />
-      <KPICard title="Total Rides" value="102" icon={<Car size={32} className="text-[#EB712B]" />} />
-      <KPICard title="Earning" value="$5,000" icon={<DollarSign size={32} className="text-[#EB712B]" />} />
-      <KPICard title="Balance" value="$10,000" icon={<Wallet size={32} className="text-[#EB712B]" />} />
-    </div>
-
-    {/* Elegant Divider Line */}
-    <div className="w-full border-t border-border my-8 shadow-sm" />
-
-    {/* Marketplace Sales and Analytics */}
-    <div className="bg-surface p-8 rounded-3xl border border-border w-full">
-      <h2 className="text-xl font-bold mb-6 text-text-main">Marketplace Sales</h2>
-      <div className="h-64 lg:h-80 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data}>
-            <defs><linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#EB712B" stopOpacity={0.4}/><stop offset="95%" stopColor="#EB712B" stopOpacity={0}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} stroke="var(--color-secondary-text)" />
-            <YAxis axisLine={false} tickLine={false} fontSize={12} stroke="var(--color-secondary-text)" />
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#EB712B', strokeWidth: 2, strokeDasharray: '4 4' }} />
-            <Area type="monotone" dataKey="val" stroke="#EB712B" strokeWidth={3} fill="url(#colorVal)" />
-          </AreaChart>
-        </ResponsiveContainer>
+export const DashboardOverview = ({ stats }: { stats?: any }) => {
+  const chartData = stats?.marketplaceSales || fallbackData;
+  return (
+    <div className="w-full">
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 mb-10">
+        <KPICard title="Total Members" value={stats?.totalMembers || "456"} icon={<Users size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Total Rides" value={stats?.totalRides || "102"} icon={<Car size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Earning" value={`$${stats?.totalEarnings || "5,000"}`} icon={<DollarSign size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Balance" value={`$${stats?.walletBalance || "10,000"}`} icon={<Wallet size={32} className="text-[#EB712B]" />} />
       </div>
+
+      {/* Elegant Divider Line */}
+      <div className="w-full border-t border-border my-8 shadow-sm" />
+
+      {/* Marketplace Sales and Analytics */}
+      <div className="bg-surface p-8 rounded-3xl border border-border w-full">
+        <h2 className="text-xl font-bold mb-6 text-text-main">Marketplace Sales</h2>
+        <div className="h-64 lg:h-80 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData}>
+              <defs><linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#EB712B" stopOpacity={0.4}/><stop offset="95%" stopColor="#EB712B" stopOpacity={0}/></linearGradient></defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} stroke="var(--color-secondary-text)" />
+              <YAxis axisLine={false} tickLine={false} fontSize={12} stroke="var(--color-secondary-text)" />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#EB712B', strokeWidth: 2, strokeDasharray: '4 4' }} />
+              <Area type="monotone" dataKey="val" stroke="#EB712B" strokeWidth={3} fill="url(#colorVal)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <AnalyticsGrid stats={stats} />
     </div>
-    <AnalyticsGrid />
-  </div>
-);
+  );
+};
 
 interface DashBoardProps {
   defaultView?: React.ReactNode;
@@ -112,6 +118,27 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+
+  const [stats, setStats] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (defaultView) return; // Do not fetch stats if a custom view is provided
+    const fetchStats = async () => {
+      const clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) return;
+      try {
+        setIsLoading(true);
+        const response = await ClubService.getClubDashboardStats(Number(clubIdStr));
+        setStats(response?.data || response);
+      } catch (err) {
+        console.error("Failed to fetch dashboard stats", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchStats();
+  }, [defaultView]);
 
   const getPageTitle = () => {
     const path = location.pathname.split('/').pop();
@@ -138,7 +165,15 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
         <div className="w-full border-t border-border my-8" />  
         
         <div className="w-full">
-          {defaultView ? defaultView : <DashboardOverview />}
+          {defaultView ? (
+            defaultView
+          ) : isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="animate-spin text-[#EB712B]" size={48} />
+            </div>
+          ) : (
+            <DashboardOverview stats={stats} />
+          )}
         </div>
       </main>
     </div>

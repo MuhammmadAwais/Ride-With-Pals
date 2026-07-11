@@ -10,10 +10,6 @@
  *  - Browser password reveal removed via CSS
  *  - CycleRock background image on left panel
  *  - Keeps original flow: Login → SelectRole
- *
- * Mock credentials:
- *   Email:    rider@ridewithpals.com
- *   Password: rider1234
  */
 import { useState, useRef, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';

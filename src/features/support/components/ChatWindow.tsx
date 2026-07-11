@@ -9,6 +9,7 @@ import gsap from 'gsap';
 interface ChatWindowProps {
   activeUser: ChatUser | null;
   messages: ChatMessage[];
+  onSendMessage: (text: string) => void;
   onBack: () => void;
   isHiddenOnMobile: boolean;
 }
@@ -36,7 +37,7 @@ function HexWallpaper(): React.ReactElement {
   );
 }
 
-export function ChatWindow({ activeUser, messages, onBack, isHiddenOnMobile }: ChatWindowProps) {
+export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHiddenOnMobile }: ChatWindowProps) {
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef   = useRef<HTMLDivElement>(null);
@@ -229,13 +230,22 @@ export function ChatWindow({ activeUser, messages, onBack, isHiddenOnMobile }: C
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (inputText.trim()) setInputText('');
+                if (inputText.trim()) {
+                  onSendMessage(inputText);
+                  setInputText('');
+                }
               }
             }}
           />
 
           {inputText.trim() ? (
             <button
+              onClick={() => {
+                if (inputText.trim()) {
+                  onSendMessage(inputText);
+                  setInputText('');
+                }
+              }}
               style={{
                 width: '40px', height: '40px', borderRadius: '12px',
                 background: '#EB712B', color: '#fff',

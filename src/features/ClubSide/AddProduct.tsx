@@ -32,21 +32,40 @@ const AddProduct = () => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
   };
 
- const handleUpdate = () => {
-  const saved = localStorage.getItem('myProducts');
-  const productList = saved ? JSON.parse(saved) : [];
-  
-  const updatedList = productList.map((p: any) => 
-    p.id === incomingProduct.id 
-      ? { ...p, name, price, description, gallery: selectedImages, image: selectedImages[0] } 
-      : p
-  );
-  
-  localStorage.setItem('myProducts', JSON.stringify(updatedList));
-  
-  // Update this line to match your router path:
-  navigate('/dashboard/product'); 
-};
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdate = async () => {
+    const clubIdStr = localStorage.getItem('selectedClubId');
+    if (!clubIdStr) return;
+
+    setLoading(true);
+    try {
+      const { ClubService } = await import('@/features/club/services/clubService');
+      const payload = {
+        clubId: Number(clubIdStr),
+        title: name,
+        price: Number(price) || 0,
+        description: description,
+        sku: 'AUTO-SKU',
+        code: 'AUTO-CODE',
+        stockQuantity: 10,
+        images: selectedImages.length ? selectedImages : ["/Images/BottleImage.png"],
+        categoryId: 1 // default category or retrieve it somehow
+      };
+
+      if (incomingProduct) {
+        await ClubService.updateShopItem({ shopItemId: incomingProduct.id, ...payload });
+      } else {
+        await ClubService.addShopItem(payload);
+      }
+
+      navigate('/dashboard/product'); 
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen text-text-main p-6 md:p-12 font-sans bg-main-bg">
