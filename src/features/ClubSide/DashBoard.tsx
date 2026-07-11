@@ -6,11 +6,7 @@ import { motion } from 'framer-motion';
 import Sidebar from '../../components/Sidebar';
 import { ClubService } from '@/features/club/services/clubService';
 
-const fallbackData = [
-  { name: 'Jan', val: 4000 }, { name: 'Feb', val: 10500 }, { name: 'Mar', val: 6200 },
-  { name: 'Apr', val: 7800 }, { name: 'May', val: 5500 }, { name: 'Jun', val: 13000 },
-  { name: 'Jul', val: 10500 }, { name: 'Aug', val: 7500 }, { name: 'Sep', val: 10000 },
-];
+// Removed mock data array
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -30,7 +26,7 @@ const AnalyticsGrid = ({ stats }: { stats: any }) => {
     { color: '#F97316', value: 40, label: 'Solo' },      
   ];
 
-  const chartData = stats?.monthlyGrowth || fallbackData;
+  const chartData = stats?.monthlyGrowth || [];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
@@ -75,7 +71,7 @@ const AnalyticsGrid = ({ stats }: { stats: any }) => {
 };
 
 export const DashboardOverview = ({ stats }: { stats?: any }) => {
-  const chartData = stats?.marketplaceSales || fallbackData;
+  const chartData = stats?.marketplaceSales || [];
   return (
     <div className="w-full">
       {/* KPI Cards Grid */}

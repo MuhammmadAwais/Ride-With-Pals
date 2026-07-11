@@ -22,15 +22,7 @@ import {
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 
-const chartData = [
-  { name: "Jan", val1: 40, val2: 24 },
-  { name: "Feb", val1: 30, val2: 13 },
-  { name: "Mar", val1: 60, val2: 30 },
-  { name: "Apr", val1: 20, val2: 20 },
-  { name: "May", val1: 80, val2: 45 },
-  { name: "Jun", val1: 50, val2: 30 },
-  { name: "Jul", val1: 90, val2: 55 },
-];
+const chartData: any[] = [];
 
 interface ProductType {
   id: number;

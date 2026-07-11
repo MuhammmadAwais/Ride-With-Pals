@@ -2,50 +2,9 @@ import { useState } from 'react';
 import { MessageSquare, Plus, ArrowUpRight, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const newsItems = [
-  {
-    id: 1,
-    title: "New Records Established",
-    date: "June 17, 2026 • Federation Update",
-    author: "Bessie Cooper",
-    authorInitials: "BC",
-    previewText: "Tilogi ip-tv. Dideng euroledes. Min spepikas, demoskop. Nes megagōliga devis.",
-    fullContent: "Presegen pinas. Nyn halvtaktsjobb, jag holigt. Decidat resovår. Tremön sesam etnovision. Nipobyvis höprek. Megt migös.",
-    image: "/Images/CycleImage8.png"
-  },
-  {
-    id: 2,
-    title: "Project Milestone Reached",
-    date: "June 16, 2026 • Development Update",
-    author: "Ahmad Khan",
-    authorInitials: "AK",
-    previewText: "The system architecture has been successfully migrated to the new cloud infrastructure.",
-    fullContent: "This allows for faster deployment cycles, improved security, and significantly lower latency.",
-    image: "/Images/CycleImage8.png"
-  },
-  {
-    id: 3,
-    title: "Quarterly Security Audit",
-    date: "June 15, 2026 • Security Ops",
-    author: "Sarah Jenkins",
-    authorInitials: "SJ",
-    previewText: "We have successfully completed our Q2 security audit with zero critical vulnerabilities found.",
-    fullContent: "The audit covered all major endpoints and API gateways. We have updated our encryption protocols to ensure that all user data remains protected against emerging threats.",
-    image: "/Images/CycleImage8.png"
-  },
-  {
-    id: 4,
-    title: "Community Growth Initiative",
-    date: "June 14, 2026 • Community Outreach",
-    author: "Marcus Thorne",
-    authorInitials: "MT",
-    previewText: "Our community has officially surpassed 50,000 active members this week.",
-    fullContent: "To celebrate this milestone, we are launching a series of community-led workshops starting next month to foster better collaboration and learning.",
-    image: "/Images/CycleImage8.png"
-  }
-];
+const newsItems: any[] = [];
 
-const NewsArticle = ({ item }: { item: typeof newsItems[0] }) => {
+const NewsArticle = ({ item }: { item: any }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

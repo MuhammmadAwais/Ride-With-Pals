@@ -87,21 +87,7 @@ const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
 const ActivitiesRegistry = () => {
   const [activeTab, setActiveTab] = useState("Active");
 
-  const [activities] = useState<Activity[]>(
-    Array.from({ length: 15 }, (_, i) => ({
-      id: i + 1,
-      name: `Activity ${i + 1}`,
-      region: "Alpine Range",
-      distance: "80 KM",
-      level: "ADVANCED",
-      status:
-        i % 3 === 0 ? "COMPLETED" : i % 5 === 0 ? "ARCHIVED" : "IN PROGRESS",
-      participants: "18 / 38",
-      progress: i % 3 === 0 ? 100 : 50,
-      imageUrl: `/Images/${girlImages[i % 10]}`,
-      leaderImageUrl: `/Images/${leaderImages[i % 10]}`,
-    })),
-  );
+  const [activities] = useState<Activity[]>([]);
 
   const filteredActivities = activities.filter((act) => {
     if (activeTab === "Active")

@@ -35,9 +35,12 @@ backendApi.interceptors.request.use(
       delete config.headers["Content-Type"];
     }
 
+    console.log(`🚀 [API Request] ${config.method?.toUpperCase()} ${config.url}`, config.params || config.data || '');
+
     return config;
   },
   (error) => {
+    console.error(`❌ [API Request Error]`, error);
     return Promise.reject(error);
   }
 );
@@ -45,6 +48,7 @@ backendApi.interceptors.request.use(
 // Response Interceptor
 backendApi.interceptors.response.use(
   (response) => {
+    console.log(`✅ [API Response] ${response.config.method?.toUpperCase()} ${response.config.url}`, response.data);
     // Any status code that lie within the range of 2xx cause this function to trigger
     return response;
   },

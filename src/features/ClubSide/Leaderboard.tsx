@@ -2,13 +2,6 @@ import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 
-const LEADERBOARD_DATA = [
-  { id: 1, name: "Savannah Nguyen", role: "Elite Rookie", team: "Pro Team Alpha", rides: 12, attendance: "100%", status: "Active" },
-  { id: 2, name: "Marcus Thorne", role: "Vet Pro", team: "Cycle Masters", rides: 10, attendance: "98%", status: "Active" },
-  { id: 3, name: "Elena Gilbert", role: "Elite Rookie", team: "Speed Kings", rides: 9, attendance: "95%", status: "On Break" },
-  { id: 4, name: "Ahmad Khan", role: "Pro Lead", team: "Summit Riders", rides: 8, attendance: "92%", status: "Active" },
-];
-
 const StatCard = ({ title, value, icon: Icon }: any) => (
   <div className="relative p-6 bg-surface border border-border backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 transition-all duration-500 group">
     <div className="flex justify-between items-start mb-4">
@@ -26,7 +19,7 @@ const StatCard = ({ title, value, icon: Icon }: any) => (
 
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
 
-  const columns: Column<typeof LEADERBOARD_DATA[0]>[] = [
+  const columns: Column<any>[] = [
     {
       key: 'id',
       label: 'Rank',
@@ -116,7 +109,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       </section>
 
       {/* Main Table */}
-      <DataTable data={LEADERBOARD_DATA} columns={columns} />
+      <DataTable data={[]} columns={columns} />
     </div>
   );
 };

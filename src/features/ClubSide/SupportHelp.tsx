@@ -1,49 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Phone, Video, MoreVertical, Send, Paperclip, Mic, MessageSquare } from 'lucide-react';
 
-const initialChats = [
-  { 
-    id: 1, 
-    name: 'Emily Thompson', 
-    avatar: '/Images/GirlImage11.png', 
-    status: 'Online', 
-    ticketStatus: 'Resolved', 
-    unreadCount: 1, // Orange circle badge with "1"
-    messages: [
-      { id: 1, sender: 'user', text: 'Hello, I need help with my recent ride booking.', type: 'text' },
-      { id: 2, sender: 'me', text: 'Hi Emily! Sure, I can help with that.', type: 'text' }
-    ]
-  },
-  { 
-    id: 2, 
-    name: 'Charlotte Davis', 
-    avatar: '/Images/Girlmage5.png', 
-    status: 'Last seen 1h ago', 
-    ticketStatus: 'Resolved', 
-    unreadCount: 2, // Orange circle badge with "2"
-    messages: [
-      { 
-        id: 1, 
-        sender: 'user', 
-        text: 'The app keeps crashing whenever I try to open the map view.', 
-        type: 'text', 
-        time: '11:05 AM' 
-      },
-      { 
-        id: 2, 
-        sender: 'me', 
-        text: 'I am sorry to hear that. Have you tried clearing your app cache or checking for updates in the store?', 
-        type: 'text', 
-        time: '11:10 AM' 
-      }
-    ] 
-  },
-  { id: 3, name: 'Olivia Wilson', avatar: '/Images/Girlmage4.png', status: 'Online', ticketStatus: 'Pending', unreadCount: 0, messages: [] },
-  { id: 4, name: 'Sophia Martinez', avatar: '/Images/Girlmage3.png', status: 'Online', ticketStatus: 'Pending', unreadCount: 0, messages: [] },
-  { id: 5, name: 'Ava Anderson', avatar: '/Images/Girlmage6.png', status: 'Last seen 20m ago', ticketStatus: 'Pending', unreadCount: 0, messages: [] },
-  { id: 6, name: 'Isabella Taylor', avatar: '/Images/ProfileImage.png', status: 'Online', ticketStatus: 'Pending', unreadCount: 0, messages: [] },
-  { id: 7, name: 'Mia White', avatar: '/Images/Girlmage8.png', status: 'Offline', ticketStatus: 'Pending', unreadCount: 0, messages: [] }
-];
+const initialChats: any[] = [];
 
 interface SupportHelpProps {
   role?: 'organizer' | 'athlete';

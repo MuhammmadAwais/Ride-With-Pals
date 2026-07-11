@@ -16,15 +16,15 @@ import DataTable, { type Column } from "@/components/ui/DataTable";
 const chartData = {
   "30D": {
     label: "Last 30 Days telemetry",
-    bars: [40, 60, 30, 45, 90, 50, 40, 75, 40, 60],
+    bars: [],
   },
   "90D": {
     label: "Last 90 Days telemetry",
-    bars: [70, 30, 50, 80, 20, 60, 45, 35, 90, 55],
+    bars: [],
   },
   "1Y": {
     label: "Last 1 Year telemetry",
-    bars: [30, 40, 60, 30, 50, 70, 80, 40, 30, 90],
+    bars: [],
   },
 };
 
@@ -36,149 +36,7 @@ interface Transaction {
   status: "SUCCESS" | "PENDING";
 }
 
-const transactions: Transaction[] = [
-  {
-    id: "#TR-9284-AX",
-    date: "Oct 24, 2023",
-    amount: 47.0,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9285-BR",
-    date: "Oct 24, 2023",
-    amount: 35.0,
-    type: "Deposit",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9286-LM",
-    date: "Oct 23, 2023",
-    amount: 29.0,
-    type: "Withdraw",
-    status: "PENDING",
-  },
-  {
-    id: "#TR-9287-PQ",
-    date: "Oct 22, 2023",
-    amount: 25.0,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9288-WX",
-    date: "Oct 21, 2023",
-    amount: 60.0,
-    type: "Deposit",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9289-YZ",
-    date: "Oct 20, 2023",
-    amount: 42.5,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9290-AB",
-    date: "Oct 19, 2023",
-    amount: 15.0,
-    type: "Withdraw",
-    status: "PENDING",
-  },
-  {
-    id: "#TR-9291-CD",
-    date: "Oct 18, 2023",
-    amount: 88.0,
-    type: "Deposit",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9292-EF",
-    date: "Oct 17, 2023",
-    amount: 33.0,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9293-GH",
-    date: "Oct 16, 2023",
-    amount: 55.0,
-    type: "Withdraw",
-    status: "SUCCESS",
-  },
-
-  {
-    id: "#TR-9294-IJ",
-    date: "Oct 15, 2023",
-    amount: 120.0,
-    type: "Deposit",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9295-KL",
-    date: "Oct 15, 2023",
-    amount: 12.5,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9296-MN",
-    date: "Oct 14, 2023",
-    amount: 45.0,
-    type: "Withdraw",
-    status: "PENDING",
-  },
-  {
-    id: "#TR-9297-OP",
-    date: "Oct 13, 2023",
-    amount: 200.0,
-    type: "Deposit",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9298-QR",
-    date: "Oct 12, 2023",
-    amount: 55.25,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9299-ST",
-    date: "Oct 11, 2023",
-    amount: 30.0,
-    type: "Withdraw",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9300-UV",
-    date: "Oct 10, 2023",
-    amount: 75.0,
-    type: "Deposit",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9301-WX",
-    date: "Oct 09, 2023",
-    amount: 10.0,
-    type: "Sale",
-    status: "SUCCESS",
-  },
-  {
-    id: "#TR-9302-YZ",
-    date: "Oct 08, 2023",
-    amount: 95.0,
-    type: "Withdraw",
-    status: "PENDING",
-  },
-  {
-    id: "#TR-9293-GH",
-    date: "Oct 16, 2023",
-    amount: 55.0,
-    type: "Withdraw",
-    status: "SUCCESS",
-  },
-];
+const transactions: Transaction[] = [];
 
 const TypeIcon = ({ type }: { type: string }) => {
   if (type === "Sale") return <CreditCard size={16} />;

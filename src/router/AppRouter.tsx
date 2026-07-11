@@ -107,6 +107,8 @@ export const router = createBrowserRouter(
         }
       >
         {/* ── Club Management (Clubside) ── */}
+        <Route path="/manage-club" element={<ManageClub />} />
+        
         <Route path="/view/clubside">
           <Route path="dashboard" element={<DashboardOverview />} />
           <Route path="activities" element={<Activities />} />
@@ -204,7 +206,6 @@ export const router = createBrowserRouter(
 
       {/* ── Other Standalone Routes ── */}
       <Route path="/manage-club-home" element={<ManageClubHome />} />
-      <Route path="/manage-club" element={<ManageClub />} />
       <Route path="/about-app" element={<AboutApp />} />
       <Route path="/edit-club" element={<EditClub />} />
 

@@ -3,18 +3,7 @@ import { Check, X } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 
-const initialRequests = [
-  { id: 'ATH-90210', name: 'Albert Flores', org: 'Mountain Ride', image: '/Images/GirlImage11.png', status: 'pending' },
-  { id: 'ATH-88432', name: 'Marcus Chen', org: 'Velocity Sprint', image: '/Images/Girlmage6.png', status: 'pending' },
-  { id: 'ATH-77215', name: 'Sarah Jenkins', org: 'Aqua Dynamics', image: '/Images/GirlImage10.png', status: 'pending' },
-  { id: 'ATH-66509', name: 'Elena Rodriguez', org: 'Peak Power', image: '/Images/Girlmage1.png', status: 'pending' },
-  { id: 'ATH-55401', name: 'David Miller', org: 'Mountain Ride', image: '/Images/Girlmage3.png', status: 'pending' },
-  { id: 'ATH-44302', name: 'James Wilson', org: 'Velocity Sprint', image: '/Images/GirlImage11.png', status: 'pending' },
-  { id: 'ATH-33201', name: 'Linda Scott', org: 'Aqua Dynamics', image: '/Images/Girlmage4.png', status: 'pending' },
-  { id: 'ATH-22100', name: 'Robert Fox', org: 'Peak Power', image: '/Images/Girlmage5.png', status: 'pending' },
-  { id: 'ATH-11990', name: 'Emily Blunt', org: 'Mountain Ride', image: '/Images/GrilImage11.png', status: 'pending' },
-  { id: 'ATH-55667', name: 'Chris Evans', org: 'Velocity Sprint', image: '/Images/Girlmage7.png', status: 'pending' },
-];
+const initialRequests: any[] = [];
 
 export const ClubJoiningReq = () => {
   const [requests, setRequests] = useState(initialRequests);
@@ -27,7 +16,7 @@ export const ClubJoiningReq = () => {
     setRequests(prev => prev.filter(req => req.id !== id));
   };
 
-  const columns: Column<typeof initialRequests[0]>[] = [
+  const columns: Column<any>[] = [
     {
       key: 'name',
       label: 'Athlete',
