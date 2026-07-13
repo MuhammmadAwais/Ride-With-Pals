@@ -135,6 +135,7 @@ export const router = createBrowserRouter(
         {/* ── Athlete Interface (Userside) ── */}
         <Route path="/view/userside">
           <Route path="clubs" element={<Clubs />} />
+          <Route path="clubs/:id" element={<Clubs />} />
           <Route path="rides" element={<Ride />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="purchases" element={<MyPurchases />} />

@@ -1,19 +1,68 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Check, X } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-
-const initialRequests: any[] = [];
+import { ClubService } from '@/api/backendApi';
 
 export const ClubJoiningReq = () => {
-  const [requests, setRequests] = useState(initialRequests);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAccept = (id: string) => {
-    setRequests(prev => prev.map(req => req.id === id ? { ...req, status: 'accepted' } : req));
+  const fetchRequests = async () => {
+    let clubId = localStorage.getItem("selectedClubId");
+    if (!clubId) {
+      try {
+        const clubsRes = await ClubService.getJoinedClubs();
+        const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
+        if (clubs.length > 0) {
+          clubId = clubs[0].id.toString();
+          localStorage.setItem("selectedClubId", clubId);
+        }
+      } catch (e) {
+        console.error("Failed to fetch user's joined clubs for joining requests", e);
+      }
+    }
+    if (!clubId) return;
+
+    setIsLoading(true);
+    try {
+      const response = await ClubService.getClubJoinRequest({ clubId: Number(clubId) });
+      const items = response?.response?.data || response?.data || response || [];
+      const mapped = items.map((req: any) => ({
+        id: req.id?.toString() || Math.random().toString(),
+        name: req.user?.name || req.name || 'Unknown Athlete',
+        image: req.user?.profileImage || req.image || '/default-avatar.png',
+        org: req.org || req.club?.name || 'RWP Rider',
+        status: req.status?.toLowerCase() || 'pending'
+      }));
+      setRequests(mapped);
+    } catch (err) {
+      console.error("Failed to fetch club joining requests", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleReject = (id: string) => {
-    setRequests(prev => prev.filter(req => req.id !== id));
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const handleAccept = async (id: string) => {
+    try {
+      await ClubService.manageJoinGroupRequest({ requestId: Number(id), status: 'approved' });
+      setRequests(prev => prev.map(req => req.id === id ? { ...req, status: 'accepted' } : req));
+    } catch (err) {
+      console.error("Failed to accept request", err);
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      await ClubService.manageJoinGroupRequest({ requestId: Number(id), status: 'rejected' });
+      setRequests(prev => prev.filter(req => req.id !== id));
+    } catch (err) {
+      console.error("Failed to reject request", err);
+    }
   };
 
   const columns: Column<any>[] = [
@@ -100,7 +149,17 @@ export const ClubJoiningReq = () => {
 
       {/* Table */}
       <div className="relative z-10 border-t border-border">
-        <DataTable data={requests} columns={columns} />
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B]"></div>
+          </div>
+        ) : requests.length === 0 ? (
+          <div className="p-12 text-center text-text-muted">
+            No joining requests available.
+          </div>
+        ) : (
+          <DataTable data={requests} columns={columns} />
+        )}
       </div>
     </div>
   );

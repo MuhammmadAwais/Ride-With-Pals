@@ -1,32 +1,60 @@
-import { backendApi } from "@/api/backendApi";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { SubscriptionService as ApiSubscriptionService } from '@/api/backendApi';
+
+export const useSubscription = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSubscriptionPlans = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ApiSubscriptionService.subscriptionPlanList();
+      return response.response || response.data || [];
+    } catch (err: any) {
+      setError(err.message);
+      toast.error('Failed to fetch subscription plans');
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const checkout = async (planId: number) => {
+    setIsLoading(true);
+    try {
+      const response = await ApiSubscriptionService.subscribeToAnyPlan({ planId });
+      return response;
+    } catch (err: any) {
+      setError(err.message);
+      toast.error('Failed to initiate checkout');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { fetchSubscriptionPlans, checkout, isLoading, error };
+};
 
 export const SubscriptionService = {
   getSubscriptionPlans: async () => {
-    const response = await backendApi.get("/user/subscription/plans");
-    return response.data;
+    return await ApiSubscriptionService.subscriptionPlanList();
   },
-
   checkoutSubscription: async (planId: number) => {
-    const response = await backendApi.post("/user/subscription/subscribe", { planId });
-    return response.data;
+    return await ApiSubscriptionService.subscribeToAnyPlan({ planId });
   },
-
   getClubSubscriptionPlans: async () => {
-    const response = await backendApi.get("/user/club/subscription/plans");
-    return response.data;
+    return await ApiSubscriptionService.listClubSubscription();
   },
-
   checkoutClubSubscription: async (clubId: number, planId: number) => {
-    const response = await backendApi.post(`/user/club/subscription/subscribe?clubId=${clubId}`, {
+    return await ApiSubscriptionService.subscribeToClubPlan({
       planId,
       successUrl: `https://app.ridewithpals.com/club/${clubId}/success`,
       cancelUrl: `https://app.ridewithpals.com/club/${clubId}/cancel`,
-    });
-    return response.data;
+    }, { clubId });
   },
-
   createClubBillingPortalSession: async (clubId: number) => {
-    const response = await backendApi.post(`/user/club/subscription/customer-portal?clubId=${clubId}`);
-    return response.data;
+    return await ApiSubscriptionService.clubCustomerPortal(null, { clubId });
   }
 };

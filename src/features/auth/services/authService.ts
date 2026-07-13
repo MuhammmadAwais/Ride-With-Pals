@@ -1,261 +1,158 @@
-import { backendApi } from "@/api/backendApi";
-import type { AppUser, LoginSuccessPayload } from "@/features/auth/types/authTypes";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
+import { AuthService as ApiAuthService, UserService as ApiUserService } from '@/api/backendApi';
+import { setUser } from '../slices/authSlice';
+import type { AppUser, LoginSuccessPayload, LoginFormValues } from '../types/authTypes';
 
-interface AuthResponse {
-  statusCode: number;
-  message?: string;
-  response: AppUser;
-}
+export const useAuth = () => {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const login = async (credentials: LoginFormValues): Promise<LoginSuccessPayload | void> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await ApiAuthService.login(credentials);
+      const user: AppUser = {
+        ...response.response,
+        role: response.response?.isAthleteProfile ? 'athlete' : 'organizer',
+      };
+      dispatch(setUser(user));
+      toast.success('Logged in successfully!');
+      return { user };
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Login failed.';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signup = async (credentials: LoginFormValues): Promise<LoginSuccessPayload | void> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await ApiAuthService.signup(credentials);
+      const user: AppUser = {
+        ...response.response,
+        role: 'athlete',
+      };
+      dispatch(setUser(user));
+      toast.success('Account created successfully!');
+      return { user };
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Signup failed.';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const firebaseLogin = async (idToken: string): Promise<LoginSuccessPayload | void> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await ApiAuthService.firebaseLogin({ idToken });
+      const user: AppUser = {
+        ...response.response,
+        role: response.response?.isAthleteProfile ? 'athlete' : 'organizer',
+      };
+      dispatch(setUser(user));
+      toast.success('Logged in via Firebase successfully!');
+      return { user };
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Firebase Login failed.';
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const forgotPassword = async (email: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await ApiAuthService.forgotPassword({ email });
+      toast.success(response.message || 'OTP sent successfully.');
+      return { token: response.response?.token, message: response.message };
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Failed to send OTP.';
+      setError(msg);
+      toast.error(msg);
+      throw new Error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const validateOtp = async (otp: number, token: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Assuming validateOTP is defined in ApiAuthService
+      const response = await ApiAuthService.validateOTP({ OTP: otp }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success(response.message || 'OTP validated successfully.');
+      return { token: response.response?.token, message: response.message };
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Invalid OTP.';
+      setError(msg);
+      toast.error(msg);
+      throw new Error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const changePassword = async (password: string, token: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await ApiAuthService.changePassword({ password }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success(response.message || 'Password successfully updated.');
+      return response.message;
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Failed to change password.';
+      setError(msg);
+      toast.error(msg);
+      throw new Error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    login,
+    signup,
+    firebaseLogin,
+    forgotPassword,
+    validateOtp,
+    changePassword,
+    isLoading,
+    error,
+  };
+};
+
+// We also keep the old AuthService for backward compatibility in Redux thunks if they are still used
 export const AuthService = {
-  /**
-   * Register a new user with email and password.
-   */
   signup: async (email: string, password: string): Promise<LoginSuccessPayload> => {
-    try {
-      const { data } = await backendApi.post<AuthResponse>("/user/signup", {
-        email,
-        password,
-      });
-      
-      const user: AppUser = {
-        ...data.response,
-        // Assume default role is athlete unless specified otherwise
-        role: "athlete",
-      };
-
-      return { user };
-    } catch (error: any) {
-      console.error("❌ [AuthService] signup failed:", error);
-      throw new Error(error.response?.data?.message || "Registration failed. Please try again.");
-    }
+    const response = await ApiAuthService.signup({ email, password });
+    return { user: { ...response.response, role: 'athlete' } };
   },
-
-  /**
-   * Log in an existing user.
-   */
   login: async (email: string, password: string): Promise<LoginSuccessPayload> => {
-    try {
-      const { data } = await backendApi.post<AuthResponse>("/user/login", {
-        email,
-        password,
-      });
-
-      const user: AppUser = {
-        ...data.response,
-        // Compute role dynamically based on athlete profile if available
-        role: data.response.isAthleteProfile ? "athlete" : "organizer",
-      };
-
-      return { user };
-    } catch (error: any) {
-      console.error("❌ [AuthService] login failed:", error);
-      throw new Error(error.response?.data?.message || "Invalid email or password.");
-    }
+    const response = await ApiAuthService.login({ email, password });
+    return { user: { ...response.response, role: response.response?.isAthleteProfile ? 'athlete' : 'organizer' } };
   },
-
-  /**
-   * Send an OTP to the given email for password recovery.
-   * Returns a temporary token needed for OTP validation.
-   */
-  sendForgotPasswordOtp: async (email: string): Promise<{ token: string; message: string }> => {
-    try {
-      const { data } = await backendApi.get<AuthResponse>(`/user/forgot/password?email=${encodeURIComponent(email)}`);
-      return { token: data.response.token, message: data.message || "OTP sent successfully." };
-    } catch (error: any) {
-      console.error("❌ [AuthService] sendForgotPasswordOtp failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to send OTP.");
-    }
-  },
-
-  /**
-   * Resend the OTP using the temporary token.
-   */
-  resendOtp: async (token: string): Promise<string> => {
-    try {
-      const { data } = await backendApi.put<any>(
-        "/user/resend/otp",
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return data.message || "OTP resent successfully.";
-    } catch (error: any) {
-      console.error("❌ [AuthService] resendOtp failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to resend OTP.");
-    }
-  },
-
-  /**
-   * Validate the OTP using the temporary token.
-   * Returns a new token that allows password change.
-   */
-  validateOtp: async (otp: number, token: string): Promise<{ token: string; message: string }> => {
-    try {
-      const { data } = await backendApi.put<AuthResponse>(
-        "/user/validate/otp",
-        { OTP: otp },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return { token: data.response.token, message: data.message || "OTP validated successfully." };
-    } catch (error: any) {
-      console.error("❌ [AuthService] validateOtp failed:", error);
-      throw new Error(error.response?.data?.message || "Invalid OTP.");
-    }
-  },
-
-  /**
-   * Change password using the token received from validateOtp.
-   */
-  changePassword: async (newPassword: string, token: string): Promise<string> => {
-    try {
-      const { data } = await backendApi.put<any>(
-        "/user/change/password",
-        { password: newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return data.message || "Password successfully updated.";
-    } catch (error: any) {
-      console.error("❌ [AuthService] changePassword failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to change password.");
-    }
-  },
-
-  /**
-   * Update the logged-in user's password (requires their current active auth token).
-   */
-  updatePassword: async (currentPassword: string, newPassword: string): Promise<string> => {
-    try {
-      const { data } = await backendApi.put<any>("/user/update/password", {
-        password: currentPassword,
-        newPassword: newPassword,
-      });
-      return data.message || "Password updated successfully.";
-    } catch (error: any) {
-      console.error("❌ [AuthService] updatePassword failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to update password.");
-    }
-  },
-
-  /**
-   * Upsert athlete profile details.
-   */
-  upsertAthleteProfile: async (profileData: any): Promise<AppUser> => {
-    try {
-      const { data } = await backendApi.put<AuthResponse>("/user/update/athlete/profile", profileData);
-      const user: AppUser = {
-        ...data.response,
-        role: "athlete",
-      };
-      return user;
-    } catch (error: any) {
-      console.error("❌ [AuthService] upsertAthleteProfile failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to update profile.");
-    }
-  },
-
-  /**
-   * Fetch current user info.
-   */
-  userInfo: async (): Promise<AppUser> => {
-    try {
-      const { data } = await backendApi.get<AuthResponse>("/user/info");
-      const user: AppUser = {
-        ...data.response,
-        role: data.response.isAthleteProfile ? "athlete" : "organizer",
-      };
-      return user;
-    } catch (error: any) {
-      console.error("❌ [AuthService] userInfo failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to fetch user info.");
-    }
-  },
-
-  /**
-   * Upload a file (e.g., profile image).
-   */
-  uploadFile: async (file: File): Promise<string> => {
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-      const { data } = await backendApi.post<any>("/user/upload/file", formData);
-      return data.response; // assuming the response contains the file URL
-    } catch (error: any) {
-      console.error("❌ [AuthService] uploadFile failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to upload file.");
-    }
-  },
-
-  /**
-   * Firebase login using ID token.
-   */
   firebaseLogin: async (idToken: string): Promise<LoginSuccessPayload> => {
-    try {
-      const { data } = await backendApi.post<AuthResponse>("/user/login/firebase", { idToken });
-      const user: AppUser = {
-        ...data.response,
-        role: data.response.isAthleteProfile ? "athlete" : "organizer",
-      };
-      return { user };
-    } catch (error: any) {
-      console.error("❌ [AuthService] firebaseLogin failed:", error);
-      throw new Error(error.response?.data?.message || "Firebase login failed.");
-    }
+    const response = await ApiAuthService.firebaseLogin({ idToken });
+    return { user: { ...response.response, role: response.response?.isAthleteProfile ? 'athlete' : 'organizer' } };
   },
-
-  /**
-   * Update FCM Token for push notifications.
-   */
-  updateFcmToken: async (fcmToken: string): Promise<string> => {
-    try {
-      const { data } = await backendApi.put<any>("/user/fcm-token", { fcmToken });
-      return data.message || "FCM Token updated successfully.";
-    } catch (error: any) {
-      console.error("❌ [AuthService] updateFcmToken failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to update FCM Token.");
-    }
-  },
-
-  /**
-   * Update scale unit settings (e.g., metric/imperial).
-   */
-  updateScaleSettings: async (scale: string): Promise<string> => {
-    try {
-      const { data } = await backendApi.put<any>("/user/unit/settings", { scale: scale.toLowerCase() });
-      return data.message || "Scale unit settings updated successfully.";
-    } catch (error: any) {
-      console.error("❌ [AuthService] updateScaleSettings failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to update scale unit settings.");
-    }
-  },
-
-  /**
-   * Check if an email exists in the system.
-   */
-  checkEmailExistence: async (email: string): Promise<boolean> => {
-    try {
-      const { data } = await backendApi.get<any>(`/user/check-email?email=${encodeURIComponent(email)}`);
-      // Assuming it returns a truthy value or specific flag
-      return !!data.response;
-    } catch (error: any) {
-      console.error("❌ [AuthService] checkEmailExistence failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to check email existence.");
-    }
-  },
-
-  /**
-   * Get another user's info by their user ID.
-   */
-  getOtherUserInfo: async (userId: number): Promise<AppUser> => {
-    try {
-      const { data } = await backendApi.get<AuthResponse>(`/user/details?userId=${userId}`);
-      const user: AppUser = {
-        ...data.response,
-        role: data.response.isAthleteProfile ? "athlete" : "organizer",
-      };
-      return user;
-    } catch (error: any) {
-      console.error("❌ [AuthService] getOtherUserInfo failed:", error);
-      throw new Error(error.response?.data?.message || "Failed to fetch user details.");
-    }
+  userInfo: async (): Promise<AppUser> => {
+    const response = await ApiUserService.userInfo();
+    return { ...response.response, role: response.response?.isAthleteProfile ? 'athlete' : 'organizer' };
   }
 };

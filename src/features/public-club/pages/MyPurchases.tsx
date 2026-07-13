@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, ShoppingBag, CheckCircle2, Loader2 } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { ClubService } from '@/features/club/services/clubService';
+import { ShopService } from '@/api/backendApi';
 
 const MyPurchases = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,7 +14,7 @@ const MyPurchases = () => {
       try {
         setLoading(true);
         // Pass empty array for statusId to get all, or however the backend handles it
-        const res = await ClubService.getMyPurchases([], searchQuery);
+        const res = await ShopService.getMyPurchasesList([], searchQuery);
         
         // Map the API response if it differs from the format, assuming we get rows or array
         const items = res?.rows || res?.data || res || [];

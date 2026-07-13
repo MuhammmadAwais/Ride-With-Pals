@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { ClubService } from '@/features/club/services/clubService';
+import { ShopService } from '@/api/backendApi';
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const OrderDetail = () => {
     if (!order?.originalOrder?.id) return;
     setLoading(true);
     try {
-      await ClubService.updateOrderStatus(order.originalOrder.id, 4); // 4 = Delivered
+      await ShopService.forClubOwnerUpdateOrderStatus({ orderId: order.originalOrder.id, status: 4 }); // 4 = Delivered
       setIsDelivered(true);
     } catch (err) {
       console.error(err);

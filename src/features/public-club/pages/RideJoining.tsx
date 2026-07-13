@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ClubService } from "@/features/club/services/clubService";
+import { RideService } from "@/api/backendApi";
 import { 
   ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert
 } from "lucide-react";
@@ -19,19 +19,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl,
 });
 
-const FULL_ROSTER_DB = [
-  { initials: "AM", name: "Arlene McCoy", role: "Lead Pacer", joinedDate: "May 10, 2026", verified: true },
-  { initials: "CF", name: "Cody Fisher", role: "Host + Senior Member", joinedDate: "May 02, 2026", verified: true },
-  { initials: "RF", name: "Floyd Miles", role: "Participant", joinedDate: "May 11, 2026", verified: false },
-  { initials: "EH", name: "Esther Howard", role: "Participant", joinedDate: "May 12, 2026", verified: true },
-  { initials: "JW", name: "Jane Wilson", role: "Participant", joinedDate: "May 12, 2026", verified: false },
-  { initials: "GH", name: "Guy Hawkins", role: "Participant", joinedDate: "May 13, 2026", verified: true },
-  { initials: "BM", name: "Bessie Cooper", role: "Participant", joinedDate: "May 14, 2026", verified: false },
-  { initials: "JS", name: "Jenny Wilson", role: "Participant", joinedDate: "May 14, 2026", verified: true },
-  { initials: "DL", name: "Devon Lane", role: "Participant", joinedDate: "May 15, 2026", verified: false },
-  { initials: "KB", name: "Kristin Watson", role: "Participant", joinedDate: "May 15, 2026", verified: true },
-];
-
 const RideJoining = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -40,7 +27,7 @@ const RideJoining = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  const mapCenter: [number, number] = [45.9184, 6.5862];
+  const [mapCenter, setMapCenter] = useState<[number, number]>([45.9184, 6.5862]);
 
   const [rideDetails, setRideDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -50,9 +37,10 @@ const RideJoining = () => {
       try {
         setLoading(true);
         if (id) {
-          const res = await ClubService.getRideDetailsById(parseInt(id));
+          const res = await RideService.getRideInfoByID({ rideId: parseInt(id) });
           const data = res?.response?.data || res?.data || res || {};
           
+          const meetingPointStr = data.meetingPoint || data.location || "TBD";
           setRideDetails({
             id: data.id || data.rideId || id,
             title: data.title || data.name || "Ride Event",
@@ -67,8 +55,21 @@ const RideJoining = () => {
             description: data.description || "No description provided.",
             recommendedBike: data.recommendedBike || "Any",
             leaders: data.leaders || [{ name: data.organizer?.name || "Organizer", role: "Host" }],
-            participants: data.participants || []
+            participants: data.participants || [],
+            meetingPoint: meetingPointStr
           });
+
+          if (meetingPointStr && meetingPointStr !== "TBD") {
+            try {
+              const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(meetingPointStr)}`);
+              const geoData = await geoRes.json();
+              if (geoData && geoData.length > 0) {
+                setMapCenter([parseFloat(geoData[0].lat), parseFloat(geoData[0].lon)]);
+              }
+            } catch(e) {
+               console.error("Geocoding failed", e);
+            }
+          }
         }
       } catch (error) {
         console.error("Failed to fetch ride details:", error);
@@ -82,7 +83,7 @@ const RideJoining = () => {
   const handleJoinClick = async () => {
     try {
       if (id) {
-        await ClubService.joinPublicRide(parseInt(id));
+        await RideService.joinRide({ rideId: parseInt(id) });
         navigate(`/ride/confirmation/${id}`);
       }
     } catch (error) {
@@ -100,7 +101,16 @@ const RideJoining = () => {
     setTimeout(() => setShowToast(false), 3000);
   };
 
-  const filteredRoster = FULL_ROSTER_DB.filter(user => 
+  const activeParticipants = rideDetails?.participants?.map((p: any) => ({
+    name: p.firstName ? `${p.firstName} ${p.lastName || ''}`.trim() : p.name || p.username || 'Anonymous Rider',
+    initials: ((p.firstName?.[0] || '') + (p.lastName?.[0] || '')).toUpperCase() || 'R',
+    role: p.role || 'Participant',
+    joinedDate: p.joinedAt ? new Date(p.joinedAt).toLocaleDateString() : 'N/A',
+    verified: p.isVerified || false,
+    profilePhoto: p.profileImage || p.avatar || null
+  })) || [];
+
+  const filteredRoster = activeParticipants.filter((user: any) => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -159,7 +169,7 @@ const RideJoining = () => {
                 <Marker position={mapCenter}>
                   <Popup>
                     <div className="text-black text-xs font-bold p-1">
-                      ⛰️ {rideDetails.title} <br /> Starting Point
+                      ⛰️ {rideDetails.title} <br /> {rideDetails.meetingPoint}
                     </div>
                   </Popup>
                 </Marker>
@@ -295,7 +305,7 @@ const RideJoining = () => {
             <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-border">
               <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Ride Leaders</h4>
               <div className="space-y-3">
-                {rideDetails.leaders.map((leader, idx) => (
+                {rideDetails.leaders.map((leader: any, idx: number) => (
                   <div key={idx} className="flex items-center justify-between bg-hover p-4 rounded-2xl border border-border transition-all duration-300 hover:border-border">
                     <div className="flex items-center gap-3.5">
                       <div className="w-10 h-10 rounded-2xl bg-main-bg border border-border flex items-center justify-center font-extrabold text-[11px] text-text-main shadow-md uppercase tracking-wider">
@@ -324,7 +334,7 @@ const RideJoining = () => {
               </div>
               
               <div className="flex flex-wrap gap-3 py-1 items-center">
-                {rideDetails.participants.slice(0, 8).map((initials, idx) => (
+                {rideDetails.participants.slice(0, 8).map((initials: any, idx: number) => (
                   <div 
                     key={idx} 
                     className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main shadow-md hover:scale-110 hover:border-[#EB712B]/40 transition-all duration-300 cursor-pointer ring-1 ring-black/20"

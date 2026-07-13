@@ -2,6 +2,7 @@ import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { ClubService } from '@/features/club/services/clubService';
+import { ShopService } from '@/api/backendApi';
 
 function AddDiscount() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function AddDiscount() {
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
+    if (loading) return;
+    (document.activeElement as HTMLElement)?.blur();
     let newErrors: Record<string, string> = {};
 
     if (!formData.title) newErrors.title = "Discount title is required";
@@ -35,7 +38,7 @@ function AddDiscount() {
 
     setLoading(true);
     try {
-      await ClubService.addClubDiscount({
+      await ShopService.addDiscount({
         clubId: Number(clubIdStr),
         title: formData.title,
         discountCode: formData.code,
@@ -95,9 +98,10 @@ function AddDiscount() {
                   <label className="text-xs uppercase font-bold text-text-muted tracking-widest">VALID TILL</label>
                   <input 
                     type="date"
+                    style={{ colorScheme: 'dark' }}
                     value={formData.validTill}
                     onChange={(e) => setFormData({...formData, validTill: e.target.value})}
-                    className="w-full h-14 bg-main-bg border border-border rounded-2xl px-4 text-md focus:border-[#EB712B] outline-none text-text-main placeholder-text-muted" 
+                    className="relative w-full h-14 bg-main-bg border border-border rounded-2xl px-4 text-md focus:border-[#EB712B] outline-none text-text-main placeholder-text-muted" 
                   />
                   {errors.validTill && <p className="text-[#EB712B] text-xs font-semibold">{errors.validTill}</p>}
                 </div>
@@ -132,9 +136,11 @@ function AddDiscount() {
 
           <button 
             onClick={handleSave}
-            className="w-full h-16 mt-8 rounded-2xl bg-[#EB712B]  text-white font-black text-sm uppercase  transition-all "
+            onMouseDown={handleSave}
+            disabled={loading}
+            className={`w-full h-16 mt-8 rounded-2xl ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#EB712B] hover:bg-[#ff8243]'} text-white font-black text-sm uppercase transition-all`}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </div>

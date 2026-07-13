@@ -9,7 +9,8 @@ import {
   Search,
   Filter,
   X,
-  Compass
+  Compass,
+  CheckCircle2
 } from "lucide-react";
 
 import { ClubService } from "@/features/club/services/clubService";
@@ -25,6 +26,9 @@ interface RideItem {
   distance: string;
   participants: string;
   organizer: string;
+  organizerAvatar: string | null;
+  isRideJoined: boolean;
+  image: string;
 }
 
 interface RideProps {
@@ -45,27 +49,67 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
     const fetchRides = async () => {
       try {
         setLoading(true);
-        let res;
-        if (clubId) {
-          res = await ClubService.getClubRides(parseInt(clubId.toString()), 'active', '', 50, 0);
-        } else {
-          res = await ClubService.getPublicRides('', 50, 0);
-        }
+        const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
+        let res = await ClubService.getPublicRides('', 50, 0, activeClubId);
         
         const items = res?.response?.data || res?.data || res || [];
         
-        const mappedRides = items.map((item: any) => ({
-          id: item.id || item.rideId,
-          title: item.title || item.name || "Ride Event",
-          clubName: item.club?.name || item.clubName || "Independent",
-          date: item.startDate || item.date || "TBD",
-          location: item.location || "TBD",
-          rideType: item.type || item.rideType || "Road",
-          speed: item.speed || item.averageSpeed || "N/A",
-          distance: item.distance || "N/A",
-          participants: item.participantsCount?.toString() || "0",
-          organizer: item.organizer?.name || item.organizerName || "Organizer"
-        }));
+        const mappedRides = items.map((item: any) => {
+          // Format distance
+          let displayDistance = "N/A";
+          if (item.distance !== undefined && item.distance !== null) {
+            displayDistance = `${item.distance} ${item.distanceUnit || "km"}`;
+          }
+          
+          // Format speed / pace
+          let displaySpeed = "N/A";
+          if (item.pace !== undefined && item.pace !== null) {
+            displaySpeed = `${item.pace} min/km`;
+          } else if (item.speed || item.averageSpeed) {
+            displaySpeed = item.speed || item.averageSpeed;
+          }
+
+          // Format organizer avatar URL properly
+          let organizerAvatar = null;
+          if (item.user?.profileImage) {
+            const avatarPath = item.user.profileImage;
+            organizerAvatar = (avatarPath.startsWith("http://") || avatarPath.startsWith("https://") || avatarPath.startsWith("/"))
+              ? avatarPath
+              : `https://api.ridewithpals.com/uploads/${avatarPath}`;
+          } else if (item.organizer?.avatar) {
+            const avatarPath = item.organizer.avatar;
+            organizerAvatar = (avatarPath.startsWith("http://") || avatarPath.startsWith("https://") || avatarPath.startsWith("/"))
+              ? avatarPath
+              : `https://api.ridewithpals.com/uploads/${avatarPath}`;
+          }
+
+          const organizerName = item.user?.fullName || item.organizer?.name || item.organizerName || "Organizer";
+
+          // Format ride banner image (club coverImage or logo, or default cycling image)
+          let bannerImage = "/Images/CycleImage2.png";
+          const logoPath = item.club?.logo || item.club?.coverImage || item.logo || item.coverImage;
+          if (logoPath && logoPath !== "null" && logoPath.trim() !== "") {
+            bannerImage = (logoPath.startsWith("http://") || logoPath.startsWith("https://") || logoPath.startsWith("/"))
+              ? logoPath
+              : `https://api.ridewithpals.com/uploads/${logoPath}`;
+          }
+
+          return {
+            id: item.id || item.rideId,
+            title: item.ridename || item.title || item.name || "Ride Event",
+            clubName: item.club?.clubName || item.clubName || "Independent",
+            date: item.date || item.startDate || "TBD",
+            location: item.meetingPoint || item.location || "TBD",
+            rideType: item.sportSubTypeName || item.activityTypeName || item.type || item.rideType || "Road",
+            speed: displaySpeed,
+            distance: displayDistance,
+            participants: item.joinedParticipantsCount?.toString() || (Array.isArray(item.joinedParticipants) ? item.joinedParticipants.length.toString() : "0"),
+            organizer: organizerName,
+            organizerAvatar: organizerAvatar,
+            isRideJoined: item.isRideJoined !== undefined ? item.isRideJoined : false,
+            image: bannerImage
+          };
+        });
         
         setRides(mappedRides);
       } catch (error) {
@@ -91,7 +135,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
   });
 
   const handleJoinRide = (id: number | string) => {
-    navigate(`/dashboard/ride/${id}`);
+    navigate(`/view/userside/dashboard/ride/${id}`);
   };
 
   return (
@@ -161,78 +205,121 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
             {filteredRides.map((ride) => (
               <div 
                 key={ride.id} 
-                className="bg-main-bg border border-border rounded-2xl p-6 flex flex-col justify-between hover:border-[#EB712B]/40 transition-all group relative overflow-hidden shadow-2xl"
+                className="bg-main-bg border border-border rounded-2xl flex flex-col justify-between hover:border-[#EB712B]/40 transition-all group relative overflow-hidden shadow-2xl"
               >
                 {/* Background accent glow on hover */}
-                <div className="absolute top-0 right-0 w-40 h-40 bg-[#EB712B]/5 rounded-full blur-3xl group-hover:bg-[#EB712B]/10 transition-all duration-500 pointer-events-none" />
+                <div className="absolute top-48 right-0 w-40 h-40 bg-[#EB712B]/5 rounded-full blur-3xl group-hover:bg-[#EB712B]/10 transition-all duration-500 pointer-events-none" />
 
-                {/* Card Header */}
-                <div className="space-y-4 z-10">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors">
-                        {ride.title}
-                      </h3>
-                      <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">
-                        Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1.5 bg-surface border border-border px-2.5 py-1 rounded-lg shrink-0">
-                      <Flame size={12} className="text-[#EB712B]" />
-                      <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
-                    </div>
-                  </div>
-
-                  {/* Info Rows */}
-                  <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
-                    <div className="flex items-center gap-3 text-xs text-text-muted">
-                      <Calendar size={15} className="text-text-muted shrink-0" />
-                      <span className="font-medium truncate text-xs text-text-main">{ride.date}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-text-muted">
-                      <MapPin size={15} className="text-text-muted shrink-0" />
-                      <span className="font-medium truncate text-[11px] leading-relaxed text-text-main">{ride.location}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-text-muted">
-                      <Bike size={15} className="text-text-muted shrink-0" />
-                      <span className="font-medium text-xs text-text-main">
-                        Ride Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
-                      </span>
-                    </div>
+                {/* Banner Image */}
+                <div className="relative h-44 w-full overflow-hidden border-b border-border shrink-0">
+                  <img 
+                    src={ride.image } 
+                    alt={ride.title} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent opacity-65" />
+                  <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2.5 py-1 rounded-lg shrink-0">
+                    <Flame size={12} className="text-[#EB712B]" />
+                    <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
                   </div>
                 </div>
 
-                {/* Metrics Grid */}
-                <div className="grid grid-cols-3 gap-2 py-6 z-10">
-                  <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
-                    <span className="text-xs font-extrabold text-text-main tracking-tight">{ride.speed}</span>
-                    <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Speed</span>
-                  </div>
-                  <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
-                    <span className="text-xs font-extrabold text-text-main tracking-tight">{ride.distance}</span>
-                    <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Distance</span>
-                  </div>
-                  <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
-                    <span className="text-xs font-extrabold text-text-main tracking-tight">{ride.participants}</span>
-                    <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Participants</span>
-                  </div>
-                </div>
-
-                {/* Action/Footer Panel */}
-                <div className="flex items-center justify-between gap-2 border-t border-border pt-4 z-10">
-                  <button 
-                    onClick={() => handleJoinRide(ride.id)}
-                    className="flex-1 bg-[#EB712B] hover:bg-[#d66525] py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(235,113,43,0.2)] cursor-pointer text-white"
-                  >
-                    Click to Join Ride <ArrowRight size={14} />
-                  </button>
-                  <div className="flex items-center gap-2 bg-surface pl-1 pr-3 py-1 rounded-xl border border-border shrink-0 max-w-[120px]">
-                    <div className="w-7 h-7 rounded-full bg-main-bg border border-border flex items-center justify-center font-bold text-[9px] text-text-muted shrink-0 uppercase">
-                      {ride.organizer.split(" ").map(n => n[0]).join("")}
+                {/* Card content with padding */}
+                <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
+                  {/* Card Header */}
+                  <div className="space-y-4 z-10">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1">
+                          {ride.title}
+                        </h3>
+                        <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">
+                          Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex flex-col overflow-hidden">
-                      <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
-                      <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
+
+                    {/* Info Rows */}
+                    <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
+                      <div className="flex items-center gap-3 text-xs text-text-muted">
+                        <Calendar size={15} className="text-text-muted shrink-0" />
+                        <span className="font-medium truncate text-xs text-text-main">{ride.date}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-text-muted">
+                        <MapPin size={15} className="text-text-muted shrink-0" />
+                        <span className="font-medium truncate text-[11px] leading-relaxed text-text-main">{ride.location}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-text-muted">
+                        <Bike size={15} className="text-text-muted shrink-0" />
+                        <span className="font-medium text-xs text-text-main">
+                          Ride Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Metrics Grid */}
+                  <div className="grid grid-cols-3 gap-2 py-2 z-10">
+                    <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
+                      <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.speed}</span>
+                      <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Speed</span>
+                    </div>
+                    <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
+                      <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.distance}</span>
+                      <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Distance</span>
+                    </div>
+                    <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
+                      <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.participants}</span>
+                      <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Participants</span>
+                    </div>
+                  </div>
+
+                  {/* Action/Footer Panel */}
+                  <div className="flex items-center justify-between gap-2 border-t border-border pt-4 z-10">
+                    <button 
+                      onClick={() => handleJoinRide(ride.id)}
+                      className={`flex-1 py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer text-white ${
+                        ride.isRideJoined 
+                          ? "bg-emerald-600 hover:bg-emerald-700 shadow-[0_4px_15px_rgba(16,185,129,0.2)]" 
+                          : "bg-[#EB712B] hover:bg-[#d66525] shadow-[0_4px_15px_rgba(235,113,43,0.2)]"
+                      }`}
+                    >
+                      {ride.isRideJoined ? (
+                        <>
+                          Joined <CheckCircle2 size={14} />
+                        </>
+                      ) : (
+                        <>
+                          Click to Join Ride <ArrowRight size={14} />
+                        </>
+                      )}
+                    </button>
+                    <div className="flex items-center gap-2 bg-surface pl-1 pr-3 py-1 rounded-xl border border-border shrink-0 max-w-[120px]">
+                      {ride.organizerAvatar ? (
+                        <img 
+                          src={ride.organizerAvatar} 
+                          alt={ride.organizer} 
+                          className="w-7 h-7 rounded-full object-cover shrink-0 border border-border"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            const fallbackNode = (e.target as HTMLImageElement).nextSibling as HTMLElement;
+                            if (fallbackNode) fallbackNode.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div 
+                        className="w-7 h-7 rounded-full bg-main-bg border border-border flex items-center justify-center font-bold text-[9px] text-text-muted shrink-0 uppercase"
+                        style={{ display: ride.organizerAvatar ? 'none' : 'flex' }}
+                      >
+                        {(ride.organizer || "Organizer").split(" ").map((n: string) => n[0] || "").join("").substring(0, 2)}
+                      </div>
+                      <div className="flex flex-col overflow-hidden">
+                        <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
+                        <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

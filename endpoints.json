@@ -1,0 +1,532 @@
+[
+  {
+    "name": "Signup",
+    "method": "POST",
+    "url": "http://85.31.238.214:8084/api/user/signup"
+  },
+  {
+    "name": "Forgot Password",
+    "method": "GET",
+    "url": "{{local}}user/forgot/password?email=tech54qi@gmail.com"
+  },
+  {
+    "name": "Resend OTP",
+    "method": "PUT",
+    "url": "{{local}}user/resend/otp"
+  },
+  {
+    "name": "Validate OTP",
+    "method": "PUT",
+    "url": "{{local}}user/validate/otp"
+  },
+  {
+    "name": "Change Password",
+    "method": "PUT",
+    "url": "{{local}}user/change/password"
+  },
+  {
+    "name": "Login",
+    "method": "POST",
+    "url": "{{local}}user/login"
+  },
+  {
+    "name": "Update Password",
+    "method": "PUT",
+    "url": "{{local}}user/update/password"
+  },
+  {
+    "name": "Upsert Athlete Profile",
+    "method": "PUT",
+    "url": "{{LIVE}}user/update/athlete/profile"
+  },
+  {
+    "name": "User Info",
+    "method": "GET",
+    "url": "{{local}}user/info"
+  },
+  {
+    "name": "Upload File",
+    "method": "POST",
+    "url": "https://api.ridewithpals.com/api/user/upload/file"
+  },
+  {
+    "name": "Firebase login",
+    "method": "POST",
+    "url": "{{LIVE}}user/login/firebase"
+  },
+  {
+    "name": "Update Fcm Token",
+    "method": "PUT",
+    "url": "{{local}}user/fcm-token"
+  },
+  {
+    "name": "Update Scale Unit Settings",
+    "method": "PUT",
+    "url": "{{local}}user/unit/settings"
+  },
+  {
+    "name": "Check Email Existence",
+    "method": "GET",
+    "url": "{{local}}user/check-email?email=tech54qi@gmail.com"
+  },
+  {
+    "name": "Get Other User Info",
+    "method": "GET",
+    "url": "{{local}}user/details?userId=2"
+  },
+  {
+    "name": "Get Club Rides",
+    "method": "GET",
+    "url": "{{local}}user/club/rides?clubId=2&status=completed"
+  },
+  {
+    "name": "Get Activities Data",
+    "method": "GET",
+    "url": "{{local}}user/activity/rides/public"
+  },
+  {
+    "name": "Get Calendar tab data",
+    "method": "GET",
+    "url": "{{local}}user/activity/rides/by-date?date=2025-02-15"
+  },
+  {
+    "name": "Connect Strava Account",
+    "method": "GET",
+    "url": "{{local}}user/strava/connect"
+  },
+  {
+    "name": "Check Strava Status",
+    "method": "GET",
+    "url": "{{local}}user/strava/status"
+  },
+  {
+    "name": "Disconnect strava account",
+    "method": "DELETE",
+    "url": "{{LIVE}}user/strava/disconnect"
+  },
+  {
+    "name": "Get Strava leaderboard Data",
+    "method": "GET",
+    "url": "{{local}}user/club/leaderboard/km?clubId=2&period=year"
+  },
+  {
+    "name": "Get Club Leaderboard App Rides",
+    "method": "GET",
+    "url": "{{local}}user/club/leaderboard/rides?clubId=2"
+  },
+  {
+    "name": "Get Club Terms",
+    "method": "GET",
+    "url": "{{local}}user/club/terms?clubId=2"
+  },
+  {
+    "name": "Add Club Terms",
+    "method": "POST",
+    "url": "{{local}}user/club/terms"
+  },
+  {
+    "name": "Update Club Terms",
+    "method": "PUT",
+    "url": "{{local}}user/club/terms"
+  },
+  {
+    "name": "Create Club Profile",
+    "method": "POST",
+    "url": "{{local}}user/club/profile"
+  },
+  {
+    "name": "Add Rides",
+    "method": "POST",
+    "url": "{{local}}user/ride"
+  },
+  {
+    "name": "Get Own Rides",
+    "method": "GET",
+    "url": "{{local}}user/rides"
+  },
+  {
+    "name": "Get Ride Info By ID",
+    "method": "GET",
+    "url": "{{local}}user/ride?rideId=1"
+  },
+  {
+    "name": "Update Ride Info",
+    "method": "PUT",
+    "url": "{{local}}user/ride"
+  },
+  {
+    "name": "Clubs",
+    "method": "GET",
+    "url": "{{local}}user/clubs/all?owned=true"
+  },
+  {
+    "name": "Join Club",
+    "method": "POST",
+    "url": "{{LIVE}}user/club/join"
+  },
+  {
+    "name": "Get Joined Clubs",
+    "method": "GET",
+    "url": "{{local}}user/clubs"
+  },
+  {
+    "name": "Leave Club",
+    "method": "PUT",
+    "url": "{{local}}user/club/leave"
+  },
+  {
+    "name": "Join Ride",
+    "method": "POST",
+    "url": "{{local}}user/ride/join"
+  },
+  {
+    "name": "Get Club Members List",
+    "method": "GET",
+    "url": "{{LIVE}}user/club/members?clubId=1"
+  },
+  {
+    "name": "Get Club Join Request",
+    "method": "GET",
+    "url": "{{local}}user/club/join-requests?clubId=2"
+  },
+  {
+    "name": "Manage Join Group Request",
+    "method": "POST",
+    "url": "{{local}}user/club/join-request/respond"
+  },
+  {
+    "name": "Get Club Dashboard Stats",
+    "method": "GET",
+    "url": "{{local}}user/club/dashboard/stats?clubId=1"
+  },
+  {
+    "name": "Get Club Info By ID",
+    "method": "GET",
+    "url": "{{LIVE}}user/club?clubId=2"
+  },
+  {
+    "name": "Update Club Info By id",
+    "method": "PUT",
+    "url": "{{LIVE}}user/club"
+  },
+  {
+    "name": "Remove Club Member",
+    "method": "DELETE",
+    "url": "{{local}}user/club/member"
+  },
+  {
+    "name": "Add comment",
+    "method": "POST",
+    "url": "{{local}}user/club/news/comment"
+  },
+  {
+    "name": "Get All News Comments",
+    "method": "GET",
+    "url": "{{local}}user/club/news/comment/all?newsId=3&limit=10&offset=0"
+  },
+  {
+    "name": "Update News comment",
+    "method": "PUT",
+    "url": "{{local}}user/club/news/comment"
+  },
+  {
+    "name": "Del comment",
+    "method": "DELETE",
+    "url": "{{local}}user/club/news/comment"
+  },
+  {
+    "name": "Add News",
+    "method": "POST",
+    "url": "{{local}}user/club/news"
+  },
+  {
+    "name": "Get News By Id",
+    "method": "GET",
+    "url": "{{local}}user/club/news?id=1"
+  },
+  {
+    "name": "Update News",
+    "method": "PUT",
+    "url": "{{local}}user/club/news"
+  },
+  {
+    "name": "Delete News",
+    "method": "DELETE",
+    "url": "{{local}}user/club/news"
+  },
+  {
+    "name": "Get All News",
+    "method": "GET",
+    "url": "{{local}}user/club/news/all?clubId=2"
+  },
+  {
+    "name": "Add item to Shop",
+    "method": "POST",
+    "url": "{{local}}user/club/shop"
+  },
+  {
+    "name": "Update item to Shop",
+    "method": "PUT",
+    "url": "{{local}}user/club/shop"
+  },
+  {
+    "name": "Get the shop Items",
+    "method": "GET",
+    "url": "{{local}}user/club/shop?clubId=3&limit=10&offset=0"
+  },
+  {
+    "name": "Delete shop item",
+    "method": "DELETE",
+    "url": "{{local}}user/club/shop"
+  },
+  {
+    "name": "Get the Shop Item By ID",
+    "method": "GET",
+    "url": "{{local}}user/club/shop/item?shopItemId=1"
+  },
+  {
+    "name": "For Club Owner: Order List",
+    "method": "GET",
+    "url": "{{local}}user/club/shop/orders?clubId=3"
+  },
+  {
+    "name": "For club owner: update order status",
+    "method": "PUT",
+    "url": "{{local}}user/club/shop/order/status"
+  },
+  {
+    "name": "Buy shop item",
+    "method": "POST",
+    "url": "{{local}}user/club/shop/buy"
+  },
+  {
+    "name": "Get My purchases list",
+    "method": "GET",
+    "url": "{{local}}user/club/shop/purchases?statusIds=1,2"
+  },
+  {
+    "name": "Update shop order status",
+    "method": "PUT",
+    "url": "{{local}}user/club/shop/order/cancel"
+  },
+  {
+    "name": "Get Marketplace List",
+    "method": "GET",
+    "url": "{{LIVE}}user/club/marketplace?clubId=4"
+  },
+  {
+    "name": "Add MarketPlace Item",
+    "method": "POST",
+    "url": "{{LIVE}}user/club/marketplace"
+  },
+  {
+    "name": "Update MarketPlace Item",
+    "method": "PUT",
+    "url": "{{local}}user/club/marketplace"
+  },
+  {
+    "name": "Get Marketplace Item info",
+    "method": "GET",
+    "url": "{{local}}user/club/marketplace/item?marketPlaceItemId=1"
+  },
+  {
+    "name": "Delete MarketPlace Item",
+    "method": "DELETE",
+    "url": "{{local}}user/club/marketplace"
+  },
+  {
+    "name": "Get Own Listings",
+    "method": "GET",
+    "url": "{{local}}user/club/marketplace/my-listings"
+  },
+  {
+    "name": "Share MarketPlace Item",
+    "method": "POST",
+    "url": "{{local}}user/club/marketplace/share"
+  },
+  {
+    "name": "Save Ride",
+    "method": "POST",
+    "url": "{{local}}user/ride/save"
+  },
+  {
+    "name": "Unsave Ride",
+    "method": "PUT",
+    "url": "{{local}}user/ride/unsave"
+  },
+  {
+    "name": "Get Saved Rides List",
+    "method": "GET",
+    "url": "{{local}}user/rides/saved"
+  },
+  {
+    "name": "Get Club Discounts",
+    "method": "GET",
+    "url": "{{local}}user/club/shop/discount?clubId=1"
+  },
+  {
+    "name": "Add Discount",
+    "method": "POST",
+    "url": "{{local}}user/club/shop/discount"
+  },
+  {
+    "name": "Update Discount",
+    "method": "PUT",
+    "url": "{{local}}user/club/shop/discount"
+  },
+  {
+    "name": "Delete Discount",
+    "method": "DELETE",
+    "url": "{{local}}user/club/shop/discount"
+  },
+  {
+    "name": "Get Club Permissions",
+    "method": "GET",
+    "url": "{{local}}user/club/permissions?clubId=1"
+  },
+  {
+    "name": "save permissions for Admin or User role",
+    "method": "PUT",
+    "url": "{{local}}user/club/permissions/role"
+  },
+  {
+    "name": "apply permission toggles for selected members",
+    "method": "PUT",
+    "url": "{{local}}user/club/permissions/members"
+  },
+  {
+    "name": "grant/revoke full club access for one member",
+    "method": "PUT",
+    "url": "{{local}}user/club/permissions/full-access"
+  },
+  {
+    "name": "Assign Role to Member",
+    "method": "POST",
+    "url": "{{local}}uuser/club/member/role"
+  },
+  {
+    "name": "Remove fullAccess Permission",
+    "method": "PUT",
+    "url": "{{local}}user/club/permissions/remove-full-access"
+  },
+  {
+    "name": "List Club Subscription",
+    "method": "GET",
+    "url": "{{local}}user/club/subscription/plans"
+  },
+  {
+    "name": "My subscription",
+    "method": "GET",
+    "url": "{{local}}user/club/subscription/me?clubId=2"
+  },
+  {
+    "name": "Subscribe to club Plan",
+    "method": "POST",
+    "url": "{{local}}user/club/subscription/subscribe"
+  },
+  {
+    "name": "Club Customer Portal",
+    "method": "POST",
+    "url": "{{local}}user/club/subscription/customer-portal"
+  },
+  {
+    "name": "Get My Subscription",
+    "method": "GET",
+    "url": "{{local}}user/subscription/me"
+  },
+  {
+    "name": "Subscription Plan List",
+    "method": "GET",
+    "url": "{{LIVE}}user/subscription/plans"
+  },
+  {
+    "name": "Subscribe to any Plan",
+    "method": "POST",
+    "url": "{{LIVE}}user/subscription/subscribe"
+  },
+  {
+    "name": "Create Customer Portal",
+    "method": "GET",
+    "url": "{{local}}user/subscription/customer-portal?type=club&clubId=1"
+  },
+  {
+    "name": "Connect Stripe",
+    "method": "GET",
+    "url": "{{local}}user/club/stripe/connect?clubId=1"
+  },
+  {
+    "name": "Check stripe account status",
+    "method": "GET",
+    "url": "{{local}}user/club/stripe/status?clubId=1"
+  },
+  {
+    "name": "Subscribe to Membership Plan",
+    "method": "POST",
+    "url": "{{local}}user/club/membership/subscribe"
+  },
+  {
+    "name": "Get My Membership Info",
+    "method": "GET",
+    "url": "{{local}}user/club/membership/me?clubId=1"
+  },
+  {
+    "name": "Create Club Membership Plan",
+    "method": "POST",
+    "url": "{{local}}user/club/membership/plan"
+  },
+  {
+    "name": "Update Club Membership Plan",
+    "method": "PUT",
+    "url": "{{local}}user/club/membership/plan"
+  },
+  {
+    "name": "Delete Membership Plan",
+    "method": "DELETE",
+    "url": "{{local}}user/club/membership/plan"
+  },
+  {
+    "name": "List Membership Plans",
+    "method": "GET",
+    "url": "{{local}}user/club/membership/plans?clubId=7"
+  },
+  {
+    "name": "Membership Plan Info By ID",
+    "method": "GET",
+    "url": "{{local}}user/club/membership/plan?clubId=1&planId=2"
+  },
+  {
+    "name": "List subscribed Member",
+    "method": "GET",
+    "url": "{{local}}user/club/membership/subscribers?clubId=1&limit=10&offset=0"
+  },
+  {
+    "name": "Change Club Member Fee Status",
+    "method": "POST",
+    "url": "{{LIVE}}user/club/membership/manual-pay"
+  },
+  {
+    "name": "Get User Notification",
+    "method": "GET",
+    "url": "{{local}}user/notifications"
+  },
+  {
+    "name": "Get Club Notifications",
+    "method": "GET",
+    "url": "{{local}}user/club/notifications?clubId=1"
+  },
+  {
+    "name": "Mark as Read- Notifications",
+    "method": "PUT",
+    "url": "{{local}}user/notifications/read"
+  },
+  {
+    "name": "Send Subscription Reminder",
+    "method": "POST",
+    "url": "{{local}}user/club/membership/remind"
+  },
+  {
+    "name": "Send Subscription Reminder to Everyone..",
+    "method": "POST",
+    "url": "{{local}}user/club/membership/remind-all"
+  }
+]

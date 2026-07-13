@@ -14,13 +14,14 @@ interface Product {
 }
 
 import { ClubService } from "@/features/club/services/clubService";
+import { ShopService } from "@/api/backendApi";
 
 // ==========================================
 // MOCK DATA REMOVED - NOW USING API
 // ==========================================
 
 interface MarketplaceProps {
-  clubId?: string;
+  clubId?: string | number;
 }
 
 // ==========================================
@@ -153,9 +154,32 @@ export default function Marketplace({ clubId }: MarketplaceProps) {
     const fetchItems = async () => {
       try {
         setLoading(true);
-        // If clubId is undefined, we might fetch global or default to 0
-        const idToFetch = clubId ? parseInt(clubId, 10) : 0;
-        const res = await ClubService.getAllMarketPlaceItems(idToFetch);
+        
+        let activeClubId = clubId;
+        if (!activeClubId || activeClubId === "0") {
+          activeClubId = localStorage.getItem("selectedClubId") || undefined;
+        }
+
+        if (!activeClubId || activeClubId === "0") {
+          try {
+            const clubsRes = await ClubService.getJoinedClubs();
+            const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
+            if (clubs.length > 0) {
+              const defaultId = clubs[0].id.toString();
+              activeClubId = defaultId;
+              localStorage.setItem("selectedClubId", defaultId);
+            }
+          } catch (e) {
+            console.error("Failed to fetch user's joined clubs for marketplace", e);
+          }
+        }
+
+        if (!activeClubId || activeClubId === "0") {
+          setProducts([]);
+          return;
+        }
+
+        const res = await ShopService.getMarketplaceList({ clubId: Number(activeClubId) });
         // Assuming res.response or res.data contains the array
         const items = res?.response?.data || res?.data || res || [];
         

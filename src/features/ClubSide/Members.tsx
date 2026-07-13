@@ -4,6 +4,7 @@ import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { fetchClubMembers } from "@/features/club/slices/clubSlice";
+import { ClubService } from '@/api/backendApi';
 
 export interface Member {
   id: string;
@@ -25,10 +26,25 @@ const Members = () => {
   const { currentClubMembers } = useAppSelector((state) => state.club);
 
   useEffect(() => {
-    const clubIdStr = localStorage.getItem("selectedClubId");
-    if (clubIdStr) {
-      dispatch(fetchClubMembers({ clubId: Number(clubIdStr) }));
-    }
+    const loadMembers = async () => {
+      let clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) {
+        try {
+          const clubsRes = await ClubService.getJoinedClubs();
+          const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
+          if (clubs.length > 0) {
+            clubIdStr = clubs[0].id.toString();
+            localStorage.setItem("selectedClubId", clubIdStr);
+          }
+        } catch (e) {
+          console.error("Failed to fetch user's joined clubs for members", e);
+        }
+      }
+      if (clubIdStr) {
+        dispatch(fetchClubMembers({ clubId: Number(clubIdStr) }));
+      }
+    };
+    loadMembers();
   }, [dispatch]);
 
   const formattedMembers = useMemo<Member[]>(() => {

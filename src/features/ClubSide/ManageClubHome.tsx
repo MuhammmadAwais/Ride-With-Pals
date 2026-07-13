@@ -124,7 +124,7 @@ const ManageClubHome = () => {
   useEffect(() => {
     const clubIdStr = localStorage.getItem("selectedClubId");
     if (clubIdStr) {
-      ClubService.getClubMembershipPlans(Number(clubIdStr))
+      MembershipService.listMembershipPlans(Number(clubIdStr))
         .then((res) => {
            // Mapping backend response to frontend MembershipPlan format
            const plans = (res?.data || res || []).map((p: any) => ({
@@ -159,13 +159,13 @@ const ManageClubHome = () => {
 
     try {
       if (editingPlanId) {
-        await ClubService.updateClubMembershipPlan({ id: Number(editingPlanId), ...payload });
+        await MembershipService.updateClubMembershipPlan({ id: Number(editingPlanId), ...payload });
       } else {
-        await ClubService.createClubMembershipPlan(payload);
+        await MembershipService.createClubMembershipPlan(payload);
       }
       
       // Refresh list
-      const res = await ClubService.getClubMembershipPlans(Number(clubIdStr));
+      const res = await MembershipService.listMembershipPlans(Number(clubIdStr));
       const plans = (res?.data || res || []).map((p: any) => ({
         id: p.id.toString(),
         packageName: p.name || p.packageName,
@@ -212,7 +212,7 @@ const ManageClubHome = () => {
     const clubIdStr = localStorage.getItem("selectedClubId");
     if (!clubIdStr) return;
     try {
-      await ClubService.deleteClubMembershipPlan(Number(clubIdStr), Number(id));
+      await MembershipService.deleteMembershipPlan(Number(clubIdStr), Number(id));
       setMembershipPlans(membershipPlans.filter((plan) => plan.id !== id));
     } catch (err) {
       console.error(err);

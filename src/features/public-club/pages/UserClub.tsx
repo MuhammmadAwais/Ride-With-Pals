@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle, MapPin, Users } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
 import { fetchMyClubs, fetchExploreClubs } from "@/features/club/slices/clubSlice";
 import { useClub } from "@/features/club/hooks/useClub";
+import { ClubService } from "@/features/club/services/clubService";
 
 import Ride from "./Ride";
 import News from "../../ClubSide/News";
@@ -14,24 +15,30 @@ import Discount from "../../ClubSide/Discount";
 import Overviews from "./Overviews";
 import Shop from "./Shop"; 
 import Marketplace from "./Marketplace";
+import {toast} from "sonner";
 
-interface ClubData {
-  id: string;
-  name: string;
-  activityType: string;
-  status: "PUBLIC" | "PRIVATE";
-  members: string;
-  logo: string;
-  isPaid: boolean;
-  price: string;
-}
+const getClubTypeName = (typeId?: number) => {
+  if (typeId === 2) return "Running";
+  if (typeId === 3) return "Cycling & Running";
+  return "Biking / Cycling";
+};
 
-
+const getClubImage = (logo?: string | null, coverImage?: string | null): string => {
+  const img = logo || coverImage;
+  if (!img || img === "null" || img.trim() === "") {
+    return "/Images/CycleImage2.png";
+  }
+  if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:") || img.startsWith("/")) {
+    return img;
+  }
+  return `https://api.ridewithpals.com/uploads/${img}`;
+};
 
 type TabType = "rides" | "news" | "leaderboard" | "shop" | "discounts" | "marketplace" | "members" | "overviews";
 
 export default function UserClub() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
   const { myClubs, exploreClubs, isLoading } = useAppSelector((s) => s.club);
@@ -49,6 +56,36 @@ export default function UserClub() {
   // const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
 
   const [isMember, setIsMember] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      const loadSelectedClub = async () => {
+        try {
+          const clubRes = await ClubService.getClubById(Number(id));
+          const clubData = clubRes?.response || clubRes?.data || clubRes;
+          if (clubData) {
+            setSelectedClub(clubData);
+            
+            // Check membership
+            const isUserMember = myClubs.some((c) => c.id === Number(id));
+            setIsMember(isUserMember);
+          } else {
+            toast.error("Club not found");
+            navigate("/view/userside/clubs");
+          }
+        } catch (e) {
+          console.error("Failed to load selected club:", e);
+          toast.error("Failed to load club details");
+          navigate("/view/userside/clubs");
+        }
+      };
+      loadSelectedClub();
+    } else {
+      setSelectedClub(null);
+      setIsMember(false);
+    }
+  }, [id, myClubs, navigate]);
+
   const [showCodeScreen, setShowCodeScreen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [codeError, setCodeError] = useState("");
@@ -76,35 +113,23 @@ export default function UserClub() {
   );
 
   const handleSelectMyClub = (club: any) => {
-    // setIsDiscoverContext(false); 
-    setSelectedClub(club);
-    setIsMember(true);
-    setShowCodeScreen(false);
-    setShowDepositScreen(false);
-    setCodeError("");
+    navigate(`/view/userside/clubs/${club.id}`);
   };
 
   const handleSelectDiscoverClub = (comm: any) => {
-    // setIsDiscoverContext(true); 
-    setSelectedClub(comm);
-    setIsMember(comm.clubPrivacyId === 2 ? false : true); // PrivacyId 2 is private
-    setShowCodeScreen(false);
-    setShowDepositScreen(false);
-    setJoinCode("");
-    setCodeError("");
+    navigate(`/view/userside/clubs/${comm.id}`);
   };
 
   const handleBackToHub = () => {
-    setSelectedClub(null);
     setShowCodeScreen(false);
     setShowDepositScreen(false);
-    setIsMember(false);
     setCodeError("");
     setPaymentSuccess(false);
     setCardNumber("");
     setExpiryDate("");
     setCvv("");
     setAccountHolder("");
+    navigate("/view/userside/clubs");
   };
 
   const handleJoinClubClick = async () => {
@@ -188,18 +213,24 @@ export default function UserClub() {
           {/* Large Hero/Banner Section */}
           <div className="relative h-64 w-full rounded-3xl overflow-hidden border border-border">
             <img 
-              src={selectedClub.logo} 
-              alt={selectedClub.name} 
+              src={getClubImage(selectedClub.coverImage, selectedClub.logo)} 
+              alt={selectedClub.clubName} 
               className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
             
             <div className="absolute inset-x-6 bottom-6 flex flex-wrap items-end justify-between gap-4">
               <div className="flex items-center gap-5">
                 <img 
-                  src={selectedClub.logo} 
-                  alt={selectedClub.name} 
+                  src={getClubImage(selectedClub.logo, selectedClub.coverImage)} 
+                  alt={selectedClub.clubName} 
                   className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-xl shrink-0"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                  }}
                 />
                 <div>
                   <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border mb-1.5 ${
@@ -409,7 +440,7 @@ export default function UserClub() {
                 {activeTab === "rides" && <Ride clubId={selectedClub?.id} />}
                 {activeTab === "news" && <News clubId={selectedClub?.id} />}
                 {activeTab === "leaderboard" && <Leaderboard clubId={selectedClub?.id} />}
-                {activeTab === "discounts" && <Discount role={"athlete"} />}        
+                {activeTab === "discounts" && <Discount role={"athlete"} clubId={selectedClub?.id} />}        
                 {activeTab === "shop" && <Shop clubId={selectedClub?.id} />} 
                 {activeTab === "marketplace" && <Marketplace clubId={selectedClub?.id} />} 
                 {activeTab === "overviews" && <Overviews clubId={selectedClub?.id} />}
@@ -502,9 +533,12 @@ export default function UserClub() {
                   {/* Top Image Banner */}
                   <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
-                      src={club.logo || club.coverImage || "/Images/CycleImage2.png"}
+                      src={getClubImage(club.logo, club.coverImage)}
                       alt={club.clubName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                      }}
                     />
                     {/* Subtle dark gradient overlay to ensure floating badges are readable */}
                     <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
@@ -512,7 +546,7 @@ export default function UserClub() {
                     {/* Floating Badges */}
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
                       <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                        {club.location}
+                        {getClubTypeName(club.clubTypeId)}
                       </span>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
                         club.clubPrivacyId === 1 
@@ -526,13 +560,13 @@ export default function UserClub() {
 
                   {/* Bottom Details Content */}
                   <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 min-w-0 w-full">
                       <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
                         {club.clubName}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                        <MapPin size={12} className="text-text-muted" />
-                        <span>Las Vegas, NV</span>
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted shrink-0" />
+                        <span className="truncate">{club.location || "N/A"}</span>
                       </div>
                     </div>
 
@@ -608,9 +642,12 @@ export default function UserClub() {
                   {/* Top Image Banner */}
                   <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
-                      src={comm.logo || comm.coverImage || "/Images/CycleImage2.png"}
+                      src={getClubImage(comm.logo, comm.coverImage)}
                       alt={comm.clubName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                      }}
                     />
                     {/* Subtle dark gradient overlay to ensure floating badges are readable */}
                     <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
@@ -618,7 +655,7 @@ export default function UserClub() {
                     {/* Floating Badges */}
                     <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
                       <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                        {comm.location}
+                        {getClubTypeName(comm.clubTypeId)}
                       </span>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
                         comm.clubPrivacyId === 1 
@@ -632,13 +669,13 @@ export default function UserClub() {
 
                   {/* Bottom Details Content */}
                   <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 min-w-0 w-full">
                       <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
                         {comm.clubName}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                        <MapPin size={12} className="text-text-muted" />
-                        <span>Las Vegas, NV</span>
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted shrink-0" />
+                        <span className="truncate">{comm.location || "N/A"}</span>
                       </div>
                     </div>
 
@@ -665,16 +702,19 @@ export default function UserClub() {
                   key={comm.id}
                   className="bg-surface border border-border rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
                 >
-                  <div className="flex items-center gap-6 w-full">
+                  <div className="flex items-center gap-6 w-full min-w-0">
                     <img
-                      src={comm.logo || comm.coverImage || "/Images/CycleImage2.png"}
+                      src={getClubImage(comm.logo, comm.coverImage)}
                       alt={comm.clubName}
                       className="w-20 h-20 rounded-2xl object-cover shrink-0"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                      }}
                     />
-                    <div className="space-y-1.5 w-full">
+                    <div className="space-y-1.5 w-full min-w-0">
                       <div className="flex items-center gap-3">
                         <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
-                          {comm.location}
+                          {getClubTypeName(comm.clubTypeId)}
                         </span>
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
                           comm.clubPrivacyId === 1 
@@ -684,9 +724,13 @@ export default function UserClub() {
                           {comm.clubPrivacyId === 1 ? <Globe size={10} /> : <Lock size={10} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                         </span>
                       </div>
-                      <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase">
+                      <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
                         {comm.clubName}
                       </h3>
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted shrink-0" />
+                        <span className="truncate">{comm.location || "N/A"}</span>
+                      </div>
                       <p className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
                         {comm.memberCount || 0} Pals joined
                       </p>

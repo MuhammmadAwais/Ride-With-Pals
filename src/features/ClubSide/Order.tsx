@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { ClubService } from '@/features/club/services/clubService';
+import { ShopService } from '@/api/backendApi';
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
@@ -18,7 +18,7 @@ const Order = () => {
       
       const statusIds = activeTab === 'Active' ? [2] : [4];
       try {
-        const res = await ClubService.getClubOrdersList(statusIds, Number(clubIdStr), searchQuery, 50, 0);
+        const res = await ShopService.forClubOwnerOrderList({ clubId: Number(clubIdStr), search: searchQuery, limit: 50, offset: 0 });
         
         const mappedOrders = (res?.data || res || []).map((o: any) => ({
           id: o.id?.toString(),
@@ -35,8 +35,10 @@ const Order = () => {
         }));
         
         setOrders(mappedOrders);
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        if (err.response?.status !== 403) {
+          console.error(err);
+        }
       }
     };
     

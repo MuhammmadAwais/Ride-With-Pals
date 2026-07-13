@@ -57,12 +57,13 @@ const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
 
 interface DiscountProps {
   role?: "organizer" | "athlete";
+  clubId?: string | number;
 }
 
 import { useEffect } from 'react';
-import { ClubService } from '@/features/club/services/clubService';
+import { ShopService, ClubService } from '@/api/backendApi';
 
-const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
+const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
   const [activeTab, setActiveTab] = useState<'active' | 'expired'>('active');
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -71,11 +72,24 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer" }) => {
 
   useEffect(() => {
     const fetchDiscounts = async () => {
-      const clubIdStr = localStorage.getItem("selectedClubId");
+      let clubIdStr = clubId ? String(clubId) : localStorage.getItem("selectedClubId");
+      if (!clubIdStr) {
+        try {
+          const clubsRes = await ClubService.getJoinedClubs();
+          const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
+          if (clubs.length > 0) {
+            clubIdStr = clubs[0].id.toString();
+            localStorage.setItem("selectedClubId", clubIdStr);
+          }
+        } catch (e) {
+          console.error("Failed to fetch user's joined clubs for discounts", e);
+        }
+      }
       if (!clubIdStr) return;
       try {
-        const res = await ClubService.getClubDiscounts(Number(clubIdStr), searchQuery);
-        const mapped = (res?.data || res || []).map((d: any) => ({
+        const res = await ShopService.getClubDiscounts({ clubId: Number(clubIdStr), search: searchQuery });
+        const items = res?.response?.data || res?.data || res || [];
+        const mapped = items.map((d: any) => ({
           id: d.id,
           title: d.title,
           code: d.discountCode,

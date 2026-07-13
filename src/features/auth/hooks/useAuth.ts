@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { AuthService } from "@/features/auth/services/authService";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { loginUser, registerUser, setUser } from "@/features/auth/slices/authSlice";
+import { AuthService as ApiAuthService, UserService as ApiUserService } from "@/api/backendApi";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -11,11 +11,11 @@ export const useAuth = () => {
   const handleForgotPassword = async (email: string) => {
     setIsLoading(true);
     try {
-      const response = await AuthService.sendForgotPasswordOtp(email);
-      toast.success(response.message);
-      return response.token; // Temporary token needed for validateOtp
+      const response = await ApiAuthService.forgotPassword({ email });
+      toast.success(response.message || "OTP sent");
+      return response.response?.token; 
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message || error.message);
       throw error;
     } finally {
       setIsLoading(false);
@@ -25,11 +25,11 @@ export const useAuth = () => {
   const handleValidateOtp = async (otp: number, tempToken: string) => {
     setIsLoading(true);
     try {
-      const response = await AuthService.validateOtp(otp, tempToken);
-      toast.success(response.message);
-      return response.token; // New token for changePassword
+      const response = await ApiAuthService.validateOTP({ OTP: otp }, { headers: { Authorization: `Bearer ${tempToken}` } });
+      toast.success(response.message || "OTP validated");
+      return response.response?.token;
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message || error.message);
       throw error;
     } finally {
       setIsLoading(false);
@@ -39,10 +39,10 @@ export const useAuth = () => {
   const handleResendOtp = async (tempToken: string) => {
     setIsLoading(true);
     try {
-      const message = await AuthService.resendOtp(tempToken);
-      toast.success(message);
+      const response = await ApiAuthService.resendOTP({}, { headers: { Authorization: `Bearer ${tempToken}` } });
+      toast.success(response.message || "OTP resent");
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message || error.message);
       throw error;
     } finally {
       setIsLoading(false);
@@ -52,10 +52,10 @@ export const useAuth = () => {
   const handleChangePassword = async (newPassword: string, token: string) => {
     setIsLoading(true);
     try {
-      const message = await AuthService.changePassword(newPassword, token);
-      toast.success(message);
+      const response = await ApiAuthService.changePassword({ password: newPassword }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success(response.message || "Password updated");
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message || error.message);
       throw error;
     } finally {
       setIsLoading(false);
@@ -65,12 +65,13 @@ export const useAuth = () => {
   const handleUpsertProfile = async (profileData: any) => {
     setIsLoading(true);
     try {
-      const updatedUser = await AuthService.upsertAthleteProfile(profileData);
+      const response = await ApiUserService.upsertAthleteProfile(profileData);
       toast.success("Profile updated successfully");
-      dispatch(setUser(updatedUser));
+      const updatedUser = response.response;
+      dispatch(setUser({ ...updatedUser, role: updatedUser?.isAthleteProfile ? 'athlete' : 'organizer' }));
       return updatedUser;
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message || error.message);
       throw error;
     } finally {
       setIsLoading(false);
@@ -80,8 +81,9 @@ export const useAuth = () => {
   const handleFetchUserInfo = async () => {
     setIsLoading(true);
     try {
-      const user = await AuthService.userInfo();
-      dispatch(setUser(user));
+      const response = await ApiUserService.userInfo();
+      const user = response.response;
+      dispatch(setUser({ ...user, role: user?.isAthleteProfile ? 'athlete' : 'organizer' }));
       return user;
     } catch (error: any) {
       console.error("Failed to fetch user info", error);
@@ -99,7 +101,6 @@ export const useAuth = () => {
     handleChangePassword,
     handleUpsertProfile,
     handleFetchUserInfo,
-    // Provide access to thunks just in case we want a unified hook interface
     login: (credentials: any) => dispatch(loginUser(credentials)),
     register: (credentials: any) => dispatch(registerUser(credentials)),
   };

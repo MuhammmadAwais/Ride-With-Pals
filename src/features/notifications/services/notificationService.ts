@@ -1,28 +1,51 @@
-import { backendApi } from "@/api/backendApi";
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { NotificationService as ApiNotificationService } from '@/api/backendApi';
+
+export const useNotifications = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUserNotifications = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await ApiNotificationService.getUserNotification();
+      return response.response || response.data || [];
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err.message || 'Failed to fetch notifications.';
+      setError(msg);
+      toast.error(msg);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const markAsRead = async (notificationId: number) => {
+    try {
+      await ApiNotificationService.markAsReadNotifications({ notificationId });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return {
+    fetchUserNotifications,
+    markAsRead,
+    isLoading,
+    error,
+  };
+};
 
 export const NotificationService = {
   getUserNotifications: async () => {
-    const response = await backendApi.get("/user/notifications");
-    return response.data;
+    return await ApiNotificationService.getUserNotification();
   },
-
   getClubNotifications: async (clubId: number) => {
-    const response = await backendApi.get("/user/club/notifications", { params: { clubId } });
-    return response.data;
+    return await ApiNotificationService.getClubNotifications({ clubId });
   },
-
   markNotificationAsRead: async (notificationId: number) => {
-    const response = await backendApi.put("/user/notifications/read", { notificationId });
-    return response.data;
-  },
-
-  sendSubscriptionReminder: async (clubId: number, targetUserId: number) => {
-    const response = await backendApi.post("/user/club/membership/remind", { clubId, targetUserId });
-    return response.data;
-  },
-
-  remindAllUnpaidMembers: async (clubId: number) => {
-    const response = await backendApi.post("/user/club/membership/remind-all", { clubId });
-    return response.data;
+    return await ApiNotificationService.markAsReadNotifications({ notificationId });
   }
 };

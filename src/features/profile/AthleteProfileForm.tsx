@@ -4,6 +4,7 @@ import { Camera, ChevronDown, Calendar } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import { ROUTES } from "@/Constants";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const AthleteProfileForm = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const AthleteProfileForm = () => {
   
   const containerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const { handleUpsertProfile, isLoading } = useAuth();
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -68,7 +70,7 @@ const AthleteProfileForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) {
       toast.error("Please fill in all required fields.");
       return;
@@ -85,9 +87,12 @@ const AthleteProfileForm = () => {
       profileImage
     };
 
-    localStorage.setItem('athlete_profile', JSON.stringify(athleteProfile));
-    toast.success("Profile saved successfully!");
-    navigate(ROUTES.CLUBS); 
+    try {
+      await handleUpsertProfile(athleteProfile);
+      navigate(ROUTES.CLUBS); 
+    } catch (err) {
+      // Error handled in hook
+    }
   };
 
   return (
@@ -273,9 +278,10 @@ const AthleteProfileForm = () => {
           <button 
             type="button" 
             onClick={handleSave} 
-            className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all"
+            disabled={isLoading}
+            className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all disabled:opacity-50"
           >
-            Save Profile
+            {isLoading ? "Saving..." : "Save Profile"}
           </button>
         </form>
       </div>

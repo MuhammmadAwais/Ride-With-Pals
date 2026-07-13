@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MessageSquare, Plus, ArrowUpRight, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const newsItems: any[] = [];
+import { NewsService, ClubService } from '@/api/backendApi';
 
 const NewsArticle = ({ item }: { item: any }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -72,23 +71,81 @@ interface NewsFeedProps {
   clubId?: string | number;
 }
 
-export const NewsFeed: React.FC<NewsFeedProps> = () => (
-  <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
-    <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
-        <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-text-main">Community News</h1>
-        <Link 
-          to="/news/add" 
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
-        >
-          <Plus size={18} /> Add new Post
-        </Link>
-      </div>
-    </header>
-    <main className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
-      {newsItems.map((item) => <NewsArticle key={item.id} item={item} />)}
-    </main>
-  </div>
-);
+export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
+  const [newsItems, setNewsItems] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      let activeClubId = clubId || localStorage.getItem("selectedClubId");
+      if (!activeClubId) {
+        try {
+          const clubsRes = await ClubService.getJoinedClubs();
+          const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
+          if (clubs.length > 0) {
+            const defaultId = clubs[0].id.toString();
+            activeClubId = defaultId;
+            localStorage.setItem("selectedClubId", defaultId);
+          }
+        } catch (e) {
+          console.error("Failed to fetch user's joined clubs for news", e);
+        }
+      }
+
+      if (!activeClubId) return;
+
+      setIsLoading(true);
+      try {
+        const response = await NewsService.getAllNews({ clubId: Number(activeClubId) });
+        const items = response?.response?.data || response?.data || response || [];
+        const mapped = items.map((item: any, index: number) => ({
+          id: item.id?.toString() || index.toString(),
+          title: item.title || "Untitled Article",
+          date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Recent",
+          previewText: item.description || (item.content ? item.content.slice(0, 150) + "..." : "No description provided."),
+          fullContent: item.content || "No content provided.",
+          image: item.image || item.imageUrl || "/Images/HelmetImage4.jpg",
+          author: item.author || "Club Admin",
+          authorInitials: (item.author || "Club Admin").slice(0, 2).toUpperCase()
+        }));
+        setNewsItems(mapped);
+      } catch (err) {
+        console.error("Failed to fetch news", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchNews();
+  }, [clubId]);
+
+  return (
+    <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
+      <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-text-main">Community News</h1>
+          <Link 
+            to="/news/add" 
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
+          >
+            <Plus size={18} /> Add new Post
+          </Link>
+        </div>
+      </header>
+      <main className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B]"></div>
+          </div>
+        ) : newsItems.length === 0 ? (
+          <div className="bg-surface rounded-3xl border border-border p-12 text-center text-text-muted">
+            No news articles available yet.
+          </div>
+        ) : (
+          newsItems.map((item) => <NewsArticle key={item.id} item={item} />)
+        )}
+      </main>
+    </div>
+  );
+};
 
 export default NewsFeed;

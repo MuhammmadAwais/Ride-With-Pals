@@ -1,63 +1,120 @@
-// import React from "react";
+import React, { useState, useEffect } from "react";
 import { MapPin, Users, ShieldCheck, ExternalLink, Activity } from "lucide-react";
+import { ClubService } from "@/features/club/services/clubService";
 
 interface OverviewsProps {
-  clubId?: string;
+  clubId?: number | string;
 }
 
-const useClubOverview = ( ) => {
-  return {
-    isLoading: false,
-    description: [
-      "Welcome to VeloHub Elite, Nevada's premier cycling collective. Founded in the heart of the Mojave, our club is dedicated to pushing the boundaries of endurance and performance. We believe that every ride is a narrative of grit and discovery.",
-      "Our mission is to foster a community of disciplined athletes who value the synergy between cutting-edge technology and human perseverance. We offer weekly structured training sessions, exclusive marketplace access, and a network of professionals accredited to the sport."
-    ],
-    administrators: [
-      {
-        id: "1",
-        name: "Esther Howard",
-        joined: "Member since January 2024",
-        status: "Actively Ride",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
-      },
-      {
-        id: "2",
-        name: "Cameron Williamson",
-        joined: "Joined March 2024",
-        status: "Everyday Ride",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
-      },
-      {
-        id: "3",
-        name: "Eleanor Pena",
-        joined: "Joined April 2024",
-        status: "Everyday Ride",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-      },
-      {
-        id: "4",
-        name: "Floyd Miles",
-        joined: "Joined June 2024",
-        status: "Actively Ride",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+const useClubOverview = (clubId?: number | string) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [clubDetails, setClubDetails] = useState<any | null>(null);
+  const [admins, setAdmins] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!clubId) return;
+
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch club details
+        try {
+          const clubRes = await ClubService.getClubById(Number(clubId));
+          const clubData = clubRes?.response || clubRes?.data || clubRes;
+          setClubDetails(clubData);
+        } catch (e) {
+          console.error("Failed to load club details:", e);
+        }
+
+        // Fetch club members to extract administrators (might fail with 403 if not joined yet)
+        try {
+          const membersRes = await ClubService.getClubMembers(Number(clubId), 50, 0);
+          const membersList = membersRes?.response?.rows || membersRes?.response?.data || membersRes?.data?.data || membersRes?.data || membersRes?.rows || membersRes?.response || [];
+          
+          // Filter admins and owners
+          const adminUsers = Array.isArray(membersList) 
+            ? membersList.filter((m: any) => {
+                const role = m.role?.toLowerCase();
+                return role === 'owner' || role === 'organizer' || role === 'admin';
+              })
+            : [];
+          
+          setAdmins(adminUsers);
+        } catch (e) {
+          console.warn("Failed to load club members (user might not be joined yet):", e);
+          setAdmins([]);
+        }
+      } catch (err) {
+        console.error("Failed to load club overview data:", err);
+      } finally {
+        setIsLoading(false);
       }
-    ],
-    location: {
-      city: "Las Vegas",
-      address: "8884 Right St. Collins, Delaware 10200",
-      type: "Headquarters & Training Facility"
-    },
-    stats: {
-      totalMembers: "1,000",
-      capacityPercentage: 85,
-      passionateRide: "70% this mo.",
-      avgSession: "68.2K"
-    }
+    };
+
+    loadData();
+  }, [clubId]);
+
+  // Description paragraphs fallback
+  const rawDescription = clubDetails?.description;
+  const descriptionParagraphs = rawDescription 
+    ? rawDescription.split('\n').filter((p: string) => p.trim() !== '')
+    : ["N/A"];
+
+  // Administrators list fallback
+  const displayAdmins = admins.length > 0 
+    ? admins.map((m: any) => ({
+        id: m.id?.toString() || m.userId?.toString() || String(Math.random()),
+        name: ((m.firstName || '') + ' ' + (m.lastName || '')).trim() || m.username || 'Administrator',
+        joined: m.createdAt ? `Joined ${new Date(m.createdAt).toLocaleDateString()}` : "Member",
+        status: m.role || "Admin",
+        avatar: m.profileImage || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
+      }))
+    : [
+        {
+          id: "1",
+          name: "Esther Howard",
+          joined: "Member since January 2024",
+          status: "Actively Ride",
+          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
+        },
+        {
+          id: "2",
+          name: "Cameron Williamson",
+          joined: "Joined March 2024",
+          status: "Everyday Ride",
+          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+        }
+      ];
+
+  // Location display
+  const displayLocation = {
+    city: clubDetails?.location 
+      ? clubDetails.location.split(',')[0].trim() 
+      : "N/A",
+    address: clubDetails?.location || "N/A",
+    type: "Club Location & Training Facility"
+  };
+
+  // Membership statistics
+  const totalMembersVal = clubDetails?.memberCount || 0;
+  const displayStats = {
+    totalMembers: totalMembersVal.toLocaleString(),
+    capacityPercentage: Math.min(100, Math.max(10, Math.round((totalMembersVal / 200) * 100))),
+    passionateRide: "70% this mo.",
+    avgSession: "68.2K"
+  };
+
+  return {
+    isLoading,
+    description: descriptionParagraphs,
+    administrators: displayAdmins,
+    location: displayLocation,
+    stats: displayStats
   };
 };
 
-export default function Overviews({ }: OverviewsProps) {
-  const { isLoading, description, administrators, location, stats } = useClubOverview();
+export default function Overviews({ clubId }: OverviewsProps) {
+  const { isLoading, description, administrators, location, stats } = useClubOverview(clubId);
 
   if (isLoading) {
     return (

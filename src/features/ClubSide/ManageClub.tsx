@@ -3,36 +3,59 @@ import {
   TrendingUp,
   Award,
   Zap,
-  BarChart3,
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  Camera,
+  Mail,
+  ExternalLink,
+  Settings,
+  Globe,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useTableSort } from "@/hooks/useTableSort";
-import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { fetchMyClubs } from "@/features/club/slices/clubSlice";
+
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-const ManageClub = () => {
+const StatCard = ({ label, value, trend, isPositive }: any) => (
+  <div className="bg-surface p-5 rounded-2xl border border-border">
+    <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mb-2">{label}</p>
+    <div className="flex items-end justify-between">
+      <h3 className="text-2xl font-black text-text-main">{value}</h3>
+      <span className={`text-xs font-bold ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>{trend}</span>
+    </div>
+  </div>
+);
+
+export const ManageClub = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const itemsPerPage = 5;
   const navigate = useNavigate();
-
-  // Retrieve values from LocalStorage (updates dynamically if edited in EditClub)
-  const updatedCycRockName = localStorage.getItem("clubName");
  
   const dispatch = useAppDispatch();
   const { myClubs, isLoading } = useAppSelector((state) => state.club);
+  const { user } = useAppSelector((state) => state.auth);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchMyClubs());
@@ -131,20 +154,27 @@ const ManageClub = () => {
       label: 'Actions',
       headerClass: 'text-right',
       cellClass: 'text-right',
-      render: (club) => (
-        <button
-          onClick={() => {
-            localStorage.setItem("selectedClubId", club.id.toString());
-            localStorage.setItem("selectedClubBanner", club.img);
-            localStorage.setItem("selectedClubLogo", club.logo);
-            localStorage.setItem("selectedClubName", club.name);
-            navigate("/manage-club-home");
-          }}
-          className="px-5 py-2.5 bg-hover border border-border rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer inline-block"
-        >
-          MANAGE
-        </button>
-      )
+      render: (club) => {
+        const isAthlete = user?.role === 'athlete';
+        return (
+          <button
+            onClick={() => {
+              if (isAthlete) {
+                navigate(`/club/${club.id}`);
+              } else {
+                localStorage.setItem("selectedClubId", club.id.toString());
+                localStorage.setItem("selectedClubBanner", club.img);
+                localStorage.setItem("selectedClubLogo", club.logo);
+                localStorage.setItem("selectedClubName", club.name);
+                navigate("/manage-club-home");
+              }
+            }}
+            className="px-5 py-2.5 bg-hover border border-border rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer inline-block"
+          >
+            {isAthlete ? "VIEW" : "MANAGE"}
+          </button>
+        );
+      }
     }
   ];
 
@@ -233,7 +263,7 @@ const ManageClub = () => {
             <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
               GROWTH FORECAST
             </p>
-            <BarChart3 size={16} className="text-[#EB712B]" />
+            <TrendingUp size={16} className="text-[#EB712B]" />
           </div>
           <div>
             <p className="text-xl font-bold mb-1 leading-tight text-text-main">

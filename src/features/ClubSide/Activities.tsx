@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Bike,
   BarChart3,
@@ -19,6 +19,8 @@ import {
 } from "chart.js";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
+import { RideService } from "@/api/backendApi";
+import { toast } from "sonner";
 
 ChartJS.register(
   CategoryScale,
@@ -36,38 +38,13 @@ interface Activity {
   name: string;
   region: string;
   distance: string;
-  level: "ADVANCED" | "PRO ELITE" | "INTERMEDIATE";
-  status: "IN PROGRESS" | "SCHEDULED" | "OPEN" | "COMPLETED" | "ARCHIVED";
+  level: "ADVANCED" | "PRO ELITE" | "INTERMEDIATE" | string;
+  status: "IN PROGRESS" | "SCHEDULED" | "OPEN" | "COMPLETED" | "ARCHIVED" | string;
   participants: string;
   progress: number;
   imageUrl: string;
   leaderImageUrl: string;
 }
-
-const girlImages = [
-  "Girlmage1.png",
-  "Girlmage2.png",
-  "Girlmage3.png",
-  "Girlmage4.png",
-  "Girlmage5.png",
-  "GrilImage11.png",
-  "GirlImage11.png",
-  "GirlImage11.png",
-  "Girlmage9.png",
-  "GirlImage10.png",
-];
-const leaderImages = [
-  "Girlmage1.png",
-  "Girlmage2.png",
-  "Girlmage3.png",
-  "Girlmage4.png",
-  "Girlmage5.png",
-  "GrilImage11.png",
-  "GirlImage11.png",
-  "GirlImage11.png",
-  "Girlmage9.png",
-  "GirlImage10.png",
-];
 
 const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
   <div
@@ -87,17 +64,52 @@ const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
 const ActivitiesRegistry = () => {
   const [activeTab, setActiveTab] = useState("Active");
 
-  const [activities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      const clubIdStr = localStorage.getItem("selectedClubId");
+      if (!clubIdStr) return;
+      setIsLoading(true);
+      try {
+        const response = await RideService.getClubRides({ clubId: Number(clubIdStr), page: 1, size: 50 });
+        const rides = (response?.response?.content || response?.response || []).map((ride: any) => ({
+          id: ride.id,
+          name: ride.title || ride.name || "Untitled Ride",
+          region: ride.location || "Unknown Region",
+          distance: `${ride.distance || 0} km`,
+          level: ride.difficultyLevel || "INTERMEDIATE",
+          status: ride.status || "OPEN",
+          participants: `${ride.participantsCount || 0} riders`,
+          progress: ride.progress || 0,
+          imageUrl: ride.coverImage || "/Images/CycleImage2.png",
+          leaderImageUrl: ride.leaderImage || "/Images/ProfileImage.png"
+        }));
+        setActivities(rides);
+      } catch (err: any) {
+        if (err.response?.status !== 403) {
+          console.error("Failed to fetch club rides", err);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchActivities();
+  }, []);
 
   const filteredActivities = activities.filter((act) => {
     if (activeTab === "Active")
       return (
         act.status === "IN PROGRESS" ||
         act.status === "SCHEDULED" ||
-        act.status === "OPEN"
+        act.status === "OPEN" ||
+        act.status === "active" ||
+        act.status === "scheduled" ||
+        act.status === "open"
       );
-    if (activeTab === "Completed") return act.status === "COMPLETED";
-    if (activeTab === "Archived") return act.status === "ARCHIVED";
+    if (activeTab === "Completed") return act.status === "COMPLETED" || act.status === "completed";
+    if (activeTab === "Archived") return act.status === "ARCHIVED" || act.status === "archived";
     return true;
   });
 
@@ -142,7 +154,7 @@ const ActivitiesRegistry = () => {
       label: 'Level',
       sortable: true,
       render: (act) => (
-        <span className="px-3 py-1 rounded-full text-[10px] font-bold border border-border bg-hover text-text-muted">{act.level}</span>
+        <span className="px-3 py-1 rounded-full text-[10px] font-bold border border-border bg-hover text-text-muted uppercase">{act.level}</span>
       )
     },
     {
@@ -150,8 +162,8 @@ const ActivitiesRegistry = () => {
       label: 'Status',
       sortable: true,
       render: (act) => (
-        <div className="flex items-center gap-2 text-xs font-medium text-text-main">
-          {act.status === "COMPLETED" ? <CheckCircle2 size={14} className="text-emerald-400" /> : <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B]" />}
+        <div className="flex items-center gap-2 text-xs font-medium text-text-main uppercase">
+          {act.status.toUpperCase() === "COMPLETED" ? <CheckCircle2 size={14} className="text-emerald-400" /> : <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B]" />}
           {act.status}
         </div>
       )
@@ -224,8 +236,8 @@ const ActivitiesRegistry = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <SummaryCard
           label="TOTAL ACTIVE"
-          value="24"
-          subtext="+12% from last week"
+          value={activities.length || "0"}
+          subtext="+0% from last week"
           icon={<Bike size={20} />}
         />
         <SummaryCard
@@ -242,7 +254,7 @@ const ActivitiesRegistry = () => {
         />
         <SummaryCard
           label="LIVE STATUS"
-          value="08"
+          value={activities.filter(a => a.status.toLowerCase() === 'in progress').length || "0"}
           subtext="Activities in progress"
           icon={<Bike size={20} />}
           isLive={true}
@@ -269,8 +281,18 @@ const ActivitiesRegistry = () => {
         </div>
 
         {/* Table Container */}
-        <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl">
-          <DataTable data={filteredActivities} columns={columns} />
+        <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl relative min-h-[200px]">
+          {isLoading ? (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B]"></div>
+            </div>
+          ) : filteredActivities.length === 0 ? (
+            <div className="p-12 text-center text-text-muted">
+              No activities found for this club yet.
+            </div>
+          ) : (
+            <DataTable data={filteredActivities} columns={columns} />
+          )}
         </div>
       </div>
 
