@@ -41,7 +41,7 @@ export default function UserClub() {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
-  const { myClubs, exploreClubs, isLoading } = useAppSelector((s) => s.club);
+  const { myClubs, exploreClubs } = useAppSelector((s) => s.club);
   const { handleJoinClub, isJoining } = useClub();
   
   const [searchQuery, setSearchQuery] = useState("");

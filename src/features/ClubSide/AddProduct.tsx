@@ -32,13 +32,10 @@ const AddProduct = () => {
     setSelectedImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const [loading, setLoading] = useState(false);
-
   const handleUpdate = async () => {
     const clubIdStr = localStorage.getItem('selectedClubId');
     if (!clubIdStr) return;
 
-    setLoading(true);
     try {
       const { ClubService } = await import('@/features/club/services/clubService');
       const payload = {
@@ -62,8 +59,6 @@ const AddProduct = () => {
       navigate('/dashboard/product'); 
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -200,9 +200,14 @@ const AuthSubscription = () => {
 
             <button 
               onClick={handleNavigation}
-              className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px]"
+              disabled={isProcessing}
+              className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] disabled:opacity-50"
             >
-              Upgrade to Pro <span className="text-lg leading-none mt-0.5">→</span>
+              {isProcessing ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>Upgrade to Pro <span className="text-lg leading-none mt-0.5">→</span></>
+              )}
             </button>
           </div>
 

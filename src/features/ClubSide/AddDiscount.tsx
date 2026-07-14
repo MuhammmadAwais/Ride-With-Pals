@@ -1,7 +1,6 @@
 import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { ClubService } from '@/features/club/services/clubService';
 import { ShopService } from '@/api/backendApi';
 
 function AddDiscount() {

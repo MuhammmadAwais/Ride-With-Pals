@@ -112,7 +112,7 @@ export const removeClubMemberThunk = createAsyncThunk<number, { clubId: number, 
   'club/removeClubMember',
   async (params, { rejectWithValue }) => {
     try {
-      await (() => Promise.resolve({}))(params.clubId, params.memberId);
+      await ClubService.removeClubMember(params.clubId, params.memberId);
       toast.success('Member removed successfully.');
       return params.memberId;
     } catch (err: any) {

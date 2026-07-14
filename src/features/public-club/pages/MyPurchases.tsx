@@ -13,8 +13,8 @@ const MyPurchases = () => {
     const fetchPurchases = async () => {
       try {
         setLoading(true);
-        // Pass empty array for statusId to get all, or however the backend handles it
-        const res = await ShopService.getMyPurchasesList([], searchQuery);
+        // Pass search query inside parameters record
+        const res = await ShopService.getMyPurchasesList({ search: searchQuery });
         
         // Map the API response if it differs from the format, assuming we get rows or array
         const items = res?.rows || res?.data || res || [];

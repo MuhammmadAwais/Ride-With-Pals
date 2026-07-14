@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ClubService as ApiClubService, RideService as ApiRideService, NewsService as ApiNewsService, ShopService as ApiShopService, LeaderboardService as ApiLeaderboardService } from '@/api/backendApi';
+import { ClubService as ApiClubService, RideService as ApiRideService, NewsService as ApiNewsService, ShopService as ApiShopService } from '@/api/backendApi';
 import type { CreateClubPayload } from '../types/clubTypes';
 
 export const useClub = () => {
@@ -185,6 +185,30 @@ export const ClubService = {
   // Shop compatibility
   getAllShopItems: async (clubId: number, search = "", limit = 10, offset = 0) => {
     const response = await ApiShopService.getTheShopItems({ clubId, search, limit, offset });
+    return response;
+  },
+  updateShopItem: async (payload: any) => {
+    const response = await ApiShopService.updateItemToShop(payload);
+    return response;
+  },
+  addShopItem: async (payload: any) => {
+    const response = await ApiShopService.addItemToShop(payload);
+    return response;
+  },
+  getClubDashboardStats: async (clubId: number) => {
+    const response = await ApiClubService.getClubDashboardStats({ clubId });
+    return response;
+  },
+  getClubJoinRequests: async (clubId: number, limit = 10, offset = 0) => {
+    const response = await ApiClubService.getClubJoinRequest({ clubId, limit, offset });
+    return response;
+  },
+  manageJoinRequest: async (requestId: number, status: 'approved' | 'rejected') => {
+    const response = await ApiClubService.manageJoinGroupRequest({ requestId, status });
+    return response;
+  },
+  removeClubMember: async (clubId: number, memberId: number) => {
+    const response = await ApiClubService.removeClubMember({ clubId, memberId });
     return response;
   }
 };

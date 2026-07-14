@@ -26,7 +26,8 @@ const SelectRole = () => {
       id: `usr_${Math.random().toString(36).substr(2, 9)}`,
       email: 'rider@ridewithpals.com',
       name: 'Rider',
-      role: 'athlete' as const
+      role: 'athlete' as const,
+      token: ''
     };
     dispatch(setUser({
       ...activeUser,
@@ -40,7 +41,8 @@ const SelectRole = () => {
       id: `usr_${Math.random().toString(36).substr(2, 9)}`,
       email: 'rider@ridewithpals.com',
       name: 'Rider',
-      role: 'owner' as const
+      role: 'owner' as const,
+      token: ''
     };
     dispatch(setUser({
       ...activeUser,

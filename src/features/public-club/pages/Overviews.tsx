@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MapPin, Users, ShieldCheck, ExternalLink, Activity } from "lucide-react";
 import { ClubService } from "@/features/club/services/clubService";
 
@@ -144,7 +144,7 @@ export default function Overviews({ clubId }: OverviewsProps) {
             Club Description
           </h2>
           <div className="space-y-4 text-text-muted text-xs leading-relaxed font-medium">
-            {description.map((paragraph, index) => (
+            {description.map((paragraph: string, index: number) => (
               <p key={index} className="text-text-muted">
                 {paragraph}
               </p>

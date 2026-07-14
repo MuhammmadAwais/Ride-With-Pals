@@ -6,7 +6,7 @@ import Leaderboard from "./Leaderboard";
 import Discount from "./Discount";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { fetchClubMembers } from "@/features/club/slices/clubSlice";
-import { ClubService } from "@/features/club/services/clubService";
+import { MembershipService } from "@/api/backendApi";
 
 interface MembershipPlan {
   id: string;
@@ -124,8 +124,8 @@ const ManageClubHome = () => {
   useEffect(() => {
     const clubIdStr = localStorage.getItem("selectedClubId");
     if (clubIdStr) {
-      MembershipService.listMembershipPlans(Number(clubIdStr))
-        .then((res) => {
+      MembershipService.listMembershipPlans({ clubId: Number(clubIdStr) })
+        .then((res: any) => {
            // Mapping backend response to frontend MembershipPlan format
            const plans = (res?.data || res || []).map((p: any) => ({
              id: p.id.toString(),
@@ -165,7 +165,7 @@ const ManageClubHome = () => {
       }
       
       // Refresh list
-      const res = await MembershipService.listMembershipPlans(Number(clubIdStr));
+      const res = await MembershipService.listMembershipPlans({ clubId: Number(clubIdStr) });
       const plans = (res?.data || res || []).map((p: any) => ({
         id: p.id.toString(),
         packageName: p.name || p.packageName,
@@ -212,7 +212,7 @@ const ManageClubHome = () => {
     const clubIdStr = localStorage.getItem("selectedClubId");
     if (!clubIdStr) return;
     try {
-      await MembershipService.deleteMembershipPlan(Number(clubIdStr), Number(id));
+      await MembershipService.deleteMembershipPlan({ clubId: Number(clubIdStr), planId: Number(id), id: Number(id) });
       setMembershipPlans(membershipPlans.filter((plan) => plan.id !== id));
     } catch (err) {
       console.error(err);

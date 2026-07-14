@@ -13,7 +13,6 @@ import { Mail, ArrowLeft, AlertCircle, CheckCircle, Loader2, Lock, Eye, EyeOff }
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, APP_NAME } from '@/Constants';
 import { useAuth } from '@/features/auth/hooks/useAuth';

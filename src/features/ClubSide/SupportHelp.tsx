@@ -92,7 +92,7 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
             </div>
             
             <div ref={scrollRef} className="flex-1 px-8 py-6 overflow-y-auto space-y-6 bg-main-bg">
-              {selectedChat.messages.map(m => (
+              {selectedChat.messages.map((m: any) => (
                 <div key={m.id} className={`flex ${m.sender === "me" ? "justify-end" : "justify-start"}`}>
                   <div className={`p-4 px-6 rounded-2xl max-w-[75%] ${m.sender === "me" ? "bg-[#EB712B] text-white rounded-br-none" : "bg-surface text-text-main rounded-bl-none border border-border shadow-lg"}`}>
                     <p className="text-sm leading-relaxed">{m.text}</p>

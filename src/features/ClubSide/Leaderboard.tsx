@@ -21,7 +21,6 @@ const StatCard = ({ title, value, icon: Icon }: any) => (
 
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   const [joinedClubs, setJoinedClubs] = useState<any[]>([]);
-  const [activeClub, setActiveClub] = useState<any | null>(null);
   const [selectedClubIdState, setSelectedClubIdState] = useState<string | number | undefined>(
     clubId || localStorage.getItem("selectedClubId") || undefined
   );
@@ -47,7 +46,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
         setJoinedClubs(clubs);
         
         if (clubs.length > 0) {
-          const isMemberOfActive = activeClubId ? clubs.some((c: any) => c.id.toString() === activeClubId.toString()) : false;
+          const isMemberOfActive = activeClubId ? clubs.some((c: any) => c.id.toString() === activeClubId!.toString()) : false;
           let matchedClubId = activeClubId;
           if (!isMemberOfActive) {
             // Default to the first joined club
@@ -55,12 +54,8 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
             localStorage.setItem("selectedClubId", String(matchedClubId));
           }
           activeClubId = matchedClubId;
-          
-          const current = clubs.find((c: any) => c.id.toString() === activeClubId?.toString());
-          setActiveClub(current);
         } else {
           activeClubId = undefined;
-          setActiveClub(null);
         }
       } catch (e) {
         console.error("Failed to fetch user's joined clubs for verification:", e);

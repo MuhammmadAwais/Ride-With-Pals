@@ -309,7 +309,7 @@ const RideJoining = () => {
                   <div key={idx} className="flex items-center justify-between bg-hover p-4 rounded-2xl border border-border transition-all duration-300 hover:border-border">
                     <div className="flex items-center gap-3.5">
                       <div className="w-10 h-10 rounded-2xl bg-main-bg border border-border flex items-center justify-center font-extrabold text-[11px] text-text-main shadow-md uppercase tracking-wider">
-                        {leader.name.split(" ").map(n => n[0]).join("")}
+                        {leader.name.split(" ").map((n: string) => n[0]).join("")}
                       </div>
                       <div className="flex flex-col">
                         <span className="text-xs font-extrabold text-text-main leading-tight tracking-tight">{leader.name}</span>
@@ -405,7 +405,7 @@ const RideJoining = () => {
             {/* Scrollable Participants Directory */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
               {filteredRoster.length > 0 ? (
-                filteredRoster.map((user, idx) => (
+                filteredRoster.map((user: any, idx: number) => (
                   <div 
                     key={idx} 
                     className="flex items-center justify-between bg-hover p-4.5 rounded-2xl border border-border group hover:border-border transition-all duration-300 hover:shadow-lg"

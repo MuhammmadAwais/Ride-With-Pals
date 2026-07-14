@@ -6,11 +6,6 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
-  Camera,
-  Mail,
-  ExternalLink,
-  Settings,
-  Globe,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -27,35 +22,14 @@ const containerVariants: Variants = {
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-const StatCard = ({ label, value, trend, isPositive }: any) => (
-  <div className="bg-surface p-5 rounded-2xl border border-border">
-    <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mb-2">{label}</p>
-    <div className="flex items-end justify-between">
-      <h3 className="text-2xl font-black text-text-main">{value}</h3>
-      <span className={`text-xs font-bold ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>{trend}</span>
-    </div>
-  </div>
-);
-
 export const ManageClub = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>('');
   const itemsPerPage = 5;
   const navigate = useNavigate();
  
   const dispatch = useAppDispatch();
-  const { myClubs, isLoading } = useAppSelector((state) => state.club);
+  const { myClubs } = useAppSelector((state) => state.club);
   const { user } = useAppSelector((state) => state.auth);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
 
   useEffect(() => {
     dispatch(fetchMyClubs());

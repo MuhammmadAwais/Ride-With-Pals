@@ -34,7 +34,7 @@ const Members = () => {
           const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
           if (clubs.length > 0) {
             clubIdStr = clubs[0].id.toString();
-            localStorage.setItem("selectedClubId", clubIdStr);
+            localStorage.setItem("selectedClubId", clubIdStr as string);
           }
         } catch (e) {
           console.error("Failed to fetch user's joined clubs for members", e);

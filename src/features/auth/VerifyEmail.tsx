@@ -86,12 +86,12 @@ const VerifyEmail = () => {
     }
     setError('');
 
-    // Log the user in with a default athlete role
     const loggedInUser = {
       id: `usr_${Math.random().toString(36).substr(2, 9)}`,
       email: userEmail,
       name: userEmail.split('@')[0],
       role: 'athlete' as const,
+      token: '',
     };
     dispatch(setUser(loggedInUser));
 

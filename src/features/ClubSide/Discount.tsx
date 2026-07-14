@@ -3,10 +3,10 @@ import { Plus, Search, Tag, AlertCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Shared database for Active items fallback
-const SHARED_ACTIVE_DISCOUNTS: any[] = [];
+// const SHARED_ACTIVE_DISCOUNTS: any[] = [];
 
 // Organizer Expired Database fallback
-const EXPIRED_DISCOUNTS: any[] = [];
+// const EXPIRED_DISCOUNTS: any[] = [];
 
 // Reusable Coupon Card matching UI specs
 const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
@@ -79,7 +79,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
           const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
           if (clubs.length > 0) {
             clubIdStr = clubs[0].id.toString();
-            localStorage.setItem("selectedClubId", clubIdStr);
+            localStorage.setItem("selectedClubId", clubIdStr as string);
           }
         } catch (e) {
           console.error("Failed to fetch user's joined clubs for discounts", e);

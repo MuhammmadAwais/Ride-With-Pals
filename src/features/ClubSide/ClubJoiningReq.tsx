@@ -16,7 +16,7 @@ export const ClubJoiningReq = () => {
         const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
         if (clubs.length > 0) {
           clubId = clubs[0].id.toString();
-          localStorage.setItem("selectedClubId", clubId);
+          localStorage.setItem("selectedClubId", clubId as string);
         }
       } catch (e) {
         console.error("Failed to fetch user's joined clubs for joining requests", e);

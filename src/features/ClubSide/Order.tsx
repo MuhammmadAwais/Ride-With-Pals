@@ -15,8 +15,6 @@ const Order = () => {
     const fetchOrders = async () => {
       const clubIdStr = localStorage.getItem("selectedClubId");
       if (!clubIdStr) return;
-      
-      const statusIds = activeTab === 'Active' ? [2] : [4];
       try {
         const res = await ShopService.forClubOwnerOrderList({ clubId: Number(clubIdStr), search: searchQuery, limit: 50, offset: 0 });
         

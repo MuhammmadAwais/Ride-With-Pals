@@ -20,7 +20,6 @@ import {
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { RideService } from "@/api/backendApi";
-import { toast } from "sonner";
 
 ChartJS.register(
   CategoryScale,
