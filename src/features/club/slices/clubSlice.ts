@@ -43,10 +43,21 @@ export const fetchMyClubs = createAsyncThunk<Club[], void, { rejectValue: string
       const state = getState() as any;
       const role = state?.auth?.user?.role;
       
-      // Dynamic logic: Organizers fetch owned clubs. Athletes fetch joined clubs.
       if (role === 'organizer' || role === 'owner') {
-        const response = await ClubService.getAllClubs(true);
-        return extractArray(response);
+        const [ownedResponse, joinedResponse] = await Promise.all([
+          ClubService.getAllClubs(true),
+          ClubService.getJoinedClubs()
+        ]);
+        const ownedClubs = extractArray(ownedResponse);
+        const joinedClubs = extractArray(joinedResponse);
+        
+        // Merge and remove duplicates by ID
+        const combined = [...ownedClubs, ...joinedClubs];
+        const uniqueClubsMap = new Map();
+        combined.forEach(club => {
+          if (club && club.id) uniqueClubsMap.set(club.id, club);
+        });
+        return Array.from(uniqueClubsMap.values());
       } else {
         const response = await ClubService.getJoinedClubs();
         return extractArray(response);

@@ -10,12 +10,17 @@ import {
   Trash2,
   FileImage,
 } from "lucide-react";
+import { toast } from "sonner";
+import { NewsService, RideService } from "@/api/backendApi";
 
 export const NewsAdded = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -29,6 +34,45 @@ export const NewsAdded = () => {
     setPreviewUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSave = async () => {
+    if (!title.trim() || !description.trim()) {
+      toast.error("Title and description are required.");
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const clubId = localStorage.getItem("selectedClubId");
+      if (!clubId) {
+        toast.error("No club selected.");
+        return;
+      }
+      
+      let imageUrl = "";
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        const uploadRes = await RideService.uploadFile(formData);
+        imageUrl = uploadRes?.url || uploadRes?.data?.url || uploadRes?.fileName || uploadRes?.response?.url || "";
+      }
+      
+      await NewsService.addNews({
+        title,
+        description,
+        clubId: Number(clubId),
+        newsImage: imageUrl
+      });
+      
+      toast.success("News published successfully!");
+      navigate("/view/clubside/news");
+    } catch (error) {
+      console.error("Failed to add news:", error);
+      toast.error("Failed to publish news.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,6 +114,8 @@ export const NewsAdded = () => {
               type="text"
               placeholder="Enter headline..."
               maxLength={120}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-transparent outline-none placeholder:text-text-muted font-medium text-text-main transition-all duration-300"
             />
             <div className="flex justify-between items-center mt-6 pt-4 border-t border-border">
@@ -77,7 +123,7 @@ export const NewsAdded = () => {
                 Mandatory institutional field
               </span>
               <span className="text-[9px] text-text-muted font-mono font-bold">
-                0 / 120
+                {title.length} / 120
               </span>
             </div>
           </div>
@@ -105,6 +151,8 @@ export const NewsAdded = () => {
               </div>
             </div>
             <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="w-full h-48 md:h-64 bg-transparent outline-none text-sm md:text-base text-text-main placeholder:text-text-muted resize-none transition-all duration-300"
               placeholder="Compose detailed content..."
             ></textarea>
@@ -113,7 +161,7 @@ export const NewsAdded = () => {
                 Rich formatting enabled
               </span>
               <span className="text-[9px] text-text-muted font-bold uppercase">
-                Word count: 0
+                Word count: {description.trim().split(/\s+/).filter(w => w.length > 0).length}
               </span>
             </div>
           </div>
@@ -187,10 +235,13 @@ export const NewsAdded = () => {
             </label>
 
             <button
-              onClick={() => navigate("/dashboard/news")} // Change this to the full path
-              className="w-full flex items-center justify-center gap-2 bg-[#EB712B] text-white font-bold py-4 rounded-2xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(235,113,43,0.3)] active:scale-[0.98] cursor-pointer"
+              onClick={handleSave}
+              disabled={loading}
+              className={`w-full flex items-center justify-center gap-2 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-[0_0_20px_rgba(235,113,43,0.3)] ${
+                loading ? "bg-gray-500 cursor-not-allowed" : "bg-[#EB712B] hover:shadow-[0_0_30px_rgba(235,113,43,0.5)] active:scale-[0.98] cursor-pointer"
+              }`}
             >
-              Save
+              {loading ? "Publishing..." : "Save"}
             </button>
           </div>
         </div>

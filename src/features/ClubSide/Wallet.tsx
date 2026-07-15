@@ -167,11 +167,11 @@ export default function WalletDashboard() {
               Available Balance
             </div>
             <h2 className="text-4xl lg:text-5xl font-black text-text-main mb-6">
-              $12,450.00
+              N/A
             </h2>
             <div className="flex items-center justify-between text-sm">
               <span className="text-text-muted">Total Earnings</span>
-              <span className="font-bold text-text-main">$45,230.00</span>
+              <span className="font-bold text-text-main">N/A</span>
             </div>
           </div>
         </div>

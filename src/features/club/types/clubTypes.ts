@@ -15,6 +15,8 @@ export interface Club {
   invitationCode?: string;
   invitationCodeExpiresAt?: string;
   memberCount?: number;
+  totalMembers?: number;
+  membersCount?: number;
   ownerId?: number;
   createdAt?: string;
 }

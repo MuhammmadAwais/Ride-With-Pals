@@ -8,7 +8,7 @@ export const setupApiStore = (store: any) => {
 };
 
 const API_URL =
-  import.meta.env.VITE_APP_BACKEND_API_BASE_URL || "http://85.31.238.214:8084/api";
+  import.meta.env.VITE_APP_BACKEND_API_BASE_URL || "https://api.ridewithpals.com/api";
 
 // Create a centralized Axios instance
 export const backendApi = axios.create({

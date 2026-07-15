@@ -113,7 +113,8 @@ export default function UserClub() {
   );
 
   const handleSelectMyClub = (club: any) => {
-    navigate(`/view/userside/clubs/${club.id}`);
+    localStorage.setItem("selectedClubId", club.id);
+    navigate(`/view/clubside/dashboard`);
   };
 
   const handleSelectDiscoverClub = (comm: any) => {
@@ -573,7 +574,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{club.memberCount || 0} Pals joined</span>
+                        <span>{club.memberCount || club.totalMembers || club.membersCount || 0} Pals joined</span>
                       </div>
                       <span 
                         onClick={() => handleSelectMyClub(club)} 
@@ -682,7 +683,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{comm.memberCount || 0}</span>
+                        <span>{comm.memberCount || comm.totalMembers || comm.membersCount || 0}</span>
                       </div>
                       <span 
                         onClick={() => handleSelectDiscoverClub(comm)} 
@@ -732,7 +733,7 @@ export default function UserClub() {
                         <span className="truncate">{comm.location || "N/A"}</span>
                       </div>
                       <p className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                        {comm.memberCount || 0} Pals joined
+                        {comm.memberCount || comm.totalMembers || comm.membersCount || 0} Pals joined
                       </p>
                     </div>
                   </div>

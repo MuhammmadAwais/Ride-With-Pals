@@ -4,6 +4,7 @@ import { RideService } from "@/api/backendApi";
 import { 
   ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
@@ -26,6 +27,7 @@ const RideJoining = () => {
   const [isRosterOpen, setIsRosterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [isJoined, setIsJoined] = useState(false);
 
   const [mapCenter, setMapCenter] = useState<[number, number]>([45.9184, 6.5862]);
 
@@ -84,11 +86,12 @@ const RideJoining = () => {
     try {
       if (id) {
         await RideService.joinRide({ rideId: parseInt(id) });
-        navigate(`/ride/confirmation/${id}`);
+        setIsJoined(true);
+        toast.success("Successfully joined the ride!");
       }
     } catch (error) {
       console.error("Failed to join ride:", error);
-      // maybe show an error toast here
+      toast.error("Failed to join the ride or permission denied.");
     }
   };
 
@@ -291,9 +294,14 @@ const RideJoining = () => {
 
               <button 
                 onClick={handleJoinClick}
-                className="w-full bg-[#eb712a] hover:bg-[#d66525] py-5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.2)] cursor-pointer tracking-wide hover:-translate-y-1 active:translate-y-0 text-white"
+                disabled={isJoined}
+                className={`w-full py-5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.2)] tracking-wide text-white ${
+                  isJoined 
+                    ? "bg-green-600 cursor-not-allowed opacity-90" 
+                    : "bg-[#eb712a] hover:bg-[#d66525] cursor-pointer hover:-translate-y-1 active:translate-y-0"
+                }`}
               >
-                🚴 Join Elite Ride
+                {isJoined ? "✓ Joined" : "🚴 Join Elite Ride"}
               </button>
 
               <div className="text-[9px] font-bold text-center text-text-muted tracking-wide italic">
