@@ -1,11 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/backend-api/:path*",
+      "destination": "http://85.31.238.214:8084/api/:path*"
     },
     {
-      "source": "/((?!api|src|@vite|@react-refresh|@fs|@id|node_modules|system-check\\.js|robots\\.txt|sitemap\\.xml|.+\\.[a-zA-Z0-9]+$).*)",
+      "source": "/((?!backend-api|src|@vite|@react-refresh|@fs|@id|node_modules|system-check\\.js|robots\\.txt|sitemap\\.xml|.+\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
   ]
