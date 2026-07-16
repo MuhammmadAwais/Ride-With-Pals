@@ -21,12 +21,14 @@ import storage from 'redux-persist/es/storage';
 import authReducer from '@/features/auth/slices/authSlice';
 import clubReducer from '@/features/club/slices/clubSlice';
 import { STORAGE_KEYS } from '@/Constants';
+import { apiSlice } from '@/api/apiSlice';
 
 // ─── Root Reducer ─────────────────────────────────────────────────────────────
 
 const rootReducer = combineReducers({
   auth: authReducer,
   club: clubReducer,
+  [apiSlice.reducerPath]: apiSlice.reducer,
   // Add new feature slices here (e.g., news: newsReducer)
 });
 
@@ -40,7 +42,7 @@ const persistConfig = {
   whitelist: ['auth'],
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer) as unknown as typeof rootReducer;
 
 // ─── Store ────────────────────────────────────────────────────────────────────
 
@@ -52,7 +54,7 @@ export const store = configureStore({
         // Required by redux-persist: these action types carry non-serializable values
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(apiSlice.middleware),
   devTools: import.meta.env.DEV,
 });
 
