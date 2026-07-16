@@ -1,20 +1,24 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, ChevronDown, Calendar } from "lucide-react";
+import { Camera, ChevronDown, Calendar, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import { ROUTES } from "@/Constants";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useUpsertAthleteProfileMutation, useUploadFileMutation } from "@/features/auth/api/authApiSlice";
+
 
 const AthleteProfileForm = () => {
   const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState("Images/ProfileImage.png"); 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const { handleUpsertProfile, isLoading } = useAuth();
+  const [upsertAthleteProfile, { isLoading: isSaving }] = useUpsertAthleteProfileMutation();
+  const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
+  const isLoading = isSaving || isUploading;
 
   // Form State
   const [fullName, setFullName] = useState("");
@@ -53,6 +57,7 @@ const AthleteProfileForm = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result as string); 
@@ -76,22 +81,33 @@ const AthleteProfileForm = () => {
       return;
     }
 
-    const athleteProfile = {
-      fullName,
-      dob,
-      country,
-      gender,
-      unit,
-      phone,
-      bio,
-      profileImage
-    };
-
     try {
-      await handleUpsertProfile(athleteProfile);
+      let uploadedImage = profileImage;
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        const uploadRes = await uploadFile(formData).unwrap();
+        uploadedImage = uploadRes.fileName;
+      }
+
+      const genderId = gender === 'Male' ? 1 : gender === 'Female' ? 2 : 3;
+      const unitVal = unit.includes('Metric') ? 'km' : 'miles';
+
+      await upsertAthleteProfile({
+        fullName,
+        dob,
+        country,
+        genderId,
+        unit: unitVal,
+        phone,
+        description: bio,
+        profileImage: uploadedImage,
+      }).unwrap();
+
+      toast.success("Profile saved successfully!");
       navigate(ROUTES.CLUBS); 
-    } catch (err) {
-      // Error handled in hook
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || "Failed to save profile.");
     }
   };
 
@@ -281,7 +297,12 @@ const AthleteProfileForm = () => {
             disabled={isLoading}
             className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all disabled:opacity-50"
           >
-            {isLoading ? "Saving..." : "Save Profile"}
+            {isLoading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Saving Profile...
+              </>
+            ) : "Save Profile"}
           </button>
         </form>
       </div>

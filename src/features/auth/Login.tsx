@@ -17,11 +17,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { loginUser } from '@/features/auth/slices/authSlice';
 import { cn } from '@/lib/utils';
 import { ROUTES, LOGIN_COPY, APP_NAME } from '@/Constants';
+import { useLoginMutation } from '@/features/auth/api/authApiSlice';
 
 interface FormErrors {
   email?: string;
@@ -31,11 +30,11 @@ interface FormErrors {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const Login = () => {
-  const dispatch    = useAppDispatch();
   const navigate    = useNavigate();
   const location    = useLocation();
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user            = useAppSelector((s) => s.auth.user);
+
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -49,7 +48,7 @@ const Login = () => {
   const [email,        setEmail]        = useState('');
   const [password,     setPassword]     = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading,    setIsLoading]    = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
   const [errors,       setErrors]       = useState<FormErrors>({});
 
   /* ── GSAP stagger entry ── */
@@ -76,29 +75,24 @@ const Login = () => {
   const handleLogin = async () => {
     if (!validate()) return;
 
-    setIsLoading(true);
     try {
-      const result = await dispatch(loginUser({ email: email.trim().toLowerCase(), password }));
-      if (loginUser.fulfilled.match(result)) {
-        toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
-        
-        // Dynamic Routing based on user role
-        const userRole = result.payload.user.role;
-        let defaultRoute: string = ROUTES.CLUBS; // default to Athlete Hub
-        if (userRole === 'organizer' || userRole === 'owner') {
-          defaultRoute = ROUTES.MANAGE_CLUB_HOME;
-        }
-        
-        // Navigate to intended route or role-specific dashboard
-        const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-        navigate(from ?? defaultRoute, { replace: true });
-      } else {
-        const errorMsg = (result.payload as string) ?? LOGIN_COPY.INVALID_CREDENTIALS;
-        toast.error(errorMsg);
-        setErrors({ password: errorMsg });
+      const result = await login({ email: email.trim().toLowerCase(), password }).unwrap();
+      toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
+      
+      // Dynamic Routing based on user role
+      const userRole = (result.isAthleteProfile ? 'athlete' : 'organizer') as 'athlete' | 'organizer' | 'owner';
+      let defaultRoute: string = ROUTES.CLUBS; // default to Athlete Hub
+      if (userRole === 'organizer' || userRole === 'owner') {
+        defaultRoute = ROUTES.MANAGE_CLUB_HOME;
       }
-    } finally {
-      setIsLoading(false);
+      
+      // Navigate to intended route or role-specific dashboard
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+      navigate(from ?? defaultRoute, { replace: true });
+    } catch (err: any) {
+      const errorMsg = err?.data?.message || err?.message || LOGIN_COPY.INVALID_CREDENTIALS;
+      toast.error(errorMsg);
+      setErrors({ password: errorMsg });
     }
   };
 

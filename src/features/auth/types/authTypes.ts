@@ -14,6 +14,7 @@ export interface AppUser {
   fullName?: string;
   dob?: string;
   country?: string;
+  phone?: string;
 }
 
 /** Redux auth slice shape. */

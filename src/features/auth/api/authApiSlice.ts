@@ -1,5 +1,7 @@
 import { apiSlice } from '@/api/apiSlice';
 import { AuthTypes } from '@/api/types';
+import { setUser } from '../slices/authSlice';
+import type { AppUser } from '../types/authTypes';
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,6 +12,19 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body,
       }),
       invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const user: AppUser = {
+            id: data.id,
+            email: data.email,
+            token: data.token,
+            isAthleteProfile: !!data.isAthleteProfile,
+            role: 'athlete',
+          };
+          dispatch(setUser(user));
+        } catch (err) {}
+      },
     }),
 
     forgotPassword: builder.query<AuthTypes.ForgotPasswordResponseResponse, AuthTypes.ForgotPasswordParams>({
@@ -39,6 +54,19 @@ export const authApiSlice = apiSlice.injectEndpoints({
         },
       }),
       invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const user: AppUser = {
+            id: data.id,
+            email: data.email,
+            token: data.token,
+            isAthleteProfile: !!data.isAthleteProfile,
+            role: data.isAthleteProfile ? 'athlete' : 'organizer',
+          };
+          dispatch(setUser(user));
+        } catch (err) {}
+      },
     }),
 
     changePassword: builder.mutation<AuthTypes.UpdatePasswordResponse, AuthTypes.ChangePasswordRequest & { token: string }>({
@@ -60,6 +88,19 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body,
       }),
       invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const user: AppUser = {
+            id: data.id,
+            email: data.email,
+            token: data.token,
+            isAthleteProfile: !!data.isAthleteProfile,
+            role: data.isAthleteProfile ? 'athlete' : 'organizer',
+          };
+          dispatch(setUser(user));
+        } catch (err) {}
+      },
     }),
 
     updatePassword: builder.mutation<AuthTypes.UpdatePasswordResponse, AuthTypes.UpdatePasswordRequest>({
@@ -78,6 +119,26 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body,
       }),
       invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
+        try {
+          const { data } = await queryFulfilled;
+          const state = getState() as any;
+          const currentToken = state?.auth?.user?.token;
+          const user: AppUser = {
+            id: data.id,
+            email: data.email,
+            token: currentToken || '',
+            isAthleteProfile: data.isAthleteProfile,
+            role: 'athlete',
+            fullName: data.fullName,
+            dob: data.dob,
+            country: data.country,
+            profileImage: data.profileImage,
+            phone: data.phone,
+          };
+          dispatch(setUser(user));
+        } catch (err) {}
+      },
     }),
 
     userInfo: builder.query<AuthTypes.UserInfoResponseResponse, void>({
@@ -104,7 +165,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body,
       }),
       invalidatesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const user: AppUser = {
+            id: data.id,
+            email: data.email,
+            token: data.token,
+            isAthleteProfile: !!data.isAthleteProfile,
+            role: data.isAthleteProfile ? 'athlete' : 'organizer',
+          };
+          dispatch(setUser(user));
+        } catch (err) {}
+      },
     }),
+
 
     updateFcmToken: builder.mutation<{ statusCode: number; message: string }, AuthTypes.UpdateFcmTokenRequest>({
       query: (body) => ({

@@ -13,16 +13,20 @@ import { Mail, ArrowLeft, AlertCircle, CheckCircle, Loader2, Lock, Eye, EyeOff }
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, APP_NAME } from '@/Constants';
-import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useLazyForgotPasswordQuery, useValidateOtpMutation, useChangePasswordMutation } from '@/features/auth/api/authApiSlice';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { handleForgotPassword, handleValidateOtp, handleChangePassword, isLoading } = useAuth();
+  const [triggerForgot, { isFetching }] = useLazyForgotPasswordQuery();
+  const [validateOtp, { isLoading: isValidating }] = useValidateOtpMutation();
+  const [changePassword, { isLoading: isUpdating }] = useChangePasswordMutation();
+  const isLoading = isFetching || isValidating || isUpdating;
 
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -48,11 +52,12 @@ const ForgotPassword = () => {
     }
     setError('');
     try {
-      const token = await handleForgotPassword(email.trim());
-      setTempToken(token);
+      const response = await triggerForgot({ email: email.trim() }).unwrap();
+      setTempToken(response.token);
       setStep('otp');
-    } catch (err) {
-      // Error is already toasted by useAuth
+      toast.success('OTP sent successfully.');
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || 'Failed to send OTP.');
     }
   };
 
@@ -63,11 +68,12 @@ const ForgotPassword = () => {
     }
     setError('');
     try {
-      const token = await handleValidateOtp(Number(otp), tempToken);
-      setResetToken(token);
+      const response = await validateOtp({ OTP: Number(otp), token: tempToken }).unwrap();
+      setResetToken(response.token);
       setStep('password');
-    } catch (err) {
-      // Error handled
+      toast.success('OTP validated successfully.');
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || 'Invalid OTP.');
     }
   };
 
@@ -78,10 +84,11 @@ const ForgotPassword = () => {
     }
     setError('');
     try {
-      await handleChangePassword(newPassword, resetToken);
+      await changePassword({ password: newPassword, token: resetToken }).unwrap();
       setStep('success');
-    } catch (err) {
-      // Error handled
+      toast.success('Password updated successfully.');
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || 'Failed to change password.');
     }
   };
 

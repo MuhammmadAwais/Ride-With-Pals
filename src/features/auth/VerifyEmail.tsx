@@ -15,16 +15,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 import { ROUTES, APP_NAME } from '@/Constants';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { setUser } from '@/features/auth/slices/authSlice';
+import { useValidateOtpMutation, useResendOtpMutation } from '@/features/auth/api/authApiSlice';
+
 
 const VerifyEmail = () => {
   const navigate   = useNavigate();
   const location   = useLocation();
-  const dispatch   = useAppDispatch();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRefs  = useRef<(HTMLInputElement | null)[]>([]);
+  const [validateOtp, { isLoading: isValidating }] = useValidateOtpMutation();
+  const [resendOtp] = useResendOtpMutation();
 
   const userEmail = (location.state as { email?: string })?.email ?? 'your email';
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -78,7 +80,7 @@ const VerifyEmail = () => {
     }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (code.includes('')) {
       setError('Please enter the complete 6-digit code.');
       toast.error('Please enter the complete 6-digit code.');
@@ -86,24 +88,30 @@ const VerifyEmail = () => {
     }
     setError('');
 
-    const loggedInUser = {
-      id: `usr_${Math.random().toString(36).substr(2, 9)}`,
-      email: userEmail,
-      name: userEmail.split('@')[0],
-      role: 'athlete' as const,
-      token: '',
-    };
-    dispatch(setUser(loggedInUser));
+    const token = (location.state as { token?: string })?.token ?? '';
 
-    toast.success('Email verified! Redirecting...');
-    navigate(ROUTES.SELECT_ROLE);
+    try {
+      const otpNumber = Number(code.join(''));
+      await validateOtp({ OTP: otpNumber, token }).unwrap();
+      toast.success('Email verified! Redirecting...');
+      navigate(ROUTES.SELECT_ROLE);
+    } catch (err: any) {
+      const errorMsg = err?.data?.message || err?.message || 'Invalid OTP.';
+      setError(errorMsg);
+      toast.error(errorMsg);
+    }
   };
 
-  const handleResend = () => {
-    setTimeLeft(60);
-    setCode(['', '', '', '', '', '']);
-    inputRefs.current[0]?.focus();
-    toast.success('A new verification code has been sent!');
+  const handleResend = async () => {
+    try {
+      await resendOtp({ email: userEmail }).unwrap();
+      setTimeLeft(60);
+      setCode(['', '', '', '', '', '']);
+      inputRefs.current[0]?.focus();
+      toast.success('A new verification code has been sent!');
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || 'Failed to resend code.');
+    }
   };
 
   return (
@@ -193,8 +201,18 @@ const VerifyEmail = () => {
           )}
 
           {/* Verify button */}
-          <button onClick={handleVerify} className="animate-item btn-primary" style={{ marginBottom: '24px' }}>
-            Verify Code
+          <button 
+            onClick={handleVerify} 
+            disabled={isValidating}
+            className="animate-item btn-primary" 
+            style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+          >
+            {isValidating ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Verifying...
+              </>
+            ) : 'Verify Code'}
           </button>
 
           {/* Timer + Resend */}

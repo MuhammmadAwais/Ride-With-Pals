@@ -22,8 +22,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, SIGNUP_COPY, APP_NAME } from '@/Constants';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { registerUser } from '@/features/auth/slices/authSlice';
+import { useSignupMutation } from '@/features/auth/api/authApiSlice';
 import { Loader2 } from 'lucide-react';
 
 /* ── Validation helpers ──────────────────────────────────────────────────── */
@@ -53,10 +52,9 @@ function getPasswordStrength(password: string): { label: string; color: string; 
 
 const CreateAccount = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user = useAppSelector((s) => s.auth.user);
-  const isLoading = useAppSelector((s) => s.auth.isLoading);
+  const [signup, { isLoading }] = useSignupMutation();
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -111,18 +109,11 @@ const CreateAccount = () => {
 
   const handleSignUp = async () => {
     if (validate()) {
-      const result = await dispatch(
-        registerUser({ email: email.trim().toLowerCase(), password })
-      );
-
-      if (registerUser.fulfilled.match(result)) {
+      try {
+        await signup({ email: email.trim().toLowerCase(), password }).unwrap();
         toast.success('Registration successful. Welcome!');
-        // Usually, the useEffect above will catch the isAuthenticated=true and redirect.
-        // But if you still need email verification step, you can redirect there instead.
-        // Since API returns a token immediately on signup, user is logged in.
-        // navigate(ROUTES.VERIFY_EMAIL, { state: { email } });
-      } else {
-        const errorMsg = (result.payload as string) || 'An error occurred during registration.';
+      } catch (err: any) {
+        const errorMsg = err?.data?.message || err?.message || 'An error occurred during registration.';
         toast.error(errorMsg);
         setErrors((prev) => ({ ...prev, email: errorMsg }));
       }
