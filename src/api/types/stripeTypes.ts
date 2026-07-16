@@ -25,3 +25,12 @@ export type CheckStripeAccountStatusResponseResponse = {
     detailsSubmitted:   boolean;
 }
 
+export type ConnectStripeParams = {
+    clubId: number | string;
+}
+
+export type CheckStripeAccountStatusParams = {
+    clubId: number | string;
+}
+
+

@@ -109,3 +109,42 @@ export type Order = {
     deletedAt:               null;
 }
 
+export type ForClubOwnerOrderListParams = {
+    clubId:     number | string;
+    limit?:     number | string;
+    offset?:    number | string;
+    statusIds?: string;
+}
+
+export type ForClubOwnerUpdateOrderStatusRequest = {
+    orderId:  number;
+    statusId: number;
+}
+
+export type BuyShopItemRequest = {
+    shopItemId:      number;
+    quantity:        number;
+    deliveryMethod:  'pickup' | 'delivery' | string;
+    orderAddress?: {
+        fullName?:   string;
+        phone?:      string;
+        street?:     string;
+        city?:       string;
+        state?:      string;
+        postalCode?: string;
+        country?:    string;
+    };
+    discountCode?:   string;
+}
+
+export type GetMyPurchasesListParams = {
+    statusIds?: string;
+    limit?:     number | string;
+    offset?:    number | string;
+}
+
+export type UpdateShopOrderStatusRequest = {
+    orderId: number;
+}
+
+

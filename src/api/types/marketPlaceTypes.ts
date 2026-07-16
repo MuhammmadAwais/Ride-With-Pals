@@ -72,3 +72,51 @@ export type DeleteMarketPlaceItemResponse = {
     message:    string;
 }
 
+export type GetMarketplaceListParams = {
+    clubId:  number | string;
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type AddMarketPlaceItemRequest = {
+    clubId?:      number;
+    clubIds?:     number[];
+    productName:  string;
+    price:        number;
+    condition:    string;
+    image?:       string;
+    description?: string;
+    quantity?:    number;
+}
+
+export type UpdateMarketPlaceItemRequest = {
+    marketPlaceItemId: number;
+    productName?:      string;
+    price?:            number;
+    condition?:        string;
+    image?:            string;
+    description?:      string;
+    isActive?:         boolean;
+    isSoldOut?:        boolean;
+    quantity?:         number;
+}
+
+export type GetMarketplaceItemInfoParams = {
+    marketPlaceItemId: number | string;
+}
+
+export type DeleteMarketPlaceItemRequest = {
+    marketPlaceItemId: number;
+}
+
+export type GetOwnListingsParams = {
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type ShareMarketPlaceItemRequest = {
+    clubId:            number;
+    marketPlaceItemId: number;
+}
+
+

@@ -71,3 +71,22 @@ export type User = {
     profileImage: null;
 }
 
+export type SaveRideRequest = {
+    rideId: number;
+}
+
+export type SaveRideResponse = {
+    statusCode: number;
+    message:    string;
+}
+
+export type UnsaveRideRequest = {
+    rideId: number;
+}
+
+export type GetSavedRidesListParams = {
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+

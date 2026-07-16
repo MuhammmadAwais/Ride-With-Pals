@@ -55,3 +55,47 @@ export type GrantRevokeFullClubAccessForOneMemberResponse = {
     response:   FullAccessMemberElement;
 }
 
+export type GetClubPermissionsParams = {
+    clubId: number | string;
+}
+
+export type SavePermissionsForRoleRequest = {
+    clubId:      number;
+    roleId:      number;
+    permissions: { permissionId: number; isAllowed: boolean }[];
+}
+
+export type ApplyPermissionTogglesForSelectedMembersRequest = {
+    clubId:      number;
+    userIds:     number[];
+    permissions: { permissionId: number; isAllowed: boolean }[];
+}
+
+export type GrantRevokeFullClubAccessForOneMemberRequest = {
+    clubId:       number;
+    userId:       number;
+    isFullAccess: boolean;
+}
+
+export type AssignRoleToMemberRequest = {
+    clubId: number;
+    userId: number;
+    roleId: number;
+}
+
+export type AssignRoleToMemberResponse = {
+    statusCode: number;
+    message:    string;
+}
+
+export type RemoveFullAccessPermissionRequest = {
+    clubId: number;
+    userId: number;
+}
+
+export type RemoveFullAccessPermissionResponse = {
+    statusCode: number;
+    message:    string;
+}
+
+

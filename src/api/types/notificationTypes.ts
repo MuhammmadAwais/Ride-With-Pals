@@ -52,3 +52,35 @@ export type SendSubscriptionReminderToEveryoneResponseResponse = {
     sentCount: number;
 }
 
+export type GetUserNotificationParams = {
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type GetClubNotificationsParams = {
+    clubId:  number | string;
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type MarkAsReadNotificationsRequest = {
+    notificationId: number;
+}
+
+export type MarkAsReadNotificationsResponse = {
+    statusCode: number;
+    message:    string;
+    response:   ResponseElement;
+}
+
+export type SendSubscriptionReminderRequest = {
+    clubId: number;
+    userId: number;
+    planId: number;
+}
+
+export type SendSubscriptionReminderToEveryoneRequest = {
+    clubId: number;
+}
+
+

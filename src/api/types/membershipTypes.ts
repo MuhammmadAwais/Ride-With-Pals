@@ -89,3 +89,72 @@ export type User = {
     email:        string;
 }
 
+export type SubscribeToMembershipPlanRequest = {
+    clubId: number;
+    planId: number;
+}
+
+export type GetMyMembershipInfoParams = {
+    clubId: number | string;
+}
+
+export type CreateClubMembershipPlanRequest = {
+    clubId:          number;
+    name:            string;
+    price:           number;
+    currency:        string;
+    billingInterval: string;
+    autoRenew:       boolean;
+    discountPercent: number;
+    features:        string[];
+}
+
+export type UpdateClubMembershipPlanRequest = {
+    planId:           number;
+    clubId:           number;
+    name?:            string;
+    price?:           number;
+    currency?:        string;
+    billingInterval?: string;
+    autoRenew?:       boolean;
+    discountPercent?: number;
+    features?:        string[];
+}
+
+export type DeleteMembershipPlanParams = {
+    planId: number | string;
+}
+
+export type DeleteMembershipPlanResponse = {
+    statusCode: number;
+    message:    string;
+}
+
+export type ListMembershipPlansParams = {
+    clubId: number | string;
+}
+
+export type GetMembershipPlanInfoByIDParams = {
+    clubId: number | string;
+    planId: number | string;
+}
+
+export type ListSubscribedMemberParams = {
+    clubId:  number | string;
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type ChangeClubMemberFeeStatusRequest = {
+    clubId: number;
+    userId: number;
+    planId: number;
+}
+
+export type ChangeClubMemberFeeStatusResponse = {
+    statusCode: number;
+    message:    string;
+    response:   Row;
+}
+
+

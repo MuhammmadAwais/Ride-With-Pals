@@ -110,3 +110,74 @@ export type CheckEmailExistenceResponseResponse = {
     exists: boolean;
 }
 
+export type SignupRequest = {
+    email:    string;
+    password: string;
+}
+
+export type LoginRequest = {
+    email:    string;
+    password: string;
+}
+
+export type ForgotPasswordParams = {
+    email: string;
+}
+
+export type ForgotPasswordResponseResponse = {
+    id:    number;
+    email: string;
+    token: string;
+}
+
+export type ResendOtpRequest = {
+    email: string;
+}
+
+export type ValidateOtpRequest = {
+    OTP: number;
+}
+
+export type ChangePasswordRequest = {
+    password: string;
+}
+
+export type UpdatePasswordRequest = {
+    password:    string;
+    newPassword: string;
+}
+
+export type UpsertAthleteProfileRequest = {
+    profileImage?: string;
+    fullName?:     string;
+    dob?:          string;
+    genderId?:     number;
+    country?:      string;
+    unit?:         string;
+    phone?:        string;
+    description?:  string;
+    timezone?:     string;
+    timeFormat?:   string;
+}
+
+export type FirebaseLoginRequest = {
+    idToken: string;
+}
+
+export type UpdateFcmTokenRequest = {
+    fcmToken: string;
+}
+
+export type UpdateScaleUnitSettingsRequest = {
+    scale: 'meter' | 'kilometer' | 'miles' | string;
+}
+
+export type CheckEmailExistenceParams = {
+    email: string;
+}
+
+export type GetOtherUserInfoParams = {
+    userId: string | number;
+}
+
+

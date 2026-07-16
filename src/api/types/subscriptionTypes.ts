@@ -124,3 +124,43 @@ export type SubscribeToAnyPlanResponseResponse = {
     sessionId:   string;
 }
 
+export type ListClubSubscriptionParams = {
+    clubId: number | string;
+}
+
+export type MySubscriptionParams = {
+    clubId: number | string;
+}
+
+export type SubscribeToClubPlanRequest = {
+    clubId: number | string;
+}
+
+export type SubscribeToClubPlanResponse = {
+    type:        string;
+    checkoutUrl: string;
+    sessionId:   string;
+}
+
+export type ClubCustomerPortalRequest = {
+    clubId: number;
+}
+
+export type ClubCustomerPortalResponse = {
+    url: string;
+}
+
+export type SubscribeToAnyPlanRequest = {
+    planId: number;
+}
+
+export type CreateCustomerPortalParams = {
+    type:    string;
+    clubId?: number | string;
+}
+
+export type CreateCustomerPortalResponse = {
+    url: string;
+}
+
+

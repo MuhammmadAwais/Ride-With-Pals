@@ -59,3 +59,41 @@ export type DeleteShopItemResponse = {
     message:    string;
 }
 
+export type AddItemToShopRequest = {
+    clubId:       number;
+    name:         string;
+    price:        number;
+    description?: string;
+    image?:       string;
+    size?:        string;
+    gender?:      string;
+    quantity?:    number;
+}
+
+export type UpdateItemToShopRequest = {
+    shopItemId:   number;
+    name?:        string;
+    price?:       number;
+    description?: string;
+    image?:       string;
+    size?:        string;
+    gender?:      string;
+    isActive?:    boolean;
+    quantity?:    number;
+}
+
+export type GetTheShopItemsParams = {
+    clubId:  number | string;
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type DeleteShopItemRequest = {
+    shopItemId: number;
+}
+
+export type GetTheShopItemByIDParams = {
+    shopItemId: number | string;
+}
+
+

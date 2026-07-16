@@ -52,3 +52,36 @@ export type DeleteDiscountResponse = {
     message:    string;
 }
 
+export type GetClubDiscountsParams = {
+    clubId:  number | string;
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type AddDiscountRequest = {
+    clubId:               number;
+    title:                string;
+    discountCode:         string;
+    discountPercentage?:  number;
+    discountFixedAmount?: number;
+    description?:         string;
+    validTill:            string;
+    isActive?:            boolean;
+}
+
+export type UpdateDiscountRequest = {
+    discountId:           number;
+    title?:               string;
+    discountCode?:        string;
+    discountPercentage?:  number;
+    discountFixedAmount?: number;
+    description?:         string;
+    validTill?:           string;
+    isActive?:            boolean;
+}
+
+export type DeleteDiscountRequest = {
+    discountId: number;
+}
+
+

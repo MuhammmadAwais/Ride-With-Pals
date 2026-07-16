@@ -68,3 +68,53 @@ export type GetAllNewsResponseResponse = {
     rows:  AddNewsResponseResponse[];
 }
 
+export type AddCommentRequest = {
+    newsId:  number;
+    comment: string;
+}
+
+export type GetAllNewsCommentsParams = {
+    newsId:  number | string;
+    limit?:  number | string;
+    offset?: number | string;
+}
+
+export type UpdateNewsCommentRequest = {
+    newsId:        number;
+    newsCommentId: number;
+    comment:       string;
+}
+
+export type DelCommentRequest = {
+    newsId:        number;
+    newsCommentId: number;
+}
+
+export type AddNewsRequest = {
+    title:        string;
+    description:  string;
+    image?:       string;
+    clubId:       number;
+}
+
+export type GetNewsByIdParams = {
+    id: number | string;
+}
+
+export type UpdateNewsRequest = {
+    id:          number;
+    title:       string;
+    description: string;
+    image?:      string;
+    clubId:      number;
+}
+
+export type DeleteNewsRequest = {
+    id: number;
+}
+
+export type GetAllNewsParams = {
+    clubId: number | string;
+}
+
+

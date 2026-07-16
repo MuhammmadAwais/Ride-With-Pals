@@ -469,3 +469,128 @@ export type ManageJoinGroupRequestResponseResponse = {
     message: string;
 }
 
+export type GetClubRidesParams = {
+    clubId:  number | string;
+    status?: string;
+}
+
+export type CreateClubProfileRequest = {
+    clubName:                string;
+    clubPrivacyId:           number;
+    clubTypeId:              number;
+    email:                   string;
+    phone:                   string;
+    location:                string;
+    description:             string;
+    logo?:                   string;
+    clubImage?:              string;
+    invitationCode?:         string;
+    invitationCodeExpiresAt?: string;
+    restrictUnpaidMembers?:   boolean;
+    restrictClubShop?:        boolean;
+    restrictJoinActivities?:  boolean;
+}
+
+export type UpdateClubInfoRequest = CreateClubProfileRequest & {
+    clubId: number;
+}
+
+export type AddRidesRequest = {
+    clubId?:              number;
+    clubIds?:             number[];
+    rideName:             string;
+    date:                 string;
+    time:                 string;
+    activityTypeId:       number;
+    sportSubTypeId?:      number;
+    categoryTypeId:       number;
+    meetingPoint:         string;
+    gpxFile:              string;
+    distance:             number;
+    description:          string;
+    pace:                 string;
+    isRecurringActivity:  boolean;
+    recurringActivities?: string[];
+    isStops:              boolean;
+    stops?:               number[];
+    isRecommendedSlots:   boolean;
+    recommendedSlots?:    string[];
+    isWomenAndNonBinary:  boolean;
+    rideLeaders:          { userId: number; name: string }[];
+    supportCarDriver?:    { userId?: number; name: string };
+    isPublic:             boolean;
+    isPaymentRequired:    boolean;
+}
+
+export type UpdateRideInfoRequest = AddRidesRequest & {
+    id: number;
+}
+
+export type GetOwnRidesParams = {
+    limit?:  number;
+    offset?: number;
+}
+
+export type GetRideInfoByIdParams = {
+    rideId: number | string;
+}
+
+export type GetClubsParams = {
+    owned?: boolean | string;
+}
+
+export type JoinClubRequest = {
+    clubId:          number;
+    invitationCode?: string;
+}
+
+export type GetJoinedClubsParams = {
+    limit?:  number;
+    offset?: number;
+}
+
+export type LeaveClubRequest = {
+    clubId: number;
+}
+
+export type JoinRideRequest = {
+    rideId: number;
+}
+
+export type GetClubMembersListParams = {
+    clubId: number | string;
+}
+
+export type GetClubJoinRequestParams = {
+    clubId: number | string;
+}
+
+export type ManageJoinGroupRequest = {
+    clubId: number;
+    userId: number;
+    action: 'approve' | 'reject';
+}
+
+export type GetClubDashboardStatsParams = {
+    clubId: number | string;
+}
+
+export type GetClubDashboardStatsResponseResponse = {
+    totalMembers:     number | string;
+    totalRides:       number | string;
+    totalEarnings:    number | string;
+    walletBalance:    number | string;
+    revenueForecast:  number | string;
+    marketplaceSales: any[];
+}
+
+export type GetClubInfoByIdParams = {
+    clubId: number | string;
+}
+
+export type RemoveClubMemberRequest = {
+    clubId: number;
+    userId: number;
+}
+
+
