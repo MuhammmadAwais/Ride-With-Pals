@@ -1,7 +1,91 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { MessageSquare, Plus, ArrowUpRight, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { NewsService, ClubService } from '@/api/backendApi';
+import { toast } from 'sonner';
+import { useGetAllNewsQuery, useGetAllNewsCommentsQuery, useAddCommentMutation, useDelCommentMutation } from '@/features/club/api/newsApiSlice';
+import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+
+const ArticleComments = ({ newsId }: { newsId: number }) => {
+  const [newComment, setNewComment] = useState("");
+  const { data: commentsData, isLoading } = useGetAllNewsCommentsQuery({ newsId });
+  const [addComment, { isLoading: isAdding }] = useAddCommentMutation();
+  const [deleteComment] = useDelCommentMutation();
+
+  const comments = commentsData?.rows || [];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+    try {
+      await addComment({ newsId, comment: newComment.trim() }).unwrap();
+      setNewComment("");
+      toast.success("Comment posted successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to post comment.");
+    }
+  };
+
+  const handleDelete = async (commentId: number) => {
+    try {
+      await deleteComment({ newsId, newsCommentId: commentId }).unwrap();
+      toast.success("Comment deleted successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to delete comment.");
+    }
+  };
+
+  return (
+    <div className="mt-6 pt-6 border-t border-border space-y-4">
+      <h4 className="text-xs font-bold uppercase tracking-wider text-text-main">Comments ({comments.length})</h4>
+      
+      {isLoading ? (
+        <div className="space-y-2 animate-pulse">
+          <div className="h-10 bg-[#222] rounded-xl" />
+          <div className="h-10 bg-[#222] rounded-xl" />
+        </div>
+      ) : comments.length === 0 ? (
+        <p className="text-xs text-text-muted">No comments yet. Be the first to write one!</p>
+      ) : (
+        <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+          {comments.map((comment: any) => (
+            <div key={comment.id} className="flex justify-between items-start gap-4 p-3 bg-hover rounded-2xl border border-border">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-text-main">{comment.user?.fullName || "User"}</span>
+                  <span className="text-[8px] text-text-muted">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                </div>
+                <p className="text-xs text-text-muted leading-relaxed">{comment.comment}</p>
+              </div>
+              <button 
+                onClick={() => handleDelete(comment.id)} 
+                className="text-[9px] font-bold uppercase text-red-500 hover:text-red-400 cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input 
+          type="text" 
+          placeholder="Write a comment..." 
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          className="flex-1 bg-surface border border-border px-4 py-2.5 rounded-xl text-xs text-text-main focus:outline-none focus:border-[#EB712B]/40"
+        />
+        <button 
+          type="submit" 
+          disabled={isAdding}
+          className="px-4 py-2.5 bg-[#EB712B] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#ff8036] disabled:opacity-50 cursor-pointer"
+        >
+          {isAdding ? "..." : "Post"}
+        </button>
+      </form>
+    </div>
+  );
+};
 
 const NewsArticle = ({ item }: { item: any }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -41,13 +125,18 @@ const NewsArticle = ({ item }: { item: any }) => {
 
             {isExpanded && (
               <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                <img src={item.image} alt="Article visual" className="w-full h-40 sm:h-48 object-cover rounded-2xl border border-border" />
+                {item.image && (
+                  <img src={item.image} alt="Article visual" className="w-full h-40 sm:h-48 object-cover rounded-2xl border border-border" />
+                )}
                 <p className="text-sm text-text-muted leading-relaxed">
                   {item.fullContent}
                   <button onClick={() => setIsExpanded(false)} className="ml-2 font-bold text-[#EB712B] underline underline-offset-4 cursor-pointer">
                     Show Less
                   </button>
                 </p>
+                
+                {/* Embedded comments section */}
+                <ArticleComments newsId={Number(item.id)} />
               </div>
             )}
           </div>
@@ -57,8 +146,11 @@ const NewsArticle = ({ item }: { item: any }) => {
               <div className="w-6 h-6 rounded-full bg-surface flex items-center justify-center text-[8px] font-black text-[#EB712B] border border-border">{item.authorInitials}</div>
               <span className="text-xs font-bold text-text-main truncate max-w-[100px]">{item.author}</span>
             </div>
-            <button className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer">
-              <MessageSquare size={12} /> 25
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
+            >
+              <MessageSquare size={12} /> {item.totalCommentsCount || 0}
             </button>
           </div>
         </div>
@@ -71,52 +163,51 @@ interface NewsFeedProps {
   clubId?: string | number;
 }
 
+const NewsSkeleton = () => (
+  <div className="space-y-6 animate-pulse">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="bg-surface/50 border border-border rounded-3xl p-8 flex flex-col sm:flex-row gap-6">
+        <div className="w-14 h-14 bg-border rounded-2xl shrink-0" />
+        <div className="flex-1 space-y-4">
+          <div className="w-2/3 h-6 bg-border rounded" />
+          <div className="w-24 h-3 bg-border rounded" />
+          <div className="w-full h-12 bg-border/40 rounded-xl" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
-  const [newsItems, setNewsItems] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  let activeClubId = clubId || localStorage.getItem("selectedClubId");
+  
+  const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!activeClubId });
+  const joinedRows = joinedClubs?.rows || [];
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      let activeClubId = clubId || localStorage.getItem("selectedClubId");
-      if (!activeClubId) {
-        try {
-          const clubsRes = await ClubService.getJoinedClubs();
-          const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
-          if (clubs.length > 0) {
-            const defaultId = clubs[0].id.toString();
-            activeClubId = defaultId;
-            localStorage.setItem("selectedClubId", defaultId);
-          }
-        } catch (e) {
-          console.error("Failed to fetch user's joined clubs for news", e);
-        }
-      }
+  if (!activeClubId && joinedRows.length > 0) {
+    activeClubId = joinedRows[0].id.toString();
+    localStorage.setItem("selectedClubId", activeClubId);
+  }
 
-      if (!activeClubId) return;
+  const { data: newsData, isLoading } = useGetAllNewsQuery(
+    { clubId: Number(activeClubId) },
+    { skip: !activeClubId }
+  );
 
-      setIsLoading(true);
-      try {
-        const response = await NewsService.getAllNews({ clubId: Number(activeClubId) });
-        const items = response?.response?.data || response?.data || response || [];
-        const mapped = items.map((item: any, index: number) => ({
-          id: item.id?.toString() || index.toString(),
-          title: item.title || "Untitled Article",
-          date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Recent",
-          previewText: item.description || (item.content ? item.content.slice(0, 150) + "..." : "No description provided."),
-          fullContent: item.content || "No content provided.",
-          image: item.image || item.imageUrl || "/Images/HelmetImage4.jpg",
-          author: item.author || "Club Admin",
-          authorInitials: (item.author || "Club Admin").slice(0, 2).toUpperCase()
-        }));
-        setNewsItems(mapped);
-      } catch (err) {
-        console.error("Failed to fetch news", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchNews();
-  }, [clubId]);
+  const newsItems = useMemo(() => {
+    const items = newsData?.rows || [];
+    return items.map((item: any, index: number) => ({
+      id: item.id?.toString() || index.toString(),
+      title: item.title || "Untitled Article",
+      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Recent",
+      previewText: item.description || (item.content ? item.content.slice(0, 150) + "..." : "No description provided."),
+      fullContent: item.description || "No content provided.",
+      image: item.image || item.imageUrl || null,
+      author: item.author || "Club Admin",
+      authorInitials: (item.author || "Club Admin").slice(0, 2).toUpperCase(),
+      totalCommentsCount: item.totalCommentsCount || 0
+    }));
+  }, [newsData]);
 
   return (
     <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
@@ -133,9 +224,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
       </header>
       <main className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B]"></div>
-          </div>
+          <NewsSkeleton />
         ) : newsItems.length === 0 ? (
           <div className="bg-surface rounded-3xl border border-border p-12 text-center text-text-muted">
             No news articles available yet.

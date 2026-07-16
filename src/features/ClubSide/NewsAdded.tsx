@@ -11,7 +11,8 @@ import {
   FileImage,
 } from "lucide-react";
 import { toast } from "sonner";
-import { NewsService, RideService } from "@/api/backendApi";
+import { useAddNewsMutation } from "@/features/club/api/newsApiSlice";
+import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 
 export const NewsAdded = () => {
   const navigate = useNavigate();
@@ -20,7 +21,11 @@ export const NewsAdded = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const [addNews, { isLoading: loadingAdd }] = useAddNewsMutation();
+  const [uploadFile, { isLoading: loadingUpload }] = useUploadFileMutation();
+  const loading = loadingAdd || loadingUpload;
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -43,7 +48,6 @@ export const NewsAdded = () => {
       return;
     }
     
-    setLoading(true);
     try {
       const clubId = localStorage.getItem("selectedClubId");
       if (!clubId) {
@@ -55,24 +59,22 @@ export const NewsAdded = () => {
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
-        const uploadRes = await RideService.uploadFile(formData);
-        imageUrl = uploadRes?.url || uploadRes?.data?.url || uploadRes?.fileName || uploadRes?.response?.url || "";
+        const uploadRes = await uploadFile(formData).unwrap();
+        imageUrl = uploadRes.fileName || "";
       }
       
-      await NewsService.addNews({
+      await addNews({
         title,
         description,
         clubId: Number(clubId),
-        newsImage: imageUrl
-      });
+        image: imageUrl
+      }).unwrap();
       
       toast.success("News published successfully!");
       navigate("/view/clubside/news");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add news:", error);
-      toast.error("Failed to publish news.");
-    } finally {
-      setLoading(false);
+      toast.error(error?.data?.message || "Failed to publish news.");
     }
   };
 
