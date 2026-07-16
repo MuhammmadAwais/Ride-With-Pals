@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ClubService } from '@/features/club/services/clubService';
 import { toast } from 'sonner';
+import { useUpdateClubInfoByIdMutation } from '@/features/club/api/clubApiSlice';
 import {
   ArrowLeft,
   MapPin,
@@ -14,6 +14,7 @@ import {
 
 export default function EditClub() {
   const navigate = useNavigate();
+  const [updateClub, { isLoading }] = useUpdateClubInfoByIdMutation();
 
   const [clubName, setClubName] = useState(
     localStorage.getItem("clubName") || "Cyc Rock Club",
@@ -100,22 +101,33 @@ export default function EditClub() {
         return;
       }
 
-      await ClubService.editClub({
+      // Map visibility ("Public"/"Private") to clubPrivacyId (1/2)
+      const clubPrivacyId = visibility === 'Private' ? 2 : 1;
+
+      // Map clubType string to clubTypeId number
+      let clubTypeId = 1;
+      if (clubType === 'Running') {
+        clubTypeId = 2;
+      } else if (clubType === 'Cycling & Running') {
+        clubTypeId = 3;
+      }
+
+      await updateClub({
         clubId: Number(clubIdStr),
         clubName,
         email,
         phone,
-        visibility,
-        clubType,
+        clubPrivacyId,
+        clubTypeId,
         location,
         description
-      });
+      }).unwrap();
 
       toast.success("Club profile updated successfully!");
       navigate(-1);
     } catch (err: any) {
       console.error("Failed to save club profile:", err);
-      toast.error(err?.response?.data?.message || "Failed to update club.");
+      toast.error(err?.data?.message || err?.message || "Failed to update club.");
     }
   };
 
@@ -433,9 +445,17 @@ export default function EditClub() {
             <div className="space-y-4">
               <button
                 type="submit"
-                className="w-full py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-[0.15em] uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 hover:scale-[1.02] active:scale-95 border border-[#EB712B]/30"
+                disabled={isLoading}
+                className="w-full py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-[0.15em] uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 hover:scale-[1.02] active:scale-95 border border-[#EB712B]/30 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Save Changes
+                {isLoading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Saving Changes...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </div>
 

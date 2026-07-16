@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { LeaderboardService, ClubService } from "@/api/backendApi";
+import { useGetClubLeaderboardAppRidesQuery, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+
 
 const StatCard = ({ title, value, icon: Icon }: any) => (
   <div className="relative p-6 bg-surface border border-border backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 transition-all duration-500 group">
@@ -19,14 +20,32 @@ const StatCard = ({ title, value, icon: Icon }: any) => (
   </div>
 );
 
+const LeaderboardSkeleton = () => (
+  <div className="animate-pulse space-y-4">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center justify-between py-4 border-b border-border last:border-0">
+        <div className="flex items-center gap-4">
+          <div className="w-8 h-8 rounded bg-[#222]" />
+          <div className="w-10 h-10 rounded-full bg-[#222]" />
+          <div className="space-y-2">
+            <div className="w-24 h-4 bg-[#222] rounded" />
+            <div className="w-32 h-3 bg-[#222] rounded" />
+          </div>
+        </div>
+        <div className="w-16 h-6 bg-[#222] rounded-full" />
+        <div className="w-24 h-8 bg-[#222] rounded" />
+      </div>
+    ))}
+  </div>
+);
+
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
-  const [joinedClubs, setJoinedClubs] = useState<any[]>([]);
+  const { data: joinedClubsData } = useGetJoinedClubsQuery();
+  const joinedClubs = joinedClubsData?.rows || [];
+
   const [selectedClubIdState, setSelectedClubIdState] = useState<string | number | undefined>(
     clubId || localStorage.getItem("selectedClubId") || undefined
   );
-
-  const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleClubChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newClubId = e.target.value;
@@ -34,62 +53,28 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     localStorage.setItem("selectedClubId", newClubId);
   };
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      setIsLoading(true);
-      let activeClubId = clubId || selectedClubIdState || localStorage.getItem("selectedClubId") || undefined;
-      
-      try {
-        // Fetch user's joined clubs to verify they are a member of activeClubId
-        const clubsRes = await ClubService.getJoinedClubs();
-        const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
-        setJoinedClubs(clubs);
-        
-        if (clubs.length > 0) {
-          const isMemberOfActive = activeClubId ? clubs.some((c: any) => c.id.toString() === activeClubId!.toString()) : false;
-          let matchedClubId = activeClubId;
-          if (!isMemberOfActive) {
-            // Default to the first joined club
-            matchedClubId = clubs[0].id.toString();
-            localStorage.setItem("selectedClubId", String(matchedClubId));
-          }
-          activeClubId = matchedClubId;
-        } else {
-          activeClubId = undefined;
-        }
-      } catch (e) {
-        console.error("Failed to fetch user's joined clubs for verification:", e);
-      }
+  let activeClubId = clubId || selectedClubIdState;
+  if (!activeClubId && joinedClubs.length > 0) {
+    activeClubId = joinedClubs[0].id.toString();
+  }
 
-      if (!activeClubId) {
-        setLeaderboardData([]);
-        setIsLoading(false);
-        return;
-      }
+  const { data: rawLeaderboard, isLoading } = useGetClubLeaderboardAppRidesQuery(
+    { clubId: Number(activeClubId) },
+    { skip: !activeClubId }
+  );
 
-      try {
-        const response = await LeaderboardService.getClubLeaderboardAppRides({ clubId: Number(activeClubId) });
-        // Mapping response to leaderboard data format
-        const data = (response?.response || []).map((item: any, index: number) => ({
-          id: index + 1,
-          name: item.userName || item.name || 'Unknown Rider',
-          role: item.role || 'Member',
-          team: item.team || 'RWP Squad',
-          status: item.status || 'Active',
-          rides: item.ridesCount || item.totalRides || 0,
-          attendance: `${item.attendance || 100}%`,
-          avatar: item.profileImage || null
-        }));
-        setLeaderboardData(data);
-      } catch (err: any) {
-        console.error("Failed to fetch leaderboard", err);
-        setLeaderboardData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchLeaderboard();
-  }, [clubId, selectedClubIdState]);
+  const leaderboardData = useMemo(() => {
+    return (rawLeaderboard || []).map((item: any, index: number) => ({
+      id: index + 1,
+      name: item.userName || item.name || 'Unknown Rider',
+      role: item.role || 'Member',
+      team: item.team || 'RWP Squad',
+      status: item.status || 'Active',
+      rides: item.ridesCount || item.totalRides || 0,
+      attendance: `${item.attendance || 100}%`,
+      avatar: item.profileImage || null
+    }));
+  }, [rawLeaderboard]);
 
   const columns: Column<any>[] = [
     {
@@ -175,7 +160,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
                 onChange={handleClubChange}
                 className="bg-transparent text-text-main text-xs font-black tracking-wider uppercase border-none focus:outline-none focus:ring-0 cursor-pointer min-w-[150px]"
               >
-                {joinedClubs.map((club) => (
+                {joinedClubs.map((club: any) => (
                   <option key={club.id} value={club.id} className="bg-surface text-text-main uppercase font-bold text-xs">
                     {club.clubName || "Unnamed Club"}
                   </option>
@@ -203,9 +188,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       {/* Main Table */}
       <div className="relative min-h-[200px]">
         {isLoading ? (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B]"></div>
-          </div>
+          <LeaderboardSkeleton />
         ) : leaderboardData.length === 0 ? (
           <div className="bg-surface rounded-3xl border border-border p-12 text-center text-text-muted">
             No leaderboard data available for this club yet.

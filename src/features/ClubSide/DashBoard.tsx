@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AreaChart, Area, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu, Loader2 } from 'lucide-react';
+import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Sidebar from '../../components/Sidebar';
-import { ClubService } from '@/features/club/services/clubService';
-
-// Removed mock data array
+import { useGetClubDashboardStatsQuery } from '@/features/club/api/clubApiSlice';
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -14,6 +12,46 @@ const CustomTooltip = ({ active, payload }: any) => {
   }
   return null;
 };
+
+const DashboardSkeleton = () => (
+  <div className="w-full animate-pulse">
+    {/* KPI Cards Skeleton */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 mb-10">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="bg-surface/50 h-32 rounded-3xl border border-border p-6 flex flex-col justify-between">
+          <div className="w-8 h-8 rounded-full bg-border" />
+          <div className="w-24 h-4 bg-border rounded mt-4" />
+          <div className="w-16 h-6 bg-border rounded mt-2" />
+        </div>
+      ))}
+    </div>
+    
+    <div className="w-full border-t border-border my-8 shadow-sm" />
+
+    {/* Chart Skeleton */}
+    <div className="bg-surface/50 p-8 rounded-3xl border border-border h-80 w-full flex flex-col justify-between">
+      <div className="w-32 h-6 bg-border rounded mb-6" />
+      <div className="w-full h-48 bg-border/40 rounded-xl" />
+    </div>
+
+    {/* Extra Analytics Grid Skeleton */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="bg-surface/50 p-6 rounded-3xl border border-border h-48" />
+      ))}
+    </div>
+  </div>
+);
+
+const ErrorFallback = ({ message }: { message?: string }) => (
+  <div className="flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-3xl">
+    <div className="p-4 bg-red-500/10 rounded-full text-red-500 mb-4">
+      <Users size={32} />
+    </div>
+    <h3 className="text-lg font-bold text-text-main mb-1">Failed to load statistics</h3>
+    <p className="text-sm text-text-muted">{message || 'An error occurred while fetching dashboard stats.'}</p>
+  </div>
+);
 
 const AnalyticsGrid = ({ stats }: { stats: any }) => {
   const size = 120;
@@ -115,26 +153,13 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const [stats, setStats] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const clubIdStr = localStorage.getItem("selectedClubId");
+  const clubId = clubIdStr ? Number(clubIdStr) : 0;
 
-  useEffect(() => {
-    if (defaultView) return; // Do not fetch stats if a custom view is provided
-    const fetchStats = async () => {
-      const clubIdStr = localStorage.getItem("selectedClubId");
-      if (!clubIdStr) return;
-      try {
-        setIsLoading(true);
-        const response = await ClubService.getClubDashboardStats(Number(clubIdStr));
-        setStats(response?.data || response);
-      } catch (err) {
-        console.error("Failed to fetch dashboard stats", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStats();
-  }, [defaultView]);
+  const { data: stats, isLoading, isError } = useGetClubDashboardStatsQuery(
+    { clubId },
+    { skip: !!defaultView || !clubId }
+  );
 
   const getPageTitle = () => {
     const path = location.pathname.split('/').pop();
@@ -164,9 +189,9 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
           {defaultView ? (
             defaultView
           ) : isLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="animate-spin text-[#EB712B]" size={48} />
-            </div>
+            <DashboardSkeleton />
+          ) : isError ? (
+            <ErrorFallback />
           ) : (
             <DashboardOverview stats={stats} />
           )}

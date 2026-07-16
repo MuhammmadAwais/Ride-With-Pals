@@ -164,6 +164,15 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Club'],
     }),
+
+    getClubLeaderboardAppRides: builder.query<any[], { clubId: number }>({
+      query: (params) => ({
+        url: '/user/club/leaderboard/rides',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Club'],
+    }),
   }),
 });
 
@@ -186,4 +195,5 @@ export const {
   useGetClubInfoByIdQuery,
   useUpdateClubInfoByIdMutation,
   useRemoveClubMemberMutation,
+  useGetClubLeaderboardAppRidesQuery,
 } = clubApiSlice;

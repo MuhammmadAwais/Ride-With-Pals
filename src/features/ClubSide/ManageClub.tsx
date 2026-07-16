@@ -8,35 +8,58 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useTableSort } from "@/hooks/useTableSort";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { fetchMyClubs } from "@/features/club/slices/clubSlice";
-
+import { useAppSelector } from "@/app/hooks";
+import { useGetClubsQuery, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
+const TableSkeleton = () => (
+  <div className="animate-pulse space-y-4">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center justify-between p-4 bg-[#141414] border border-border rounded-xl">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-[#222] rounded" />
+          <div className="space-y-2">
+            <div className="w-32 h-4 bg-[#222] rounded" />
+            <div className="w-20 h-3 bg-[#222] rounded" />
+          </div>
+        </div>
+        <div className="w-20 h-4 bg-[#222] rounded" />
+        <div className="w-16 h-4 bg-[#222] rounded" />
+        <div className="w-24 h-10 bg-[#222] rounded-lg" />
+      </div>
+    ))}
+  </div>
+);
+
 export const ManageClub = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const navigate = useNavigate();
  
-  const dispatch = useAppDispatch();
-  const { myClubs } = useAppSelector((state) => state.club);
   const { user } = useAppSelector((state) => state.auth);
 
-  useEffect(() => {
-    dispatch(fetchMyClubs());
-  }, [dispatch]);
+  const { data: ownedClubsData, isLoading: loadingOwned } = useGetClubsQuery({ owned: true });
+  const { data: joinedClubsData, isLoading: loadingJoined } = useGetJoinedClubsQuery();
+  const isLoading = loadingOwned || loadingJoined;
+
+  const combinedClubs = [...(ownedClubsData?.rows || []), ...(joinedClubsData?.rows || [])];
+  const uniqueClubsMap = new Map();
+  combinedClubs.forEach(club => {
+    if (club && club.id) uniqueClubsMap.set(club.id, club);
+  });
+  const uniqueClubs = Array.from(uniqueClubsMap.values());
 
   // Map API data to table format
-  const mappedClubs = myClubs.map(club => ({
+  const mappedClubs = uniqueClubs.map(club => ({
     id: club.id,
     name: club.clubName || "Unnamed Club",
     img: club.coverImage || "/Images/CyclingPicture.jpg",
@@ -254,27 +277,33 @@ export const ManageClub = () => {
 
       {/* Directory Table */}
       <div className="mb-8 overflow-hidden">
-        <DataTable data={currentClubs} columns={columns} sortConfig={sortConfig} onRequestSort={requestSort} />
-        {/* Pagination */}
-        <div className="p-4 flex justify-between items-center text-[10px] font-bold uppercase text-text-muted bg-surface border border-border border-t-0 rounded-b-xl">
-          <p>Page {currentPage} of 2</p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-              className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              onClick={() => setCurrentPage(2)}
-              disabled={currentPage === 2}
-              className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
+        {isLoading ? (
+          <TableSkeleton />
+        ) : (
+          <>
+            <DataTable data={currentClubs} columns={columns} sortConfig={sortConfig} onRequestSort={requestSort} />
+            {/* Pagination */}
+            <div className="p-4 flex justify-between items-center text-[10px] font-bold uppercase text-text-muted bg-surface border border-border border-t-0 rounded-b-xl">
+              <p>Page {currentPage} of 2</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={() => setCurrentPage(2)}
+                  disabled={currentPage === 2}
+                  className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Intelligence & Standing Panels */}

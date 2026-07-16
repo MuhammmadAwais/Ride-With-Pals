@@ -1,10 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { fetchClubMembers } from "@/features/club/slices/clubSlice";
-import { ClubService } from '@/api/backendApi';
+import { toast } from 'sonner';
+import { useGetClubMembersListQuery, useRemoveClubMemberMutation, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+
 
 export interface Member {
   id: string;
@@ -18,38 +18,61 @@ export interface Member {
   status: 'Active' | 'Suspended';
 }
 
+const TableSkeleton = () => (
+  <div className="animate-pulse space-y-4 p-6">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center justify-between py-4 border-b border-border last:border-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#222]" />
+          <div className="space-y-2">
+            <div className="w-24 h-4 bg-[#222] rounded" />
+            <div className="w-32 h-3 bg-[#222] rounded" />
+          </div>
+        </div>
+        <div className="w-16 h-6 bg-[#222] rounded-full" />
+        <div className="w-24 h-4 bg-[#222] rounded" />
+        <div className="w-12 h-4 bg-[#222] rounded" />
+        <div className="w-16 h-4 bg-[#222] rounded" />
+        <div className="w-20 h-4 bg-[#222] rounded" />
+      </div>
+    ))}
+  </div>
+);
+
 const Members = () => {
   const [searchInput, setSearchInput] = useState('');
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
-  const dispatch = useAppDispatch();
-  const { currentClubMembers } = useAppSelector((state) => state.club);
+  let clubIdStr = localStorage.getItem("selectedClubId");
+  const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!clubIdStr });
+  const joinedRows = joinedClubs?.rows || [];
+  
+  if (!clubIdStr && joinedRows.length > 0) {
+    clubIdStr = joinedRows[0].id.toString();
+    localStorage.setItem("selectedClubId", clubIdStr);
+  }
 
-  useEffect(() => {
-    const loadMembers = async () => {
-      let clubIdStr = localStorage.getItem("selectedClubId");
-      if (!clubIdStr) {
-        try {
-          const clubsRes = await ClubService.getJoinedClubs();
-          const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
-          if (clubs.length > 0) {
-            clubIdStr = clubs[0].id.toString();
-            localStorage.setItem("selectedClubId", clubIdStr as string);
-          }
-        } catch (e) {
-          console.error("Failed to fetch user's joined clubs for members", e);
-        }
-      }
-      if (clubIdStr) {
-        dispatch(fetchClubMembers({ clubId: Number(clubIdStr) }));
-      }
-    };
-    loadMembers();
-  }, [dispatch]);
+  const clubId = clubIdStr ? Number(clubIdStr) : 0;
+  const { data: membersData, isLoading } = useGetClubMembersListQuery(
+    { clubId },
+    { skip: !clubId }
+  );
+
+  const [removeMember, { isLoading: isRemoving }] = useRemoveClubMemberMutation();
+
+  const handleRemoveMember = async (userId: string) => {
+    try {
+      await removeMember({ clubId, userId: Number(userId) }).unwrap();
+      toast.success("Member removed successfully!");
+      setActiveMenuId(null);
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || "Failed to remove member.");
+    }
+  };
 
   const formattedMembers = useMemo<Member[]>(() => {
-    if (!currentClubMembers) return [];
-    return currentClubMembers.map((m: any) => ({
+    if (!membersData) return [];
+    return membersData.map((m: any) => ({
       id: m.id?.toString(),
       profilePhoto: m.profileImage || "",
       name: ((m.firstName || '') + ' ' + (m.lastName || '')).trim() || m.username || 'Unnamed',
@@ -60,7 +83,7 @@ const Members = () => {
       joinDate: m.createdAt ? new Date(m.createdAt).toLocaleDateString() : 'N/A',
       status: 'Active',
     }));
-  }, [currentClubMembers]);
+  }, [membersData]);
 
   const filteredMembers = useMemo(() => {
     if (!searchInput) return formattedMembers;
@@ -170,8 +193,12 @@ const Members = () => {
                   <ShieldAlert size={14} /> Change Role
                 </button>
                 <div className="h-px bg-border my-1" />
-                <button className="w-full text-left px-3 py-2 text-xs font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition-colors flex items-center gap-2">
-                  <Ban size={14} /> Suspend Member
+                <button 
+                  onClick={() => handleRemoveMember(row.id)}
+                  disabled={isRemoving}
+                  className="w-full text-left px-3 py-2 text-xs font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Ban size={14} /> Remove Member
                 </button>
               </div>
             </div>
@@ -216,7 +243,9 @@ const Members = () => {
       </div>
 
       <div className="bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden min-h-[400px]">
-        {filteredMembers.length > 0 ? (
+        {isLoading ? (
+          <TableSkeleton />
+        ) : filteredMembers.length > 0 ? (
           <DataTable
             data={filteredMembers}
             columns={columns}
