@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Calendar, 
@@ -10,10 +10,13 @@ import {
   Filter,
   X,
   Compass,
-  CheckCircle2
+  CheckCircle2,
+  Bookmark
 } from "lucide-react";
 
-import { ClubService } from "@/features/club/services/clubService";
+import { useGetPublicRidesQuery } from "@/features/club/api/clubApiSlice";
+import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
+import { toast } from "sonner";
 
 interface RideItem {
   id: number;
@@ -28,6 +31,7 @@ interface RideItem {
   organizer: string;
   organizerAvatar: string | null;
   isRideJoined: boolean;
+  isSaved: boolean;
   image: string;
 }
 
@@ -35,102 +39,121 @@ interface RideProps {
   clubId?: string | number;
 }
 
+const RideCardSkeleton = () => (
+  <div className="bg-main-bg border border-border rounded-2xl overflow-hidden animate-pulse">
+    <div className="h-44 bg-[#222]" />
+    <div className="p-6 space-y-4">
+      <div className="space-y-2">
+        <div className="w-3/4 h-5 bg-[#222] rounded" />
+        <div className="w-1/2 h-3 bg-[#222] rounded" />
+      </div>
+      <div className="space-y-2 bg-surface p-4 rounded-xl border border-border">
+        <div className="w-full h-3 bg-[#222] rounded" />
+        <div className="w-full h-3 bg-[#222] rounded" />
+        <div className="w-2/3 h-3 bg-[#222] rounded" />
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {[1, 2, 3].map(i => <div key={i} className="h-16 bg-[#222] rounded-xl" />)}
+      </div>
+      <div className="flex gap-2 pt-4 border-t border-border">
+        <div className="flex-1 h-12 bg-[#222] rounded-xl" />
+        <div className="w-24 h-12 bg-[#222] rounded-xl" />
+      </div>
+    </div>
+  </div>
+);
+
 const Ride: React.FC<RideProps> = ({ clubId }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
-  
-  const [rides, setRides] = useState<RideItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [savedRideIds, setSavedRideIds] = useState<Set<number>>(new Set());
 
-  console.log("Active club ID context:", clubId);
+  const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
 
-  useEffect(() => {
-    const fetchRides = async () => {
-      try {
-        setLoading(true);
-        const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
-        let res = await ClubService.getPublicRides('', 50, 0, activeClubId);
-        
-        const items = res?.response?.data || res?.data || res || [];
-        
-        const mappedRides = items.map((item: any) => {
-          // Format distance
-          let displayDistance = "N/A";
-          if (item.distance !== undefined && item.distance !== null) {
-            displayDistance = `${item.distance} ${item.distanceUnit || "km"}`;
-          }
-          
-          // Format speed / pace
-          let displaySpeed = "N/A";
-          if (item.pace !== undefined && item.pace !== null) {
-            displaySpeed = `${item.pace} min/km`;
-          } else if (item.speed || item.averageSpeed) {
-            displaySpeed = item.speed || item.averageSpeed;
-          }
+  const { data: rawData, isLoading } = useGetPublicRidesQuery(
+    { search: '', limit: 50, offset: 0, clubId: activeClubId },
+  );
 
-          // Format organizer avatar URL properly
-          let organizerAvatar = null;
-          if (item.user?.profileImage) {
-            const avatarPath = item.user.profileImage;
-            organizerAvatar = (avatarPath.startsWith("http://") || avatarPath.startsWith("https://") || avatarPath.startsWith("/"))
-              ? avatarPath
-              : `https://api.ridewithpals.com/uploads/${avatarPath}`;
-          } else if (item.organizer?.avatar) {
-            const avatarPath = item.organizer.avatar;
-            organizerAvatar = (avatarPath.startsWith("http://") || avatarPath.startsWith("https://") || avatarPath.startsWith("/"))
-              ? avatarPath
-              : `https://api.ridewithpals.com/uploads/${avatarPath}`;
-          }
+  const [saveRide] = useSaveRideMutation();
+  const [unsaveRide] = useUnsaveRideMutation();
 
-          const organizerName = item.user?.fullName || item.organizer?.name || item.organizerName || "Organizer";
-
-          // Format ride banner image (club coverImage or logo, or default cycling image)
-          let bannerImage = "/Images/CycleImage2.png";
-          const logoPath = item.club?.logo || item.club?.coverImage || item.logo || item.coverImage;
-          if (logoPath && logoPath !== "null" && logoPath.trim() !== "") {
-            bannerImage = (logoPath.startsWith("http://") || logoPath.startsWith("https://") || logoPath.startsWith("/"))
-              ? logoPath
-              : `https://api.ridewithpals.com/uploads/${logoPath}`;
-          }
-
-          return {
-            id: item.id || item.rideId,
-            title: item.ridename || item.title || item.name || "Ride Event",
-            clubName: item.club?.clubName || item.clubName || "Independent",
-            date: item.date || item.startDate || "TBD",
-            location: item.meetingPoint || item.location || "TBD",
-            rideType: item.sportSubTypeName || item.activityTypeName || item.type || item.rideType || "Road",
-            speed: displaySpeed,
-            distance: displayDistance,
-            participants: item.joinedParticipantsCount?.toString() || (Array.isArray(item.joinedParticipants) ? item.joinedParticipants.length.toString() : "0"),
-            organizer: organizerName,
-            organizerAvatar: organizerAvatar,
-            isRideJoined: item.isRideJoined !== undefined ? item.isRideJoined : false,
-            image: bannerImage
-          };
-        });
-        
-        setRides(mappedRides);
-      } catch (error) {
-        console.error("Failed to fetch rides:", error);
-      } finally {
-        setLoading(false);
+  const handleToggleSave = async (rideId: number) => {
+    try {
+      if (savedRideIds.has(rideId)) {
+        await unsaveRide({ rideId }).unwrap();
+        setSavedRideIds(prev => { const next = new Set(prev); next.delete(rideId); return next; });
+        toast.success("Ride removed from saved list");
+      } else {
+        await saveRide({ rideId }).unwrap();
+        setSavedRideIds(prev => new Set(prev).add(rideId));
+        toast.success("Ride saved!");
       }
-    };
-    fetchRides();
-  }, [clubId]);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to toggle save.");
+    }
+  };
+
+  const rides = useMemo<RideItem[]>(() => {
+    const items = rawData?.response?.data || rawData?.data || rawData || [];
+    if (!Array.isArray(items)) return [];
+    return items.map((item: any) => {
+      let displayDistance = "N/A";
+      if (item.distance !== undefined && item.distance !== null) {
+        displayDistance = `${item.distance} ${item.distanceUnit || "km"}`;
+      }
+      let displaySpeed = "N/A";
+      if (item.pace !== undefined && item.pace !== null) {
+        displaySpeed = `${item.pace} min/km`;
+      } else if (item.speed || item.averageSpeed) {
+        displaySpeed = item.speed || item.averageSpeed;
+      }
+      let organizerAvatar = null;
+      if (item.user?.profileImage) {
+        const avatarPath = item.user.profileImage;
+        organizerAvatar = (avatarPath.startsWith("http://") || avatarPath.startsWith("https://") || avatarPath.startsWith("/"))
+          ? avatarPath
+          : `https://api.ridewithpals.com/uploads/${avatarPath}`;
+      } else if (item.organizer?.avatar) {
+        const avatarPath = item.organizer.avatar;
+        organizerAvatar = (avatarPath.startsWith("http://") || avatarPath.startsWith("https://") || avatarPath.startsWith("/"))
+          ? avatarPath
+          : `https://api.ridewithpals.com/uploads/${avatarPath}`;
+      }
+      const organizerName = item.user?.fullName || item.organizer?.name || item.organizerName || "Organizer";
+      let bannerImage = "/Images/CycleImage2.png";
+      const logoPath = item.club?.logo || item.club?.coverImage || item.logo || item.coverImage;
+      if (logoPath && logoPath !== "null" && logoPath.trim() !== "") {
+        bannerImage = (logoPath.startsWith("http://") || logoPath.startsWith("https://") || logoPath.startsWith("/"))
+          ? logoPath
+          : `https://api.ridewithpals.com/uploads/${logoPath}`;
+      }
+      return {
+        id: item.id || item.rideId,
+        title: item.ridename || item.title || item.name || "Ride Event",
+        clubName: item.club?.clubName || item.clubName || "Independent",
+        date: item.date || item.startDate || "TBD",
+        location: item.meetingPoint || item.location || "TBD",
+        rideType: item.sportSubTypeName || item.activityTypeName || item.type || item.rideType || "Road",
+        speed: displaySpeed,
+        distance: displayDistance,
+        participants: item.joinedParticipantsCount?.toString() || (Array.isArray(item.joinedParticipants) ? item.joinedParticipants.length.toString() : "0"),
+        organizer: organizerName,
+        organizerAvatar: organizerAvatar,
+        isRideJoined: item.isRideJoined !== undefined ? item.isRideJoined : false,
+        isSaved: savedRideIds.has(item.id || item.rideId),
+        image: bannerImage
+      };
+    });
+  }, [rawData, savedRideIds]);
 
   const filteredRides = rides.filter(ride => {
     const query = searchQuery.trim().toLowerCase();
-
     const matchesSearch = 
       ride.title.toLowerCase().includes(query) || 
       ride.clubName.toLowerCase().includes(query) ||
       ride.location.toLowerCase().includes(query);
-    
     const matchesType = selectedType === "All" || ride.rideType === selectedType;
-
     return matchesSearch && matchesType;
   });
 
@@ -195,10 +218,11 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           </div>
         </div>
 
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#EB712B]"></div>
-            <p className="text-sm font-bold text-text-muted mt-4 uppercase tracking-wider">Loading Rides...</p>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <RideCardSkeleton />
+            <RideCardSkeleton />
+            <RideCardSkeleton />
           </div>
         ) : filteredRides.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -231,8 +255,8 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
                   {/* Card Header */}
                   <div className="space-y-4 z-10">
-                    <div className="flex justify-between items-start">
-                      <div>
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1">
                         <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1">
                           {ride.title}
                         </h3>
@@ -240,6 +264,19 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
                         </p>
                       </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleSave(ride.id);
+                        }}
+                        className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                          ride.isSaved
+                            ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                            : "bg-surface border-border text-text-muted hover:text-text-main"
+                        }`}
+                      >
+                        <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
+                      </button>
                     </div>
 
                     {/* Info Rows */}

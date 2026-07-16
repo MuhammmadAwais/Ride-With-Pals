@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { RideService } from "@/api/backendApi";
 import { 
-  ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert
+  ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark
 } from "lucide-react";
 import { toast } from "sonner";
+import { useGetRideInfoByIdQuery, useJoinRideMutation } from "@/features/club/api/clubApiSlice";
+import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
@@ -27,65 +28,79 @@ const RideJoining = () => {
   const [isRosterOpen, setIsRosterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showToast, setShowToast] = useState(false);
-  const [isJoined, setIsJoined] = useState(false);
 
   const [mapCenter, setMapCenter] = useState<[number, number]>([45.9184, 6.5862]);
 
-  const [rideDetails, setRideDetails] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const rideIdNum = id ? Number(id) : 0;
+  const { data: rideResponse, isLoading: loading } = useGetRideInfoByIdQuery(
+    { rideId: rideIdNum },
+    { skip: !rideIdNum }
+  );
 
+  const [joinRide] = useJoinRideMutation();
+  const [saveRide] = useSaveRideMutation();
+  const [unsaveRide] = useUnsaveRideMutation();
+  
+  const [isJoined, setIsJoined] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Sync statuses once data loads
   useEffect(() => {
-    const fetchRide = async () => {
-      try {
-        setLoading(true);
-        if (id) {
-          const res = await RideService.getRideInfoByID({ rideId: parseInt(id) });
-          const data = res?.response?.data || res?.data || res || {};
-          
-          const meetingPointStr = data.meetingPoint || data.location || "TBD";
-          setRideDetails({
-            id: data.id || data.rideId || id,
-            title: data.title || data.name || "Ride Event",
-            host: data.organizer?.name || data.hostName || "Organizer",
-            date: data.startDate || data.date || "TBD",
-            type: data.type || data.rideType || "Ride",
-            avgPace: data.speed || data.averageSpeed || "N/A",
-            distance: data.distance || "N/A",
-            activeParticipants: `${data.participantsCount || 0} Riders`,
-            maxSlope: data.maxSlope || "N/A",
-            supportCar: data.supportCar ? "Available" : "Not Available",
-            description: data.description || "No description provided.",
-            recommendedBike: data.recommendedBike || "Any",
-            leaders: data.leaders || [{ name: data.organizer?.name || "Organizer", role: "Host" }],
-            participants: data.participants || [],
-            meetingPoint: meetingPointStr
-          });
+    if (rideResponse) {
+      setIsJoined(!!rideResponse.isJoined);
+    }
+  }, [rideResponse]);
 
-          if (meetingPointStr && meetingPointStr !== "TBD") {
-            try {
-              const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(meetingPointStr)}`);
-              const geoData = await geoRes.json();
-              if (geoData && geoData.length > 0) {
-                setMapCenter([parseFloat(geoData[0].lat), parseFloat(geoData[0].lon)]);
-              }
-            } catch(e) {
-               console.error("Geocoding failed", e);
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch ride details:", error);
-      } finally {
-        setLoading(false);
-      }
+  const rideDetails = useMemo(() => {
+    if (!rideResponse) return null;
+    const data = rideResponse;
+    const meetingPointStr = data.meetingPoint || "TBD";
+    
+    const leaders = data.rideLeaders?.map((leader: any) => ({
+      name: leader.name || "Leader",
+      role: "Leader"
+    })) || [];
+    if (leaders.length === 0 && data.userId) {
+      leaders.push({ name: "Host", role: "Host" });
+    }
+
+    return {
+      id: data.id || id,
+      title: data.rideName || "Ride Event",
+      host: "Organizer",
+      date: data.date ? new Date(data.date).toLocaleDateString() : "TBD",
+      type: data.isAsphalt ? "Road Ride" : data.isTrail ? "Trail Ride" : "Ride",
+      avgPace: data.pace || "N/A",
+      distance: data.distance ? `${data.distance} km` : "N/A",
+      activeParticipants: `${data.joinedParticipants?.length || 0} Riders`,
+      maxSlope: "N/A",
+      supportCar: data.supportCarDriver ? "Available" : "Not Available",
+      description: data.description || "No description provided.",
+      recommendedBike: data.isTrail ? "MTB / Gravel" : "Road Bike",
+      leaders,
+      participants: data.joinedParticipants || [],
+      meetingPoint: meetingPointStr
     };
-    fetchRide();
-  }, [id]);
+  }, [rideResponse, id]);
+
+  const meetingPoint = rideDetails?.meetingPoint;
+  useEffect(() => {
+    if (meetingPoint && meetingPoint !== "TBD") {
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(meetingPoint)}`)
+        .then(res => res.json())
+        .then(geoData => {
+          if (geoData && geoData.length > 0) {
+            setMapCenter([parseFloat(geoData[0].lat), parseFloat(geoData[0].lon)]);
+          }
+        })
+        .catch(err => console.error("Geocoding failed", err));
+    }
+  }, [meetingPoint]);
 
   const handleJoinClick = async () => {
     try {
       if (id) {
-        await RideService.joinRide({ rideId: parseInt(id) });
+        await joinRide({ rideId: Number(id) }).unwrap();
         setIsJoined(true);
         toast.success("Successfully joined the ride!");
       }
@@ -95,23 +110,47 @@ const RideJoining = () => {
     }
   };
 
-  const handleShare = async () => {
-    const shareUrl = `https://velohub.cc/ride/${rideDetails.id}`;
-    await navigator.clipboard.writeText(shareUrl);
-    
-    // Trigger stylish custom toast notification
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
+  const handleToggleSave = async () => {
+    try {
+      if (id) {
+        if (isSaved) {
+          await unsaveRide({ rideId: Number(id) }).unwrap();
+          setIsSaved(false);
+          toast.success("Ride removed from saved list");
+        } else {
+          await saveRide({ rideId: Number(id) }).unwrap();
+          setIsSaved(true);
+          toast.success("Ride saved successfully!");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to toggle save:", error);
+      toast.error("Failed to save the ride.");
+    }
   };
 
-  const activeParticipants = rideDetails?.participants?.map((p: any) => ({
-    name: p.firstName ? `${p.firstName} ${p.lastName || ''}`.trim() : p.name || p.username || 'Anonymous Rider',
-    initials: ((p.firstName?.[0] || '') + (p.lastName?.[0] || '')).toUpperCase() || 'R',
-    role: p.role || 'Participant',
-    joinedDate: p.joinedAt ? new Date(p.joinedAt).toLocaleDateString() : 'N/A',
-    verified: p.isVerified || false,
-    profilePhoto: p.profileImage || p.avatar || null
-  })) || [];
+  const handleShare = async () => {
+    if (rideDetails) {
+      const shareUrl = `https://velohub.cc/ride/${rideDetails.id}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }
+  };
+
+  const activeParticipants = useMemo(() => {
+    return rideDetails?.participants?.map((p: any) => {
+      const initials = p.name ? p.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2) : 'R';
+      return {
+        name: p.name || 'Anonymous Rider',
+        initials,
+        role: 'Participant',
+        joinedDate: 'N/A',
+        verified: false,
+        profilePhoto: p.profile || null
+      };
+    }) || [];
+  }, [rideDetails]);
 
   const filteredRoster = activeParticipants.filter((user: any) => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -208,6 +247,17 @@ const RideJoining = () => {
 
                 {/* Share Link Actions */}
                 <div className="flex gap-2 shrink-0">
+                  <button 
+                    onClick={handleToggleSave}
+                    className={`w-11 h-11 border rounded-2xl flex items-center justify-center transition-all duration-300 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 ${
+                      isSaved 
+                        ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]" 
+                        : "bg-hover border-border text-text-muted hover:text-text-main"
+                    }`}
+                    title={isSaved ? "Unsave Ride" : "Save Ride"}
+                  >
+                    <Bookmark size={16} fill={isSaved ? "#EB712B" : "none"} />
+                  </button>
                   <button 
                     onClick={handleShare}
                     className="w-11 h-11 bg-hover border border-border rounded-2xl flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer hover:border-border hover:-translate-y-0.5 active:translate-y-0"
@@ -337,26 +387,30 @@ const RideJoining = () => {
               <div className="flex justify-between items-center">
                 <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Participants</h4>
                 <span className="text-[9px] font-extrabold bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#eb712a] tracking-wider px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                  <Users size={10} /> {rideDetails.participants.length} Active
+                  <Users size={10} /> {activeParticipants.length} Active
                 </span>
               </div>
               
               <div className="flex flex-wrap gap-3 py-1 items-center">
-                {rideDetails.participants.slice(0, 8).map((initials: any, idx: number) => (
+                {activeParticipants.slice(0, 8).map((p: any, idx: number) => (
                   <div 
                     key={idx} 
-                    className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main shadow-md hover:scale-110 hover:border-[#EB712B]/40 transition-all duration-300 cursor-pointer ring-1 ring-black/20"
-                    title={initials}
+                    className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main shadow-md hover:scale-110 hover:border-[#EB712B]/40 transition-all duration-300 cursor-pointer ring-1 ring-black/20 overflow-hidden"
+                    title={p.name}
                   >
-                    {initials}
+                    {p.profilePhoto ? (
+                      <img src={p.profilePhoto} className="w-full h-full object-cover" alt="" />
+                    ) : (
+                      p.initials
+                    )}
                   </div>
                 ))}
-                {rideDetails.participants.length > 8 && (
+                {activeParticipants.length > 8 && (
                   <div 
                     onClick={() => setIsRosterOpen(true)}
                     className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main cursor-pointer hover:bg-border transition-all duration-300 hover:scale-110"
                   >
-                    +{rideDetails.participants.length - 8}
+                    +{activeParticipants.length - 8}
                   </div>
                 )}
               </div>

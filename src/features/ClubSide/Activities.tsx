@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   Bike,
   BarChart3,
@@ -19,7 +19,7 @@ import {
 } from "chart.js";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { RideService } from "@/api/backendApi";
+import { useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
 
 ChartJS.register(
   CategoryScale,
@@ -45,6 +45,26 @@ interface Activity {
   leaderImageUrl: string;
 }
 
+const TableSkeleton = () => (
+  <div className="animate-pulse space-y-4 p-6">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center justify-between py-4 border-b border-border last:border-0">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#222]" />
+          <div className="space-y-2">
+            <div className="w-28 h-4 bg-[#222] rounded" />
+            <div className="w-20 h-3 bg-[#222] rounded" />
+          </div>
+        </div>
+        <div className="w-10 h-10 rounded-full bg-[#222]" />
+        <div className="w-20 h-4 bg-[#222] rounded" />
+        <div className="w-16 h-6 bg-[#222] rounded-full" />
+        <div className="w-20 h-4 bg-[#222] rounded" />
+      </div>
+    ))}
+  </div>
+);
+
 const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
   <div
     className={`p-6 rounded-2xl border ${isLive ? "bg-surface shadow-lg border-[#EB712B]/40" : "border-border bg-surface"}`}
@@ -63,39 +83,29 @@ const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
 const ActivitiesRegistry = () => {
   const [activeTab, setActiveTab] = useState("Active");
 
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const clubIdStr = localStorage.getItem("selectedClubId");
+  const clubId = clubIdStr ? Number(clubIdStr) : 0;
 
-  useEffect(() => {
-    const fetchActivities = async () => {
-      const clubIdStr = localStorage.getItem("selectedClubId");
-      if (!clubIdStr) return;
-      setIsLoading(true);
-      try {
-        const response = await RideService.getClubRides({ clubId: Number(clubIdStr), page: 1, size: 50 });
-        const rides = (response?.response?.content || response?.response || []).map((ride: any) => ({
-          id: ride.id,
-          name: ride.title || ride.name || "Untitled Ride",
-          region: ride.location || "Unknown Region",
-          distance: `${ride.distance || 0} km`,
-          level: ride.difficultyLevel || "INTERMEDIATE",
-          status: ride.status || "OPEN",
-          participants: `${ride.participantsCount || 0} riders`,
-          progress: ride.progress || 0,
-          imageUrl: ride.coverImage || "/Images/CycleImage2.png",
-          leaderImageUrl: ride.leaderImage || "/Images/ProfileImage.png"
-        }));
-        setActivities(rides);
-      } catch (err: any) {
-        if (err.response?.status !== 403) {
-          console.error("Failed to fetch club rides", err);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchActivities();
-  }, []);
+  const { data: ridesData, isLoading } = useGetClubRidesQuery(
+    { clubId },
+    { skip: !clubId }
+  );
+
+  const activities = useMemo<Activity[]>(() => {
+    const rows = ridesData?.rows || [];
+    return rows.map((ride: any) => ({
+      id: ride.id,
+      name: ride.rideName || ride.title || ride.name || "Untitled Ride",
+      region: ride.meetingPoint || ride.location || "Unknown Region",
+      distance: `${ride.distance || 0} km`,
+      level: ride.difficultyLevel || "INTERMEDIATE",
+      status: ride.status || "OPEN",
+      participants: `${ride.participantsCount || 0} riders`,
+      progress: ride.progress || 0,
+      imageUrl: ride.coverImage || "/Images/CycleImage2.png",
+      leaderImageUrl: ride.leaderImage || "/Images/ProfileImage.png"
+    }));
+  }, [ridesData]);
 
   const filteredActivities = activities.filter((act) => {
     if (activeTab === "Active")
@@ -282,9 +292,7 @@ const ActivitiesRegistry = () => {
         {/* Table Container */}
         <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl relative min-h-[200px]">
           {isLoading ? (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EB712B]"></div>
-            </div>
+            <TableSkeleton />
           ) : filteredActivities.length === 0 ? (
             <div className="p-12 text-center text-text-muted">
               No activities found for this club yet.
