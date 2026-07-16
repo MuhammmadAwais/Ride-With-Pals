@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   SquarePen,
@@ -9,6 +9,7 @@ import {
   Edit2,
   Clipboard,
   EyeOff,
+  Trash2,
 } from "lucide-react";
 import {
   LineChart,
@@ -21,6 +22,8 @@ import {
 } from "recharts";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
+import { toast } from "sonner";
+import { useGetTheShopItemsQuery, useDeleteShopItemMutation } from "@/features/club/api/shopApiSlice";
 
 const chartData: any[] = [];
 
@@ -38,40 +41,47 @@ interface ProductType {
   code?: string;
 }
 
-import { useEffect } from "react";
-import { ClubService } from '@/features/club/services/clubService';
-
 const Product = () => {
-  const [products, setProducts] = useState<ProductType[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const clubIdStr = localStorage.getItem("selectedClubId");
-      if (!clubIdStr) return;
-      try {
-        const res = await ClubService.getAllShopItems(Number(clubIdStr), "", 50, 0);
-        const mapped = (res?.data || res || []).map((p: any) => ({
-          id: p.id,
-          name: p.title,
-          sku: p.sku || `SKU-${p.id}`,
-          code: p.code || `PROD-${p.id}`,
-          category: p.category?.name || "General",
-          price: p.price?.toString() || "0.00",
-          status: p.stockQuantity > 0 ? "IN STOCK" : "LIMITED",
-          image: p.images?.[0] || "/Images/BottleImage.png",
-          gallery: p.images?.length ? p.images : ["/Images/BottleImage.png"],
-          units: p.stockQuantity || 0,
-          sales: "0"
-        }));
-        setProducts(mapped);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchProducts();
-  }, []);
+  const clubIdStr = localStorage.getItem("selectedClubId");
+  const clubId = clubIdStr ? Number(clubIdStr) : 0;
+
+  const { data: shopData, isLoading } = useGetTheShopItemsQuery(
+    { clubId, limit: 50, offset: 0 },
+    { skip: !clubId }
+  );
+
+  const [deleteShopItem] = useDeleteShopItemMutation();
+
+  const products = useMemo<ProductType[]>(() => {
+    const rows = shopData?.rows || [];
+    return rows.map((p) => ({
+      id: p.id,
+      name: p.name || "Unnamed Item",
+      sku: `SKU-${p.id}`,
+      code: `PROD-${p.id}`,
+      category: p.size || "General",
+      price: p.price?.toString() || "0.00",
+      status: p.isActive ? "IN STOCK" : "LIMITED",
+      image: p.image || "/Images/BottleImage.png",
+      gallery: p.image ? [p.image] : ["/Images/BottleImage.png"],
+      units: 0,
+      sales: "0"
+    }));
+  }, [shopData]);
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteShopItem({ shopItemId: id }).unwrap();
+      toast.success("Product deleted successfully!");
+      if (selectedProduct?.id === id) setSelectedProduct(null);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to delete product.");
+    }
+  };
+
   const navigate = useNavigate();
 
   const handleSelectProduct = (product: ProductType) => {
@@ -132,7 +142,7 @@ const Product = () => {
       label: "",
       sortable: false,
       render: (p) => (
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -142,10 +152,35 @@ const Product = () => {
           >
             <SquarePen size={14} />
           </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(p.id);
+            }}
+            className="bg-surface p-2 rounded-lg hover:bg-red-500 hover:text-white text-text-muted transition-all cursor-pointer border border-border"
+          >
+            <Trash2 size={14} />
+          </button>
         </div>
       ),
     },
   ];
+
+  const TableSkeleton = () => (
+    <div className="animate-pulse space-y-3 p-4">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="flex items-center gap-4 py-3 border-b border-border last:border-0">
+          <div className="w-10 h-10 rounded-lg bg-[#222]" />
+          <div className="flex-1 space-y-2">
+            <div className="w-1/3 h-4 bg-[#222] rounded" />
+            <div className="w-1/5 h-3 bg-[#222] rounded" />
+          </div>
+          <div className="w-16 h-4 bg-[#222] rounded" />
+          <div className="w-20 h-6 bg-[#222] rounded-full" />
+        </div>
+      ))}
+    </div>
+  );
 
   if (selectedProduct) {
     return (
@@ -284,7 +319,7 @@ const Product = () => {
       </div>
 
       <div className="bg-surface p-4 md:p-6 rounded-2xl mb-8 border border-border overflow-hidden shadow-2xl">
-        <DataTable data={products} columns={columns} />
+        {isLoading ? <TableSkeleton /> : <DataTable data={products} columns={columns} />}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
