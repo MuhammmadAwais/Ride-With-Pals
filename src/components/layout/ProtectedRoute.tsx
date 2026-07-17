@@ -17,9 +17,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (isAuthenticated && !isOtpVerified) {
-      dispatch(bypassOtpSuccess());
-    }
+    // If the user's OTP is not verified, but they are logged in, we let the dummy OTP handle it.
+    // We do not auto-bypass here anymore because they need to click the verify button manually on the VerifyEmail screen.
   }, [isAuthenticated, isOtpVerified, dispatch]);
 
   if (!isAuthenticated) {
@@ -27,17 +26,42 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
+  // User is authenticated. Route them based on onboarding completion status.
+
+  // 1. Check if OTP is verified.
   if (!isOtpVerified) {
-    return null;
+    if (location.pathname !== '/verify-email') {
+      return <Navigate to="/verify-email" replace />;
+    }
+    return <>{children}</>;
   }
 
+  // 2. Check if Athlete Profile is created.
   const isAthleteProfile = !!user?.isAthleteProfile;
-  const isAthlete = user?.role === 'athlete';
-
-  if (isOtpVerified && !isAthleteProfile && isAthlete) {
-    if (location.pathname !== '/athlete-profile') {
-      return <Navigate to="/athlete-profile" replace />;
+  if (!isAthleteProfile) {
+    if (location.pathname !== '/athlete-profile' && location.pathname !== '/create-profile') {
+      return <Navigate to="/create-profile" replace />;
     }
+    return <>{children}</>;
+  }
+
+  // 3. User is fully onboarded (Athlete Profile exists).
+  // Allow them to visit the role selection page or other specific onboarding pages.
+  const allowedOnboardingRoutes = ['/select-role', '/create-profile', '/club-profile-setup', '/club-subscriptions', '/select-role-club'];
+  if (allowedOnboardingRoutes.includes(location.pathname)) {
+    return <>{children}</>;
+  }
+
+  // If they hit /dashboard or any root-like protected path without a specific intent, route them based on their current active role.
+  if (location.pathname === '/dashboard') {
+      if (!user?.role) {
+         return <Navigate to="/select-role" replace />;
+      }
+      if (user.role === 'owner' || user.role === 'organizer') {
+         return <Navigate to="/view/clubside/dashboard" replace />;
+      } else {
+         return <Navigate to="/view/userside/clubs" replace />;
+      }
   }
 
   return <>{children}</>;

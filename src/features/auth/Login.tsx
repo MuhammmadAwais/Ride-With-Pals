@@ -38,9 +38,8 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const defaultRoute = user.role === 'owner' || user.role === 'organizer' ? ROUTES.DASHBOARD : ROUTES.CLUBS;
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-      navigate(from ?? defaultRoute, { replace: true });
+      navigate(from ?? '/dashboard', { replace: true });
     }
   }, [isAuthenticated, user, navigate, location]);
 
@@ -79,16 +78,9 @@ const Login = () => {
       const result = await login({ email: email.trim().toLowerCase(), password }).unwrap();
       toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
       
-      // Dynamic Routing based on user role
-      const userRole = (result.isAthleteProfile ? 'athlete' : 'organizer') as 'athlete' | 'organizer' | 'owner';
-      let defaultRoute: string = ROUTES.CLUBS; // default to Athlete Hub
-      if (userRole === 'organizer' || userRole === 'owner') {
-        defaultRoute = ROUTES.MANAGE_CLUB_HOME;
-      }
-      
-      // Navigate to intended route or role-specific dashboard
+      // Navigate to root, where the RootGuard will sort out where they should go based on state.
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-      navigate(from ?? defaultRoute, { replace: true });
+      navigate(from ?? '/dashboard', { replace: true });
     } catch (err: any) {
       const errorMsg = err?.data?.message || err?.message || LOGIN_COPY.INVALID_CREDENTIALS;
       toast.error(errorMsg);

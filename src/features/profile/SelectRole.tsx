@@ -33,7 +33,7 @@ const SelectRole = () => {
       ...activeUser,
       role: 'athlete'
     }));
-    navigate("/create-profile"); 
+    navigate("/view/userside/clubs"); 
   };
 
   const handleCreateClub = () => {

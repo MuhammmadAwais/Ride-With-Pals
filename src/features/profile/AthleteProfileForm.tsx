@@ -79,7 +79,7 @@ const AthleteProfileForm = () => {
       if (response.status === 200) {
         dispatch(setAthleteProfileSuccess());
         toast.success("Profile saved successfully!");
-        navigate(ROUTES.CLUBS); 
+        navigate('/select-role'); 
       } else {
         toast.error("Failed to save profile.");
       }

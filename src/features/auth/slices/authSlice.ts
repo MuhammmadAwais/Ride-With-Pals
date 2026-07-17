@@ -154,6 +154,7 @@ const authSlice = createSlice({
         state.isLoading      = false;
         state.user           = action.payload.user;
         state.isAuthenticated = true;
+        state.isOtpVerified  = true; // Existing users bypass OTP on login
         state.error          = null;
       })
       .addCase(loginUser.rejected, (state, action) => {

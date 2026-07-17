@@ -58,7 +58,7 @@ const CreateAccount = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      navigate(user.role === 'owner' || user.role === 'organizer' ? ROUTES.DASHBOARD : ROUTES.CLUBS);
+      navigate('/dashboard');
     }
   }, [isAuthenticated, user, navigate]);
 

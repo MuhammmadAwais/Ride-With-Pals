@@ -18,7 +18,8 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { ROUTES, APP_NAME } from '@/Constants';
 import { useValidateOtpMutation, useResendOtpMutation } from '@/features/auth/api/authApiSlice';
-
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { bypassOtpSuccess } from '@/features/auth/slices/authSlice';
 
 const VerifyEmail = () => {
   const navigate   = useNavigate();
@@ -80,6 +81,8 @@ const VerifyEmail = () => {
     }
   };
 
+  const dispatch = useAppDispatch();
+
   const handleVerify = async () => {
     if (code.includes('')) {
       setError('Please enter the complete 6-digit code.');
@@ -88,18 +91,11 @@ const VerifyEmail = () => {
     }
     setError('');
 
-    const token = (location.state as { token?: string })?.token ?? '';
-
-    try {
-      const otpNumber = Number(code.join(''));
-      await validateOtp({ OTP: otpNumber, token }).unwrap();
-      toast.success('Email verified! Redirecting...');
-      navigate(ROUTES.SELECT_ROLE);
-    } catch (err: any) {
-      const errorMsg = err?.data?.message || err?.message || 'Invalid OTP.';
-      setError(errorMsg);
-      toast.error(errorMsg);
-    }
+    // DUMMY OTP VERIFICATION (Temporarily paused by backend)
+    // We bypass real OTP API and move straight to profile creation.
+    dispatch(bypassOtpSuccess());
+    toast.success('Email verified! Redirecting to profile creation...');
+    navigate('/athlete-profile');
   };
 
   const handleResend = async () => {
