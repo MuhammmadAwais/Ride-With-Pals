@@ -15,6 +15,8 @@ import PrivacyPolicy from '@/features/ClubSide/PrivacyPolicy';
 import MyPurchases from '@/features/public-club/pages/MyPurchases';
 import AppLayout from '@/components/layout/AppLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import { DashboardCalendar } from '@/features/dashboard/DashboardCalendar';
 
 // ── Auth & Public ──
 import CreateAccount from '@/features/auth/CreateAccount';
@@ -96,6 +98,23 @@ export const router = createBrowserRouter(
       <Route path="/club-subscriptions" element={<Subscriptions />} />
       <Route path="/select-role-club" element={<SelectRoleClub />} />
       <Route path="/select-role" element={<SelectRole />} />
+
+      {/* ── Dashboard Layout Shell & Child Routes ── */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="home" replace />} />
+        <Route path="home" element={<DashboardOverview />} />
+        <Route path="activities" element={<Activities />} />
+        <Route path="calendar" element={<DashboardCalendar />} />
+        <Route path="chat" element={<Support />} />
+        <Route path="profile" element={<ProfileAccount />} />
+      </Route>
 
       {/* ── Protected App Shell ── */}
       {/* All routes inside AppLayout will have the Sidebar and Navbar */}
