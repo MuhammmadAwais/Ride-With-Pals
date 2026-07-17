@@ -1,12 +1,8 @@
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Plus, Search, Tag, AlertCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-// Shared database for Active items fallback
-// const SHARED_ACTIVE_DISCOUNTS: any[] = [];
-
-// Organizer Expired Database fallback
-// const EXPIRED_DISCOUNTS: any[] = [];
+import { useGetClubDiscountsQuery } from '@/features/club/api/discountApiSlice';
+import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
 
 // Reusable Coupon Card matching UI specs
 const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
@@ -26,7 +22,7 @@ const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
           </div>
         </div>
         <div className="bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20 shrink-0 flex items-center">
-          <span className="text-[#EB712B] text-[10px] font-black uppercase tracking-wider">{percentage || 20}% OFF</span>
+          <span className="text-[#EB712B] text-[10px] font-black uppercase tracking-wider">{percentage || 0}% OFF</span>
         </div>
       </div>
     
@@ -48,7 +44,7 @@ const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
       <div className="mt-4">
         <h4 className="text-[10px] font-bold text-text-main uppercase tracking-wider mb-2">Description</h4>
         <p className="text-xs text-text-muted leading-relaxed line-clamp-2 md:line-clamp-3">
-          {description}
+          {description || "No description provided."}
         </p>
       </div>
     </div>
@@ -60,56 +56,115 @@ interface DiscountProps {
   clubId?: string | number;
 }
 
-import { useEffect } from 'react';
-import { ShopService, ClubService } from '@/api/backendApi';
-
 const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
   const [activeTab, setActiveTab] = useState<'active' | 'expired'>('active');
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const [discounts, setDiscounts] = useState<any[]>([]);
+  const resolvedClubId = useMemo(() => {
+    if (clubId) return Number(clubId);
+    const stored = localStorage.getItem("selectedClubId");
+    if (stored) return Number(stored);
+    return undefined;
+  }, [clubId]);
 
-  useEffect(() => {
-    const fetchDiscounts = async () => {
-      let clubIdStr = clubId ? String(clubId) : localStorage.getItem("selectedClubId");
-      if (!clubIdStr) {
-        try {
-          const clubsRes = await ClubService.getJoinedClubs();
-          const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
-          if (clubs.length > 0) {
-            clubIdStr = clubs[0].id.toString();
-            localStorage.setItem("selectedClubId", clubIdStr as string);
-          }
-        } catch (e) {
-          console.error("Failed to fetch user's joined clubs for discounts", e);
-        }
-      }
-      if (!clubIdStr) return;
-      try {
-        const res = await ShopService.getClubDiscounts({ clubId: Number(clubIdStr), search: searchQuery });
-        const items = res?.response?.data || res?.data || res || [];
-        const mapped = items.map((d: any) => ({
-          id: d.id,
-          title: d.title,
-          code: d.discountCode,
-          expiry: d.validTill ? new Date(d.validTill).toLocaleDateString() : 'N/A',
-          description: d.description,
-          isActive: d.isActive,
-          percentage: d.discountPercentage
-        }));
-        setDiscounts(mapped);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchDiscounts();
-  }, [searchQuery]);
+  // Fallback to first joined club if resolvedClubId is not defined
+  const { data: joinedClubsResponse } = useGetJoinedClubsQuery(undefined, {
+    skip: !!resolvedClubId,
+  });
+
+  const activeClubId = useMemo(() => {
+    if (resolvedClubId) return resolvedClubId;
+    const firstId = joinedClubsResponse?.rows?.[0]?.id;
+    if (firstId) {
+      localStorage.setItem("selectedClubId", String(firstId));
+      return firstId;
+    }
+    return undefined;
+  }, [resolvedClubId, joinedClubsResponse]);
+
+  const { data: discountsResponse, isLoading, isError } = useGetClubDiscountsQuery(
+    { clubId: activeClubId || 0 },
+    { skip: !activeClubId }
+  );
+
+  const discounts = useMemo(() => {
+    const items = discountsResponse?.rows || [];
+    const mapped = items.map((d: any) => ({
+      id: d.id,
+      title: d.title,
+      code: d.discountCode,
+      expiry: d.validTill ? new Date(d.validTill).toLocaleDateString() : 'N/A',
+      description: d.description,
+      isActive: d.isActive,
+      percentage: d.discountPercentage
+    }));
+
+    if (!searchQuery) return mapped;
+
+    const query = searchQuery.toLowerCase();
+    return mapped.filter(d => 
+      d.title.toLowerCase().includes(query) ||
+      d.code.toLowerCase().includes(query)
+    );
+  }, [discountsResponse, searchQuery]);
 
   const activeDiscounts = discounts.filter(d => d.isActive !== false);
   const expiredDiscounts = discounts.filter(d => d.isActive === false);
 
   const filteredActivePromos = activeDiscounts;
+
+  // ── SKELETON LOADING VIEW ──────────────────────────────────────────────────
+  const CardSkeleton = () => (
+    <div className="animate-pulse bg-surface border border-border rounded-3xl p-5 md:p-6 space-y-4">
+      <div className="flex justify-between items-center gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-hover/50" />
+          <div className="space-y-2">
+            <div className="w-24 h-4 bg-hover/50 rounded" />
+            <div className="w-16 h-3 bg-hover/50 rounded" />
+          </div>
+        </div>
+        <div className="w-16 h-6 bg-hover/50 rounded-full" />
+      </div>
+      <div className="h-16 bg-main-bg border border-border rounded-2xl p-4 flex justify-between items-center">
+        <div className="w-20 h-4 bg-hover/50 rounded" />
+        <div className="w-16 h-4 bg-hover/50 rounded" />
+      </div>
+      <div className="space-y-2">
+        <div className="w-full h-3 bg-hover/50 rounded" />
+        <div className="w-5/6 h-3 bg-hover/50 rounded" />
+      </div>
+    </div>
+  );
+
+  if (isLoading) {
+    return (
+      <div className="px-4 py-8 md:p-8 min-h-screen text-text-main font-sans w-full max-w-7xl mx-auto space-y-8">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-border pb-6 animate-pulse">
+          <div className="space-y-2">
+            <div className="w-48 h-8 bg-hover/50 rounded" />
+            <div className="w-72 h-4 bg-hover/50 rounded" />
+          </div>
+          <div className="w-72 h-12 bg-hover/50 rounded-xl" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map(i => <CardSkeleton key={i} />)}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="px-4 py-8 md:p-8 min-h-screen text-text-main w-full font-sans flex items-center justify-center">
+        <div className="text-center space-y-3 py-16 bg-surface border border-border rounded-3xl max-w-lg w-full">
+          <AlertCircle size={36} className="text-red-500 mx-auto" />
+          <p className="text-sm font-bold text-red-500 uppercase tracking-wider">Failed to load discounts.</p>
+        </div>
+      </div>
+    );
+  }
 
   // ==========================================
   // ATHLETE INTERFACE VIEW (Promo Wallet & Public Club View)
@@ -124,7 +179,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
                 <Sparkles className="text-[#eb712a]" size={28} /> Discount
               </h1>
               <p className="text-text-muted text-xs md:text-sm max-w-lg leading-relaxed">
-                Active promotional discounts ready to be applied at your ride checkout.
+                Active promotional discounts ready to be applied at your checkout.
               </p>
             </div>
 
@@ -147,7 +202,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
               ))
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-20 text-center space-y-3 border border-dashed border-border rounded-3xl">
-                <AlertCircle size={36} className="text-text-muted animate-pulse" />
+                <AlertCircle size={36} className="text-text-muted" />
                 <p className="text-xs font-bold text-text-muted">No promo codes found matching your criteria.</p>
               </div>
             )}
@@ -180,20 +235,20 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
           <div className="flex bg-surface p-1 rounded-full border border-border w-full lg:w-auto overflow-hidden">
             <button
               onClick={() => setActiveTab('active')}
-              className={`flex-1 lg:px-8 py-2.5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-300 cursor-pointer ${
+              className={`flex-1 lg:px-8 py-2.5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-300 cursor-pointer border-0 outline-none ${
                 activeTab === 'active' 
                   ? 'bg-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)]' 
-                  : 'text-text-muted hover:text-text-main'
+                  : 'text-text-muted hover:text-text-main bg-transparent'
               }`}
             >
               Active
             </button>
             <button
               onClick={() => setActiveTab('expired')}
-              className={`flex-1 lg:px-8 py-2.5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-300 cursor-pointer ${
+              className={`flex-1 lg:px-8 py-2.5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-300 cursor-pointer border-0 outline-none ${
                 activeTab === 'expired' 
                   ? 'bg-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)]' 
-                  : 'text-text-muted hover:text-text-main'
+                  : 'text-text-muted hover:text-text-main bg-transparent'
               }`}
             >
               Expired
@@ -202,8 +257,8 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
           
           {/* Add Discount Button */}
           <button 
-            onClick={() => navigate('/discount/add')} 
-            className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 cursor-pointer hover:bg-[#d66525]"
+            onClick={() => navigate('/view/clubside/discount/add')} 
+            className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 cursor-pointer hover:bg-[#d66525] border-0 outline-none"
           >
             <div className="bg-black/10 p-0.5 rounded-full">
               <Plus size={14} strokeWidth={3} />
@@ -215,9 +270,16 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
-        {discountsToDisplay.map((item: any) => (
-          <CouponCard key={item.id} {...item} />
-        ))}
+        {discountsToDisplay.length > 0 ? (
+          discountsToDisplay.map((item: any) => (
+            <CouponCard key={item.id} {...item} />
+          ))
+        ) : (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 text-center space-y-3 border border-dashed border-border rounded-3xl">
+            <AlertCircle size={36} className="text-text-muted" />
+            <p className="text-xs font-bold text-text-muted">No discounts configured under "{activeTab}".</p>
+          </div>
+        )}
       </div>
     </div>
   );

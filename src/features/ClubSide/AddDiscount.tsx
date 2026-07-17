@@ -1,7 +1,8 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import { ShopService } from '@/api/backendApi';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useAddDiscountMutation } from '@/features/club/api/discountApiSlice';
 
 function AddDiscount() {
   const navigate = useNavigate();
@@ -15,15 +16,16 @@ function AddDiscount() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const [addDiscount, { isLoading: loading }] = useAddDiscountMutation();
 
-  const handleSave = async () => {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (loading) return;
     (document.activeElement as HTMLElement)?.blur();
     let newErrors: Record<string, string> = {};
 
-    if (!formData.title) newErrors.title = "Discount title is required";
-    if (!formData.code) newErrors.code = "Discount code is required";
+    if (!formData.title.trim()) newErrors.title = "Discount title is required";
+    if (!formData.code.trim()) newErrors.code = "Discount code is required";
     if (!formData.percentage) newErrors.percentage = "Percentage is required";
     if (!formData.validTill) newErrors.validTill = "Valid till date is required";
 
@@ -33,41 +35,47 @@ function AddDiscount() {
     }
 
     const clubIdStr = localStorage.getItem("selectedClubId");
-    if (!clubIdStr) return;
+    if (!clubIdStr) {
+      toast.error("No club selected. Please select a club first.");
+      return;
+    }
 
-    setLoading(true);
     try {
-      await ShopService.addDiscount({
+      await addDiscount({
         clubId: Number(clubIdStr),
-        title: formData.title,
-        discountCode: formData.code,
+        title: formData.title.trim(),
+        discountCode: formData.code.trim(),
         discountPercentage: Number(formData.percentage),
-        description: formData.description,
+        description: formData.description.trim(),
         validTill: new Date(formData.validTill).toISOString(),
         isActive: true
-      });
-      navigate('/dashboard/discount');
-    } catch (err) {
+      }).unwrap();
+      
+      toast.success("Discount code created successfully!");
+      navigate('/view/clubside/discount');
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to create discount");
       console.error(err);
-      setErrors({ global: "Failed to create discount" });
-    } finally {
-      setLoading(false);
+      setErrors({ global: err?.data?.message || "Failed to create discount" });
     }
   };
 
   return (
     <div className="p-10 min-h-screen text-text-main bg-main-bg">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-[#EB712B] transition-colors mb-6 text-sm font-bold uppercase tracking-widest">
+      <button 
+        onClick={() => navigate('/view/clubside/discount')} 
+        className="flex items-center gap-2 text-text-muted hover:text-[#EB712B] transition-colors mb-6 text-sm font-bold uppercase tracking-widest bg-transparent border-0 outline-none cursor-pointer"
+      >
         <ArrowLeft size={20} /> Back
       </button>
 
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-black mb-8">Add New Discount</h1>
 
-        <div className="bg-surface border border-border rounded-[32px] p-10 shadow-2xl">
+        <form onSubmit={handleSave} className="bg-surface border border-border rounded-[32px] p-10 shadow-2xl">
           {errors.global && <p className="text-[#EB712B] text-sm font-bold mb-4">{errors.global}</p>}
+          
           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-            
             {/* Column 1 */}
             <div className="space-y-6">
               <div className="space-y-3">
@@ -134,14 +142,14 @@ function AddDiscount() {
           </div>
 
           <button 
-            onClick={handleSave}
-            onMouseDown={handleSave}
+            type="submit"
             disabled={loading}
-            className={`w-full h-16 mt-8 rounded-2xl ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#EB712B] hover:bg-[#ff8243]'} text-white font-black text-sm uppercase transition-all`}
+            className={`w-full h-16 mt-8 rounded-2xl ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#EB712B] hover:bg-[#ff8243]'} text-white font-black text-sm uppercase transition-all cursor-pointer border-0 outline-none flex items-center justify-center gap-2`}
           >
+            {loading && <Loader2 size={16} className="animate-spin" />}
             {loading ? "Saving..." : "Save"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
