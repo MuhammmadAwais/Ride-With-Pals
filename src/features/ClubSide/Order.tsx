@@ -1,49 +1,53 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { ShopService } from '@/api/backendApi';
+import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
   const [searchQuery, setSearchQuery] = useState("");
-  const [orders, setOrders] = useState<any[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const clubIdStr = localStorage.getItem("selectedClubId");
-      if (!clubIdStr) return;
-      try {
-        const res = await ShopService.forClubOwnerOrderList({ clubId: Number(clubIdStr), search: searchQuery, limit: 50, offset: 0 });
-        
-        const mappedOrders = (res?.data || res || []).map((o: any) => ({
-          id: o.id?.toString(),
-          orderId: o.orderNumber || o.id?.toString(),
-          productName: o.shopItem?.title || 'Unknown Product',
-          category: o.shopItem?.category?.name || 'Uncategorized',
-          image: o.shopItem?.images?.[0] || '/Images/CycleImage.png',
-          price: `$ ${o.amount?.toFixed(2) || o.totalAmount?.toFixed(2) || '0.00'}`,
-          recipient: o.user?.firstName ? `${o.user.firstName} ${o.user.lastName}` : 'Unknown User',
-          address: o.shippingAddress || 'N/A',
-          date: new Date(o.createdAt).toLocaleDateString(),
-          status: activeTab,
-          originalOrder: o
-        }));
-        
-        setOrders(mappedOrders);
-      } catch (err: any) {
-        if (err.response?.status !== 403) {
-          console.error(err);
-        }
-      }
-    };
-    
-    fetchOrders();
-  }, [activeTab, searchQuery]);
+  const clubIdStr = localStorage.getItem("selectedClubId");
+  const clubId = clubIdStr ? Number(clubIdStr) : undefined;
 
-  const filteredOrders = orders;
+  const { data: orderListResponse, isLoading, isError } = useForClubOwnerOrderListQuery(
+    {
+      clubId: clubId || 0,
+      limit: 50,
+      offset: 0,
+      statusIds: activeTab === 'Active' ? '1,2,3' : '4',
+    },
+    { skip: !clubId }
+  );
+
+  const orders = useMemo(() => {
+    const rows = orderListResponse?.rows || [];
+    const mapped = rows.map((o) => ({
+      id: o.id?.toString(),
+      orderId: o.id?.toString(),
+      productName: o.shop?.name || 'Unknown Product',
+      category: o.shop?.size || 'Uncategorized',
+      image: o.shop?.image || '/Images/CycleImage.png',
+      price: `$ ${o.totalPrice ? parseFloat(o.totalPrice).toFixed(2) : '0.00'}`,
+      recipient: o.buyer?.fullName || 'Unknown User',
+      address: 'N/A',
+      date: o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'N/A',
+      status: activeTab,
+      originalOrder: o
+    }));
+
+    if (!searchQuery) return mapped;
+
+    const query = searchQuery.toLowerCase();
+    return mapped.filter(o => 
+      o.productName.toLowerCase().includes(query) ||
+      o.recipient.toLowerCase().includes(query) ||
+      o.orderId.toLowerCase().includes(query)
+    );
+  }, [orderListResponse, activeTab, searchQuery]);
 
   const columns: Column<any>[] = [
     {
@@ -112,6 +116,27 @@ const Order = () => {
     }
   ];
 
+  const TableSkeleton = () => (
+    <div className="animate-pulse space-y-3 p-4 bg-surface rounded-3xl border border-border">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="w-10 h-10 rounded-2xl bg-hover/50" />
+            <div className="space-y-2">
+              <div className="w-24 h-4 bg-hover/50 rounded" />
+              <div className="w-16 h-3 bg-hover/50 rounded" />
+            </div>
+          </div>
+          <div className="w-20 h-4 bg-hover/50 rounded" />
+          <div className="w-16 h-4 bg-hover/50 rounded" />
+          <div className="w-24 h-4 bg-hover/50 rounded" />
+          <div className="w-16 h-4 bg-hover/50 rounded" />
+          <div className="w-20 h-8 bg-hover/50 rounded-lg" />
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8 overflow-x-hidden">
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 gap-4">
@@ -151,15 +176,25 @@ const Order = () => {
         </div>
       </div>
 
-      <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl">
-        {filteredOrders.length > 0 ? (
-          <DataTable data={filteredOrders} columns={columns} />
-        ) : (
-          <div className="text-center py-16 text-text-muted font-medium text-sm">
-            No orders found under "{activeTab}" matching your filter.
-          </div>
-        )}
-      </div>
+      {!clubId ? (
+        <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
+          Please select a club to manage its orders.
+        </div>
+      ) : isLoading ? (
+        <TableSkeleton />
+      ) : isError ? (
+        <div className="text-center py-16 bg-surface border border-border rounded-3xl text-red-500 font-medium text-sm">
+          Failed to load orders. Please check your permissions or try again.
+        </div>
+      ) : orders.length > 0 ? (
+        <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl">
+          <DataTable data={orders} columns={columns} />
+        </div>
+      ) : (
+        <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
+          No orders found under "{activeTab}" matching your filter.
+        </div>
+      )}
     </div>
   );
 };

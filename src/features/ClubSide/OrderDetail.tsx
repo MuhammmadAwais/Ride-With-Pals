@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { ShopService } from '@/api/backendApi';
+import { toast } from 'sonner';
+import { useForClubOwnerUpdateOrderStatusMutation } from '@/features/club/api/shopOrderApiSlice';
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -11,19 +12,21 @@ const OrderDetail = () => {
   // Get the order data passed from the navigation state
   const order = location.state?.order;
 
-  const [loading, setLoading] = useState(false);
   const [isDelivered, setIsDelivered] = useState(order?.status === 'Delivered');
+  const [updateOrderStatus, { isLoading: isUpdating }] = useForClubOwnerUpdateOrderStatusMutation();
 
   const handleMarkDelivered = async () => {
     if (!order?.originalOrder?.id) return;
-    setLoading(true);
     try {
-      await ShopService.forClubOwnerUpdateOrderStatus({ orderId: order.originalOrder.id, status: 4 }); // 4 = Delivered
+      await updateOrderStatus({ 
+        orderId: Number(order.originalOrder.id), 
+        statusId: 4 // 4 = Delivered
+      }).unwrap();
       setIsDelivered(true);
-    } catch (err) {
+      toast.success("Order marked as delivered successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update order status.");
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -33,12 +36,12 @@ const OrderDetail = () => {
       <div className="flex items-center gap-4 mb-8">
         <button 
           onClick={() => navigate('/order')} 
-          className="group flex items-center gap-2 text-text-muted hover:text-text-main transition-all cursor-pointer"
+          className="group flex items-center gap-2 text-text-muted hover:text-text-main transition-all cursor-pointer bg-transparent border-0 outline-none"
         >
           <div className="p-2 rounded-full bg-surface group-hover:bg-hover border border-border">
             <ChevronLeft size={18} />
           </div>
-          <span className="text-xs font-medium uppercase tracking-widest">Back to Orders</span>
+          <span className="text-xs font-medium uppercase tracking-widest bg-transparent">Back to Orders</span>
         </button>
       </div>
 
@@ -52,12 +55,12 @@ const OrderDetail = () => {
         
         <div className="flex items-center gap-3">
           <span className={`px-4 py-1.5 rounded-full border text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${
-            order?.status === 'Delivered' 
+            isDelivered 
               ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
               : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
           }`}>
             <CheckCircle2 size={12} /> 
-            {order?.status || 'In Progress'}
+            {isDelivered ? 'Delivered' : (order?.status || 'In Progress')}
           </span>
         </div>
       </div>
@@ -98,8 +101,8 @@ const OrderDetail = () => {
             <div className="space-y-6 mb-8">
               {[
                 { icon: <Package size={16}/>, l: 'Customer', v: order?.recipient || 'N/A' },
-                { icon: <MapPin size={16}/>, l: 'Location', v: 'Las Vegas, NV' },
-                { icon: <Calendar size={16}/>, l: 'Date', v: order?.date || 'Oct 24, 2024' }
+                { icon: <MapPin size={16}/>, l: 'Location', v: order?.originalOrder?.shop?.gender || 'Club Store' },
+                { icon: <Calendar size={16}/>, l: 'Date', v: order?.date || 'N/A' }
               ].map((i) => (
                 <div key={i.l} className="flex items-center gap-4">
                   <div className="text-text-muted">{i.icon}</div>
@@ -116,21 +119,22 @@ const OrderDetail = () => {
               <span className="text-2xl font-bold text-[#EB712B]">{order?.price || "$0.00"}</span>
             </div>
 
-            {order?.status === 'Delivered' || isDelivered ? (
+            {isDelivered ? (
               <div className="w-full py-4 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-center font-bold text-sm uppercase tracking-widest">
                 Delivered
               </div>
             ) : (
               <button 
                 onClick={handleMarkDelivered}
-                disabled={loading}
-                className={`w-full py-4 rounded-xl font-bold text-sm transition-colors mb-3 cursor-pointer ${
-                  loading 
+                disabled={isUpdating}
+                className={`w-full py-4 rounded-xl font-bold text-sm transition-colors mb-3 cursor-pointer flex items-center justify-center gap-2 border-0 outline-none ${
+                  isUpdating 
                     ? 'bg-[#EB712B]/50 text-white cursor-not-allowed' 
                     : 'bg-[#EB712B] text-white hover:bg-[#d66525]'
                 }`}
               >
-                {loading ? 'Updating...' : 'Mark as Delivered'}
+                {isUpdating && <Loader2 size={16} className="animate-spin" />}
+                {isUpdating ? 'Updating...' : 'Mark as Delivered'}
               </button>
             )}
           </div>
@@ -144,7 +148,7 @@ const OrderDetail = () => {
                 <div key={step} className="relative pl-6">
                   <div className={`absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full ${i < 2 ? 'bg-emerald-500' : 'bg-border'}`} />
                   <p className={`text-sm font-semibold ${i < 2 ? 'text-text-main' : 'text-text-muted'}`}>{step}</p>
-                  <p className="text-[10px] text-text-muted mt-1 uppercase tracking-wider">{order?.date || "Oct 24, 2024"}</p>
+                  <p className="text-[10px] text-text-muted mt-1 uppercase tracking-wider">{order?.date || "N/A"}</p>
                 </div>
               ))}
             </div>

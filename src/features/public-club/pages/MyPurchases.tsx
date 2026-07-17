@@ -1,45 +1,38 @@
-import { useState, useEffect } from 'react';
-import { Search, ShoppingBag, CheckCircle2, Loader2 } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Search, ShoppingBag, CheckCircle2 } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { ShopService } from '@/api/backendApi';
+import { useGetMyPurchasesListQuery } from '@/features/club/api/shopOrderApiSlice';
 
 const MyPurchases = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [purchases, setPurchases] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPurchases = async () => {
-      try {
-        setLoading(true);
-        // Pass search query inside parameters record
-        const res = await ShopService.getMyPurchasesList({ search: searchQuery });
-        
-        // Map the API response if it differs from the format, assuming we get rows or array
-        const items = res?.rows || res?.data || res || [];
-        const mapped = items.map((item: any) => ({
-          id: item.id?.toString() || item.orderId || Math.random().toString(),
-          product: item.product?.name || item.itemName || 'Unknown Item',
-          category: item.product?.category || item.category || 'Gear',
-          price: item.price ? `$${item.price}` : '$0.00',
-          date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
-          status: item.status || 'Processing',
-          img: item.product?.image || item.image || '/Images/CycleImage.png',
-        }));
-        
-        setPurchases(mapped);
-      } catch (err) {
-        console.error("Failed to fetch purchases", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    // In a real app we might debounce searchQuery, but for now we fetch on changes
-    // Alternatively, we can fetch once and filter locally
-    fetchPurchases();
-  }, [searchQuery]);
+  const { data: purchasesResponse, isLoading, isError } = useGetMyPurchasesListQuery({
+    limit: 50,
+    offset: 0
+  });
+
+  const purchases = useMemo(() => {
+    const rows = purchasesResponse?.rows || [];
+    const mapped = rows.map((item) => ({
+      id: item.id?.toString() || Math.random().toString(),
+      product: item.shop?.name || 'Unknown Item',
+      category: item.shop?.size || 'Gear',
+      price: item.totalPrice ? `$${parseFloat(item.totalPrice).toFixed(2)}` : '$0.00',
+      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
+      status: item.statusName || 'Processing',
+      img: item.shop?.image || '/Images/CycleImage.png',
+    }));
+
+    if (!searchQuery) return mapped;
+
+    const query = searchQuery.toLowerCase();
+    return mapped.filter(item => 
+      item.product.toLowerCase().includes(query) ||
+      item.category.toLowerCase().includes(query) ||
+      item.id.toLowerCase().includes(query)
+    );
+  }, [purchasesResponse, searchQuery]);
 
   const columns: Column<any>[] = [
     {
@@ -60,7 +53,7 @@ const MyPurchases = () => {
       key: 'id',
       label: 'Order ID',
       sortable: true,
-      render: (item) => <span className="font-mono text-xs text-text-muted">{item.id}</span>
+      render: (item) => <span className="font-mono text-xs text-text-muted">#{item.id}</span>
     },
     {
       key: 'date',
@@ -94,6 +87,26 @@ const MyPurchases = () => {
     }
   ];
 
+  const TableSkeleton = () => (
+    <div className="animate-pulse space-y-4 p-6 bg-surface rounded-3xl border border-border">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
+          <div className="flex items-center gap-4 flex-1">
+            <div className="w-12 h-12 rounded-xl bg-hover/50" />
+            <div className="space-y-2">
+              <div className="w-32 h-4 bg-hover/50 rounded" />
+              <div className="w-20 h-3 bg-hover/50 rounded" />
+            </div>
+          </div>
+          <div className="w-24 h-4 bg-hover/50 rounded" />
+          <div className="w-20 h-4 bg-hover/50 rounded" />
+          <div className="w-20 h-4 bg-hover/50 rounded" />
+          <div className="w-24 h-7 bg-hover/50 rounded-full" />
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -117,22 +130,24 @@ const MyPurchases = () => {
           </div>
         </div>
 
-        <div className="bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden">
-          {loading ? (
-            <div className="py-20 flex flex-col items-center justify-center text-center px-4">
-              <Loader2 className="animate-spin text-[#EB712B] mb-4" size={48} />
-              <h3 className="text-lg font-bold text-text-main">Loading purchases...</h3>
-            </div>
-          ) : purchases.length > 0 ? (
+        {isLoading ? (
+          <TableSkeleton />
+        ) : isError ? (
+          <div className="py-20 flex flex-col items-center justify-center text-center px-4 bg-surface border border-border rounded-3xl">
+            <h3 className="text-lg font-bold text-red-500">Failed to load purchases</h3>
+            <p className="text-sm text-text-muted mt-2">Please try again later.</p>
+          </div>
+        ) : purchases.length > 0 ? (
+          <div className="bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden">
             <DataTable data={purchases} columns={columns} />
-          ) : (
-            <div className="py-20 flex flex-col items-center justify-center text-center px-4">
-              <ShoppingBag size={48} className="text-border mb-4" />
-              <h3 className="text-lg font-bold text-text-main">No purchases found</h3>
-              <p className="text-sm text-text-muted">You haven't bought any items yet.</p>
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="py-20 flex flex-col items-center justify-center text-center px-4 bg-surface border border-border rounded-3xl">
+            <ShoppingBag size={48} className="text-border mb-4" />
+            <h3 className="text-lg font-bold text-text-main">No purchases found</h3>
+            <p className="text-sm text-text-muted">You haven't bought any items yet.</p>
+          </div>
+        )}
       </div>
     </div>
   );
