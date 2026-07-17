@@ -28,6 +28,7 @@ import { logout } from '@/features/auth/slices/authSlice';
 import { cn } from '@/lib/utils';
 import { APP_NAME, ROUTES } from '@/Constants';
 import { useTheme } from '@/hooks/useTheme';
+import { Lock as LockIcon } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -191,7 +192,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user     = useAppSelector((s) => s.auth.user);
+  const myClubs  = useAppSelector((s) => s.club.myClubs);
   const { isDark } = useTheme();
+
+  // Whether this user can manage clubs (has at least one managed/owned club)
+  const hasManageableClubs = myClubs.length > 0;
 
   const [profileMenuOpen,  setProfileMenuOpen]  = useState(false);
   const [logoutModalOpen,  setLogoutModalOpen]  = useState(false);
@@ -374,20 +379,34 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <button
                   onClick={() => {
                     setRoleMenuOpen(false);
-                    navigate(ROUTES.DASHBOARD); // clubside entry page
+                    if (hasManageableClubs) {
+                      navigate(ROUTES.DASHBOARD);
+                    } else {
+                      navigate(ROUTES.CLUB_PROFILE_SETUP);
+                    }
                   }}
                   className={cn(
                     "w-full flex items-center gap-3 p-3 rounded-xl text-left text-xs font-semibold font-poppins transition-all duration-200 border-none",
-                    !isAthleteSide
+                    !isAthleteSide && hasManageableClubs
                       ? "text-text-main bg-accent/10"
                       : "text-text-muted hover:text-text-main hover:bg-hover"
                   )}
-                  style={{ cursor: 'pointer', background: !isAthleteSide ? undefined : 'transparent' }}
+                  style={{ cursor: 'pointer', background: (!isAthleteSide && hasManageableClubs) ? undefined : 'transparent' }}
                 >
-                  <LayoutDashboard size={16} className="text-[#EB712B]" />
+                  {hasManageableClubs ? (
+                    <LayoutDashboard size={16} className="text-[#EB712B]" />
+                  ) : (
+                    <LockIcon size={16} className="text-text-muted" />
+                  )}
                   <div className="flex flex-col">
-                    <span>Club Management</span>
-                    <span className="text-[10px] text-text-muted font-normal mt-0.5">Manage community & gear</span>
+                    <span className={hasManageableClubs ? '' : 'text-text-muted'}>
+                      {hasManageableClubs ? 'Club Management' : 'Create a Club'}
+                    </span>
+                    <span className="text-[10px] text-text-muted font-normal mt-0.5">
+                      {hasManageableClubs
+                        ? `Manage ${myClubs.length} club${myClubs.length > 1 ? 's' : ''}`
+                        : 'Set up your first club'}
+                    </span>
                   </div>
                 </button>
               </div>

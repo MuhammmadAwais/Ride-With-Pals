@@ -21,6 +21,10 @@ import gsap from 'gsap';
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/layout/Navbar';
 import { APP_NAME } from '@/Constants';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { useAppSelector } from '@/hooks/useAppSelector';
+import { fetchMyClubs } from '@/features/club/slices/clubSlice';
+import { useEffect } from 'react';
 
 /** Derive a human-readable page title from the current pathname. */
 function deriveTitle(pathname: string): string {
@@ -37,6 +41,15 @@ const AppLayout: React.FC = () => {
   const location = useLocation();
   const contentRef = useRef<HTMLElement>(null);
   const pageTitle = deriveTitle(location.pathname);
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+
+  // Bootstrap managed clubs so ProtectedRoute club-side guard and Sidebar both work correctly
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchMyClubs());
+    }
+  }, [isAuthenticated, dispatch]);
 
   // ── GSAP: Page content entry animation on route change ───────────────────
   useGSAP(

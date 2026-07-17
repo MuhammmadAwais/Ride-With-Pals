@@ -22,7 +22,8 @@ export interface Club {
 }
 
 export interface ClubState {
-  myClubs: Club[];        // Can be 'owned' clubs (Organizer) or 'joined' clubs (Athlete)
+  myClubs: Club[];        // Managed clubs (Owner or Admin) — owned=true API
+  joinedClubs: Club[];    // Clubs the user has joined as a regular member
   exploreClubs: Club[];   // Public clubs available to join (Athlete)
   currentClub: Club | null;
   isLoading: boolean;

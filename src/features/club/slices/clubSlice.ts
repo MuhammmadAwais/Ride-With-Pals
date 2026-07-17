@@ -15,15 +15,16 @@ const extractArray = (res: any) => {
   return res?.response?.rows || res?.response?.data || res?.data?.data || res?.data || res?.response || res || [];
 };
 
-const initialState: ClubState & { 
-  currentClubMembers?: any[]; 
+const initialState: ClubState & {
+  currentClubMembers?: any[];
   currentJoinRequests?: any[];
   currentClubRides?: any[];
   currentClubNews?: any[];
   currentShopItems?: any[];
 } = {
-  myClubs: [],
-  exploreClubs: [],
+  myClubs: [],       // MANAGED clubs: clubs this user owns/admins (owned=true API call)
+  joinedClubs: [],   // JOINED clubs: clubs this user is a member of (joined API call)
+  exploreClubs: [],  // ALL public clubs for discovery
   currentClub: null,
   currentClubMembers: [],
   currentJoinRequests: [],
@@ -36,43 +37,47 @@ const initialState: ClubState & {
 
 // ─── Async Thunks ─────────────────────────────────────────────────────────────
 
+/**
+ * Fetches ONLY clubs the current user OWNS or ADMINS.
+ * Maps to GET /clubs?owned=true (equivalent to Flutter's getAllClubs(owned: true)).
+ * Used to populate the Club Management sidebar.
+ */
 export const fetchMyClubs = createAsyncThunk<Club[], void, { rejectValue: string }>(
   'club/fetchMyClubs',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const state = getState() as any;
-      const role = state?.auth?.user?.role;
-      
-      if (role === 'organizer' || role === 'owner') {
-        const [ownedResponse, joinedResponse] = await Promise.all([
-          ClubService.getAllClubs(true),
-          ClubService.getJoinedClubs()
-        ]);
-        const ownedClubs = extractArray(ownedResponse);
-        const joinedClubs = extractArray(joinedResponse);
-        
-        // Merge and remove duplicates by ID
-        const combined = [...ownedClubs, ...joinedClubs];
-        const uniqueClubsMap = new Map();
-        combined.forEach(club => {
-          if (club && club.id) uniqueClubsMap.set(club.id, club);
-        });
-        return Array.from(uniqueClubsMap.values());
-      } else {
-        const response = await ClubService.getJoinedClubs();
-        return extractArray(response);
-      }
+      const response = await ClubService.getAllClubs(true);
+      return extractArray(response);
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch your clubs.');
+      return rejectWithValue(err.message || 'Failed to fetch managed clubs.');
     }
   }
 );
 
+/**
+ * Fetches clubs the current user has JOINED as a regular member.
+ * Maps to GET /clubs/joined (equivalent to Flutter's userJoinedClub()).
+ * Used to populate the Athlete Interface "Joined Clubs" section.
+ */
+export const fetchJoinedClubs = createAsyncThunk<Club[], void, { rejectValue: string }>(
+  'club/fetchJoinedClubs',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await ClubService.getJoinedClubs();
+      return extractArray(response);
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to fetch joined clubs.');
+    }
+  }
+);
+
+/**
+ * Fetches ALL public clubs for discovery (Explore tab).
+ */
 export const fetchExploreClubs = createAsyncThunk<Club[], void, { rejectValue: string }>(
   'club/fetchExploreClubs',
   async (_, { rejectWithValue }) => {
     try {
-      // Athletes fetch all available clubs
       const response = await ClubService.getAllClubs(false);
       return extractArray(response);
     } catch (err: any) {
@@ -184,7 +189,7 @@ const clubSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch My Clubs
+      // Fetch My Clubs (managed/owned)
       .addCase(fetchMyClubs.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -196,6 +201,19 @@ const clubSlice = createSlice({
       .addCase(fetchMyClubs.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload ?? 'Error fetching clubs';
+      })
+      // Fetch Joined Clubs (as regular member)
+      .addCase(fetchJoinedClubs.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchJoinedClubs.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.joinedClubs = action.payload;
+      })
+      .addCase(fetchJoinedClubs.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload ?? 'Error fetching joined clubs';
       })
       // Fetch Explore Clubs
       .addCase(fetchExploreClubs.pending, (state) => {
@@ -238,7 +256,6 @@ const clubSlice = createSlice({
       })
       // Manage Join Request
       .addCase(manageJoinRequestThunk.fulfilled, (state, action) => {
-        // Remove the processed request from state
         if (state.currentJoinRequests) {
           state.currentJoinRequests = state.currentJoinRequests.filter(
             (req) => req.id !== action.payload.requestId
@@ -247,7 +264,6 @@ const clubSlice = createSlice({
       })
       // Remove Club Member
       .addCase(removeClubMemberThunk.fulfilled, (state, action) => {
-        // Remove the member from state
         if (state.currentClubMembers) {
           state.currentClubMembers = state.currentClubMembers.filter(
             (m) => m.userId !== action.payload
