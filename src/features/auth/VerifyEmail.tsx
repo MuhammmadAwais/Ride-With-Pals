@@ -16,8 +16,8 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { ROUTES, APP_NAME } from '@/Constants';
-import { useValidateOtpMutation, useResendOtpMutation } from '@/features/auth/api/authApiSlice';
+import { APP_NAME } from '@/Constants';
+import { useResendOtpMutation } from '@/features/auth/api/authApiSlice';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { bypassOtpSuccess } from '@/features/auth/slices/authSlice';
 
@@ -26,8 +26,8 @@ const VerifyEmail = () => {
   const location   = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRefs  = useRef<(HTMLInputElement | null)[]>([]);
-  const [validateOtp, { isLoading: isValidating }] = useValidateOtpMutation();
   const [resendOtp] = useResendOtpMutation();
+  const isValidating = false;
 
   const userEmail = (location.state as { email?: string })?.email ?? 'your email';
   const [code, setCode] = useState(['', '', '', '', '', '']);

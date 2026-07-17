@@ -178,15 +178,20 @@ const NewsSkeleton = () => (
   </div>
 );
 
+import { useActiveClub } from '@/hooks/useActiveClub';
+import { useClubPermissions } from '@/hooks/useClubPermissions';
+
 export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
-  let activeClubId = clubId || localStorage.getItem("selectedClubId");
+  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
+  let activeClubId = clubId || activeClubIdRedux;
+  const permissions = useClubPermissions(activeClubId || undefined);
   
   const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!activeClubId });
   const joinedRows = joinedClubs?.rows || [];
 
   if (!activeClubId && joinedRows.length > 0) {
     activeClubId = joinedRows[0].id.toString();
-    localStorage.setItem("selectedClubId", activeClubId);
+    setActiveClub(joinedRows[0] as any);
   }
 
   const { data: newsData, isLoading } = useGetAllNewsQuery(
@@ -214,12 +219,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
       <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-text-main">Community News</h1>
-          <Link 
-            to="/news/add" 
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
-          >
-            <Plus size={18} /> Add new Post
-          </Link>
+          {permissions.canPublishNews && (
+            <Link 
+              to="/news/add" 
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
+            >
+              <Plus size={18} /> Add new Post
+            </Link>
+          )}
         </div>
       </header>
       <main className="max-w-4xl mx-auto space-y-4 sm:space-y-6">

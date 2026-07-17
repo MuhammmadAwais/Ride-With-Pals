@@ -1,9 +1,8 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, Calendar, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
-import { ROUTES } from "@/Constants";
 import { backendApi } from "@/api/backendApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { setAthleteProfileSuccess } from "@/features/auth/slices/authSlice";

@@ -24,6 +24,8 @@ import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { toast } from "sonner";
 import { useGetTheShopItemsQuery, useDeleteShopItemMutation } from "@/features/club/api/shopApiSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
+import { useClubPermissions } from "@/hooks/useClubPermissions";
 
 const chartData: any[] = [];
 
@@ -45,8 +47,9 @@ const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
 
-  const clubIdStr = localStorage.getItem("selectedClubId");
+  const { clubId: clubIdStr } = useActiveClub();
   const clubId = clubIdStr ? Number(clubIdStr) : 0;
+  const permissions = useClubPermissions(clubId);
 
   const { data: shopData, isLoading } = useGetTheShopItemsQuery(
     { clubId, limit: 50, offset: 0 },
@@ -90,81 +93,88 @@ const Product = () => {
     window.scrollTo(0, 0);
   };
 
-  const columns: Column<ProductType>[] = [
-    {
-      key: "name",
-      label: "Asset Description",
-      sortable: true,
-      render: (p) => (
-        <div className="flex items-center gap-4">
-          <img
-            src={p.image}
-            className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover border border-border"
-            alt={p.name}
-          />
-          <div>
-            <p className="font-bold text-xs text-text-main">{p.name}</p>
-            <p className="text-[9px] text-text-muted hidden md:block">{p.sku}</p>
+  const columns = useMemo<Column<ProductType>[]>(() => {
+    const baseCols: Column<ProductType>[] = [
+      {
+        key: "name",
+        label: "Asset Description",
+        sortable: true,
+        render: (p) => (
+          <div className="flex items-center gap-4">
+            <img
+              src={p.image}
+              className="w-8 h-8 md:w-10 md:h-10 rounded-lg object-cover border border-border"
+              alt={p.name}
+            />
+            <div>
+              <p className="font-bold text-xs text-text-main">{p.name}</p>
+              <p className="text-[9px] text-text-muted hidden md:block">{p.sku}</p>
+            </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: "category",
-      label: "Classification",
-      sortable: true,
-      render: (p) => (
-        <span className="bg-surface px-3 py-1 rounded w-fit text-[10px] border border-border hidden md:block text-text-muted">
-          {p.category}
-        </span>
-      ),
-    },
-    {
-      key: "price",
-      label: "Unit Value",
-      sortable: true,
-      render: (p) => <span className="font-bold text-sm text-[#c99277]">${p.price}</span>,
-    },
-    {
-      key: "status",
-      label: "Inventory Status",
-      sortable: true,
-      render: (p) => (
-        <div
-          className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}
-        >
-          {p.status}
-        </div>
-      ),
-    },
-    {
-      key: "actions",
-      label: "",
-      sortable: false,
-      render: (p) => (
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSelectProduct(p);
-            }}
-            className="bg-surface p-2 rounded-lg hover:bg-[#EB712B] hover:text-white text-text-muted transition-all cursor-pointer border border-border"
+        ),
+      },
+      {
+        key: "category",
+        label: "Classification",
+        sortable: true,
+        render: (p) => (
+          <span className="bg-surface px-3 py-1 rounded w-fit text-[10px] border border-border hidden md:block text-text-muted">
+            {p.category}
+          </span>
+        ),
+      },
+      {
+        key: "price",
+        label: "Unit Value",
+        sortable: true,
+        render: (p) => <span className="font-bold text-sm text-[#c99277]">${p.price}</span>,
+      },
+      {
+        key: "status",
+        label: "Inventory Status",
+        sortable: true,
+        render: (p) => (
+          <div
+            className={`px-2 py-0.5 rounded-full w-fit border text-[9px] ${p.status === "LIMITED" ? "text-orange-500 border-orange-500/30" : "text-green-500 border-green-500/30"}`}
           >
-            <SquarePen size={14} />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(p.id);
-            }}
-            className="bg-surface p-2 rounded-lg hover:bg-red-500 hover:text-white text-text-muted transition-all cursor-pointer border border-border"
-          >
-            <Trash2 size={14} />
-          </button>
-        </div>
-      ),
-    },
-  ];
+            {p.status}
+          </div>
+        ),
+      },
+    ];
+
+    if (permissions.isAdmin) {
+      baseCols.push({
+        key: "actions",
+        label: "",
+        sortable: false,
+        render: (p) => (
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSelectProduct(p);
+              }}
+              className="bg-surface p-2 rounded-lg hover:bg-[#EB712B] hover:text-white text-text-muted transition-all cursor-pointer border border-border"
+            >
+              <SquarePen size={14} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(p.id);
+              }}
+              className="bg-surface p-2 rounded-lg hover:bg-red-500 hover:text-white text-text-muted transition-all cursor-pointer border border-border"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ),
+      });
+    }
+
+    return baseCols;
+  }, [permissions.isAdmin, selectedProduct]);
 
   const TableSkeleton = () => (
     <div className="animate-pulse space-y-3 p-4">
@@ -273,32 +283,36 @@ const Product = () => {
             </div>
 
             {/* Owner Controls */}
-            <div className="flex flex-wrap gap-4 pt-8">
-              <button
-                onClick={() => {
-                  const productToEdit = {
-                    ...selectedProduct,
-                    image: activeImage,
-                  };
+            {permissions.isAdmin && (
+              <>
+                <div className="flex flex-wrap gap-4 pt-8">
+                  <button
+                    onClick={() => {
+                      const productToEdit = {
+                        ...selectedProduct,
+                        image: activeImage,
+                      };
 
-                  navigate("/add-product", {
-                    state: { product: productToEdit },
-                  });
-                }}
-                className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Edit2 size={18} /> Edit
-              </button>
-              <button className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer">
-                <Clipboard size={18} /> Stock
-              </button>
-            </div>
+                      navigate("/add-product", {
+                        state: { product: productToEdit },
+                      });
+                    }}
+                    className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Edit2 size={18} /> Edit
+                  </button>
+                  <button className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <Clipboard size={18} /> Stock
+                  </button>
+                </div>
 
-            <div className="pt-15">
-              <button className="w-full mt-4 py-4 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/5 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                <EyeOff size={18} /> Deactivate Listing
-              </button>
-            </div>
+                <div className="pt-15">
+                  <button className="w-full mt-4 py-4 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/5 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <EyeOff size={18} /> Deactivate Listing
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -311,11 +325,13 @@ const Product = () => {
         <h1 className="text-2xl md:text-3xl font-bold text-text-main">
           High Performance <span className="text-[#EB712B]">Gear</span>
         </h1>
-        <Link to="/add-product">
-          <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer hover:bg-[#d66525]">
-            <Plus size={18} /> Add new Product
-          </button>
-        </Link>
+        {permissions.isAdmin && (
+          <Link to="/add-product">
+            <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer hover:bg-[#d66525]">
+              <Plus size={18} /> Add new Product
+            </button>
+          </Link>
+        )}
       </div>
 
       <div className="bg-surface p-4 md:p-6 rounded-2xl mb-8 border border-border overflow-hidden shadow-2xl">

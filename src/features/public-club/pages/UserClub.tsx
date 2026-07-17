@@ -7,6 +7,7 @@ import { setUser } from "@/features/auth/slices/authSlice";
 import { fetchMyClubs, fetchExploreClubs } from "@/features/club/slices/clubSlice";
 import { useClub } from "@/features/club/hooks/useClub";
 import { ClubService } from "@/features/club/services/clubService";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 import Ride from "./Ride";
 import News from "../../ClubSide/News";
@@ -43,6 +44,7 @@ export default function UserClub() {
   const user = useAppSelector((s) => s.auth.user);
   const { myClubs, exploreClubs } = useAppSelector((s) => s.club);
   const { handleJoinClub, isJoining } = useClub();
+  const { setActiveClub } = useActiveClub();
   
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
@@ -113,7 +115,7 @@ export default function UserClub() {
   );
 
   const handleSelectMyClub = (club: any) => {
-    localStorage.setItem("selectedClubId", club.id);
+    setActiveClub(club);
     navigate(`/view/clubside/dashboard`);
   };
 

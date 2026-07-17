@@ -15,6 +15,7 @@ import type { Column } from "@/components/ui/DataTable";
 import { useTableSort } from "@/hooks/useTableSort";
 import { useAppSelector } from "@/app/hooks";
 import { useGetClubsQuery, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -46,6 +47,7 @@ export const ManageClub = () => {
   const navigate = useNavigate();
  
   const { user } = useAppSelector((state) => state.auth);
+  const { setActiveClub } = useActiveClub();
 
   const { data: ownedClubsData, isLoading: loadingOwned } = useGetClubsQuery({ owned: true });
   const { data: joinedClubsData, isLoading: loadingJoined } = useGetJoinedClubsQuery();
@@ -159,10 +161,10 @@ export const ManageClub = () => {
               if (isAthlete) {
                 navigate(`/club/${club.id}`);
               } else {
-                localStorage.setItem("selectedClubId", club.id.toString());
-                localStorage.setItem("selectedClubBanner", club.img);
-                localStorage.setItem("selectedClubLogo", club.logo);
-                localStorage.setItem("selectedClubName", club.name);
+                const fullClub = uniqueClubs.find(c => c.id === club.id);
+                if (fullClub) {
+                  setActiveClub(fullClub);
+                }
                 navigate("/manage-club-home");
               }
             }}

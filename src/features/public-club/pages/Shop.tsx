@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Heart, MapPin, Grid3X3, List, Search, Filter, ShoppingBag, X, CheckCircle2 } from "lucide-react";
 import { useGetTheShopItemsQuery } from "@/features/club/api/shopApiSlice";
 import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import type { ShopTypes } from "@/api/types";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 interface ShopProduct {
   id: string;
@@ -24,18 +25,22 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
   const [selectedProduct, setSelectedProduct] = useState<ShopProduct | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Resolve clubId: prop → localStorage → first joined club
-  const storedClubId = localStorage.getItem("selectedClubId");
-  const resolvedFromStorage = propClubId || storedClubId;
+  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
+  const resolvedClubId = propClubId || activeClubIdRedux;
 
   const { data: joinedClubsData } = useGetJoinedClubsQuery(undefined, {
-    skip: !!resolvedFromStorage && resolvedFromStorage !== "0",
+    skip: !!resolvedClubId,
   });
 
-  const firstJoinedClubId = joinedClubsData?.rows?.[0]?.id;
-  const activeClubId = resolvedFromStorage && resolvedFromStorage !== "0"
-    ? Number(resolvedFromStorage)
-    : firstJoinedClubId;
+  const activeClubId = useMemo(() => {
+    if (resolvedClubId) return resolvedClubId;
+    const firstJoined = joinedClubsData?.rows?.[0];
+    if (firstJoined) {
+      setActiveClub(firstJoined as any);
+      return firstJoined.id;
+    }
+    return undefined;
+  }, [resolvedClubId, joinedClubsData, setActiveClub]);
 
   const { data: shopData, isLoading, isError } = useGetTheShopItemsQuery(
     { clubId: activeClubId!, limit: 50, offset: 0 },

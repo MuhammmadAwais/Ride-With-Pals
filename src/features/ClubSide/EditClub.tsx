@@ -11,9 +11,11 @@ import {
   ShieldCheck,
   ImagePlus,
 } from "lucide-react";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 export default function EditClub() {
   const navigate = useNavigate();
+  const { clubId: clubIdStr } = useActiveClub();
   const [updateClub, { isLoading }] = useUpdateClubInfoByIdMutation();
 
   const [clubName, setClubName] = useState(
@@ -95,7 +97,6 @@ export default function EditClub() {
     e.preventDefault();
     
     try {
-      const clubIdStr = localStorage.getItem("selectedClubId");
       if (!clubIdStr) {
         toast.error("No club selected");
         return;

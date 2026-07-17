@@ -20,6 +20,7 @@ import {
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 ChartJS.register(
   CategoryScale,
@@ -83,7 +84,7 @@ const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
 const ActivitiesRegistry = () => {
   const [activeTab, setActiveTab] = useState("Active");
 
-  const clubIdStr = localStorage.getItem("selectedClubId");
+  const { clubId: clubIdStr } = useActiveClub();
   const clubId = clubIdStr ? Number(clubIdStr) : 0;
 
   const { data: ridesData, isLoading } = useGetClubRidesQuery(

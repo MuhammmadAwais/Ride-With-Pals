@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
+import { useActiveClub } from '@/hooks/useActiveClub';
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const clubIdStr = localStorage.getItem("selectedClubId");
+  const { clubId: clubIdStr } = useActiveClub();
   const clubId = clubIdStr ? Number(clubIdStr) : undefined;
 
   const { data: orderListResponse, isLoading, isError } = useForClubOwnerOrderListQuery(

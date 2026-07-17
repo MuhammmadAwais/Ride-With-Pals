@@ -3,20 +3,23 @@ import { Check, X } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { ClubService } from '@/api/backendApi';
+import { useActiveClub } from '@/hooks/useActiveClub';
 
 export const ClubJoiningReq = () => {
   const [requests, setRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { clubId: reduxClubId, setActiveClub } = useActiveClub();
+
   const fetchRequests = async () => {
-    let clubId = localStorage.getItem("selectedClubId");
+    let clubId = reduxClubId?.toString();
     if (!clubId) {
       try {
         const clubsRes = await ClubService.getJoinedClubs();
         const clubs = clubsRes?.response?.data || clubsRes?.data || clubsRes || [];
         if (clubs.length > 0) {
           clubId = clubs[0].id.toString();
-          localStorage.setItem("selectedClubId", clubId as string);
+          setActiveClub(clubs[0]);
         }
       } catch (e) {
         console.error("Failed to fetch user's joined clubs for joining requests", e);

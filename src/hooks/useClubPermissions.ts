@@ -1,85 +1,72 @@
-import { useState, useEffect } from 'react';
-import { backendApi } from '@/api/backendApi';
+import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
 export interface ClubPermissions {
   canPublishRides: boolean;
   canPublishNews: boolean;
   canPublishDiscount: boolean;
   canAcceptUsers: boolean;
+  canManageMembershipFee: boolean;
+  isOwner: boolean;
+  isAdmin: boolean;
+  role: string | null;
   isLoading: boolean;
-  error: string | null;
+  error: any;
 }
 
 export const useClubPermissions = (clubId: number | string | undefined): ClubPermissions => {
-  const [permissions, setPermissions] = useState({
-    canPublishRides: false,
-    canPublishNews: false,
-    canPublishDiscount: false,
-    canAcceptUsers: false,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const currentUserId = useAppSelector((state) => state.auth.user?.id);
+  
+  const { data: members, isLoading, error } = useGetClubMembersListQuery(
+    { clubId: clubId ? Number(clubId) : 0 },
+    { skip: !clubId || !currentUserId }
+  );
 
-  useEffect(() => {
-    if (!clubId) {
-      setPermissions({
-        canPublishRides: false,
-        canPublishNews: false,
-        canPublishDiscount: false,
-        canAcceptUsers: false,
-      });
-      return;
-    }
+  const currentUserMember = members?.find(
+    (m: any) => String(m.userId) === String(currentUserId)
+  );
 
-    let isMounted = true;
-    setIsLoading(true);
-    setError(null);
-
-    backendApi.get('/user/club/permissions', { params: { clubId } })
-      .then((res) => {
-        if (!isMounted) return;
-
-        const payload = res.data?.response || res.data;
-        const rolePermissions = payload?.rolePermissions || [];
-
-        const canPublishRides = rolePermissions.some(
-          (p: any) => p.permissionName === 'Publish Rides' && p.isAllowed
-        );
-        const canPublishNews = rolePermissions.some(
-          (p: any) => p.permissionName === 'Publish News' && p.isAllowed
-        );
-        const canPublishDiscount = rolePermissions.some(
-          (p: any) => p.permissionName === 'Publish Discount' && p.isAllowed
-        );
-        const canAcceptUsers = rolePermissions.some(
-          (p: any) => p.permissionName === 'Accept Users' && p.isAllowed
-        );
-
-        setPermissions({
-          canPublishRides,
-          canPublishNews,
-          canPublishDiscount,
-          canAcceptUsers,
-        });
-      })
-      .catch((err) => {
-        if (!isMounted) return;
-        setError(err?.response?.data?.message || err.message || 'Failed to fetch club permissions');
-      })
-      .finally(() => {
-        if (isMounted) setIsLoading(false);
-      });
-
-    return () => {
-      isMounted = false;
+  if (!clubId || !currentUserId || !currentUserMember) {
+    return {
+      canPublishRides: false,
+      canPublishNews: false,
+      canPublishDiscount: false,
+      canAcceptUsers: false,
+      canManageMembershipFee: false,
+      isOwner: false,
+      isAdmin: false,
+      role: null,
+      isLoading: isLoading,
+      error: error || null,
     };
-  }, [clubId]);
+  }
+
+  const role = currentUserMember.role || 'User';
+  const normalizedRole = role.toLowerCase();
+  const isOwner = normalizedRole === 'owner';
+  const isAdmin = isOwner || normalizedRole === 'admin' || normalizedRole === 'organizer';
+
+  // Owners have full access to all actions
+  const permissions = currentUserMember.permissions || {};
+  const canPublishRides = isOwner || !!permissions.publishRides;
+  const canPublishNews = isOwner || !!permissions.publishNews;
+  const canPublishDiscount = isOwner || !!permissions.publishDiscount;
+  const canAcceptUsers = isOwner || !!permissions.acceptOrBanUsers;
+  const canManageMembershipFee = isOwner || !!permissions.manageMembershipFee;
 
   return {
-    ...permissions,
+    canPublishRides,
+    canPublishNews,
+    canPublishDiscount,
+    canAcceptUsers,
+    canManageMembershipFee,
+    isOwner,
+    isAdmin,
+    role,
     isLoading,
-    error,
+    error: error || null,
   };
 };
 
 export default useClubPermissions;
+

@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown, PlusCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import gsap from 'gsap';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { updateStepFields, setStep, resetRideForm } from '@/features/club/slices/addRideSlice';
 import { backendApi } from '@/api/backendApi';
-import { ROUTES } from '@/Constants';
+import { useActiveClub } from '@/hooks/useActiveClub';
 
 export const CreateRide: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const formState = useAppSelector((state) => state.addRide);
-  const activeClubId = localStorage.getItem("selectedClubId") || useAppSelector((state) => state.club.currentClub?.id);
+  const { clubId: activeClubId } = useActiveClub();
 
   const [clubMembers, setClubMembers] = useState<any[]>([]);
   const [isLoadingMembers, setIsLoadingMembers] = useState(false);

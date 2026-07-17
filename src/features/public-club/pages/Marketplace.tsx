@@ -11,6 +11,7 @@ import {
 } from "@/features/club/api/marketplaceApiSlice";
 import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 interface Product {
   id: string;
@@ -370,17 +371,22 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   const currentUser = useAppSelector((state) => state.auth.user);
 
   // Resolve clubId
-  const storedClubId = localStorage.getItem("selectedClubId");
-  const resolvedFromStorage = propClubId || storedClubId;
+  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
+  const resolvedClubId = propClubId || activeClubIdRedux;
 
   const { data: joinedClubsResponse } = useGetJoinedClubsQuery(undefined, {
-    skip: !!resolvedFromStorage && resolvedFromStorage !== "0",
+    skip: !!resolvedClubId,
   });
 
-  const firstJoinedClubId = joinedClubsResponse?.rows?.[0]?.id;
-  const activeClubId = resolvedFromStorage && resolvedFromStorage !== "0"
-    ? Number(resolvedFromStorage)
-    : firstJoinedClubId;
+  const activeClubId = useMemo(() => {
+    if (resolvedClubId) return resolvedClubId;
+    const firstJoined = joinedClubsResponse?.rows?.[0];
+    if (firstJoined) {
+      setActiveClub(firstJoined as any);
+      return firstJoined.id;
+    }
+    return undefined;
+  }, [resolvedClubId, joinedClubsResponse, setActiveClub]);
 
   // RTK Queries & Mutations
   const { data: marketplaceResponse, isLoading: isLoadingListings, isError: isErrorListings } = useGetMarketplaceListQuery(
@@ -691,7 +697,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
       {/* Create Listing Modal */}
       {showAddModal && activeClubId && (
         <AddListingModal 
-          activeClubId={activeClubId} 
+          activeClubId={Number(activeClubId)} 
           onClose={() => setShowAddModal(false)} 
         />
       )}

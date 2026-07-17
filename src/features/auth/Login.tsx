@@ -75,7 +75,7 @@ const Login = () => {
     if (!validate()) return;
 
     try {
-      const result = await login({ email: email.trim().toLowerCase(), password }).unwrap();
+      await login({ email: email.trim().toLowerCase(), password }).unwrap();
       toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
       
       // Navigate to root, where the RootGuard will sort out where they should go based on state.

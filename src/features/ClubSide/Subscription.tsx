@@ -7,10 +7,11 @@ import {
   useSubscribeToClubPlanMutation,
   useClubCustomerPortalMutation,
 } from '@/features/subscriptions/api/subscriptionApiSlice';
+import { useActiveClub } from '@/hooks/useActiveClub';
 
 const Subscription = () => {
   const navigate = useNavigate();
-  const clubIdStr = localStorage.getItem("selectedClubId");
+  const { clubId: clubIdStr } = useActiveClub();
   const clubId = clubIdStr ? Number(clubIdStr) : undefined;
 
   // 1. Fetch current subscription

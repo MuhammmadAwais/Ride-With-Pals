@@ -13,9 +13,31 @@ import {
 import { toast } from "sonner";
 import { useAddNewsMutation } from "@/features/club/api/newsApiSlice";
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
+import { useClubPermissions } from "@/hooks/useClubPermissions";
 
 export const NewsAdded = () => {
   const navigate = useNavigate();
+  const { clubId } = useActiveClub();
+  const permissions = useClubPermissions(clubId || undefined);
+  
+  if (!permissions.isLoading && !permissions.canPublishNews) {
+    return (
+      <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
+        <h1 className="text-2xl font-black mb-4">Access Denied</h1>
+        <p className="text-text-muted max-w-md mb-6">
+          You do not have the required permissions to publish or manage news for this club.
+        </p>
+        <button 
+          onClick={() => navigate('/view/clubside/news')} 
+          className="px-6 py-3 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl font-bold transition-all cursor-pointer border-0"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -49,7 +71,6 @@ export const NewsAdded = () => {
     }
     
     try {
-      const clubId = localStorage.getItem("selectedClubId");
       if (!clubId) {
         toast.error("No club selected.");
         return;

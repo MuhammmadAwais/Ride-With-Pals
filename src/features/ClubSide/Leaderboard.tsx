@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
@@ -39,24 +39,24 @@ const LeaderboardSkeleton = () => (
   </div>
 );
 
+import { useActiveClub } from '@/hooks/useActiveClub';
+
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
   const joinedClubs = joinedClubsData?.rows || [];
+  
+  const { clubId: reduxClubId, setActiveClub } = useActiveClub();
 
-  const [selectedClubIdState, setSelectedClubIdState] = useState<string | number | undefined>(
-    clubId || localStorage.getItem("selectedClubId") || undefined
-  );
-
-  const handleClubChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newClubId = e.target.value;
-    setSelectedClubIdState(newClubId);
-    localStorage.setItem("selectedClubId", newClubId);
-  };
-
-  let activeClubId = clubId || selectedClubIdState;
+  let activeClubId = clubId || reduxClubId;
   if (!activeClubId && joinedClubs.length > 0) {
     activeClubId = joinedClubs[0].id.toString();
   }
+
+  const handleClubChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newClubId = e.target.value;
+    const clubObj = joinedClubs.find((c: any) => c.id.toString() === newClubId);
+    if (clubObj) setActiveClub(clubObj as any);
+  };
 
   const { data: rawLeaderboard, isLoading } = useGetClubLeaderboardAppRidesQuery(
     { clubId: Number(activeClubId) },
@@ -156,7 +156,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
             <div className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-xl hover:border-text-muted transition-all duration-300 cursor-pointer">
               <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Club:</span>
               <select
-                value={selectedClubIdState?.toString() || (joinedClubs[0]?.id?.toString())}
+                value={activeClubId?.toString()}
                 onChange={handleClubChange}
                 className="bg-transparent text-text-main text-xs font-black tracking-wider uppercase border-none focus:outline-none focus:ring-0 cursor-pointer min-w-[150px]"
               >

@@ -8,12 +8,14 @@ import {
   useListClubSubscriptionQuery,
   useSubscribeToClubPlanMutation,
 } from "@/features/subscriptions/api/subscriptionApiSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
 
 export default function Subscriptions() {
   const navigate = useNavigate();
   const container = useRef(null);
 
-  const clubId = localStorage.getItem("selectedClubId");
+  const { clubId: clubIdStr } = useActiveClub();
+  const clubId = clubIdStr ? Number(clubIdStr) : undefined;
 
   // Get club subscription plans from API
   const { data: plans, isLoading: isLoadingPlans } = useListClubSubscriptionQuery(

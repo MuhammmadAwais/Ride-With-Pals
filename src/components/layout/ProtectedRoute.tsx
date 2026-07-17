@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { bypassOtpSuccess } from '@/features/auth/slices/authSlice';
 import { ROUTES } from '@/Constants';
 
 interface ProtectedRouteProps {

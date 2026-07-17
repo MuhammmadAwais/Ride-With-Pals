@@ -3,6 +3,8 @@ import { Plus, Search, Tag, AlertCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useGetClubDiscountsQuery } from '@/features/club/api/discountApiSlice';
 import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import { useActiveClub } from '@/hooks/useActiveClub';
+import { useClubPermissions } from '@/hooks/useClubPermissions';
 
 // Reusable Coupon Card matching UI specs
 const CouponCard = ({ title, code, expiry, description, percentage }: any) => (
@@ -61,12 +63,8 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const resolvedClubId = useMemo(() => {
-    if (clubId) return Number(clubId);
-    const stored = localStorage.getItem("selectedClubId");
-    if (stored) return Number(stored);
-    return undefined;
-  }, [clubId]);
+  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
+  const resolvedClubId = clubId || activeClubIdRedux;
 
   // Fallback to first joined club if resolvedClubId is not defined
   const { data: joinedClubsResponse } = useGetJoinedClubsQuery(undefined, {
@@ -75,13 +73,15 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
 
   const activeClubId = useMemo(() => {
     if (resolvedClubId) return resolvedClubId;
-    const firstId = joinedClubsResponse?.rows?.[0]?.id;
-    if (firstId) {
-      localStorage.setItem("selectedClubId", String(firstId));
-      return firstId;
+    const firstJoined = joinedClubsResponse?.rows?.[0];
+    if (firstJoined) {
+      setActiveClub(firstJoined as any);
+      return firstJoined.id;
     }
     return undefined;
-  }, [resolvedClubId, joinedClubsResponse]);
+  }, [resolvedClubId, joinedClubsResponse, setActiveClub]);
+
+  const permissions = useClubPermissions(activeClubId);
 
   const { data: discountsResponse, isLoading, isError } = useGetClubDiscountsQuery(
     { clubId: activeClubId || 0 },
@@ -256,15 +256,17 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
           </div>
           
           {/* Add Discount Button */}
-          <button 
-            onClick={() => navigate('/view/clubside/discount/add')} 
-            className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 cursor-pointer hover:bg-[#d66525] border-0 outline-none"
-          >
-            <div className="bg-black/10 p-0.5 rounded-full">
-              <Plus size={14} strokeWidth={3} />
-            </div>
-            Add Discount
-          </button>
+          {permissions.canPublishDiscount && (
+            <button 
+              onClick={() => navigate('/view/clubside/discount/add')} 
+              className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 cursor-pointer hover:bg-[#d66525] border-0 outline-none"
+            >
+              <div className="bg-black/10 p-0.5 rounded-full">
+                <Plus size={14} strokeWidth={3} />
+              </div>
+              Add Discount
+            </button>
+          )}
         </div>
       </div>
 

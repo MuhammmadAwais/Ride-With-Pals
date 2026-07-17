@@ -13,6 +13,8 @@ import {
   useListMembershipPlansQuery 
 } from "@/features/club/api/membershipApiSlice";
 import { toast } from "sonner";
+import { useActiveClub } from "@/hooks/useActiveClub";
+import { useClubPermissions } from "@/hooks/useClubPermissions";
 
 interface MembershipPlan {
   id: string;
@@ -26,11 +28,13 @@ interface MembershipPlan {
 
 const ManageClubHome = () => {
   const navigate = useNavigate();
+  const { clubId, activeClub } = useActiveClub();
+  const permissions = useClubPermissions(clubId || undefined);
 
-  // Retrieve dynamically passed values from the Manage Club listing page
-  const selectedBanner = localStorage.getItem("selectedClubBanner");
-  const selectedLogo = localStorage.getItem("selectedClubLogo");
-  const selectedName = localStorage.getItem("selectedClubName") || "Club Name";
+  // Retrieve dynamically passed values from the Redux store
+  const selectedBanner = activeClub?.coverImage || "";
+  const selectedLogo = activeClub?.logo || "";
+  const selectedName = activeClub?.clubName || "Club Name";
 
   const [activeTab, setActiveTab] = useState("Members");
 
@@ -43,9 +47,6 @@ const ManageClubHome = () => {
   const dispatch = useAppDispatch();
   const { currentClubMembers } = useAppSelector((state) => state.club);
 
-  const clubIdStr = localStorage.getItem("selectedClubId");
-  const clubId = clubIdStr ? Number(clubIdStr) : undefined;
-
   const { data: plansData } = useListMembershipPlansQuery(
     { clubId: clubId || 0 },
     { skip: !clubId }
@@ -56,11 +57,10 @@ const ManageClubHome = () => {
   const [deletePlan] = useDeleteMembershipPlanMutation();
 
   useEffect(() => {
-    const clubIdStr = localStorage.getItem("selectedClubId");
-    if (clubIdStr) {
-      dispatch(fetchClubMembers({ clubId: Number(clubIdStr) }));
+    if (clubId) {
+      dispatch(fetchClubMembers({ clubId }));
     }
-  }, [dispatch]);
+  }, [dispatch, clubId]);
 
   const formatMember = (m: any) => ({
     name: (m.firstName || '') + ' ' + (m.lastName || '') || m.username || 'Unnamed',
@@ -155,14 +155,13 @@ const ManageClubHome = () => {
 
   const handleCreatePlan = async (e: React.FormEvent) => {
     e.preventDefault();
-    const clubIdStr = localStorage.getItem("selectedClubId");
-    if (!clubIdStr) return;
+    if (!clubId) return;
 
     try {
       if (editingPlanId) {
         await updatePlan({
           planId: Number(editingPlanId),
-          clubId: Number(clubIdStr),
+          clubId: clubId,
           name: packageName,
           price: Number(price),
           currency: "USD",
@@ -174,7 +173,7 @@ const ManageClubHome = () => {
         toast.success("Membership plan updated successfully!");
       } else {
         await createPlan({
-          clubId: Number(clubIdStr),
+          clubId: clubId,
           name: packageName,
           price: Number(price),
           currency: "USD",
@@ -310,22 +309,23 @@ const ManageClubHome = () => {
                 </span>
 
                 {/* Action Menu Dropdown */}
-                <div
-                  ref={(el: HTMLDivElement | null) => {
-                    menuRefs.current[`${title}-${i}`] = el;
-                  }}
-                  className="relative"
-                >
-                  <button
-                    onClick={() => handleMenuToggle(title, i)}
-                    className={`p-2 rounded-xl transition-all cursor-pointer ${
-                      isOpen
-                        ? "bg-white/10 opacity-100 text-white"
-                        : "opacity-0 group-hover/row:opacity-100 text-gray-400 hover:bg-white/10 hover:text-white"
-                    }`}
+                {(permissions.isOwner || (permissions.isAdmin && title === "Club Members")) && (
+                  <div
+                    ref={(el: HTMLDivElement | null) => {
+                      menuRefs.current[`${title}-${i}`] = el;
+                    }}
+                    className="relative"
                   >
-                    <MoreVertical size={16} />
-                  </button>
+                    <button
+                      onClick={() => handleMenuToggle(title, i)}
+                      className={`p-2 rounded-xl transition-all cursor-pointer ${
+                        isOpen
+                          ? "bg-white/10 opacity-100 text-white"
+                          : "opacity-0 group-hover/row:opacity-100 text-gray-400 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      <MoreVertical size={16} />
+                    </button>
 
                   {isOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-[#181818] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
@@ -384,6 +384,7 @@ const ManageClubHome = () => {
                     </div>
                   )}
                 </div>
+              )}
               </div>
             </div>
           );
@@ -431,14 +432,17 @@ const ManageClubHome = () => {
           </button>
 
           {/* ADDED EDIT CLUB BUTTON */}
-          <button
-            className="px-6 py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black 
-                     tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 
-                     transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 
-                     hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 backdrop-blur-md"
-          >
-            Edit Club
-          </button>
+          {permissions.isAdmin && (
+            <button
+              onClick={() => navigate("/edit-club")}
+              className="px-6 py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black 
+                       tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 
+                       transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 
+                       hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 backdrop-blur-md"
+            >
+              Edit Club
+            </button>
+          )}
         </div>
 
         {/* Club Info Overlay Section */}
@@ -537,7 +541,15 @@ const ManageClubHome = () => {
           <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in zoom-in-95 duration-500 items-start">
             {/* LEFT SIDE: Membership Form / Stripe View */}
             <div className="w-full flex justify-center">
-              {!showMembershipForm ? (
+              {!permissions.canManageMembershipFee ? (
+                <div className="w-full bg-[#181818]/90 backdrop-blur-xl rounded-3xl border border-white/10 p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
+                  <CreditCard size={48} className="text-gray-600 mb-6" />
+                  <h3 className="text-lg font-black text-white mb-2 uppercase">Access Restricted</h3>
+                  <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
+                    You do not have the <span className="text-[#EB712B] font-bold">Manage Membership Fee</span> permission required to configure payment plans for this club.
+                  </p>
+                </div>
+              ) : !showMembershipForm ? (
                 /* Stripe Connect View */
                 <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-8 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_40px_rgba(235,113,43,0.15)]">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100" />
@@ -812,35 +824,37 @@ const ManageClubHome = () => {
                     className="w-full bg-[#161616] rounded-3xl border border-white/10 p-6 relative flex flex-col justify-between overflow-visible shadow-xl transition-all duration-300 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.1)] group hover:-translate-y-1"
                   >
                     {/* Top Action Dropdown (3-Dots) */}
-                    <div className="absolute top-6 right-6 z-40">
-                      <button
-                        onClick={() =>
-                          setOpenCardMenuId(
-                            openCardMenuId === plan.id ? null : plan.id,
-                          )
-                        }
-                        className="p-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-gray-400 hover:text-white transition-all duration-300 cursor-pointer hover:scale-110"
-                      >
-                        <MoreVertical size={16} />
-                      </button>
+                    {permissions.canManageMembershipFee && (
+                      <div className="absolute top-6 right-6 z-40">
+                        <button
+                          onClick={() =>
+                            setOpenCardMenuId(
+                              openCardMenuId === plan.id ? null : plan.id,
+                            )
+                          }
+                          className="p-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-gray-400 hover:text-white transition-all duration-300 cursor-pointer hover:scale-110"
+                        >
+                          <MoreVertical size={16} />
+                        </button>
 
-                      {openCardMenuId === plan.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-[#1C1C1C] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden transition-all">
-                          <button
-                            onClick={() => handleEditPlan(plan)}
-                            className="w-full text-left px-5 py-3 text-xs font-bold text-gray-300 hover:bg-white/[0.04] hover:text-white transition-colors duration-200 cursor-pointer"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeletePlan(plan.id)}
-                            className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-200 cursor-pointer border-t border-white/[0.03]"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                        {openCardMenuId === plan.id && (
+                          <div className="absolute right-0 mt-2 w-48 bg-[#1C1C1C] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden transition-all">
+                            <button
+                              onClick={() => handleEditPlan(plan)}
+                              className="w-full text-left px-5 py-3 text-xs font-bold text-gray-300 hover:bg-white/[0.04] hover:text-white transition-colors duration-200 cursor-pointer"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeletePlan(plan.id)}
+                              className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-200 cursor-pointer border-t border-white/[0.03]"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Pricing Overview */}
                     <div>

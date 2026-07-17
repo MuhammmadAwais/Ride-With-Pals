@@ -39,30 +39,34 @@ const TableSkeleton = () => (
   </div>
 );
 
+import { useActiveClub } from '@/hooks/useActiveClub';
+
 const Members = () => {
   const [searchInput, setSearchInput] = useState('');
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
-  let clubIdStr = localStorage.getItem("selectedClubId");
-  const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!clubIdStr });
+  const { clubId, setActiveClub } = useActiveClub();
+  let activeClubIdStr = clubId?.toString() || null;
+  
+  const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!activeClubIdStr });
   const joinedRows = joinedClubs?.rows || [];
   
-  if (!clubIdStr && joinedRows.length > 0) {
-    clubIdStr = joinedRows[0].id.toString();
-    localStorage.setItem("selectedClubId", clubIdStr);
+  if (!activeClubIdStr && joinedRows.length > 0) {
+    activeClubIdStr = joinedRows[0].id.toString();
+    setActiveClub(joinedRows[0] as any);
   }
 
-  const clubId = clubIdStr ? Number(clubIdStr) : 0;
+  const effectiveClubId = activeClubIdStr ? Number(activeClubIdStr) : 0;
   const { data: membersData, isLoading } = useGetClubMembersListQuery(
-    { clubId },
-    { skip: !clubId }
+    { clubId: effectiveClubId },
+    { skip: !effectiveClubId }
   );
 
   const [removeMember, { isLoading: isRemoving }] = useRemoveClubMemberMutation();
 
   const handleRemoveMember = async (userId: string) => {
     try {
-      await removeMember({ clubId, userId: Number(userId) }).unwrap();
+      await removeMember({ clubId: effectiveClubId, userId: Number(userId) }).unwrap();
       toast.success("Member removed successfully!");
       setActiveMenuId(null);
     } catch (err: any) {

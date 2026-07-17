@@ -5,6 +5,7 @@ import { Search, Bell, Mail, Users, Car, DollarSign, Wallet, Menu } from 'lucide
 import { motion } from 'framer-motion';
 import Sidebar from '../../components/Sidebar';
 import { useGetClubDashboardStatsQuery } from '@/features/club/api/clubApiSlice';
+import { useActiveClub } from '@/hooks/useActiveClub';
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -153,11 +154,10 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const clubIdStr = localStorage.getItem("selectedClubId");
-  const clubId = clubIdStr ? Number(clubIdStr) : 0;
+  const { clubId } = useActiveClub();
 
   const { data: stats, isLoading, isError } = useGetClubDashboardStatsQuery(
-    { clubId },
+    { clubId: clubId || 0 },
     { skip: !!defaultView || !clubId }
   );
 
