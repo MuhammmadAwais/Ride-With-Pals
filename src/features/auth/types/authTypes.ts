@@ -23,6 +23,7 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  isOtpVerified?: boolean;
 }
 
 /** Form values submitted from the Login form. */

@@ -1,33 +1,31 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Camera, ChevronDown, Calendar, Loader2 } from "lucide-react";
+import { ChevronDown, Calendar, Loader2 } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import { ROUTES } from "@/Constants";
-import { useUpsertAthleteProfileMutation, useUploadFileMutation } from "@/features/auth/api/authApiSlice";
-
+import { backendApi } from "@/api/backendApi";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { setAthleteProfileSuccess } from "@/features/auth/slices/authSlice";
 
 const AthleteProfileForm = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [profileImage, setProfileImage] = useState("Images/ProfileImage.png"); 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [upsertAthleteProfile, { isLoading: isSaving }] = useUpsertAthleteProfileMutation();
-  const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
-  const isLoading = isSaving || isUploading;
 
-  // Form State
+  // Form State mapped exactly to PUT endpoint
   const [fullName, setFullName] = useState("");
   const [dob, setDob] = useState("");
+  const [genderId, setGenderId] = useState<number>(1); // 1 = Male, 2 = Female
   const [country, setCountry] = useState("Germany");
-  const [gender, setGender] = useState("Male");
-  const [unit, setUnit] = useState("Metric (km, kg)");
+  const [unit, setUnit] = useState("km"); // "km" or "miles"
   const [phone, setPhone] = useState("");
-  const [bio, setBio] = useState("");
+  const [description, setDescription] = useState("");
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useLayoutEffect(() => {
@@ -46,24 +44,8 @@ const AthleteProfileForm = () => {
     return () => ctx.revert();
   }, []);
 
-  const toggleDropdown = (field: any) => {
+  const toggleDropdown = (field: string | null) => {
     setOpenDropdown(openDropdown === field ? null : field);
-  };
-
-  const handleCameraClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string); 
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const validate = () => {
@@ -71,6 +53,7 @@ const AthleteProfileForm = () => {
     if (!fullName.trim()) newErrors.fullName = "Full name is required";
     if (!dob) newErrors.dob = "Date of birth is required";
     if (!phone.trim()) newErrors.phone = "Phone number is required";
+    if (!description.trim()) newErrors.description = "Athlete description is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -81,33 +64,29 @@ const AthleteProfileForm = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      let uploadedImage = profileImage;
-      if (selectedFile) {
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-        const uploadRes = await uploadFile(formData).unwrap();
-        uploadedImage = uploadRes.fileName;
-      }
-
-      const genderId = gender === 'Male' ? 1 : gender === 'Female' ? 2 : 3;
-      const unitVal = unit.includes('Metric') ? 'km' : 'miles';
-
-      await upsertAthleteProfile({
-        fullName,
+      const response = await backendApi.put('/user/update/athlete/profile', {
+        fullName: fullName.trim(),
         dob,
-        country,
         genderId,
-        unit: unitVal,
-        phone,
-        description: bio,
-        profileImage: uploadedImage,
-      }).unwrap();
+        country,
+        unit,
+        phone: phone.trim(),
+        description: description.trim(),
+      });
 
-      toast.success("Profile saved successfully!");
-      navigate(ROUTES.CLUBS); 
+      if (response.status === 200) {
+        dispatch(setAthleteProfileSuccess());
+        toast.success("Profile saved successfully!");
+        navigate(ROUTES.CLUBS); 
+      } else {
+        toast.error("Failed to save profile.");
+      }
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || "Failed to save profile.");
+      toast.error(err?.response?.data?.message || err?.message || "Failed to save profile.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -115,29 +94,14 @@ const AthleteProfileForm = () => {
     <div ref={containerRef} className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12">
       <div className="max-w-5xl mx-auto">
         
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          onChange={handleFileChange} 
-          accept="image/*" 
-          className="hidden" 
-        />
-
-        <div className="animate-item flex items-center gap-6 mb-12 bg-[#141414] p-6 rounded-3xl border border-[#1f1f1f]">
-          <div className="relative">
-            <img src={profileImage} alt="Profile" className="w-24 h-24 rounded-2xl object-cover" />
-            <button 
-              type="button"
-              onClick={handleCameraClick} 
-              className="absolute -bottom-2 -right-2 bg-[#EB712B] p-2 rounded-full border-4 border-[#0a0a0a]"
-            >
-              <Camera size={14} />
-            </button>
+        <div className="animate-item flex items-center gap-6 mb-12 bg-[#141414] p-8 rounded-3xl border border-[#1f1f1f] shadow-lg">
+          <div className="bg-[#EB712B]/10 p-4 rounded-2xl border border-[#EB712B]/20">
+            <span className="text-[#EB712B] text-4xl font-extrabold uppercase">RWP</span>
           </div>
           <div>
-            <p className="text-[#EB712B] text-xs font-bold uppercase tracking-widest">Athletic Identity</p>
-            <h2 className="text-2xl font-bold">{fullName || "Alex_021"}</h2>
-            <p className="text-gray-400 italic text-sm mt-1">{bio || '"Pushing limits through the misty pines. Every climb is a conversation with the self."'}</p>
+            <p className="text-[#EB712B] text-xs font-bold uppercase tracking-widest">Athlete Profile Onboarding</p>
+            <h2 className="text-3xl font-bold">Complete Your Profile</h2>
+            <p className="text-gray-400 text-sm mt-1">Please provide your details below to activate your account and start riding with pals.</p>
           </div>
         </div>
 
@@ -217,7 +181,7 @@ const AthleteProfileForm = () => {
                 onClick={() => toggleDropdown('gender')}
                 className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors"
               >
-                <span className="text-white">{gender}</span>
+                <span className="text-white">{genderId === 1 ? 'Male' : 'Female'}</span>
                 <ChevronDown 
                   className={`transition-all duration-300 ${openDropdown === 'gender' ? "text-[#EB712B] rotate-180" : "text-gray-500"}`} 
                   size={20} 
@@ -226,44 +190,50 @@ const AthleteProfileForm = () => {
 
               {openDropdown === 'gender' && (
                 <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden mt-1">
-                  {['Male', 'Female', 'Non-binary'].map((option) => (
-                    <div
-                      key={option}
-                      className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
-                      onClick={() => { setGender(option); toggleDropdown(null); }}
-                    >
-                      {option}
-                    </div>
-                  ))}
+                  <div
+                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors border-b border-[#222] last:border-0"
+                    onClick={() => { setGenderId(1); toggleDropdown(null); }}
+                  >
+                    Male
+                  </div>
+                  <div
+                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
+                    onClick={() => { setGenderId(2); toggleDropdown(null); }}
+                  >
+                    Female
+                  </div>
                 </div>
               )}
             </div>
 
             <div className="relative">
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Unit</label>
+              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Measurement Unit</label>
               <button
                 type="button"
                 onClick={() => toggleDropdown('unit')}
                 className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors"
               >
-                <span className="text-white">{unit}</span>
+                <span className="text-white">{unit === 'km' ? 'Metric (km, kg)' : 'Imperial (mi, lbs)'}</span>
                 <ChevronDown 
-                  className={`transition-all duration-300 ${openDropdown === 'unit' ? "text-[#EB712B] rotate-180" : "text-[#EB712B]"}`} 
+                  className={`transition-all duration-300 ${openDropdown === 'unit' ? "text-[#EB712B] rotate-180" : "text-gray-500"}`} 
                   size={20} 
                 />
               </button>
 
               {openDropdown === 'unit' && (
                 <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden mt-1">
-                  {['Metric (km, kg)', 'Imperial (mi, lbs)'].map((option) => (
-                    <div
-                      key={option}
-                      className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
-                      onClick={() => { setUnit(option); toggleDropdown(null); }}
-                    >
-                      {option}
-                    </div>
-                  ))}
+                  <div
+                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors border-b border-[#222] last:border-0"
+                    onClick={() => { setUnit("km"); toggleDropdown(null); }}
+                  >
+                    Metric (km, kg)
+                  </div>
+                  <div
+                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
+                    onClick={() => { setUnit("miles"); toggleDropdown(null); }}
+                  >
+                    Imperial (mi, lbs)
+                  </div>
                 </div>
               )}
             </div>
@@ -274,7 +244,7 @@ const AthleteProfileForm = () => {
                 type="text" 
                 value={phone}
                 onChange={(e) => { setPhone(e.target.value); setErrors((p) => ({ ...p, phone: '' })); }}
-                className={`w-full bg-[#141414] border ${errors.phone ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 outline-none`} 
+                className={`w-full bg-[#141414] border ${errors.phone ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors`} 
                 placeholder="+49 152 445 221" 
               />
               {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -282,20 +252,21 @@ const AthleteProfileForm = () => {
           </div>
 
           <div className="animate-item md:col-span-2">
-            <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Athlete Biography</label>
+            <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Athlete Description</label>
             <textarea 
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="w-full bg-[#141414] border border-[#222] rounded-xl p-4 h-32 focus:border-[#EB712B] outline-none" 
-              placeholder="Tell your story..." 
+              value={description}
+              onChange={(e) => { setDescription(e.target.value); setErrors((p) => ({ ...p, description: '' })); }}
+              className={`w-full bg-[#141414] border ${errors.description ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 h-32 focus:border-[#EB712B] outline-none transition-colors`} 
+              placeholder="Tell your story, your setups, and your cycling goals..." 
             />
+            {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
           </div>
 
           <button 
             type="button" 
             onClick={handleSave} 
             disabled={isLoading}
-            className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all disabled:opacity-50"
+            className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all disabled:opacity-50 cursor-pointer"
           >
             {isLoading ? (
               <>

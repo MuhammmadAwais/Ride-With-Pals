@@ -24,6 +24,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   isLoading:       false,
   error:           null,
+  isOtpVerified:   false,
 };
 
 // ─── Async Thunks ─────────────────────────────────────────────────────────────
@@ -127,6 +128,20 @@ const authSlice = createSlice({
       state.user            = action.payload;
       state.isAuthenticated = true;
     },
+    /**
+     * Bypasses the broken backend OTP verification, retaining user token.
+     */
+    bypassOtpSuccess(state) {
+      state.isOtpVerified = true;
+    },
+    /**
+     * Updates isAthleteProfile to true upon successful profile submission.
+     */
+    setAthleteProfileSuccess(state) {
+      if (state.user) {
+        state.user.isAthleteProfile = true;
+      }
+    },
   },
   extraReducers: (builder) => {
     // Login
@@ -201,5 +216,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError, setUser } = authSlice.actions;
+export const { logout, clearError, setUser, bypassOtpSuccess, setAthleteProfileSuccess } = authSlice.actions;
 export default authSlice.reducer;

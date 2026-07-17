@@ -91,7 +91,7 @@ export const router = createBrowserRouter(
       {/* Note: wrapped in ProtectedRoute if they require auth, but for now we'll match original behavior 
           and just render them. You can wrap these in ProtectedRoute later if needed. */}
       <Route path="/create-profile" element={<CreateProfile />} />
-      <Route path="/athlete-profile" element={<AthleteProfileForm />} />
+      <Route path="/athlete-profile" element={<ProtectedRoute><AthleteProfileForm /></ProtectedRoute>} />
       <Route path="/club-profile-setup" element={<ProfileSetup />} />
       <Route path="/club-subscriptions" element={<Subscriptions />} />
       <Route path="/select-role-club" element={<SelectRoleClub />} />
