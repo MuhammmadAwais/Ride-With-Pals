@@ -12,14 +12,21 @@ import type { Club } from '@/features/club/types/clubTypes';
 export const useActiveClub = () => {
   const dispatch = useAppDispatch();
   const currentClub = useAppSelector((state) => state.club.currentClub);
+  const userId = useAppSelector((state) => state.auth.user?.id);
 
-  // Initialize from localStorage on mount if Redux is empty
+  // Generate user-specific localStorage keys to prevent leakage on account switching
+  const keyId = userId ? `selectedClubId_${userId}` : 'selectedClubId';
+  const keyName = userId ? `selectedClubName_${userId}` : 'selectedClubName';
+  const keyLogo = userId ? `selectedClubLogo_${userId}` : 'selectedClubLogo';
+  const keyBanner = userId ? `selectedClubBanner_${userId}` : 'selectedClubBanner';
+
+  // Initialize from localStorage on mount or user switch if Redux is empty
   useEffect(() => {
-    if (!currentClub) {
-      const storedId = localStorage.getItem('selectedClubId');
-      const storedName = localStorage.getItem('selectedClubName');
-      const storedLogo = localStorage.getItem('selectedClubLogo');
-      const storedBanner = localStorage.getItem('selectedClubBanner');
+    if (!currentClub && userId) {
+      const storedId = localStorage.getItem(keyId);
+      const storedName = localStorage.getItem(keyName);
+      const storedLogo = localStorage.getItem(keyLogo);
+      const storedBanner = localStorage.getItem(keyBanner);
       
       if (storedId) {
         // Hydrate a partial club just to keep the ID and visuals available
@@ -31,26 +38,34 @@ export const useActiveClub = () => {
         } as Club));
       }
     }
-  }, [currentClub, dispatch]);
+  }, [currentClub, dispatch, userId, keyId, keyName, keyLogo, keyBanner]);
 
   const setActiveClub = useCallback((club: Club) => {
     // 1. Update Redux (Triggers UI Reactivity)
     dispatch(setCurrentClub(club));
 
     // 2. Persist to localStorage (For hard refreshes)
-    localStorage.setItem('selectedClubId', club.id.toString());
-    localStorage.setItem('selectedClubName', club.clubName);
-    if (club.logo) localStorage.setItem('selectedClubLogo', club.logo);
-    if (club.coverImage) localStorage.setItem('selectedClubBanner', club.coverImage);
-  }, [dispatch]);
+    localStorage.setItem(keyId, club.id.toString());
+    localStorage.setItem(keyName, club.clubName);
+    if (club.logo) {
+      localStorage.setItem(keyLogo, club.logo);
+    } else {
+      localStorage.removeItem(keyLogo);
+    }
+    if (club.coverImage) {
+      localStorage.setItem(keyBanner, club.coverImage);
+    } else {
+      localStorage.removeItem(keyBanner);
+    }
+  }, [dispatch, keyId, keyName, keyLogo, keyBanner]);
 
   const clearActiveClub = useCallback(() => {
     dispatch(setCurrentClub(null));
-    localStorage.removeItem('selectedClubId');
-    localStorage.removeItem('selectedClubName');
-    localStorage.removeItem('selectedClubLogo');
-    localStorage.removeItem('selectedClubBanner');
-  }, [dispatch]);
+    localStorage.removeItem(keyId);
+    localStorage.removeItem(keyName);
+    localStorage.removeItem(keyLogo);
+    localStorage.removeItem(keyBanner);
+  }, [dispatch, keyId, keyName, keyLogo, keyBanner]);
 
   return {
     activeClub: currentClub,

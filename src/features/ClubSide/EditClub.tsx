@@ -15,48 +15,40 @@ import { useActiveClub } from "@/hooks/useActiveClub";
 
 export default function EditClub() {
   const navigate = useNavigate();
-  const { clubId: clubIdStr } = useActiveClub();
+  const { clubId: clubIdStr, activeClub } = useActiveClub();
   const [updateClub, { isLoading }] = useUpdateClubInfoByIdMutation();
 
-  const [clubName, setClubName] = useState(
-    localStorage.getItem("clubName") || "Cyc Rock Club",
-  );
-  const [email, setEmail] = useState(
-    localStorage.getItem("email") || "sdodil@gmail.com",
-  );
-  const [phone, setPhone] = useState(localStorage.getItem("phone") || "120255");
-  const [visibility, setVisibility] = useState(
-    localStorage.getItem("visibility") || "Public",
-  );
-  const [clubType, setClubType] = useState(
-    localStorage.getItem("clubType") || "Biking / Cycling",
-  );
-  const [location, setLocation] = useState(
-    localStorage.getItem("location") || "sdad",
-  );
-  const [description, setDescription] = useState(
-    localStorage.getItem("description") || "chshshf",
-  );
-
-  // Load directly from localStorage Base64 storage
-  const [bannerFile, setBannerFile] = useState<string | null>(
-    localStorage.getItem("bannerUrl"),
-  );
-  const [logoFile, setLogoFile] = useState<string | null>(
-    localStorage.getItem("logoUrl"),
-  );
+  const [clubName, setClubName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [visibility, setVisibility] = useState("Public");
+  const [clubType, setClubType] = useState("Biking / Cycling");
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [bannerFile, setBannerFile] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<string | null>(null);
 
   useEffect(() => {
-    localStorage.setItem("clubName", clubName);
-    localStorage.setItem("email", email);
-    localStorage.setItem("phone", phone);
-    localStorage.setItem("visibility", visibility);
-    localStorage.setItem("clubType", clubType);
-    localStorage.setItem("location", location);
-    localStorage.setItem("description", description);
-  }, [clubName, email, phone, visibility, clubType, location, description]);
+    if (activeClub) {
+      setClubName(activeClub.clubName || "");
+      setEmail(activeClub.email || "");
+      setPhone(activeClub.phone || "");
+      setVisibility(activeClub.clubPrivacyId === 2 ? "Private" : "Public");
 
-  // Convert uploaded image to Base64 string for persistent localStorage saving
+      let typeStr = "Biking / Cycling";
+      if (activeClub.clubTypeId === 2) {
+        typeStr = "Running";
+      } else if (activeClub.clubTypeId === 3) {
+        typeStr = "Cycling & Running";
+      }
+      setClubType(typeStr);
+      setLocation(activeClub.location || "");
+      setDescription(activeClub.description || "");
+      setBannerFile(activeClub.coverImage || null);
+      setLogoFile(activeClub.logo || null);
+    }
+  }, [activeClub]);
+
   const convertToBase64 = (file: File, callback: (base64: string) => void) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -74,7 +66,6 @@ export default function EditClub() {
     if (e.target.files && e.target.files[0]) {
       convertToBase64(e.target.files[0], (base64) => {
         setBannerFile(base64);
-        localStorage.setItem("bannerUrl", base64);
       });
     }
   };
@@ -83,14 +74,12 @@ export default function EditClub() {
     if (e.target.files && e.target.files[0]) {
       convertToBase64(e.target.files[0], (base64) => {
         setLogoFile(base64);
-        localStorage.setItem("logoUrl", base64);
       });
     }
   };
 
   const handleRemoveLogo = () => {
     setLogoFile(null);
-    localStorage.removeItem("logoUrl");
   };
 
   const handleSave = async (e: React.FormEvent) => {

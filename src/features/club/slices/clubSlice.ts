@@ -292,6 +292,10 @@ const clubSlice = createSlice({
       .addCase(fetchShopItems.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload ?? 'Error fetching shop items';
+      })
+      // Reset state on logout
+      .addCase('auth/logout', () => {
+        return initialState;
       });
   },
 });
