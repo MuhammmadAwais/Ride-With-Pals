@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Users, PlusCircle } from 'lucide-react';
 
 interface Ride {
@@ -42,6 +43,7 @@ const MOCK_RIDES: Ride[] = [
 ];
 
 export const DashboardCalendar: React.FC = () => {
+  const navigate = useNavigate();
   const [currentYear, setCurrentYear] = useState(2026);
   const [currentMonth, setCurrentMonth] = useState(6); // July (0-indexed)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(2026, 6, 17));
@@ -125,13 +127,16 @@ export const DashboardCalendar: React.FC = () => {
   const selectedDateRides = rides.filter((ride) => isSameDayCheck(ride.date, selectedDate));
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 animate-fade-in font-sans">
+      <div className="flex items-center justify-between border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Calendar</h1>
-          <p className="text-gray-400 text-sm mt-1">Manage and discover upcoming group rides and training runs.</p>
+          <h1 className="text-4xl font-black text-white">Calendar</h1>
+          <p className="text-text-muted text-xs md:text-sm mt-1">Manage and discover upcoming group rides and training runs.</p>
         </div>
-        <button className="flex items-center gap-2 bg-[#EB712B] text-black font-bold px-4 py-2.5 rounded-xl hover:bg-[#ff8f50] transition-all text-sm shadow-lg shadow-[#EB712B]/10 cursor-pointer">
+        <button 
+          onClick={() => navigate('/dashboard/rides/create')}
+          className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 cursor-pointer hover:bg-[#d66525] border-0 outline-none"
+        >
           <PlusCircle size={16} />
           <span>Host a Ride</span>
         </button>
@@ -139,23 +144,23 @@ export const DashboardCalendar: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Calendar Grid Card */}
-        <div className="lg:col-span-2 bg-[#0a0a0a] border border-white/5 p-6 rounded-3xl shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-surface border border-border p-8 rounded-[32px] shadow-2xl flex flex-col justify-between">
           <div>
             {/* Header Controls */}
             <div className="flex items-center justify-between mb-8">
-              <h3 className="font-extrabold text-lg text-white">
+              <h3 className="font-black text-lg text-white">
                 {monthNames[currentMonth]} {currentYear}
               </h3>
               <div className="flex gap-2">
                 <button 
                   onClick={handlePrevMonth}
-                  className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  className="p-3 rounded-full bg-surface border border-border text-text-muted hover:text-text-main transition-colors cursor-pointer border-0 outline-none"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button 
                   onClick={handleNextMonth}
-                  className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  className="p-3 rounded-full bg-surface border border-border text-text-muted hover:text-text-main transition-colors cursor-pointer border-0 outline-none"
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -163,7 +168,7 @@ export const DashboardCalendar: React.FC = () => {
             </div>
 
             {/* Days of Week Headers */}
-            <div className="grid grid-cols-7 text-center text-xs font-bold text-gray-500 mb-4 uppercase tracking-wider">
+            <div className="grid grid-cols-7 text-center text-xs font-black text-text-muted mb-4 uppercase tracking-[0.2em]">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
                 <div key={d} className="py-2">{d}</div>
               ))}
@@ -181,10 +186,10 @@ export const DashboardCalendar: React.FC = () => {
                     key={idx}
                     onClick={() => setSelectedDate(cellDate)}
                     className={`
-                      aspect-square rounded-2xl p-2 flex flex-col items-center justify-between transition-all duration-300 relative border cursor-pointer
+                      aspect-square rounded-2xl p-2 flex flex-col items-center justify-between transition-all duration-300 relative border cursor-pointer border-0 outline-none
                       ${isSelected 
-                        ? 'bg-[#EB712B] text-black border-[#EB712B] font-bold shadow-[0_0_20px_rgba(235,113,43,0.35)]' 
-                        : 'bg-[#121212]/40 hover:bg-white/5 border-white/5 text-white'
+                        ? 'bg-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)] font-bold' 
+                        : 'bg-surface hover:bg-hover border-border text-text-main'
                       }
                       ${!cell.isCurrentMonth && !isSelected ? 'opacity-30' : ''}
                     `}
@@ -209,47 +214,47 @@ export const DashboardCalendar: React.FC = () => {
         </div>
 
         {/* Selected Day Rides Detail Sidebar */}
-        <div className="bg-[#0a0a0a] border border-white/5 p-6 rounded-3xl shadow-xl space-y-6">
+        <div className="bg-surface border border-border p-8 rounded-[32px] shadow-2xl space-y-6">
           <div>
-            <h3 className="font-extrabold text-lg text-white">Rides for Today</h3>
-            <p className="text-gray-400 text-xs mt-1">
+            <h3 className="font-black text-lg text-white">Rides for Today</h3>
+            <p className="text-text-muted text-xs mt-1">
               {selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
 
           <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
             {selectedDateRides.length === 0 ? (
-              <div className="text-center py-12 border border-dashed border-white/5 rounded-2xl space-y-2">
-                <CalendarIcon className="mx-auto text-gray-600" size={32} />
-                <p className="text-sm text-gray-500">No rides scheduled for this day</p>
+              <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-2">
+                <CalendarIcon className="mx-auto text-text-muted" size={32} />
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">No rides scheduled for this day</p>
               </div>
             ) : (
               selectedDateRides.map((ride) => (
                 <div 
                   key={ride.id} 
-                  className="bg-[#121212] border border-white/5 p-5 rounded-2xl hover:border-white/10 transition-all space-y-4"
+                  className="bg-main-bg border border-border p-6 rounded-[24px] space-y-4"
                 >
                   <div>
                     <span className="text-[10px] uppercase font-bold text-[#EB712B] tracking-wider">Group Ride</span>
                     <h4 className="font-bold text-sm text-white mt-1">{ride.title}</h4>
                   </div>
 
-                  <div className="space-y-2 text-xs text-gray-400">
+                  <div className="space-y-2 text-xs text-text-muted">
                     <div className="flex items-center gap-2">
-                      <Clock size={14} className="text-gray-600" />
+                      <Clock size={14} className="text-text-muted" />
                       <span>{ride.time}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-gray-600" />
+                      <MapPin size={14} className="text-text-muted" />
                       <span className="truncate">{ride.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users size={14} className="text-gray-600" />
+                      <Users size={14} className="text-text-muted" />
                       <span>{ride.riders} riders attending ({ride.distance})</span>
                     </div>
                   </div>
 
-                  <button className="w-full bg-white/5 hover:bg-white/10 border border-white/5 text-white font-bold py-2 rounded-xl text-xs transition-colors cursor-pointer">
+                  <button className="w-full bg-surface hover:bg-hover border border-border text-text-main font-bold py-3 rounded-xl text-xs transition-colors cursor-pointer border-0 outline-none">
                     View Details & RSVP
                   </button>
                 </div>

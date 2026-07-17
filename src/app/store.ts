@@ -20,6 +20,7 @@ import {
 import storage from 'redux-persist/es/storage';
 import authReducer from '@/features/auth/slices/authSlice';
 import clubReducer from '@/features/club/slices/clubSlice';
+import addRideReducer from '@/features/club/slices/addRideSlice';
 import { STORAGE_KEYS } from '@/Constants';
 import { apiSlice } from '@/api/apiSlice';
 
@@ -28,6 +29,7 @@ import { apiSlice } from '@/api/apiSlice';
 const rootReducer = combineReducers({
   auth: authReducer,
   club: clubReducer,
+  addRide: addRideReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
   // Add new feature slices here (e.g., news: newsReducer)
 });

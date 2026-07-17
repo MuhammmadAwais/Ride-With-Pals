@@ -17,6 +17,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { DashboardCalendar } from '@/features/dashboard/DashboardCalendar';
+import { CreateRide } from '@/features/dashboard/CreateRide';
 
 // ── Auth & Public ──
 import CreateAccount from '@/features/auth/CreateAccount';
@@ -112,6 +113,7 @@ export const router = createBrowserRouter(
         <Route path="home" element={<DashboardOverview />} />
         <Route path="activities" element={<Activities />} />
         <Route path="calendar" element={<DashboardCalendar />} />
+        <Route path="rides/create" element={<CreateRide />} />
         <Route path="chat" element={<Support />} />
         <Route path="profile" element={<ProfileAccount />} />
       </Route>

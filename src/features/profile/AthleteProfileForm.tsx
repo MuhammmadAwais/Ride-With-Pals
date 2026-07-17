@@ -91,75 +91,75 @@ const AthleteProfileForm = () => {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#0a0a0a] text-white p-6 md:p-12">
-      <div className="max-w-5xl mx-auto">
+    <div ref={containerRef} className="p-10 min-h-screen text-text-main bg-main-bg font-sans">
+      <div className="max-w-5xl mx-auto space-y-8">
         
-        <div className="animate-item flex items-center gap-6 mb-12 bg-[#141414] p-8 rounded-3xl border border-[#1f1f1f] shadow-lg">
+        <div className="animate-item flex items-center gap-6 mb-12 bg-surface p-8 rounded-[32px] border border-border shadow-2xl">
           <div className="bg-[#EB712B]/10 p-4 rounded-2xl border border-[#EB712B]/20">
             <span className="text-[#EB712B] text-4xl font-extrabold uppercase">RWP</span>
           </div>
           <div>
             <p className="text-[#EB712B] text-xs font-bold uppercase tracking-widest">Athlete Profile Onboarding</p>
-            <h2 className="text-3xl font-bold">Complete Your Profile</h2>
-            <p className="text-gray-400 text-sm mt-1">Please provide your details below to activate your account and start riding with pals.</p>
+            <h2 className="text-3xl font-black text-white">Complete Your Profile</h2>
+            <p className="text-text-muted text-xs md:text-sm mt-1">Please provide your details below to activate your account and start riding with pals.</p>
           </div>
         </div>
 
-        <form ref={formRef} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8" onSubmit={(e) => e.preventDefault()}>
+        <form ref={formRef} className="bg-surface border border-border rounded-[32px] p-10 shadow-2xl grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6" onSubmit={(e) => e.preventDefault()}>
           
           <div className="animate-item space-y-6">
-            <h3 className="text-[#EB712B] font-bold uppercase tracking-widest text-sm border-b border-[#222] pb-2">Personal Information</h3>
+            <h3 className="text-[#EB712B] font-bold uppercase tracking-widest text-xs border-b border-border pb-2">Personal Information</h3>
             
-            <div>
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Full Name</label>
+            <div className="space-y-2">
+              <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Full Name</label>
               <input 
                 type="text" 
                 value={fullName}
                 onChange={(e) => { setFullName(e.target.value); setErrors((p) => ({ ...p, fullName: '' })); }}
-                className={`w-full bg-[#141414] border ${errors.fullName ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 focus:border-[#EB712B] outline-none`} 
+                className={`w-full h-14 bg-main-bg border ${errors.fullName ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`} 
                 placeholder="Alex Johnson" 
               />
-              {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
+              {errors.fullName && <p className="text-red-500 text-xs">{errors.fullName}</p>}
             </div>
 
-            <div>
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Date of Birth</label>
+            <div className="space-y-2">
+              <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Date of Birth</label>
               <div className="relative">
                 <input 
                   type="date" 
                   value={dob}
                   onChange={(e) => { setDob(e.target.value); setErrors((p) => ({ ...p, dob: '' })); }}
-                  className={`w-full bg-[#141414] border ${errors.dob ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 outline-none text-white focus:border-[#EB712B] transition-colors appearance-none`}
+                  className={`w-full h-14 bg-main-bg border ${errors.dob ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main appearance-none`}
                 />
                 <Calendar 
-                  className="absolute right-4 top-4 text-gray-600 pointer-events-none" 
+                  className="absolute right-4 top-4 text-text-muted pointer-events-none" 
                   size={18} 
                 />
               </div>
-              {errors.dob && <p className="text-red-500 text-xs mt-1">{errors.dob}</p>}
+              {errors.dob && <p className="text-red-500 text-xs">{errors.dob}</p>}
             </div>
 
-            <div className="relative">
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Country / Region</label>
+            <div className="space-y-2 relative">
+              <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Country / Region</label>
                <button
                 type="button"
                 onClick={() => toggleDropdown('country')}
-                className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors relative z-10"
+                className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer"
               >
                 <span className="text-white">{country}</span>
                 <ChevronDown 
-                  className={`transition-all duration-300 ${openDropdown === 'country' ? "text-[#EB712B] rotate-180" : "text-gray-500"}`} 
+                  className={`transition-all duration-300 ${openDropdown === 'country' ? "text-[#EB712B] rotate-180" : "text-text-muted"}`} 
                   size={20} 
                 />
               </button>
 
               {openDropdown === 'country' && (
-                <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl shadow-2xl overflow-hidden mt-1" style={{ zIndex: 100 }}>
+                <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl shadow-2xl overflow-hidden mt-1 z-30">
                   <div className="max-h-60 overflow-y-auto custom-scrollbar">
                     {['United States', 'Germany', 'United Kingdom', 'Canada', 'Australia', 'Pakistan', 'France', 'Spain', 'Italy', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Switzerland', 'Austria', 'Japan', 'South Korea'].sort().map((option) => (
                       <div
                         key={option}
-                        className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors border-b border-[#222] last:border-0"
+                        className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
                         onClick={() => { setCountry(option); toggleDropdown(null); }}
                       >
                         {option}
@@ -172,32 +172,32 @@ const AthleteProfileForm = () => {
           </div>
 
           <div className="animate-item space-y-6">
-            <h3 className="text-[#EB712B] font-bold uppercase tracking-widest text-sm border-b border-[#222] pb-2">Account Settings</h3>
+            <h3 className="text-[#EB712B] font-bold uppercase tracking-widest text-xs border-b border-border pb-2">Account Settings</h3>
             
-            <div className="relative">
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Gender</label>
+            <div className="space-y-2 relative">
+              <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Gender</label>
               <button
                 type="button"
                 onClick={() => toggleDropdown('gender')}
-                className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors"
+                className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer"
               >
                 <span className="text-white">{genderId === 1 ? 'Male' : 'Female'}</span>
                 <ChevronDown 
-                  className={`transition-all duration-300 ${openDropdown === 'gender' ? "text-[#EB712B] rotate-180" : "text-gray-500"}`} 
+                  className={`transition-all duration-300 ${openDropdown === 'gender' ? "text-[#EB712B] rotate-180" : "text-text-muted"}`} 
                   size={20} 
                 />
               </button>
 
               {openDropdown === 'gender' && (
-                <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden mt-1">
+                <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl z-30 shadow-2xl overflow-hidden mt-1">
                   <div
-                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors border-b border-[#222] last:border-0"
+                    className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border"
                     onClick={() => { setGenderId(1); toggleDropdown(null); }}
                   >
                     Male
                   </div>
                   <div
-                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
+                    className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors"
                     onClick={() => { setGenderId(2); toggleDropdown(null); }}
                   >
                     Female
@@ -206,30 +206,30 @@ const AthleteProfileForm = () => {
               )}
             </div>
 
-            <div className="relative">
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Measurement Unit</label>
+            <div className="space-y-2 relative">
+              <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Measurement Unit</label>
               <button
                 type="button"
                 onClick={() => toggleDropdown('unit')}
-                className="w-full flex items-center justify-between bg-[#141414] border border-[#222] rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors"
+                className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer"
               >
                 <span className="text-white">{unit === 'km' ? 'Metric (km, kg)' : 'Imperial (mi, lbs)'}</span>
                 <ChevronDown 
-                  className={`transition-all duration-300 ${openDropdown === 'unit' ? "text-[#EB712B] rotate-180" : "text-gray-500"}`} 
+                  className={`transition-all duration-300 ${openDropdown === 'unit' ? "text-[#EB712B] rotate-180" : "text-text-muted"}`} 
                   size={20} 
                 />
               </button>
 
               {openDropdown === 'unit' && (
-                <div className="absolute left-0 w-full bg-[#141414] border border-[#222] rounded-xl z-50 shadow-2xl overflow-hidden mt-1">
+                <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl z-30 shadow-2xl overflow-hidden mt-1">
                   <div
-                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors border-b border-[#222] last:border-0"
+                    className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border"
                     onClick={() => { setUnit("km"); toggleDropdown(null); }}
                   >
                     Metric (km, kg)
                   </div>
                   <div
-                    className="p-4 hover:bg-[#222] cursor-pointer text-white transition-colors"
+                    className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors"
                     onClick={() => { setUnit("miles"); toggleDropdown(null); }}
                   >
                     Imperial (mi, lbs)
@@ -238,35 +238,35 @@ const AthleteProfileForm = () => {
               )}
             </div>
 
-            <div>
-              <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Phone Number</label>
+            <div className="space-y-2">
+              <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Phone Number</label>
               <input 
                 type="text" 
                 value={phone}
                 onChange={(e) => { setPhone(e.target.value); setErrors((p) => ({ ...p, phone: '' })); }}
-                className={`w-full bg-[#141414] border ${errors.phone ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 outline-none focus:border-[#EB712B] transition-colors`} 
+                className={`w-full h-14 bg-main-bg border ${errors.phone ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`} 
                 placeholder="+49 152 445 221" 
               />
-              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+              {errors.phone && <p className="text-red-500 text-xs">{errors.phone}</p>}
             </div>
           </div>
 
-          <div className="animate-item md:col-span-2">
-            <label className="block text-gray-400 text-xs font-bold mb-2 uppercase">Athlete Description</label>
+          <div className="animate-item md:col-span-2 space-y-2">
+            <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Athlete Description</label>
             <textarea 
               value={description}
               onChange={(e) => { setDescription(e.target.value); setErrors((p) => ({ ...p, description: '' })); }}
-              className={`w-full bg-[#141414] border ${errors.description ? 'border-red-500' : 'border-[#222]'} rounded-xl p-4 h-32 focus:border-[#EB712B] outline-none transition-colors`} 
+              className={`w-full bg-main-bg border ${errors.description ? 'border-red-500' : 'border-border'} rounded-2xl p-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main h-32`} 
               placeholder="Tell your story, your setups, and your cycling goals..." 
             />
-            {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+            {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
           </div>
 
           <button 
             type="button" 
             onClick={handleSave} 
             disabled={isLoading}
-            className="animate-item md:col-span-2 bg-[#EB712B] py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#d16226] transition-all disabled:opacity-50 cursor-pointer"
+            className="animate-item md:col-span-2 w-full h-16 rounded-2xl bg-[#EB712B] hover:bg-[#ff8243] text-white font-black text-sm uppercase transition-all cursor-pointer border-0 outline-none flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
