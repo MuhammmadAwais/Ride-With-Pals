@@ -134,6 +134,9 @@ export type MySubscriptionParams = {
 
 export type SubscribeToClubPlanRequest = {
     clubId: number | string;
+    planId: number;
+    successUrl: string;
+    cancelUrl: string;
 }
 
 export type SubscribeToClubPlanResponse = {

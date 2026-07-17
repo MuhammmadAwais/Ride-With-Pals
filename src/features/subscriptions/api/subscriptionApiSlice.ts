@@ -22,19 +22,20 @@ export const subscriptionApiSlice = apiSlice.injectEndpoints({
     }),
 
     subscribeToClubPlan: builder.mutation<SubscriptionTypes.SubscribeToClubPlanResponse, SubscriptionTypes.SubscribeToClubPlanRequest>({
-      query: (body) => ({
+      query: ({ clubId, ...body }) => ({
         url: '/user/club/subscription/subscribe',
         method: 'POST',
+        params: { clubId },
         body,
       }),
       invalidatesTags: ['Subscription', 'User'],
     }),
 
     clubCustomerPortal: builder.mutation<SubscriptionTypes.ClubCustomerPortalResponse, SubscriptionTypes.ClubCustomerPortalRequest>({
-      query: (body) => ({
+      query: ({ clubId }) => ({
         url: '/user/club/subscription/customer-portal',
         method: 'POST',
-        body,
+        params: { clubId },
       }),
       invalidatesTags: ['Subscription', 'User'],
     }),

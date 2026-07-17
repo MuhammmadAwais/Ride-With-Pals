@@ -6,7 +6,13 @@ import Leaderboard from "./Leaderboard";
 import Discount from "./Discount";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { fetchClubMembers } from "@/features/club/slices/clubSlice";
-import { MembershipService } from "@/api/backendApi";
+import { 
+  useCreateClubMembershipPlanMutation, 
+  useUpdateClubMembershipPlanMutation, 
+  useDeleteMembershipPlanMutation, 
+  useListMembershipPlansQuery 
+} from "@/features/club/api/membershipApiSlice";
+import { toast } from "sonner";
 
 interface MembershipPlan {
   id: string;
@@ -37,6 +43,18 @@ const ManageClubHome = () => {
   const dispatch = useAppDispatch();
   const { currentClubMembers } = useAppSelector((state) => state.club);
 
+  const clubIdStr = localStorage.getItem("selectedClubId");
+  const clubId = clubIdStr ? Number(clubIdStr) : undefined;
+
+  const { data: plansData } = useListMembershipPlansQuery(
+    { clubId: clubId || 0 },
+    { skip: !clubId }
+  );
+
+  const [createPlan] = useCreateClubMembershipPlanMutation();
+  const [updatePlan] = useUpdateClubMembershipPlanMutation();
+  const [deletePlan] = useDeleteMembershipPlanMutation();
+
   useEffect(() => {
     const clubIdStr = localStorage.getItem("selectedClubId");
     if (clubIdStr) {
@@ -57,6 +75,21 @@ const ManageClubHome = () => {
 
   // State for Membership Cards (Left-Form interacting with Right-Cards)
   const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>([]);
+
+  useEffect(() => {
+    if (plansData) {
+      const plans = plansData.map((p: any) => ({
+        id: p.id.toString(),
+        packageName: p.name || p.packageName,
+        price: p.price.toString(),
+        duration: p.duration || "1 Month",
+        autoRenew: p.autoRenew ? "Yes" : "No",
+        discount: p.discount || "",
+        featuresList: p.features || []
+      }));
+      setMembershipPlans(plans);
+    }
+  }, [plansData]);
   const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
   const [openCardMenuId, setOpenCardMenuId] = useState<string | null>(null);
 
@@ -120,62 +153,38 @@ const ManageClubHome = () => {
     setFeaturesList(featuresList.filter((_, index) => index !== indexToRemove));
   };
 
-  // Fetch memberships
-  useEffect(() => {
-    const clubIdStr = localStorage.getItem("selectedClubId");
-    if (clubIdStr) {
-      MembershipService.listMembershipPlans({ clubId: Number(clubIdStr) })
-        .then((res: any) => {
-           // Mapping backend response to frontend MembershipPlan format
-           const plans = (res?.data || res || []).map((p: any) => ({
-             id: p.id.toString(),
-             packageName: p.name || p.packageName,
-             price: p.price.toString(),
-             duration: p.duration || "1 Month",
-             autoRenew: p.autoRenew ? "Yes" : "No",
-             discount: p.discount || "",
-             featuresList: p.features || []
-           }));
-           setMembershipPlans(plans);
-        })
-        .catch(console.error);
-    }
-  }, []);
-
   const handleCreatePlan = async (e: React.FormEvent) => {
     e.preventDefault();
     const clubIdStr = localStorage.getItem("selectedClubId");
     if (!clubIdStr) return;
 
-    const payload = {
-      clubId: Number(clubIdStr),
-      name: packageName,
-      price: Number(price),
-      duration,
-      autoRenew: autoRenew === "Yes",
-      discount,
-      features: featuresList,
-    };
-
     try {
       if (editingPlanId) {
-        await MembershipService.updateClubMembershipPlan({ id: Number(editingPlanId), ...payload });
+        await updatePlan({
+          planId: Number(editingPlanId),
+          clubId: Number(clubIdStr),
+          name: packageName,
+          price: Number(price),
+          currency: "USD",
+          billingInterval: duration === "1 Month" ? "month" : "year",
+          autoRenew: autoRenew === "Yes",
+          discountPercent: Number(discount) || 0,
+          features: featuresList
+        }).unwrap();
+        toast.success("Membership plan updated successfully!");
       } else {
-        await MembershipService.createClubMembershipPlan(payload);
+        await createPlan({
+          clubId: Number(clubIdStr),
+          name: packageName,
+          price: Number(price),
+          currency: "USD",
+          billingInterval: duration === "1 Month" ? "month" : "year",
+          autoRenew: autoRenew === "Yes",
+          discountPercent: Number(discount) || 0,
+          features: featuresList
+        }).unwrap();
+        toast.success("Membership plan created successfully!");
       }
-      
-      // Refresh list
-      const res = await MembershipService.listMembershipPlans({ clubId: Number(clubIdStr) });
-      const plans = (res?.data || res || []).map((p: any) => ({
-        id: p.id.toString(),
-        packageName: p.name || p.packageName,
-        price: p.price.toString(),
-        duration: p.duration || "1 Month",
-        autoRenew: p.autoRenew ? "Yes" : "No",
-        discount: p.discount || "",
-        featuresList: p.features || []
-      }));
-      setMembershipPlans(plans);
 
       // Reset Form
       setEditingPlanId(null);
@@ -189,7 +198,9 @@ const ManageClubHome = () => {
         "Paid activates included",
         "Free coffee in our coffeeshop",
       ]);
-    } catch (err) {
+      setShowMembershipForm(false);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to save membership plan.");
       console.error(err);
     }
   };
@@ -209,12 +220,11 @@ const ManageClubHome = () => {
 
   // Delete associated membership plan
   const handleDeletePlan = async (id: string) => {
-    const clubIdStr = localStorage.getItem("selectedClubId");
-    if (!clubIdStr) return;
     try {
-      await MembershipService.deleteMembershipPlan({ clubId: Number(clubIdStr), planId: Number(id), id: Number(id) });
-      setMembershipPlans(membershipPlans.filter((plan) => plan.id !== id));
-    } catch (err) {
+      await deletePlan({ planId: Number(id) }).unwrap();
+      toast.success("Membership plan deleted successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to delete membership plan.");
       console.error(err);
     }
     setOpenCardMenuId(null);
