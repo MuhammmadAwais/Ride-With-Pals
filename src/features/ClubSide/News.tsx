@@ -1,15 +1,26 @@
 import React, { useState, useMemo } from 'react';
-import { MessageSquare, Plus, ArrowUpRight, Newspaper } from 'lucide-react';
+import { MessageSquare, Plus, ArrowUpRight, Newspaper, Bookmark } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useGetAllNewsQuery, useGetAllNewsCommentsQuery, useAddCommentMutation, useDelCommentMutation } from '@/features/club/api/newsApiSlice';
-import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import { useActiveClub } from '@/hooks/useActiveClub';
+import { useClubPermissions } from '@/hooks/useClubPermissions';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
+/**
+ * ArticleComments sub-component.
+ * Delete button is gated: only the comment author OR an admin/owner can delete.
+ */
 const ArticleComments = ({ newsId }: { newsId: number }) => {
-  const [newComment, setNewComment] = useState("");
+  const [newComment, setNewComment] = useState('');
   const { data: commentsData, isLoading } = useGetAllNewsCommentsQuery({ newsId });
   const [addComment, { isLoading: isAdding }] = useAddCommentMutation();
   const [deleteComment] = useDelCommentMutation();
+
+  // Auth context for role-gated delete
+  const currentUserId = useAppSelector((state) => state.auth.user?.id);
+  const { clubId: activeClubId } = useActiveClub();
+  const permissions = useClubPermissions(activeClubId || undefined);
 
   const comments = commentsData?.rows || [];
 
@@ -18,26 +29,26 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
     if (!newComment.trim()) return;
     try {
       await addComment({ newsId, comment: newComment.trim() }).unwrap();
-      setNewComment("");
-      toast.success("Comment posted successfully!");
+      setNewComment('');
+      toast.success('Comment posted successfully!');
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to post comment.");
+      toast.error(err?.data?.message || 'Failed to post comment.');
     }
   };
 
   const handleDelete = async (commentId: number) => {
     try {
       await deleteComment({ newsId, newsCommentId: commentId }).unwrap();
-      toast.success("Comment deleted successfully!");
+      toast.success('Comment deleted successfully!');
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to delete comment.");
+      toast.error(err?.data?.message || 'Failed to delete comment.');
     }
   };
 
   return (
     <div className="mt-6 pt-6 border-t border-border space-y-4">
       <h4 className="text-xs font-bold uppercase tracking-wider text-text-main">Comments ({comments.length})</h4>
-      
+
       {isLoading ? (
         <div className="space-y-2 animate-pulse">
           <div className="h-10 bg-[#222] rounded-xl" />
@@ -47,40 +58,48 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
         <p className="text-xs text-text-muted">No comments yet. Be the first to write one!</p>
       ) : (
         <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
-          {comments.map((comment: any) => (
-            <div key={comment.id} className="flex justify-between items-start gap-4 p-3 bg-hover rounded-2xl border border-border">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-text-main">{comment.user?.fullName || "User"}</span>
-                  <span className="text-[8px] text-text-muted">{new Date(comment.createdAt).toLocaleDateString()}</span>
+          {comments.map((comment: any) => {
+            // ✅ FIX: Only show delete button to comment author OR admin/owner
+            const isCommentAuthor = String(comment.userId || comment.user?.id) === String(currentUserId);
+            const canDelete = isCommentAuthor || permissions.isAdmin;
+
+            return (
+              <div key={comment.id} className="flex justify-between items-start gap-4 p-3 bg-hover rounded-2xl border border-border">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-text-main">{comment.user?.fullName || 'User'}</span>
+                    <span className="text-[8px] text-text-muted">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <p className="text-xs text-text-muted leading-relaxed">{comment.comment}</p>
                 </div>
-                <p className="text-xs text-text-muted leading-relaxed">{comment.comment}</p>
+                {canDelete && (
+                  <button
+                    onClick={() => handleDelete(comment.id)}
+                    className="text-[9px] font-bold uppercase text-red-500 hover:text-red-400 cursor-pointer"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
-              <button 
-                onClick={() => handleDelete(comment.id)} 
-                className="text-[9px] font-bold uppercase text-red-500 hover:text-red-400 cursor-pointer"
-              >
-                Delete
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="flex gap-2">
-        <input 
-          type="text" 
-          placeholder="Write a comment..." 
+        <input
+          type="text"
+          placeholder="Write a comment..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           className="flex-1 bg-surface border border-border px-4 py-2.5 rounded-xl text-xs text-text-main focus:outline-none focus:border-[#EB712B]/40"
         />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isAdding}
           className="px-4 py-2.5 bg-[#EB712B] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#ff8036] disabled:opacity-50 cursor-pointer"
         >
-          {isAdding ? "..." : "Post"}
+          {isAdding ? '...' : 'Post'}
         </button>
       </form>
     </div>
@@ -95,7 +114,6 @@ const NewsArticle = ({ item }: { item: any }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
       <div className="relative flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-        {/* Icon - Hidden on very small screens or kept small */}
         <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 flex items-center justify-center rounded-2xl bg-hover border border-border group-hover:bg-[#EB712B] group-hover:scale-105 transition-all duration-500 ease-in-out">
           <Newspaper className="text-[#EB712B] group-hover:text-white transition-colors duration-500" size={24} />
         </div>
@@ -134,7 +152,7 @@ const NewsArticle = ({ item }: { item: any }) => {
                     Show Less
                   </button>
                 </p>
-                
+
                 {/* Embedded comments section */}
                 <ArticleComments newsId={Number(item.id)} />
               </div>
@@ -146,7 +164,7 @@ const NewsArticle = ({ item }: { item: any }) => {
               <div className="w-6 h-6 rounded-full bg-surface flex items-center justify-center text-[8px] font-black text-[#EB712B] border border-border">{item.authorInitials}</div>
               <span className="text-xs font-bold text-text-main truncate max-w-[100px]">{item.author}</span>
             </div>
-            <button 
+            <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
             >
@@ -178,21 +196,13 @@ const NewsSkeleton = () => (
   </div>
 );
 
-import { useActiveClub } from '@/hooks/useActiveClub';
-import { useClubPermissions } from '@/hooks/useClubPermissions';
-
 export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
-  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
-  let activeClubId = clubId || activeClubIdRedux;
-  const permissions = useClubPermissions(activeClubId || undefined);
-  
-  const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!activeClubId });
-  const joinedRows = joinedClubs?.rows || [];
+  const { clubId: activeClubIdRedux } = useActiveClub();
 
-  if (!activeClubId && joinedRows.length > 0) {
-    activeClubId = joinedRows[0].id.toString();
-    setActiveClub(joinedRows[0] as any);
-  }
+  // ✅ FIX: Use ONLY the active club from Redux/localStorage.
+  // No more fallback to first joined club — that caused wrong news for multi-club users.
+  const activeClubId = clubId || activeClubIdRedux;
+  const permissions = useClubPermissions(activeClubId || undefined);
 
   const { data: newsData, isLoading } = useGetAllNewsQuery(
     { clubId: Number(activeClubId) },
@@ -203,25 +213,48 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
     const items = newsData?.rows || [];
     return items.map((item: any, index: number) => ({
       id: item.id?.toString() || index.toString(),
-      title: item.title || "Untitled Article",
-      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Recent",
-      previewText: item.description || (item.content ? item.content.slice(0, 150) + "..." : "No description provided."),
-      fullContent: item.description || "No content provided.",
+      title: item.title || 'Untitled Article',
+      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recent',
+      previewText: item.description || (item.content ? item.content.slice(0, 150) + '...' : 'No description provided.'),
+      fullContent: item.description || 'No content provided.',
       image: item.image || item.imageUrl || null,
-      author: item.author || "Club Admin",
-      authorInitials: (item.author || "Club Admin").slice(0, 2).toUpperCase(),
+      author: item.author || 'Club Admin',
+      authorInitials: (item.author || 'Club Admin').slice(0, 2).toUpperCase(),
       totalCommentsCount: item.totalCommentsCount || 0
     }));
   }, [newsData]);
+
+  // ✅ FIX: If no active club is selected, show a helpful prompt instead of auto-selecting first club
+  if (!activeClubId) {
+    return (
+      <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-4">
+            <Bookmark size={40} className="text-[#EB712B] mx-auto mb-2" />
+            <h2 className="text-xl font-bold text-text-main">No Club Selected</h2>
+            <p className="text-sm text-text-muted max-w-sm mx-auto">
+              Please select or join a club to view its community news feed.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine where to link "Add Post" based on current side
+  const addPostLink = permissions.canPublishNews
+    ? (window.location.pathname.includes('/clubside') ? '/view/clubside/news/add' : '/view/clubside/news/add')
+    : null;
 
   return (
     <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
       <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-text-main">Community News</h1>
-          {permissions.canPublishNews && (
-            <Link 
-              to="/news/add" 
+          {/* ✅ Role-gated: only admins/owners with canPublishNews permission see this */}
+          {permissions.canPublishNews && addPostLink && (
+            <Link
+              to={addPostLink}
               className="flex items-center justify-center gap-2 px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
             >
               <Plus size={18} /> Add new Post

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'sonner';
 import { useUpdateClubInfoByIdMutation } from '@/features/club/api/clubApiSlice';
+import { RideService } from '@/api/backendApi';
 import {
   ArrowLeft,
   MapPin,
@@ -27,6 +28,9 @@ export default function EditClub() {
   const [description, setDescription] = useState("");
   const [bannerFile, setBannerFile] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<string | null>(null);
+  const [bannerFileObj, setBannerFileObj] = useState<File | null>(null);
+  const [logoFileObj, setLogoFileObj] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (activeClub) {
@@ -49,37 +53,25 @@ export default function EditClub() {
     }
   }, [activeClub]);
 
-  const convertToBase64 = (file: File, callback: (base64: string) => void) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      if (reader.result && typeof reader.result === "string") {
-        callback(reader.result);
-      }
-    };
-    reader.onerror = (error) => {
-      console.error("Error converting file to base64: ", error);
-    };
-  };
-
   const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      convertToBase64(e.target.files[0], (base64) => {
-        setBannerFile(base64);
-      });
+      const file = e.target.files[0];
+      setBannerFileObj(file);
+      setBannerFile(URL.createObjectURL(file));
     }
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      convertToBase64(e.target.files[0], (base64) => {
-        setLogoFile(base64);
-      });
+      const file = e.target.files[0];
+      setLogoFileObj(file);
+      setLogoFile(URL.createObjectURL(file));
     }
   };
 
   const handleRemoveLogo = () => {
     setLogoFile(null);
+    setLogoFileObj(null);
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -89,6 +81,29 @@ export default function EditClub() {
       if (!clubIdStr) {
         toast.error("No club selected");
         return;
+      }
+
+      setIsUploading(true);
+
+      let updatedLogo = logoFile;
+      let updatedBanner = bannerFile;
+
+      if (logoFileObj) {
+        const formData = new FormData();
+        formData.append("file", logoFileObj);
+        const res = await RideService.uploadFile(formData);
+        if (res?.response?.fileName) {
+          updatedLogo = res.response.fileName;
+        }
+      }
+
+      if (bannerFileObj) {
+        const formData = new FormData();
+        formData.append("file", bannerFileObj);
+        const res = await RideService.uploadFile(formData);
+        if (res?.response?.fileName) {
+          updatedBanner = res.response.fileName;
+        }
       }
 
       // Map visibility ("Public"/"Private") to clubPrivacyId (1/2)
@@ -110,14 +125,18 @@ export default function EditClub() {
         clubPrivacyId,
         clubTypeId,
         location,
-        description
+        description,
+        logo: updatedLogo || "",
+        clubImage: updatedBanner || ""
       }).unwrap();
 
       toast.success("Club profile updated successfully!");
       navigate(-1);
     } catch (err: any) {
       console.error("Failed to save club profile:", err);
-      toast.error(err?.data?.message || err?.message || "Failed to update club.");
+      toast.error(err?.response?.data?.message || err?.data?.message || err?.message || "Failed to update club.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -341,7 +360,7 @@ export default function EditClub() {
                   {bannerFile ? (
                     <div className="absolute inset-0">
                       <img
-                        src={bannerFile}
+                        src={bannerFile.startsWith('http') || bannerFile.startsWith('blob:') ? bannerFile : `https://api.ridewithpals.com/uploads/${bannerFile}`}
                         alt="Banner Preview"
                         className="w-full h-full object-cover"
                       />
@@ -383,7 +402,7 @@ export default function EditClub() {
                   <div className="w-16 h-16 rounded-full bg-[#161616] border border-white/10 flex items-center justify-center relative overflow-hidden group/logo hover:border-[#EB712B]/50 transition-colors flex-shrink-0">
                     {logoFile ? (
                       <img
-                        src={logoFile}
+                        src={logoFile.startsWith('http') || logoFile.startsWith('blob:') ? logoFile : `https://api.ridewithpals.com/uploads/${logoFile}`}
                         alt="Logo"
                         className="w-full h-full object-cover"
                       />
@@ -435,13 +454,13 @@ export default function EditClub() {
             <div className="space-y-4">
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isUploading}
                 className="w-full py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-[0.15em] uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 hover:scale-[1.02] active:scale-95 border border-[#EB712B]/30 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {isLoading ? (
+                {isLoading || isUploading ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Saving Changes...
+                    {isUploading ? "Uploading Images..." : "Saving Changes..."}
                   </>
                 ) : (
                   "Save Changes"

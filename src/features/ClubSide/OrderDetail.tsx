@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2, Loader2, ShieldAlert } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useForClubOwnerUpdateOrderStatusMutation } from '@/features/club/api/shopOrderApiSlice';
+import { useActiveClub } from '@/hooks/useActiveClub';
+import { useClubPermissions } from '@/hooks/useClubPermissions';
 
 const OrderDetail = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // This is your orderId (e.g., EP-29482)
+  const { id } = useParams();
   const location = useLocation();
-  
+
+  // ✅ Permission guard — only club owners should access order details
+  const { clubId } = useActiveClub();
+  const permissions = useClubPermissions(clubId || undefined);
+
   // Get the order data passed from the navigation state
   const order = location.state?.order;
 
@@ -18,19 +24,43 @@ const OrderDetail = () => {
   const handleMarkDelivered = async () => {
     if (!order?.originalOrder?.id) return;
     try {
-      await updateOrderStatus({ 
-        orderId: Number(order.originalOrder.id), 
+      await updateOrderStatus({
+        orderId: Number(order.originalOrder.id),
         statusId: 4 // 4 = Delivered
       }).unwrap();
       setIsDelivered(true);
-      toast.success("Order marked as delivered successfully!");
+      toast.success('Order marked as delivered successfully!');
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to update order status.");
+      toast.error(err?.data?.message || 'Failed to update order status.');
       console.error(err);
     }
   };
 
+  // ✅ Block non-owners — they should never see another club's order details
+  if (!permissions.isLoading && !permissions.isOwner && clubId) {
+    return (
+      <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10 flex items-center justify-center">
+        <div className="bg-surface border border-red-500/20 rounded-3xl p-12 text-center max-w-md space-y-4">
+          <div className="w-16 h-16 mx-auto bg-red-500/10 rounded-2xl border border-red-500/20 flex items-center justify-center">
+            <ShieldAlert size={32} className="text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold text-text-main">Access Denied</h2>
+          <p className="text-sm text-text-muted">
+            Only club owners can view order details.
+          </p>
+          <button
+            onClick={() => navigate('/view/clubside/order')}
+            className="px-6 py-3 bg-surface border border-border rounded-xl text-xs font-bold uppercase tracking-wider text-text-main hover:bg-hover transition-colors cursor-pointer"
+          >
+            Back to Orders
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
+
     <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10">
       {/* Navigation Header - fixed route to point to plain /order */}
       <div className="flex items-center gap-4 mb-8">

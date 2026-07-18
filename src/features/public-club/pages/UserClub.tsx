@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock, ArrowLeft, CheckCircle2, AlertCircle, MapPin, Users } from "lucide-react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
 import { fetchMyClubs, fetchExploreClubs } from "@/features/club/slices/clubSlice";
-import { useClub } from "@/features/club/hooks/useClub";
-import { ClubService } from "@/features/club/services/clubService";
 import { useActiveClub } from "@/hooks/useActiveClub";
-
-import Ride from "./Ride";
-import News from "../../ClubSide/News";
-import Leaderboard from "../../ClubSide/Leaderboard";
-import Discount from "../../ClubSide/Discount";
-import Overviews from "./Overviews";
-import Shop from "./Shop"; 
-import Marketplace from "./Marketplace";
-import {toast} from "sonner";
 
 const getClubTypeName = (typeId?: number) => {
   if (typeId === 2) return "Running";
@@ -35,72 +24,20 @@ const getClubImage = (logo?: string | null, coverImage?: string | null): string 
   return `https://api.ridewithpals.com/uploads/${img}`;
 };
 
-type TabType = "rides" | "news" | "leaderboard" | "shop" | "discounts" | "marketplace" | "members" | "overviews";
-
 export default function UserClub() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
   const { myClubs, exploreClubs } = useAppSelector((s) => s.club);
-  const { handleJoinClub, isJoining } = useClub();
   const { setActiveClub } = useActiveClub();
   
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
-  
-  const [selectedClub, setSelectedClub] = useState<any | null>(null);
 
   React.useEffect(() => {
     dispatch(fetchMyClubs());
     dispatch(fetchExploreClubs());
   }, [dispatch]);
-  // const [isDiscoverContext, setIsDiscoverContext] = useState(false); 
-
-  const [isMember, setIsMember] = useState(false);
-
-  useEffect(() => {
-    if (id) {
-      const loadSelectedClub = async () => {
-        try {
-          const clubRes = await ClubService.getClubById(Number(id));
-          const clubData = clubRes?.response || clubRes?.data || clubRes;
-          if (clubData) {
-            setSelectedClub(clubData);
-            
-            // Check membership
-            const isUserMember = myClubs.some((c) => c.id === Number(id));
-            setIsMember(isUserMember);
-          } else {
-            toast.error("Club not found");
-            navigate("/view/userside/clubs");
-          }
-        } catch (e) {
-          console.error("Failed to load selected club:", e);
-          toast.error("Failed to load club details");
-          navigate("/view/userside/clubs");
-        }
-      };
-      loadSelectedClub();
-    } else {
-      setSelectedClub(null);
-      setIsMember(false);
-    }
-  }, [id, myClubs, navigate]);
-
-  const [showCodeScreen, setShowCodeScreen] = useState(false);
-  const [joinCode, setJoinCode] = useState("");
-  const [codeError, setCodeError] = useState("");
-  
-  const [showDepositScreen, setShowDepositScreen] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [accountHolder, setAccountHolder] = useState("");
-
-  const [activeTab, setActiveTab] = useState<TabType>("overviews");
 
   const filteredMyClubs = myClubs.filter(
     (club) =>
@@ -116,349 +53,12 @@ export default function UserClub() {
 
   const handleSelectMyClub = (club: any) => {
     setActiveClub(club);
-    navigate(`/view/clubside/dashboard`);
+    navigate(`/view/userside/club/${club.id}`);
   };
 
   const handleSelectDiscoverClub = (comm: any) => {
-    navigate(`/view/userside/clubs/${comm.id}`);
+    navigate(`/view/userside/club/${comm.id}`);
   };
-
-  const handleBackToHub = () => {
-    setShowCodeScreen(false);
-    setShowDepositScreen(false);
-    setCodeError("");
-    setPaymentSuccess(false);
-    setCardNumber("");
-    setExpiryDate("");
-    setCvv("");
-    setAccountHolder("");
-    navigate("/view/userside/clubs");
-  };
-
-  const handleJoinClubClick = async () => {
-    if (selectedClub?.clubPrivacyId === 2) {
-      setShowCodeScreen(true);
-    } else if (selectedClub?.restrictUnpaidMembers) {
-      setShowDepositScreen(true);
-    } else {
-      const success = await handleJoinClub(selectedClub.id);
-      if (success) setIsMember(true);
-    }
-  };
-
-  const handleVerifyCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = await handleJoinClub(selectedClub.id, joinCode);
-    if (success) {
-      setCodeError("");
-      setShowCodeScreen(false);
-      if (selectedClub?.restrictUnpaidMembers) {
-        setShowDepositScreen(true);
-      } else {
-        setIsMember(true);
-      }
-    } else {
-      setCodeError("Failed to join with code.");
-    }
-  };
-
-  const handleCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, "");
-    const groups = val.match(/.{1,4}/g);
-    setCardNumber(groups ? groups.join(" ") : "");
-  };
-
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, "");
-    if (val.length >= 2) {
-      val = val.slice(0,2) + "/" + val.slice(2,4);
-    }
-    setExpiryDate(val);
-  };
-
-  // Validation Checkers
-  const isCardComplete = cardNumber.replace(/\s/g, "").length === 16;
-  const isExpiryComplete = /^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(expiryDate);
-  const isCvvComplete = cvv.length >= 3 && cvv.length <= 4 && /^\d+$/.test(cvv);
-  const isHolderComplete = accountHolder.trim().length > 2;
-
-  const isFormValid = isCardComplete && isExpiryComplete && isCvvComplete && isHolderComplete;
-
-  const handleDepositConfirm = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isFormValid) return;
-    
-    // Perform "payment" and then actually join
-    setPaymentSuccess(true);
-    setTimeout(async () => {
-      const success = await handleJoinClub(selectedClub.id);
-      if (success) setIsMember(true);
-      setShowDepositScreen(false);
-      setPaymentSuccess(false);
-    }, 2000);
-  };
-
-  if (selectedClub) {
-    // const currentRole: "organizer" | "athlete" = isDiscoverContext ? "athlete" : "organizer";
-
-    return (
-      <div className="flex min-h-screen text-text-main font-sans w-full justify-center p-4 sm:p-8">
-        <div className="flex-1 transition-all max-w-7xl w-full mx-auto space-y-8">
-          
-          {/* Back button */}
-          <button
-            onClick={handleBackToHub}
-            className="inline-flex items-center gap-2 text-text-muted hover:text-text-main text-xs font-bold tracking-wider uppercase cursor-pointer transition-all bg-surface px-5 py-3 rounded-xl border border-border"
-          >
-            <ArrowLeft size={16} /> Back to Hub
-          </button>
-
-          {/* Large Hero/Banner Section */}
-          <div className="relative h-64 w-full rounded-3xl overflow-hidden border border-border">
-            <img 
-              src={getClubImage(selectedClub.coverImage, selectedClub.logo)} 
-              alt={selectedClub.clubName} 
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
-            
-            <div className="absolute inset-x-6 bottom-6 flex flex-wrap items-end justify-between gap-4">
-              <div className="flex items-center gap-5">
-                <img 
-                  src={getClubImage(selectedClub.logo, selectedClub.coverImage)} 
-                  alt={selectedClub.clubName} 
-                  className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow-xl shrink-0"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-                  }}
-                />
-                <div>
-                  <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border mb-1.5 ${
-                    selectedClub.clubPrivacyId === 1 
-                      ? "bg-green-500/10 text-green-300 border-green-500/30" 
-                      : "bg-rose-500/10 text-rose-300 border-rose-500/30"
-                  }`}>
-                    {selectedClub.clubPrivacyId === 1 ? <Globe size={10} /> : <Lock size={10} />} {selectedClub.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
-                  </span>
-                  <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight leading-none break-words max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl text-white">{selectedClub.clubName}</h2>
-                  <p className="text-white/70 text-[10px] font-bold tracking-[0.2em] uppercase mt-1">Location: {selectedClub.location}</p>
-                </div>
-              </div>
-
-              {!isMember && !showCodeScreen && !showDepositScreen && (
-                <button 
-                  onClick={handleJoinClubClick}
-                  disabled={isJoining}
-                  className="px-6 py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black tracking-widest uppercase cursor-pointer shadow-lg transition-all duration-300 hover:scale-105 shrink-0"
-                >
-                  {isJoining ? "Joining..." : "Join Club"}
-                </button>
-              )}
-
-              {isMember && (
-                <div className="px-6 py-3.5 bg-hover border border-border text-text-muted rounded-xl text-xs font-black tracking-widest uppercase cursor-default shrink-0">
-                  ✓ Joined
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* SCREEN 2: Code Verification (Modern Popup) */}
-          {showCodeScreen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/60 backdrop-blur-sm animate-fade-in">
-              <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-sm space-y-6 shadow-2xl relative">
-                <div className="text-center">
-                  <h3 className="text-xl font-black uppercase tracking-tight">Join Verification</h3>
-                  <p className="text-text-muted text-[10px] mt-1 tracking-wider">Please enter the club join code (Hint: 111)</p>
-                </div>
-                <form onSubmit={handleVerifyCode} className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="— — —"
-                    maxLength={3}
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value)}
-                    className="w-full bg-main-bg border border-border rounded-xl p-4 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-[#EB712B] text-text-main placeholder-gray-600"
-                  />
-                  
-                  {/* Professional Inline Error Message */}
-                  {codeError && (
-                    <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-[10px] font-bold tracking-wide animate-pulse">
-                      <AlertCircle size={14} className="shrink-0" />
-                      <span>{codeError}</span>
-                    </div>
-                  )}
-
-                  <div className="flex gap-3 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowCodeScreen(false)}
-                      className="flex-1 py-4 bg-hover hover:bg-border text-text-muted rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-border"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/10"
-                    >
-                      Verify
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* SCREEN 3: Deposit Modal (Sleek Overlay Form with secure fields) */}
-          {showDepositScreen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/60 backdrop-blur-sm overflow-y-auto">
-              <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-md space-y-6 my-8 shadow-2xl relative">
-                
-                {paymentSuccess ? (
-                  <div className="flex flex-col items-center justify-center py-12 space-y-4 text-center animate-fade-in">
-                    <div className="p-4 bg-green-500/10 rounded-full border border-green-500/20 text-green-400">
-                      <CheckCircle2 size={48} className="animate-bounce" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-black uppercase tracking-tight text-text-main">Payment Successful!</h3>
-                      <p className="text-text-muted text-[10px] mt-1 tracking-wider">Redirecting you to your club dashboard...</p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="text-center">
-                      <h3 className="text-xl font-black uppercase tracking-tight">Secure Checkout</h3>
-                      <p className="text-text-muted text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${selectedClub.price || 50}</span></p>
-                    </div>
-                    
-                    <form onSubmit={handleDepositConfirm} className="space-y-4 text-xs font-bold tracking-wider">
-                      <div>
-                        <label className="block text-[10px] text-text-muted uppercase mb-1">Card number</label>
-                        <input
-                          type="text"
-                          placeholder="1111 1111 1111 1111"
-                          maxLength={19}
-                          value={cardNumber}
-                          onChange={handleCardChange}
-                          className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-[10px] text-text-muted uppercase mb-1">Expiry Date</label>
-                          <input
-                            type="text"
-                            placeholder="12/26"
-                            maxLength={5}
-                            value={expiryDate}
-                            onChange={handleExpiryChange}
-                            className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] text-text-muted uppercase mb-1">CVV</label>
-                          <input
-                            type="text"
-                            placeholder="XXX"
-                            maxLength={4}
-                            value={cvv}
-                            onChange={(e) => setCvv(e.target.value.replace(/\D/g, ""))}
-                            className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-[10px] text-text-muted uppercase mb-1">Account holder</label>
-                        <input
-                          type="text"
-                          placeholder="Full name on card"
-                          value={accountHolder}
-                          onChange={(e) => setAccountHolder(e.target.value)}
-                          className="w-full bg-main-bg border border-border rounded-xl p-4 text-text-main focus:outline-none focus:border-[#EB712B]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] text-text-muted uppercase mb-1">Amount to pay</label>
-                        <input
-                          type="text"
-                          disabled
-                          value={`$${selectedClub.price || 50}`}
-                          className="w-full bg-hover border border-border rounded-xl p-4 text-text-muted focus:outline-none cursor-not-allowed"
-                        />
-                      </div>
-                      <div className="pt-2 flex gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setShowDepositScreen(false)}
-                          className="w-full py-4 bg-hover hover:bg-border text-text-muted rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-border"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={!isFormValid}
-                          className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all border shadow-lg ${
-                            isFormValid 
-                              ? "bg-[#EB712B] hover:bg-[#ff8036] text-white border-transparent cursor-pointer shadow-[#EB712B]/10" 
-                              : "bg-hover text-text-muted border-border cursor-not-allowed shadow-none"
-                          }`}
-                        >
-                          Pay Securely
-                        </button>
-                      </div>
-                    </form>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* NAVIGATION TABS - Unlocks/locks content dynamically using optional chaining */}
-          <div className="flex bg-main-bg border border-border rounded-2xl p-2 gap-2 w-full md:w-fit overflow-x-auto mt-6">
-            {(["rides", "news", "leaderboard", "shop", "discounts", "marketplace", "overviews"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative flex-1 md:flex-initial px-6 py-4 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all text-center whitespace-nowrap ${
-                  activeTab === tab 
-                    ? "text-text-main bg-hover" 
-                    : "text-text-muted hover:text-text-main hover:bg-hover"
-                }`}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <span className="absolute left-1/2 bottom-1 -translate-x-1/2 w-4 h-1 bg-[#EB712B] rounded-full" />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Tab Content Display */}
-          <div className="mt-6">
-            {isMember ? (
-              <>
-                {activeTab === "rides" && <Ride clubId={selectedClub?.id} />}
-                {activeTab === "news" && <News clubId={selectedClub?.id} />}
-                {activeTab === "leaderboard" && <Leaderboard clubId={selectedClub?.id} />}
-                {activeTab === "discounts" && <Discount role={"athlete"} clubId={selectedClub?.id} />}        
-                {activeTab === "shop" && <Shop clubId={selectedClub?.id} />} 
-                {activeTab === "marketplace" && <Marketplace clubId={selectedClub?.id} />} 
-                {activeTab === "overviews" && <Overviews clubId={selectedClub?.id} />}
-              </>
-            ) : (
-              <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
-                Join this club to view its {activeTab}.
-              </div>
-            )}
-          </div>
-
-        </div>
-      </div>
-    );
-  }
 
   // --- DEFAULT VIEW: HUB & SEARCH ---
   return (

@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
+import { useRemoveClubMemberMutation } from "@/features/club/api/clubApiSlice";
 
 interface MembershipPlan {
   id: string;
@@ -55,6 +56,7 @@ const ManageClubHome = () => {
   const [createPlan] = useCreateClubMembershipPlanMutation();
   const [updatePlan] = useUpdateClubMembershipPlanMutation();
   const [deletePlan] = useDeleteMembershipPlanMutation();
+  const [removeMember] = useRemoveClubMemberMutation();
 
   useEffect(() => {
     if (clubId) {
@@ -63,6 +65,7 @@ const ManageClubHome = () => {
   }, [dispatch, clubId]);
 
   const formatMember = (m: any) => ({
+    id: m.userId || m.id,
     name: (m.firstName || '') + ' ' + (m.lastName || '') || m.username || 'Unnamed',
     role: m.role || 'Member',
     status: 'Active Now',
@@ -134,10 +137,17 @@ const ManageClubHome = () => {
     }
   };
 
-  const handleAction = (actionName: string, targetName: string) => {
-    console.log(`Triggered "${actionName}" for ${targetName}`);
+  const handleAction = async (actionName: string, targetItem: any) => {
     if (actionName === "Connect to Stripe") {
       setShowMembershipForm(true);
+    } else if (actionName === "Remove Member" && clubId && targetItem.id) {
+      try {
+        await removeMember({ clubId: Number(clubId), userId: Number(targetItem.id) }).unwrap();
+        toast.success(`${targetItem.name} removed from club.`);
+        dispatch(fetchClubMembers({ clubId }));
+      } catch (err: any) {
+        toast.error(err?.data?.message || "Failed to remove member");
+      }
     }
     setOpenMenuIndex(null);
   };
@@ -329,57 +339,13 @@ const ManageClubHome = () => {
 
                   {isOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-[#181818] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-                      {title === "Club Owners" && (
-                        <>
-                          <button
-                            onClick={() =>
-                              handleAction("Add as Admin", item.name)
-                            }
-                            className="w-full text-left px-5 py-3 text-xs font-bold text-gray-300 hover:bg-white/[0.04] hover:text-white transition-colors cursor-pointer"
-                          >
-                            Add as Admin
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleAction("Remove access of owner", item.name)
-                            }
-                            className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer border-t border-white/[0.03]"
-                          >
-                            Remove access of owner
-                          </button>
-                        </>
-                      )}
-
-                      {title === "Administrators" && (
+                      {title !== "Club Owners" && (
                         <button
-                          onClick={() =>
-                            handleAction("Remove Admin Access", item.name)
-                          }
+                          onClick={() => handleAction("Remove Member", item)}
                           className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer"
                         >
-                          Remove Admin Access
+                          Remove Member
                         </button>
-                      )}
-
-                      {title === "Club Members" && (
-                        <>
-                          <button
-                            onClick={() =>
-                              handleAction("Promote to Admin", item.name)
-                            }
-                            className="w-full text-left px-5 py-3 text-xs font-bold text-gray-300 hover:bg-white/[0.04] hover:text-white transition-colors cursor-pointer"
-                          >
-                            Promote to Admin
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleAction("Promote to Owner", item.name)
-                            }
-                            className="w-full text-left px-5 py-3 text-xs font-bold text-[#EB712B] hover:bg-[#EB712B]/10 hover:text-[#ff8036] transition-colors cursor-pointer border-t border-white/[0.03]"
-                          >
-                            Promote to Owner
-                          </button>
-                        </>
                       )}
                     </div>
                   )}

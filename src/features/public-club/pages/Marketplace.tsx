@@ -9,9 +9,10 @@ import {
   useGetOwnListingsQuery,
   useShareMarketPlaceItemMutation,
 } from "@/features/club/api/marketplaceApiSlice";
-import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
+
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
+import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 
 interface Product {
   id: string;
@@ -332,7 +333,7 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
           ) : clubs.length === 0 ? (
             <div className="text-center py-6 text-xs text-text-muted">You haven't joined any other clubs yet.</div>
           ) : (
-            clubs.map((c) => (
+            clubs.map((c: any) => (
               <button
                 key={c.id}
                 onClick={() => handleShare(c.id)}
@@ -370,23 +371,11 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   // Authenticated user
   const currentUser = useAppSelector((state) => state.auth.user);
 
-  // Resolve clubId
-  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
-  const resolvedClubId = propClubId || activeClubIdRedux;
-
-  const { data: joinedClubsResponse } = useGetJoinedClubsQuery(undefined, {
-    skip: !!resolvedClubId,
-  });
-
-  const activeClubId = useMemo(() => {
-    if (resolvedClubId) return resolvedClubId;
-    const firstJoined = joinedClubsResponse?.rows?.[0];
-    if (firstJoined) {
-      setActiveClub(firstJoined as any);
-      return firstJoined.id;
-    }
-    return undefined;
-  }, [resolvedClubId, joinedClubsResponse, setActiveClub]);
+  // ✅ FIX: Resolve clubId exclusively from useActiveClub — no first-club fallback.
+  // The fallback to joinedClubs[0] caused the marketplace to show a random club's
+  // listings when the user hadn't explicitly selected a club.
+  const { clubId: activeClubIdRedux } = useActiveClub();
+  const activeClubId = propClubId || activeClubIdRedux;
 
   // RTK Queries & Mutations
   const { data: marketplaceResponse, isLoading: isLoadingListings, isError: isErrorListings } = useGetMarketplaceListQuery(

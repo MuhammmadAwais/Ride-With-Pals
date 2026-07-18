@@ -43,18 +43,20 @@ export const ROUTES = {
   TERMS:              '/view/clubside/terms-conditions',
   PRIVACY:            '/view/clubside/privacy-policy',
   SUPPORT_OWNER:      '/view/clubside/support',
+  CLUB_PERMISSIONS:   '/view/clubside/permissions',
+  CLUB_MEMBERSHIP:    '/view/clubside/membership',
+  STRIPE_CONNECT:     '/view/clubside/stripe-connect',
 
   // ── Athlete Interface (protected, in AppLayout shell) ──
   CLUBS:              '/view/userside/clubs',
+  CLUB_DETAILS:       '/view/userside/club/:clubId',
   RIDE:               '/view/userside/rides',
-  MARKETPLACE:        '/view/userside/marketplace',
+  SAVED_RIDES:        '/view/userside/saved-rides',
   PURCHASES:          '/view/userside/purchases',
   WALLET_ATHLETE:     '/view/userside/wallet',
-  LEADERBOARD_ATHLETE:'/view/userside/leaderboard',
-  NEWS_ATHLETE:       '/view/userside/news',
-  MY_PROMOS:          '/view/userside/promos',
   PROFILE_ATHLETE:    '/view/userside/profile',
   SUPPORT_ATHLETE:    '/view/userside/support',
+
 
   // ── Standalone (no shell) ──
   MANAGE_CLUB_HOME:   '/manage-club-home',

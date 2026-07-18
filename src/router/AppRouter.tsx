@@ -55,7 +55,14 @@ import AddDiscount from '@/features/ClubSide/AddDiscount';
 import Clubs from '@/features/public-club/pages/UserClub';
 import Ride from '@/features/public-club/pages/Ride';
 import RideJoining from '@/features/public-club/pages/RideJoining';
-import Marketplace from '@/features/public-club/pages/Marketplace';
+
+
+// ── New Architecture Audit Fixes ──
+import SavedRides from '@/features/public-club/pages/SavedRides';
+import ClubPermissions from '@/features/ClubSide/ClubPermissions';
+import ClubMembership from '@/features/ClubSide/ClubMembership';
+import StripeConnect from '@/features/ClubSide/StripeConnect';
+import ClubDetails from '@/features/public-club/pages/ClubDetails';
 
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';
@@ -151,23 +158,22 @@ export const router = createBrowserRouter(
           <Route path="discount" element={<Discount role="organizer" />} />
           <Route path="discount/add" element={<AddDiscount />} />
           <Route path="support" element={<Support />} />
+          <Route path="permissions" element={<ClubPermissions />} />
+          <Route path="membership" element={<ClubMembership />} />
+          <Route path="stripe-connect" element={<StripeConnect />} />
         </Route>
 
         {/* ── Athlete Interface (Userside) ── */}
         <Route path="/view/userside">
           <Route path="clubs" element={<Clubs />} />
-          <Route path="clubs/:id" element={<Clubs />} />
+          <Route path="club/:clubId" element={<ClubDetails />} />
           <Route path="rides" element={<Ride />} />
-          <Route path="marketplace" element={<Marketplace />} />
           <Route path="purchases" element={<MyPurchases />} />
           <Route path="wallet" element={<Wallet />} />
-          <Route path="leaderboard" element={<Leaderboard />} />
-          <Route path="news" element={<News />} />
-          <Route path="promos" element={<Discount role="athlete" />} />
           <Route path="profile" element={<ProfileAccount role="athlete" />} />
           <Route path="support" element={<Support />} />
-          <Route path="clubs/Ride" element={<Ride />} />
           <Route path="dashboard/ride/:id" element={<RideJoining />} />
+          <Route path="saved-rides" element={<SavedRides />} />
         </Route>
 
         {/* ── Backwards Compatible Legacy Redirects ── */}

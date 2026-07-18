@@ -17,7 +17,8 @@ import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
   Settings, ChevronUp, LogOut, Compass, Bike,
-  TicketPercent, MessageSquare, Headphones, FileText, ShieldCheck
+  MessageSquare, Headphones, FileText, ShieldCheck,
+  ShieldAlert, Bookmark, Crown, CreditCard
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -59,6 +60,9 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Discount',         route: ROUTES.DISCOUNT,         icon: <Percent size={ICON_SIZE} /> },
   { label: 'Joining Requests', route: ROUTES.JOINING_REQUESTS, icon: <UserPlus size={ICON_SIZE} /> },
   { label: 'Members',          route: ROUTES.MEMBERS,          icon: <Users size={ICON_SIZE} /> },
+  { label: 'Permissions',      route: ROUTES.CLUB_PERMISSIONS, icon: <ShieldAlert size={ICON_SIZE} /> },
+  { label: 'Membership Plans', route: ROUTES.CLUB_MEMBERSHIP,  icon: <Crown size={ICON_SIZE} /> },
+  { label: 'Stripe Payments',  route: ROUTES.STRIPE_CONNECT,   icon: <CreditCard size={ICON_SIZE} /> },
   { type: 'divider' },
   { label: 'Terms & Conditions', route: ROUTES.TERMS,          icon: <FileText size={ICON_SIZE} /> },
   { label: 'Privacy Policy',     route: ROUTES.PRIVACY,        icon: <ShieldCheck size={ICON_SIZE} /> },
@@ -66,16 +70,12 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Profile',          route: ROUTES.PROFILE,          icon: <UserCircle size={ICON_SIZE} /> },
 ];
 
-/** Athlete Interface nav (community users). */
 const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'Explore Clubs',    route: ROUTES.CLUBS,               icon: <Compass size={ICON_SIZE} /> },
   { label: 'Rides',            route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
-  { label: 'Marketplace',      route: ROUTES.MARKETPLACE,         icon: <Car size={ICON_SIZE} /> },
+  { label: 'Saved Rides',      route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
   { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'Wallet',           route: ROUTES.WALLET_ATHLETE,      icon: <Wallet size={ICON_SIZE} /> },
-  { label: 'Leaderboard',      route: ROUTES.LEADERBOARD_ATHLETE, icon: <Trophy size={ICON_SIZE} /> },
-  { label: 'News',             route: ROUTES.NEWS_ATHLETE,        icon: <Newspaper size={ICON_SIZE} /> },
-  { label: 'Discount',         route: ROUTES.MY_PROMOS,           icon: <TicketPercent size={ICON_SIZE} /> },
   { type: 'divider' },
   { label: 'Chat Support',     route: ROUTES.SUPPORT_ATHLETE,     icon: <MessageSquare size={ICON_SIZE} /> },
   { label: 'Profile',          route: ROUTES.PROFILE_ATHLETE,     icon: <UserCircle size={ICON_SIZE} /> },

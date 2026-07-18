@@ -41,12 +41,16 @@ const TableSkeleton = () => (
 
 import { useActiveClub } from '@/hooks/useActiveClub';
 
-const Members = () => {
+interface MembersProps {
+  clubId?: string | number;
+}
+
+const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   const [searchInput, setSearchInput] = useState('');
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
-  const { clubId, setActiveClub } = useActiveClub();
-  let activeClubIdStr = clubId?.toString() || null;
+  const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
+  let activeClubIdStr = propClubId?.toString() || activeClubIdRedux?.toString() || null;
   
   const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!activeClubIdStr });
   const joinedRows = joinedClubs?.rows || [];

@@ -6,6 +6,7 @@ import {
   useListClubSubscriptionQuery,
   useSubscribeToClubPlanMutation,
   useClubCustomerPortalMutation,
+  useGetMySubscriptionQuery,
 } from '@/features/subscriptions/api/subscriptionApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 
@@ -14,7 +15,10 @@ const Subscription = () => {
   const { clubId: clubIdStr } = useActiveClub();
   const clubId = clubIdStr ? Number(clubIdStr) : undefined;
 
-  // 1. Fetch current subscription
+  // 1. Fetch user-level app subscription (separate from club subscription)
+  const { data: userSub } = useGetMySubscriptionQuery();
+
+  // 2. Fetch current club subscription
   const { data: currentSub, isLoading: isLoadingSub, isError: isErrorSub } = useMySubscriptionQuery(
     { clubId: clubId || 0 },
     { skip: !clubId }
@@ -108,6 +112,31 @@ const Subscription = () => {
           Tailor your workspace to your needs. Choose the perfect plan to unlock full administrative power.
         </p>
       </div>
+
+      {/* ✅ User-level app subscription banner (separate from club subscription) */}
+      {userSub && (
+        <div className="max-w-5xl mx-auto mb-8">
+          <div className="bg-surface border border-border p-6 rounded-2xl flex items-center gap-4">
+            <div className="w-10 h-10 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-xl flex items-center justify-center shrink-0">
+              <Crown className="text-[#EB712B]" size={18} />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-black uppercase tracking-wider text-[#EB712B]">Your App Subscription</p>
+              <p className="text-sm font-bold text-text-main">{userSub.plan?.name || 'Free Plan'}</p>
+              {userSub.currentPeriodEnd && (
+                <p className="text-[10px] text-text-muted mt-0.5">Renews: {new Date(userSub.currentPeriodEnd).toLocaleDateString()}</p>
+              )}
+            </div>
+            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider border ${
+              userSub.status === 'active'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                : 'bg-border/50 text-text-muted border-border'
+            }`}>
+              {userSub.status || 'inactive'}
+            </span>
+          </div>
+        </div>
+      )}
 
       {isLoadingSub || isLoadingPlans ? (
         <div className="flex flex-col items-center justify-center py-20">
