@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { useGetClubLeaderboardAppRidesQuery, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import { useGetClubLeaderboardAppRidesQuery } from '@/features/club/api/clubApiSlice';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
 
 const StatCard = ({ title, value, icon: Icon }: any) => (
@@ -42,8 +43,7 @@ const LeaderboardSkeleton = () => (
 import { useActiveClub } from '@/hooks/useActiveClub';
 
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
-  const { data: joinedClubsData } = useGetJoinedClubsQuery();
-  const joinedClubs = joinedClubsData?.rows || [];
+  const joinedClubs = useAppSelector((state) => state.club.myClubs) || [];
   
   const { clubId: reduxClubId, setActiveClub } = useActiveClub();
 
@@ -64,7 +64,10 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   );
 
   const leaderboardData = useMemo(() => {
-    return (rawLeaderboard || []).map((item: any, index: number) => ({
+    const dataArray = rawLeaderboard?.rows || rawLeaderboard?.data || rawLeaderboard?.response?.data || [];
+    const items = Array.isArray(dataArray) ? dataArray : Array.isArray(rawLeaderboard) ? rawLeaderboard : [];
+    
+    return items.map((item: any, index: number) => ({
       id: index + 1,
       name: item.userName || item.name || 'Unknown Rider',
       role: item.role || 'Member',

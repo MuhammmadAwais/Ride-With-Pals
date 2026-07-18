@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Plus, Search, Tag, AlertCircle, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useGetClubDiscountsQuery } from '@/features/club/api/discountApiSlice';
-import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import { useAppSelector } from '@/hooks/useAppSelector';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
 
@@ -66,20 +66,18 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
   const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
   const resolvedClubId = clubId || activeClubIdRedux;
 
-  // Fallback to first joined club if resolvedClubId is not defined
-  const { data: joinedClubsResponse } = useGetJoinedClubsQuery(undefined, {
-    skip: !!resolvedClubId,
-  });
+  // Fallback to first managed club if resolvedClubId is not defined
+  const myClubs = useAppSelector((state) => state.club.myClubs) || [];
 
   const activeClubId = useMemo(() => {
     if (resolvedClubId) return resolvedClubId;
-    const firstJoined = joinedClubsResponse?.rows?.[0];
+    const firstJoined = myClubs[0];
     if (firstJoined) {
       setActiveClub(firstJoined as any);
       return firstJoined.id;
     }
     return undefined;
-  }, [resolvedClubId, joinedClubsResponse, setActiveClub]);
+  }, [resolvedClubId, myClubs, setActiveClub]);
 
   const permissions = useClubPermissions(activeClubId);
 

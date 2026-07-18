@@ -14,7 +14,7 @@ import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useTableSort } from "@/hooks/useTableSort";
 import { useAppSelector } from "@/app/hooks";
-import { useGetClubsQuery, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
+import { useGetClubsQuery } from "@/features/club/api/clubApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 
 const containerVariants: Variants = {
@@ -50,10 +50,9 @@ export const ManageClub = () => {
   const { setActiveClub } = useActiveClub();
 
   const { data: ownedClubsData, isLoading: loadingOwned } = useGetClubsQuery({ owned: true });
-  const { data: joinedClubsData, isLoading: loadingJoined } = useGetJoinedClubsQuery();
-  const isLoading = loadingOwned || loadingJoined;
+  const isLoading = loadingOwned;
 
-  const combinedClubs = [...(ownedClubsData?.rows || []), ...(joinedClubsData?.rows || [])];
+  const combinedClubs = [...(ownedClubsData?.rows || [])];
   const uniqueClubsMap = new Map();
   combinedClubs.forEach(club => {
     if (club && club.id) uniqueClubsMap.set(club.id, club);

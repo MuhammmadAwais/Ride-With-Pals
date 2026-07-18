@@ -3,7 +3,8 @@ import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban } from 'lucide-re
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { toast } from 'sonner';
-import { useGetClubMembersListQuery, useRemoveClubMemberMutation, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import { useGetClubMembersListQuery, useRemoveClubMemberMutation } from '@/features/club/api/clubApiSlice';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
 
 export interface Member {
@@ -52,8 +53,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
   let activeClubIdStr = propClubId?.toString() || activeClubIdRedux?.toString() || null;
   
-  const { data: joinedClubs } = useGetJoinedClubsQuery(undefined, { skip: !!activeClubIdStr });
-  const joinedRows = joinedClubs?.rows || [];
+  const joinedRows = useAppSelector((state) => state.club.myClubs) || [];
   
   if (!activeClubIdStr && joinedRows.length > 0) {
     activeClubIdStr = joinedRows[0].id.toString();

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck } from 'lucide-react';
 
-import { useGetClubInfoByIdQuery } from '@/features/club/api/clubApiSlice';
+import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
@@ -25,8 +25,10 @@ export default function ClubDetails() {
 
   // Join Flow State
   const { handleJoinClub, isJoining } = useClub();
+  const { data: joinedClubsData } = useGetJoinedClubsQuery();
+  const joinedRows = joinedClubsData?.rows || [];
   const { myClubs } = useAppSelector((s) => s.club);
-  const isMember = myClubs.some(c => c.id === Number(clubId));
+  const isMember = joinedRows.some((c: any) => c.id === Number(clubId)) || myClubs.some((c: any) => c.id === Number(clubId));
 
   const [showCodeScreen, setShowCodeScreen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
