@@ -134,9 +134,6 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
 
           <div style={{ position: 'relative', flexShrink: 0 }}>
             <img src={activeUser.avatar} alt={activeUser.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }} />
-            {activeUser.isOnline && (
-              <div style={{ position: 'absolute', bottom: '1px', right: '1px', width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', border: '2px solid var(--color-main-bg)' }} />
-            )}
           </div>
 
           <div>
@@ -144,22 +141,12 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
               {activeUser.name}
             </h3>
             <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'var(--color-secondary-text)' }}>
-              {activeUser.isOnline ? 'Online' : activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Offline'}
+              {activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Offline'}
             </span>
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {[Video, Phone].map((Icon, i) => (
-            <button key={i} style={{ display: 'none', width: '36px', height: '36px', borderRadius: '50%', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--color-secondary-text)', transition: 'all 0.2s' }}
-              className="sm:flex"
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(235,113,43,0.08)'; e.currentTarget.style.color = '#EB712B'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-secondary-text)'; }}
-            >
-              <Icon size={18} />
-            </button>
-          ))}
-          <div style={{ width: '1px', height: '20px', background: 'var(--color-border)', margin: '0 4px' }} className="hidden sm:block" />
           <button style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: 'var(--color-secondary-text)', transition: 'all 0.2s' }}
             onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(235,113,43,0.08)'; e.currentTarget.style.color = '#EB712B'; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-secondary-text)'; }}
@@ -201,14 +188,7 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
           onFocus={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(235,113,43,0.35)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 3px rgba(235,113,43,0.08)'; }}
           onBlur={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-border)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}
         >
-          {[Smile, Paperclip].map((Icon, i) => (
-            <button key={i} style={{ padding: '8px', background: 'transparent', border: 'none', color: 'var(--color-secondary-text)', flexShrink: 0, display: 'flex', transition: 'color 0.2s' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-secondary-text)')}
-            >
-              <Icon size={22} />
-            </button>
-          ))}
+          {/* Emoji button removed to rely on native OS keyboard */}
 
           <textarea
             value={inputText}
@@ -233,35 +213,37 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
             }}
           />
 
-          {inputText.trim() ? (
-            <button
-              onClick={() => {
-                if (inputText.trim()) {
-                  onSendMessage(inputText);
-                  setInputText('');
-                }
-              }}
-              style={{
-                width: '40px', height: '40px', borderRadius: '12px',
-                background: '#EB712B', color: '#fff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, border: 'none', marginBottom: '2px', marginRight: '2px',
-                boxShadow: '0 4px 12px rgba(235,113,43,0.30)',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; e.currentTarget.style.filter = 'brightness(1.1)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.filter = 'brightness(1)'; }}
-            >
-              <Send size={18} style={{ marginLeft: '2px' }} />
-            </button>
-          ) : (
-            <button style={{ padding: '8px', background: 'transparent', border: 'none', color: 'var(--color-secondary-text)', flexShrink: 0, marginBottom: '2px', marginRight: '2px', display: 'flex', transition: 'color 0.2s' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-secondary-text)')}
-            >
-              <Mic size={22} />
-            </button>
-          )}
+          <button
+            onClick={() => {
+              if (inputText.trim()) {
+                onSendMessage(inputText);
+                setInputText('');
+              }
+            }}
+            disabled={!inputText.trim()}
+            style={{
+              width: '40px', height: '40px', borderRadius: '12px',
+              background: inputText.trim() ? '#EB712B' : 'var(--color-secondary-bg)', 
+              color: inputText.trim() ? '#fff' : 'var(--color-border)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, border: 'none', marginBottom: '2px', marginRight: '2px',
+              boxShadow: inputText.trim() ? '0 4px 12px rgba(235,113,43,0.30)' : 'none',
+              transition: 'all 0.2s',
+              cursor: inputText.trim() ? 'pointer' : 'default',
+            }}
+            onMouseEnter={(e) => { 
+              if (inputText.trim()) {
+                e.currentTarget.style.transform = 'scale(1.08)'; 
+                e.currentTarget.style.filter = 'brightness(1.1)'; 
+              }
+            }}
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.transform = 'scale(1)'; 
+              e.currentTarget.style.filter = 'brightness(1)'; 
+            }}
+          >
+            <Send size={18} style={{ marginLeft: '2px' }} />
+          </button>
         </div>
       </div>
     </div>

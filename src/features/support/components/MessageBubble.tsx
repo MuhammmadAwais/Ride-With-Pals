@@ -20,7 +20,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     switch (message.type) {
       case 'text':
         return (
-          <p style={{ fontSize: '15px', lineHeight: 1.55, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-poppins)', margin: 0 }}>
+          <p style={{ fontSize: '15px', lineHeight: 1.55, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word', fontFamily: 'var(--font-poppins)', margin: 0 }}>
             {message.content}
           </p>
         );

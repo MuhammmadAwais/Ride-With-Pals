@@ -19,7 +19,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import {
   useGetUserNotificationQuery,
@@ -41,6 +41,7 @@ interface NotificationDropdownProps {
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
   const { clubId } = useActiveClub();
 
@@ -172,16 +173,18 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
           <p className="text-[9px] text-text-muted uppercase tracking-wider font-bold">
             Showing {Math.min(notifications.length, 15)} of {notifications.length} notifications
           </p>
-          <a
-            href={isClubSide ? '#' : '/view/userside/notifications'}
+          <button
             className="text-[10px] font-bold text-[#EB712B] uppercase hover:underline"
             onClick={(e) => {
-              if (isClubSide) e.preventDefault();
+              e.preventDefault();
+              if (!isClubSide) {
+                navigate('/view/userside/notifications');
+              }
               onClose();
             }}
           >
             See All
-          </a>
+          </button>
         </div>
       )}
     </div>

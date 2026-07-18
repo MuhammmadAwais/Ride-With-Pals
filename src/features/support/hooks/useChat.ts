@@ -194,8 +194,33 @@ export const useChat = (initialTargetUserId?: number, initialTargetUserName?: st
       );
     };
 
+    const handleThreadRead = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const data = customEvent.detail;
+      const threadId = data.threadId?.toString() || data.id?.toString();
+      
+      if (!threadId) return;
+
+      // Update all messages in this thread to 'read'
+      setMessagesMap(prev => {
+        const currentMsgs = prev[threadId];
+        if (!currentMsgs) return prev;
+        
+        return {
+          ...prev,
+          [threadId]: currentMsgs.map(msg => 
+            msg.senderId === 'me' ? { ...msg, status: 'read' as const } : msg
+          )
+        };
+      });
+    };
+
     window.addEventListener('chat:message:new', handleNewMessage);
-    return () => window.removeEventListener('chat:message:new', handleNewMessage);
+    window.addEventListener('chat:thread:read', handleThreadRead);
+    return () => {
+      window.removeEventListener('chat:message:new', handleNewMessage);
+      window.removeEventListener('chat:thread:read', handleThreadRead);
+    };
   }, [user]);
 
   // 4. Send Message Function
