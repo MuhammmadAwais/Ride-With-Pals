@@ -64,7 +64,8 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   );
 
   const leaderboardData = useMemo(() => {
-    const dataArray = rawLeaderboard?.rows || rawLeaderboard?.data || rawLeaderboard?.response?.data || [];
+    const raw = rawLeaderboard as any;
+    const dataArray = raw?.rows || raw?.data || raw?.response?.data || [];
     const items = Array.isArray(dataArray) ? dataArray : Array.isArray(rawLeaderboard) ? rawLeaderboard : [];
     
     return items.map((item: any, index: number) => ({

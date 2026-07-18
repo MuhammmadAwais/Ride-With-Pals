@@ -1,6 +1,6 @@
 /** ChatWindow — hexagon wallpaper, GSAP bubble entrance, message feed, input bar. Ported from admin panel. */
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, MoreVertical, Phone, Video, Paperclip, Smile, Send, Mic } from 'lucide-react';
+import { ArrowLeft, MoreVertical, Send } from 'lucide-react';
 import { type ChatUser, type ChatMessage } from '../utils/constants';
 import { MessageBubble } from './MessageBubble';
 import { useGSAP } from '@gsap/react';

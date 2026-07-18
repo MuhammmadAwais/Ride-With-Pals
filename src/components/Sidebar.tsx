@@ -16,8 +16,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
-  Settings, ChevronUp, LogOut,  TrendingUp, Activity, MessageSquare, Menu, ArrowLeftRight, CreditCard, ChevronRight,
-  UserCheck, Heart, Share2, Compass, Bike, Crown, Navigation, BookOpen, Tag, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark
+  Settings, ChevronUp, LogOut, MessageSquare,  CreditCard,  Compass, Bike, Crown,  ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
