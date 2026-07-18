@@ -20,8 +20,13 @@ class SocketServiceClass {
     }
 
     this.socket = io(SOCKET_URL, {
-      transports: ["websocket"],
       autoConnect: true,
+      auth: {
+        token: token
+      },
+      query: {
+        token: token
+      },
       extraHeaders: {
         Authorization: `Bearer ${token}`
       }
@@ -65,10 +70,15 @@ class SocketServiceClass {
 
         this.socket!.emit(event, payload, (response: any) => {
           clearTimeout(timeout);
-          if (response?.ok) {
-            resolve(response.data);
+          console.log(`[SocketService] Response for ${event}:`, response);
+          
+          if (response?.ok || response?.statusCode === 200 || response?.status === 'success' || response?.status === 200) {
+            resolve(response.data || response.response || response);
+          } else if (response && response.error) {
+            reject(new Error(response.message || response.error || "Socket event request failure."));
           } else {
-            reject(new Error(response?.message || "Socket event request failure."));
+            // Fallback: resolve the raw response
+            resolve(response?.data || response?.response || response);
           }
         });
       };
@@ -76,7 +86,15 @@ class SocketServiceClass {
       if (this.isConnected) {
         doEmit();
       } else {
-        this.socket.once("connect", doEmit);
+        const connectTimeout = setTimeout(() => {
+          this.socket?.off("connect", doEmit);
+          reject(new Error("Socket connection timed out."));
+        }, 10000);
+        
+        this.socket.once("connect", () => {
+          clearTimeout(connectTimeout);
+          doEmit();
+        });
       }
     });
   }

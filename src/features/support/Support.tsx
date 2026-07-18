@@ -12,15 +12,21 @@ import { APP_NAME } from '@/Constants';
 import { ChatSidebar } from './components/ChatSidebar';
 import { ChatWindow } from './components/ChatWindow';
 import { useChat } from './hooks/useChat';
+import { useLocation } from 'react-router-dom';
 
 const Support = () => {
+  const location = useLocation();
+  const targetUserId = location.state?.targetUserId as number | undefined;
+  const targetUserName = location.state?.targetUserName as string | undefined;
+  const targetUserAvatar = location.state?.targetUserAvatar as string | undefined;
+
   const { 
     threads, 
     messages, 
     activeThreadId, 
     setActiveThreadId, 
     sendMessage 
-  } = useChat();
+  } = useChat(targetUserId, targetUserName, targetUserAvatar);
 
   const activeUser = useMemo(
     () => threads.find((u) => u.id === activeThreadId) || null,

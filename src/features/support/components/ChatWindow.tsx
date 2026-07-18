@@ -66,11 +66,11 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
     return (
       <div
         style={{
-          flex: 1, display: 'none', position: 'relative',
+          flex: 1, position: 'relative',
           background: 'var(--color-main-bg)',
           alignItems: 'center', justifyContent: 'center',
         }}
-        className="md:flex flex-col"
+        className={`md:flex flex-col ${isHiddenOnMobile ? 'hidden' : 'flex'}`}
       >
         <HexWallpaper />
         <div style={{ zIndex: 10, textAlign: 'center', padding: '20px' }}>
@@ -84,10 +84,10 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
             <img src="/Images/Logo.png" alt="Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', opacity: 0.5 }} />
           </div>
           <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '22px', color: 'var(--color-main-text)', marginBottom: '8px' }}>
-            Support Hub
+            Chat Messages
           </h2>
           <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', color: 'var(--color-secondary-text)', maxWidth: '300px', lineHeight: 1.7 }}>
-            Select a conversation from the left to start helping users.
+            Select a conversation from the left to start chatting with other users.
           </p>
         </div>
       </div>
@@ -96,18 +96,13 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
 
   return (
     <div
-      style={{
-        position: 'absolute',
-        top: 0, bottom: 0, right: 0,
-        width: '100%',
-        zIndex: 10,
-        display: 'flex', flexDirection: 'column',
-        background: 'var(--color-main-bg)',
-        transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
-        transform: isHiddenOnMobile ? 'translateX(100%)' : 'translateX(0)',
-      }}
-      className="md:static md:translate-x-0 md:flex-1"
-    >
+        style={{
+          top: 0, bottom: 0, right: 0,
+          zIndex: 10,
+          background: 'var(--color-main-bg)',
+        }}
+        className={`absolute w-full flex flex-col md:static md:w-auto md:flex-1 transition-transform duration-300 ${isHiddenOnMobile ? 'translate-x-full' : 'translate-x-0'} md:translate-x-0`}
+      >
       <HexWallpaper />
 
       {/* Chat header */}

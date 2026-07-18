@@ -168,10 +168,20 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
 
       {/* Footer */}
       {notifications.length > 0 && (
-        <div className="px-4 py-2.5 border-t border-border bg-hover/50">
-          <p className="text-[9px] text-text-muted text-center uppercase tracking-wider font-bold">
+        <div className="px-4 py-2.5 border-t border-border bg-hover/50 flex items-center justify-between">
+          <p className="text-[9px] text-text-muted uppercase tracking-wider font-bold">
             Showing {Math.min(notifications.length, 15)} of {notifications.length} notifications
           </p>
+          <a
+            href={isClubSide ? '#' : '/view/userside/notifications'}
+            className="text-[10px] font-bold text-[#EB712B] uppercase hover:underline"
+            onClick={(e) => {
+              if (isClubSide) e.preventDefault();
+              onClose();
+            }}
+          >
+            See All
+          </a>
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { ClubService } from '../services/clubService';
 import { fetchMyClubs, fetchExploreClubs } from '../slices/clubSlice';
+import { clubApiSlice } from '../api/clubApiSlice';
 import { toast } from 'sonner';
 import type { CreateClubPayload } from '../types/clubTypes';
 
@@ -33,6 +34,7 @@ export function useClub() {
       // Refresh both lists to move it from Explore to My Clubs
       dispatch(fetchMyClubs());
       dispatch(fetchExploreClubs());
+      dispatch(clubApiSlice.util.invalidateTags(['Club']));
       return true;
     } catch (err: any) {
       toast.error(err.response?.data?.message || err.message || "Failed to join club");
@@ -48,6 +50,7 @@ export function useClub() {
       toast.success("Successfully left the club");
       dispatch(fetchMyClubs());
       dispatch(fetchExploreClubs());
+      dispatch(clubApiSlice.util.invalidateTags(['Club']));
       return true;
     } catch (err: any) {
       toast.error(err.response?.data?.message || err.message || "Failed to leave club");

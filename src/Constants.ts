@@ -56,8 +56,7 @@ export const ROUTES = {
   WALLET_ATHLETE:     '/view/userside/wallet',
   PROFILE_ATHLETE:    '/view/userside/profile',
   SUPPORT_ATHLETE:    '/view/userside/support',
-
-
+  NOTIFICATIONS:      '/view/userside/notifications',
   // ── Standalone (no shell) ──
   MANAGE_CLUB_HOME:   '/manage-club-home',
   MANAGE_CLUB:        '/manage-club',

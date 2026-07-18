@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban } from 'lucide-react';
+import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban, MessageSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { toast } from 'sonner';
@@ -47,6 +48,7 @@ interface MembersProps {
 }
 
 const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
+  const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
@@ -81,7 +83,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   const formattedMembers = useMemo<Member[]>(() => {
     if (!membersData) return [];
     return membersData.map((m: any) => ({
-      id: m.id?.toString(),
+      id: (m.userId || m.id)?.toString(),
       profilePhoto: m.profileImage || "",
       name: ((m.firstName || '') + ' ' + (m.lastName || '')).trim() || m.username || 'Unnamed',
       phoneNo: m.phoneNumber || 'N/A',
@@ -199,6 +201,18 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 </button>
                 <button className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2">
                   <ShieldAlert size={14} /> Change Role
+                </button>
+                <button 
+                  onClick={() => navigate('/view/clubside/support', { 
+                    state: { 
+                      targetUserId: Number(row.id), 
+                      targetUserName: row.name, 
+                      targetUserAvatar: row.profilePhoto 
+                    } 
+                  })}
+                  className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <MessageSquare size={14} /> Message
                 </button>
                 <div className="h-px bg-border my-1" />
                 <button 

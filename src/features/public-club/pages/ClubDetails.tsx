@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck } from 'lucide-react';
-
+import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare } from 'lucide-react';
+import { toast } from 'sonner';
 import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -22,6 +22,7 @@ export default function ClubDetails() {
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('Overview');
+  const currentUser = useAppSelector((state) => state.auth.user);
 
   // Join Flow State
   const { handleJoinClub, isJoining } = useClub();
@@ -81,6 +82,22 @@ export default function ClubDetails() {
   const logoImage = club.logo 
     ? (club.logo.startsWith('http') ? club.logo : `https://api.ridewithpals.com/uploads/${club.logo}`)
     : '/Images/CycleImage.png';
+
+  const isOwner = club.userId === currentUser?.id;
+
+  const handleMessageOwner = () => {
+    if (club.userId) {
+      navigate('/view/userside/support', { 
+        state: { 
+          targetUserId: club.userId,
+          targetUserName: club.user?.fullName || club.user?.firstName || 'Club Owner',
+          targetUserAvatar: club.user?.profileImage || '/Images/CycleImage.png'
+        } 
+      });
+    } else {
+      toast.error("Unable to find club owner's details.");
+    }
+  };
 
   const handleJoinClubClick = async () => {
     if (club.clubPrivacyId === 2) {
@@ -240,7 +257,7 @@ export default function ClubDetails() {
               <span>•</span>
               <span className="flex items-center gap-1"><Users size={14} className="text-[#EB712B]"/> {club.totalMembers || 0} Members</span>
               <span>•</span>
-              <span className="text-emerald-400">{club.isPublic ? "Public Club" : "Private Club"}</span>
+              <span className="text-emerald-400">{club.clubPrivacyId === 1 ? "Public Club" : "Private Club"}</span>
             </div>
           </div>
 
@@ -258,6 +275,15 @@ export default function ClubDetails() {
               <div className="flex-1 md:flex-none px-8 py-3.5 bg-hover border border-border text-text-muted text-xs font-black uppercase tracking-widest rounded-xl cursor-default flex items-center justify-center">
                 ✓ Joined
               </div>
+            )}
+            {!isOwner && (
+              <button 
+                onClick={handleMessageOwner}
+                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-surface border border-border hover:bg-hover text-text-main text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95"
+              >
+                <MessageSquare size={16} />
+                Message
+              </button>
             )}
           </div>
         </div>

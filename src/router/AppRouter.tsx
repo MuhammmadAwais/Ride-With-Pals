@@ -67,6 +67,8 @@ import ClubDetails from '@/features/public-club/pages/ClubDetails';
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';
 
+import Notifications from '@/features/notifications/Notifications';
+
 // ── Standalone App Pages ──
 import AboutApp from '@/features/ClubSide/AboutApp';
 import ManageClubHome from '@/features/ClubSide/ManageClubHome';
@@ -174,6 +176,7 @@ export const router = createBrowserRouter(
           <Route path="support" element={<Support />} />
           <Route path="dashboard/ride/:id" element={<RideJoining />} />
           <Route path="saved-rides" element={<SavedRides />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
 
         {/* ── Backwards Compatible Legacy Redirects ── */}

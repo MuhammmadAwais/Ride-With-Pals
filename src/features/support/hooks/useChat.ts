@@ -3,7 +3,7 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { SocketService } from '@/features/chat/services/socketService';
 import type { ChatUser, ChatMessage } from '../utils/constants';
 
-export const useChat = () => {
+export const useChat = (initialTargetUserId?: number, initialTargetUserName?: string, initialTargetUserAvatar?: string) => {
   const { user } = useAppSelector((state) => state.auth);
   const [threads, setThreads] = useState<ChatUser[]>([]);
   const [messagesMap, setMessagesMap] = useState<Record<string, ChatMessage[]>>({});
@@ -20,8 +20,34 @@ export const useChat = () => {
     // Fetch thread list
     const fetchThreads = async () => {
       try {
-        const response = await SocketService.emitWithAck('chat:threads:list', { limit: 50, offset: 0 });
-        const rows = response?.rows || [];
+        let initialThreadId = null;
+
+        // If we have an initialTargetUserId, get or create the thread first
+        if (initialTargetUserId) {
+          try {
+            const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { targetUserId: initialTargetUserId });
+            if (res?.id) {
+              initialThreadId = res.id.toString();
+            } else if (typeof res === 'number' || typeof res === 'string') {
+              initialThreadId = res.toString();
+            }
+          } catch (createErr) {
+            console.error('Failed to getOrCreate thread:', createErr);
+          }
+          
+          // If we still don't have an initialThreadId, use a temporary one
+          if (!initialThreadId) {
+            initialThreadId = `new-${initialTargetUserId}`;
+          }
+        }
+
+        let rows: any[] = [];
+        try {
+          const response = await SocketService.emitWithAck('chat:threads:list', { limit: 50, offset: 0 });
+          rows = response?.rows || (Array.isArray(response) ? response : (Array.isArray(response?.data) ? response.data : []));
+        } catch (listErr) {
+          console.error('Failed to load chat threads list:', listErr);
+        }
 
         const mappedThreads: ChatUser[] = rows.map((row: any) => {
           const oId = row.otherUser?.id || (row.userTwoId === user.id ? row.userOneId : row.userTwoId);
@@ -46,7 +72,26 @@ export const useChat = () => {
           };
         });
 
+        if (initialThreadId) {
+          const exists = mappedThreads.some(t => t.id === initialThreadId);
+          if (!exists) {
+            mappedThreads.unshift({
+              id: initialThreadId,
+              name: initialTargetUserName || `User #${initialTargetUserId}`,
+              avatar: initialTargetUserAvatar || '/Images/CycleImage.png',
+              isOnline: true,
+              unreadCount: 0,
+              lastMessage: 'Say Hi!',
+              lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            });
+          }
+        }
+
         setThreads(mappedThreads);
+
+        if (initialThreadId) {
+          setActiveThreadId(initialThreadId);
+        }
       } catch (err) {
         console.error('Failed to load chat threads', err);
       }
@@ -55,7 +100,7 @@ export const useChat = () => {
     fetchThreads();
 
     // Clean up socket listener for incoming threads could go here if needed.
-  }, [user]);
+  }, [user, initialTargetUserId, initialTargetUserName, initialTargetUserAvatar]);
 
   // 2. Load Messages when a Thread is selected
   useEffect(() => {
@@ -69,12 +114,11 @@ export const useChat = () => {
 
         // List messages
         const res = await SocketService.emitWithAck('chat:messages:list', {
-          threadId: parseInt(activeThreadId),
-          limit: 100,
+          threadId: Number(activeThreadId),
+          limit: 50,
           offset: 0,
         });
-
-        const rows = res?.rows || [];
+        const rows = res?.rows || (Array.isArray(res) ? res : (Array.isArray(res?.data) ? res.data : []));
         
         const msgs: ChatMessage[] = rows.map((row: any) => {
           const isMe = row.senderId === user?.id;
@@ -158,14 +202,43 @@ export const useChat = () => {
   const sendMessage = useCallback(async (text: string) => {
     if (!activeThreadId || !text.trim()) return;
 
+    let targetThreadId = activeThreadId;
+
+    // Handle lazy thread creation if this is a temporary thread
+    if (activeThreadId.startsWith('new-')) {
+      const targetUserId = parseInt(activeThreadId.split('-')[1]);
+      try {
+        const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { targetUserId });
+        if (res?.id) {
+          targetThreadId = res.id.toString();
+          setActiveThreadId(targetThreadId);
+          
+          // Update the fake thread's ID in the local state
+          setThreads(prev => prev.map(t => 
+            t.id === activeThreadId ? { ...t, id: targetThreadId } : t
+          ));
+        } else if (typeof res === 'number' || typeof res === 'string') {
+          targetThreadId = res.toString();
+          setActiveThreadId(targetThreadId);
+          setThreads(prev => prev.map(t => t.id === activeThreadId ? { ...t, id: targetThreadId } : t));
+        } else {
+           console.error('Failed to create thread on the fly, no ID returned.');
+           return;
+        }
+      } catch (err) {
+        console.error('Failed to create thread on the fly:', err);
+        return;
+      }
+    }
+
     try {
       const result = await SocketService.emitWithAck('chat:message:send', {
-        threadId: parseInt(activeThreadId),
+        threadId: parseInt(targetThreadId),
         message: text,
       });
 
       const sentMsg: ChatMessage = {
-        id: result.id.toString(),
+        id: result.id?.toString() || Date.now().toString(),
         senderId: 'me',
         type: 'text',
         content: result.message || text,
@@ -174,17 +247,17 @@ export const useChat = () => {
       };
 
       setMessagesMap((prev) => {
-        const currentMsgs = prev[activeThreadId] || [];
+        const currentMsgs = prev[targetThreadId] || [];
         if (currentMsgs.some(m => m.id === sentMsg.id)) return prev;
         return {
           ...prev,
-          [activeThreadId]: [...currentMsgs, sentMsg],
+          [targetThreadId]: [...currentMsgs, sentMsg],
         };
       });
 
       setThreads((prevThreads) => 
         prevThreads.map((t) => 
-          t.id === activeThreadId 
+          t.id === targetThreadId 
             ? { ...t, lastMessage: sentMsg.content, lastMessageTime: sentMsg.timestamp } 
             : t
         )

@@ -40,22 +40,16 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
 
   return (
     <div
-      style={{
-        position: 'absolute',
-        width: '100%',
-        top: 0, bottom: 0, left: 0,
-        zIndex: 20,
-        display: 'flex',
-        flexDirection: 'column',
-        borderRight: '1px solid var(--color-border)',
-        background: 'var(--color-glass-bg)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
-        transform: isHiddenOnMobile ? 'translateX(-100%)' : 'translateX(0)',
-      }}
-      className="md:static md:translate-x-0"
-    >
+        style={{
+          top: 0, bottom: 0, left: 0,
+          zIndex: 20,
+          borderRight: '1px solid var(--color-border)',
+          background: 'var(--color-glass-bg)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+        }}
+        className={`absolute w-full flex flex-col md:static md:w-[320px] md:flex-shrink-0 transition-transform duration-300 ${isHiddenOnMobile ? '-translate-x-full' : 'translate-x-0'} md:translate-x-0`}
+      >
       {/* Header + Search */}
       <div style={{ padding: '16px', borderBottom: '1px solid var(--color-border)', flexShrink: 0 }}>
         <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '20px', color: 'var(--color-main-text)', marginBottom: '12px', padding: '0 4px' }}>

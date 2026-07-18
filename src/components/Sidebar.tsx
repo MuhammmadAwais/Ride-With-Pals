@@ -16,9 +16,8 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
-  Settings, ChevronUp, LogOut, Compass, Bike,
-  MessageSquare, Headphones, FileText, ShieldCheck,
-  ShieldAlert, Bookmark, Crown, CreditCard
+  Settings, ChevronUp, LogOut,  TrendingUp, Activity, MessageSquare, Menu, ArrowLeftRight, CreditCard, ChevronRight,
+  UserCheck, Heart, Share2, Compass, Bike, Crown, Navigation, BookOpen, Tag, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -77,7 +76,8 @@ const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'Wallet',           route: ROUTES.WALLET_ATHLETE,      icon: <Wallet size={ICON_SIZE} /> },
   { type: 'divider' },
-  { label: 'Chat Support',     route: ROUTES.SUPPORT_ATHLETE,     icon: <MessageSquare size={ICON_SIZE} /> },
+  { label: 'Notifications',    route: ROUTES.NOTIFICATIONS,       icon: <Bell size={ICON_SIZE} /> },
+  { label: 'Chat',             route: ROUTES.SUPPORT_ATHLETE,     icon: <MessageSquare size={ICON_SIZE} /> },
   { label: 'Profile',          route: ROUTES.PROFILE_ATHLETE,     icon: <UserCircle size={ICON_SIZE} /> },
 ];
 
