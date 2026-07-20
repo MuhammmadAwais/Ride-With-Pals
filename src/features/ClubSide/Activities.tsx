@@ -1,11 +1,14 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Bike,
   BarChart3,
   TrendingUp,
   CheckCircle2,
   ChevronRight,
+  Plus,
 } from "lucide-react";
+import { ROUTES } from "@/Constants";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -82,6 +85,7 @@ const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
 );
 
 const ActivitiesRegistry = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Active");
 
   const { clubId: clubIdStr } = useActiveClub();
@@ -93,33 +97,114 @@ const ActivitiesRegistry = () => {
   );
 
   const activities = useMemo<Activity[]>(() => {
-    const rows = ridesData?.rows || [];
-    return rows.map((ride: any) => ({
-      id: ride.id,
-      name: ride.rideName || ride.title || ride.name || "Untitled Ride",
-      region: ride.meetingPoint || ride.location || "Unknown Region",
-      distance: `${ride.distance || 0} km`,
-      level: ride.difficultyLevel || "INTERMEDIATE",
-      status: ride.status || "OPEN",
-      participants: `${ride.participantsCount || 0} riders`,
-      progress: ride.progress || 0,
-      imageUrl: ride.coverImage || "/Images/CycleImage2.png",
-      leaderImageUrl: ride.leaderImage || "/Images/ProfileImage.png"
-    }));
+    const rows = ridesData?.rows || (Array.isArray(ridesData) ? ridesData : []);
+    const map = new Map();
+    rows.forEach((ride: any) => {
+      if (ride.id && !map.has(ride.id)) {
+        map.set(ride.id, {
+          id: ride.id,
+          name: ride.rideName || ride.title || ride.name || "Untitled Ride",
+          region: ride.meetingPoint || ride.location || "Unknown Region",
+          distance: `${ride.distance || 0} km`,
+          numericDistance: Number(ride.distance || 0),
+          elevationGain: Number(ride.elevationGain || 0),
+          level: ride.difficultyLevel || "INTERMEDIATE",
+          status: ride.status || "OPEN",
+          participants: `${ride.participantsCount || 0} riders`,
+          progress: ride.progress || 0,
+          imageUrl: ride.coverImage || "/Images/CycleImage2.png",
+          leaderImageUrl: ride.leaderImage || (ride.rideLeaders?.[0]?.imageUrl) || "/Images/ProfileImage.png",
+          date: ride.date || ride.createdAt
+        });
+      }
+    });
+    return Array.from(map.values());
   }, [ridesData]);
+
+  // --- Dynamic Summary Metrics ---
+  const totalActiveCount = useMemo(() => {
+    return activities.filter((a) =>
+      ["IN PROGRESS", "SCHEDULED", "OPEN", "ACTIVE"].includes(a.status.toUpperCase())
+    ).length;
+  }, [activities]);
+
+  const avgDistance = useMemo(() => {
+    if (!activities.length) return "0 km";
+    const sum = activities.reduce((acc, a) => acc + (a.numericDistance || 0), 0);
+    const avg = Math.round(sum / activities.length);
+    return `${avg} km`;
+  }, [activities]);
+
+  const totalElevationGain = useMemo(() => {
+    if (!activities.length) return "0 m";
+    const sum = activities.reduce((acc, a) => acc + (a.elevationGain || 0), 0);
+    return sum >= 1000 ? `${(sum / 1000).toFixed(1)}k m` : `${sum} m`;
+  }, [activities]);
+
+  const liveStatusCount = useMemo(() => {
+    return activities.filter((a) => a.status.toUpperCase() === "IN PROGRESS").length;
+  }, [activities]);
+
+  // --- Dynamic Chart Data ---
+  const dynamicChartData = useMemo(() => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const currentMonthIdx = new Date().getMonth();
+    const labels: string[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const mIdx = (currentMonthIdx - i + 12) % 12;
+      labels.push(months[mIdx]);
+    }
+
+    const ridesCountPerMonth = new Array(6).fill(0);
+    const distancePerMonth = new Array(6).fill(0);
+
+    activities.forEach((act) => {
+      if (act.date) {
+        const d = new Date(act.date);
+        const mName = months[d.getMonth()];
+        const labelIdx = labels.indexOf(mName);
+        if (labelIdx !== -1) {
+          ridesCountPerMonth[labelIdx] += 1;
+          distancePerMonth[labelIdx] += act.numericDistance || 0;
+        }
+      }
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Total Distance (km)",
+          data: distancePerMonth,
+          borderColor: "#EB712B",
+          backgroundColor: "rgba(235, 113, 43, 0.1)",
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+        },
+        {
+          label: "Active Rides",
+          data: ridesCountPerMonth,
+          borderColor: "#3b82f6",
+          backgroundColor: "rgba(59, 130, 246, 0.1)",
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+        },
+      ],
+    };
+  }, [activities]);
 
   const filteredActivities = activities.filter((act) => {
     if (activeTab === "Active")
       return (
-        act.status === "IN PROGRESS" ||
-        act.status === "SCHEDULED" ||
-        act.status === "OPEN" ||
-        act.status === "active" ||
-        act.status === "scheduled" ||
-        act.status === "open"
+        act.status.toUpperCase() === "IN PROGRESS" ||
+        act.status.toUpperCase() === "SCHEDULED" ||
+        act.status.toUpperCase() === "OPEN" ||
+        act.status.toUpperCase() === "ACTIVE"
       );
-    if (activeTab === "Completed") return act.status === "COMPLETED" || act.status === "completed";
-    if (activeTab === "Archived") return act.status === "ARCHIVED" || act.status === "archived";
+    if (activeTab === "Completed") return act.status.toUpperCase() === "COMPLETED";
+    if (activeTab === "Archived") return act.status.toUpperCase() === "ARCHIVED";
     return true;
   });
 
@@ -154,7 +239,7 @@ const ActivitiesRegistry = () => {
         <div>
           <div className="font-mono text-sm font-bold text-text-main">{act.distance}</div>
           <div className="w-20 h-1.5 bg-border rounded-full mt-2 overflow-hidden">
-            <div className="h-full bg-[#EB712B] rounded-full" style={{ width: `${act.progress}%` }} />
+            <div className="h-full bg-[#EB712B] rounded-full" style={{ width: `${act.progress || 100}%` }} />
           </div>
         </div>
       )
@@ -186,45 +271,20 @@ const ActivitiesRegistry = () => {
     }
   ];
 
-  const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Completed Carpools",
-        data: [
-          3000, 2500, 9500, 4000, 3500, 4500, 4000, 5000, 4500, 5500, 6000,
-          7000,
-        ],
-        borderColor: "#3b82f6",
-        backgroundColor: "rgba(59, 130, 246, 0.1)",
-        fill: true,
-        tension: 0.4,
-        pointRadius: 0,
-      },
-      {
-        label: "Ride Bookings",
-        data: [
-          4000, 3500, 3000, 4500, 4000, 3800, 4200, 4800, 4500, 5000, 5500,
-          6000,
-        ],
-        borderColor: "#f97316",
-        backgroundColor: "rgba(249, 115, 22, 0.1)",
-        fill: true,
-        tension: 0.4,
-        pointRadius: 0,
-      },
-    ],
-  };
-
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: {
+        display: true,
+        position: "top" as const,
+        labels: { color: "#a1a1aa", font: { size: 12 } },
+      },
+    },
     scales: {
       x: { grid: { display: false }, ticks: { color: "#71717a" } },
       y: {
-        min: 0,
-        max: 10000,
+        beginAtZero: true,
         grid: { color: "#27272a" },
         ticks: { color: "#71717a" },
       },
@@ -240,32 +300,38 @@ const ActivitiesRegistry = () => {
             Review and manage all recorded rides across your club network.
           </p>
         </div>
+        <button
+          onClick={() => navigate(ROUTES.ADD_RIDE)}
+          className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-[#EB712B]/20 flex items-center gap-2 cursor-pointer border-0 outline-none"
+        >
+          <Plus size={16} /> Create Ride
+        </button>
       </div>
 
-      {/* Summaries */}
+      {/* Dynamic Summaries */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <SummaryCard
           label="TOTAL ACTIVE"
-          value={activities.length || "0"}
-          subtext="+0% from last week"
+          value={totalActiveCount}
+          subtext={`${activities.length} total recorded`}
           icon={<Bike size={20} />}
         />
         <SummaryCard
           label="AVG DISTANCE"
-          value="68 km"
-          subtext="Target: 75km"
+          value={avgDistance}
+          subtext={`Across ${activities.length} ${activities.length === 1 ? 'activity' : 'activities'}`}
           icon={<BarChart3 size={20} />}
         />
         <SummaryCard
           label="ELEVATION GAIN"
-          value="1.4k"
-          subtext="New record set"
+          value={totalElevationGain}
+          subtext="Total cumulative elevation"
           icon={<TrendingUp size={20} />}
         />
         <SummaryCard
           label="LIVE STATUS"
-          value={activities.filter(a => a.status.toLowerCase() === 'in progress').length || "0"}
-          subtext="Activities in progress"
+          value={liveStatusCount}
+          subtext="Activities currently live"
           icon={<Bike size={20} />}
           isLive={true}
         />
@@ -304,11 +370,12 @@ const ActivitiesRegistry = () => {
         </div>
       </div>
 
-      {/* Chart */}
+      {/* Dynamic Activity Metrics Chart */}
       <div className="p-8 bg-surface rounded-3xl border border-border mt-8">
-        <h3 className="text-xl font-bold mb-1 text-text-main">Data Velocity Over Time</h3>
+        <h3 className="text-xl font-bold mb-1 text-text-main">Activity Metrics Over Time</h3>
+        <p className="text-xs text-text-muted mb-4">Monthly distribution of distance and rides created across your club.</p>
         <div className="h-64">
-          <Line data={chartData} options={chartOptions as any} />
+          <Line data={dynamicChartData} options={chartOptions as any} />
         </div>
       </div>
     </div>

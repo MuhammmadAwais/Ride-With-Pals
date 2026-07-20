@@ -29,6 +29,7 @@ export const ROUTES = {
   // ── Club Management (protected, in AppLayout shell) ──
   DASHBOARD:          '/view/clubside/dashboard',
   ACTIVITIES:         '/view/clubside/activities',
+  ADD_RIDE:           '/view/clubside/add-ride',
   PRODUCT:            '/view/clubside/product',
   ADD_PRODUCT:        '/view/clubside/add-product',
   ORDER:              '/view/clubside/order',

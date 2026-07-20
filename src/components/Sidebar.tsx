@@ -16,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
-  Settings, ChevronUp, LogOut, MessageSquare,  CreditCard,  Compass, Bike, Crown,  ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark
+  Settings, ChevronUp, LogOut, MessageSquare,  CreditCard,  Compass, Bike, Crown,  ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Plus
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -50,7 +50,8 @@ const ICON_SIZE = 20;
 /** Club Management nav (organizers / owners). */
 const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Dashboard',        route: ROUTES.DASHBOARD,        icon: <LayoutDashboard size={ICON_SIZE} /> },
-  { label: 'Activities',       route: ROUTES.ACTIVITIES,       icon: <Users size={ICON_SIZE} /> },
+  { label: 'Activities',       route: ROUTES.ACTIVITIES,       icon: <Bike size={ICON_SIZE} /> },
+  { label: 'Create Ride',      route: ROUTES.ADD_RIDE,         icon: <Plus size={ICON_SIZE} /> },
   { label: 'Product',          route: ROUTES.PRODUCT,          icon: <Car size={ICON_SIZE} /> },
   { label: 'Order',            route: ROUTES.ORDER,            icon: <Wallet size={ICON_SIZE} /> },
   { label: 'News',             route: ROUTES.NEWS,             icon: <Newspaper size={ICON_SIZE} /> },

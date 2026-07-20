@@ -141,6 +141,7 @@ export const router = createBrowserRouter(
         <Route path="/view/clubside">
           <Route path="dashboard" element={<DashboardOverview />} />
           <Route path="activities" element={<Activities />} />
+          <Route path="add-ride" element={<CreateRide />} />
           <Route path="product" element={<Product />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="order" element={<Order />} />

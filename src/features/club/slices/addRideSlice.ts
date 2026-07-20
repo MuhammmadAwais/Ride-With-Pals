@@ -18,6 +18,7 @@ export interface AddRideState {
   elevationGain: number;
   isRecurringActivity: boolean;
   recurringActivities: string[]; // days checklist: e.g. ['Monday', 'Wednesday']
+  expiryDate: string;
   stops: number[]; 
   isStops: boolean;
   recommendedSlots: string[];
@@ -49,6 +50,7 @@ const initialState: AddRideState = {
   elevationGain: 0,
   isRecurringActivity: false,
   recurringActivities: [],
+  expiryDate: '',
   stops: [],
   isStops: false,
   recommendedSlots: [],

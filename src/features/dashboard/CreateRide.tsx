@@ -61,7 +61,7 @@ export const CreateRide: React.FC = () => {
           onComplete: () => {
             setShowSuccessToast(false);
             dispatch(resetRideForm());
-            navigate('/dashboard/calendar');
+            navigate('/view/clubside/activities');
           }
         });
       }, 3000);
@@ -116,8 +116,13 @@ export const CreateRide: React.FC = () => {
       if (!formState.gpxFile) newErrors.gpxFile = "GPX Route file is required";
     } else if (stepNum === 2) {
       if (!formState.pace) newErrors.pace = "Pace selection is required";
-      if (formState.isRecurringActivity && formState.recurringActivities.length === 0) {
-        newErrors.recurringActivities = "Please select at least one day for recurrence";
+      if (formState.isRecurringActivity) {
+        if (formState.recurringActivities.length === 0) {
+          newErrors.recurringActivities = "Please select at least one day for recurrence";
+        }
+        if (!formState.expiryDate) {
+          newErrors.expiryDate = "Expiry date is required for recurring rides";
+        }
       }
     } else if (stepNum === 3) {
       if (formState.rideLeaders.length === 0) {
@@ -153,33 +158,58 @@ export const CreateRide: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const payload = {
+      const cleanedLeaders = (formState.rideLeaders || [])
+        .map((l: any) => ({
+          userId: Number(l.userId || l.id),
+          name: String(l.name || l.fullName || 'Leader'),
+        }))
+        .filter((l: any) => Boolean(l.userId) && !isNaN(l.userId));
+
+      const payload: any = {
         clubId: Number(activeClubId),
         clubIds: [Number(activeClubId)],
         rideName: formState.rideName.trim(),
         date: formState.date,
-        time: formState.time,
-        activityTypeId: Number(formState.activityTypeId),
-        sportSubTypeId: Number(formState.sportSubTypeId),
-        categoryTypeId: Number(formState.categoryTypeId),
+        time: formState.time.length === 5 ? `${formState.time}:00` : formState.time,
+        activityTypeId: Number(formState.activityTypeId || 1),
+        categoryTypeId: Number(formState.categoryTypeId || 1),
         meetingPoint: formState.meetingPoint.trim(),
-        gpxFile: formState.gpxFile,
-        distance: Number(formState.distance),
+        gpxFile: formState.gpxFile || '',
+        distance: Number(formState.distance || 0),
         description: formState.description.trim(),
-        pace: formState.pace,
-        elevationGain: Number(formState.elevationGain),
-        isRecurringActivity: formState.isRecurringActivity,
-        recurringActivities: formState.isRecurringActivity ? formState.recurringActivities : [],
-        isStops: formState.isStops,
-        stops: formState.isStops ? formState.stops : [],
-        isRecommendedSlots: formState.isRecommendedSlots,
-        recommendedSlots: formState.isRecommendedSlots ? formState.recommendedSlots : [],
-        isWomenAndNonBinary: formState.isWomenAndNonBinary,
-        rideLeaders: formState.rideLeaders,
-        supportCarDriver: formState.supportCarDriver || undefined,
-        isPublic: formState.isPublic,
-        isPaymentRequired: formState.isPaymentRequired,
+        pace: formState.pace || 'Moderate',
+        isRecurringActivity: Boolean(formState.isRecurringActivity),
+        isStops: Boolean(formState.isStops),
+        isRecommendedSlots: Boolean(formState.isRecommendedSlots),
+        isWomenAndNonBinary: Boolean(formState.isWomenAndNonBinary),
+        rideLeaders: cleanedLeaders,
+        isPublic: Boolean(formState.isPublic),
+        isPaymentRequired: Boolean(formState.isPaymentRequired),
       };
+
+      if (formState.sportSubTypeId) {
+        payload.sportSubTypeId = Number(formState.sportSubTypeId);
+      }
+      if (formState.isRecurringActivity && formState.recurringActivities?.length) {
+        payload.recurringActivities = formState.recurringActivities;
+      }
+      if (formState.isRecurringActivity && formState.expiryDate) {
+        payload.expiryDate = formState.expiryDate;
+      }
+      if (formState.isStops && formState.stops?.length) {
+        payload.stops = formState.stops;
+      }
+      if (formState.isRecommendedSlots && formState.recommendedSlots?.length) {
+        payload.recommendedSlots = formState.recommendedSlots;
+      }
+      if (formState.supportCarDriver) {
+        const driverObj = formState.supportCarDriver as any;
+        const driverId = Number(driverObj.userId || driverObj.id || 0);
+        const driverName = String(driverObj.name || driverObj.fullName || '');
+        if (driverName) {
+          payload.supportCarDriver = driverId ? { userId: driverId, name: driverName } : { name: driverName };
+        }
+      }
 
       const response = await backendApi.post('/user/ride', payload);
       if (response.status === 200 || response.status === 201) {
@@ -317,8 +347,11 @@ export const CreateRide: React.FC = () => {
                   <input 
                     type="date" 
                     value={formState.date}
-                    onChange={(e) => dispatch(updateStepFields({ date: e.target.value }))}
-                    className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`}
+                    onChange={(e) => {
+                      dispatch(updateStepFields({ date: e.target.value }));
+                      e.target.blur();
+                    }}
+                    className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer`}
                   />
                   {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
                 </div>
@@ -591,6 +624,20 @@ export const CreateRide: React.FC = () => {
                         })}
                       </div>
                       {errors.recurringActivities && <p className="text-red-500 text-xs">{errors.recurringActivities}</p>}
+                      <div className="pt-2">
+                        <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block mb-2">Expiry Date</label>
+                        <input 
+                          type="date"
+                          min={formState.date || new Date().toISOString().split('T')[0]}
+                          value={formState.expiryDate || ''}
+                          onChange={(e) => {
+                            dispatch(updateStepFields({ expiryDate: e.target.value }));
+                            e.target.blur();
+                          }}
+                          className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer"
+                        />
+                        {errors.expiryDate && <p className="text-red-500 text-xs mt-1">{errors.expiryDate}</p>}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -790,20 +837,24 @@ export const CreateRide: React.FC = () => {
                       {isLoadingMembers ? (
                         <div className="p-4 flex items-center justify-center"><Loader2 size={16} className="animate-spin text-[#EB712B]" /></div>
                       ) : (
-                        clubMembers.map((member) => (
-                          <div
-                            key={member.userId}
-                            className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
-                            onClick={() => {
-                              dispatch(updateStepFields({ 
-                                supportCarDriver: { userId: member.userId, name: member.fullName } 
-                              }));
-                              toggleDropdown(null);
-                            }}
-                          >
-                            {member.fullName} ({member.email})
-                          </div>
-                        ))
+                        clubMembers.map((member) => {
+                          const mId = Number(member.userId || member.id);
+                          const mName = member.fullName || ((member.firstName || '') + ' ' + (member.lastName || '')).trim() || member.username || 'Member';
+                          return (
+                            <div
+                              key={mId}
+                              className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
+                              onClick={() => {
+                                dispatch(updateStepFields({ 
+                                  supportCarDriver: { userId: mId, name: mName } 
+                                }));
+                                toggleDropdown(null);
+                              }}
+                            >
+                              {mName} ({member.email || 'N/A'})
+                            </div>
+                          );
+                        })
                       )}
                     </div>
                   )}
@@ -821,15 +872,17 @@ export const CreateRide: React.FC = () => {
                       <div className="col-span-full py-8 flex items-center justify-center"><Loader2 size={24} className="animate-spin text-[#EB712B]" /></div>
                     ) : (
                       clubMembers.map((member) => {
-                        const isAssigned = formState.rideLeaders.some(leader => leader.userId === member.userId);
+                        const mId = Number(member.userId || member.id);
+                        const mName = member.fullName || ((member.firstName || '') + ' ' + (member.lastName || '')).trim() || member.username || 'Member';
+                        const isAssigned = formState.rideLeaders.some(leader => Number(leader.userId || (leader as any).id) === mId);
                         return (
                           <button
-                            key={member.userId}
+                            key={mId}
                             type="button"
                             onClick={() => {
                               const newLeaders = isAssigned
-                                ? formState.rideLeaders.filter(leader => leader.userId !== member.userId)
-                                : [...formState.rideLeaders, { userId: member.userId, name: member.fullName }];
+                                ? formState.rideLeaders.filter(leader => Number(leader.userId || (leader as any).id) !== mId)
+                                : [...formState.rideLeaders, { userId: mId, name: mName }];
                               dispatch(updateStepFields({ rideLeaders: newLeaders }));
                               setErrors(prev => ({ ...prev, rideLeaders: '' }));
                             }}
@@ -841,8 +894,8 @@ export const CreateRide: React.FC = () => {
                             `}
                           >
                             <div className="min-w-0 pr-2">
-                              <p className="text-sm font-bold truncate">{member.fullName}</p>
-                              <p className="text-[10px] text-text-muted truncate mt-0.5">{member.email}</p>
+                              <p className="text-sm font-bold truncate">{mName}</p>
+                              <p className="text-[10px] text-text-muted truncate mt-0.5">{member.email || 'N/A'}</p>
                             </div>
                             {isAssigned && <CheckCircle2 size={16} className="text-[#EB712B] shrink-0" />}
                           </button>

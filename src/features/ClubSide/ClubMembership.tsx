@@ -76,12 +76,13 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
       return;
     }
     try {
+      const isYearly = duration.toLowerCase().includes('year') || duration.toLowerCase().includes('12');
       const payload = {
         clubId,
         name: name.trim(),
         price: Number(price),
         currency: 'USD',
-        billingInterval: duration === '1 Month' ? 'month' : 'year',
+        billingInterval: isYearly ? 'yearly' : 'monthly',
         discountPercent: 0,
         autoRenew,
         features,

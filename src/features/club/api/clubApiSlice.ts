@@ -182,6 +182,33 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ['Ride'],
     }),
+
+    getClubTerms: builder.query<any, { clubId: number }>({
+      query: (params) => ({
+        url: '/user/club/terms',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Club'],
+    }),
+
+    addClubTerms: builder.mutation<any, { clubId: number; termsAndConditions?: string; privacyPolicy?: string; content?: string }>({
+      query: (body) => ({
+        url: '/user/club/terms',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
+
+    updateClubTerms: builder.mutation<any, { clubId: number; termsAndConditions?: string; privacyPolicy?: string; content?: string }>({
+      query: (body) => ({
+        url: '/user/club/terms',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
   }),
 });
 
@@ -206,5 +233,7 @@ export const {
   useRemoveClubMemberMutation,
   useGetClubLeaderboardAppRidesQuery,
   useGetPublicRidesQuery,
+  useGetClubTermsQuery,
+  useAddClubTermsMutation,
+  useUpdateClubTermsMutation,
 } = clubApiSlice;
-
