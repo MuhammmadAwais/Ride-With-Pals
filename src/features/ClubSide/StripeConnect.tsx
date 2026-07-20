@@ -47,10 +47,9 @@ const StripeConnect: React.FC = () => {
     if (!clubId) return;
     try {
       const result = await connectStripe({ clubId }).unwrap();
-      // API returns an onboarding URL — redirect the user to Stripe's onboarding
-      const url = result?.onboardingUrl;
+      const url = result?.onboardingUrl || (result as any)?.url || (result as any)?.response?.onboardingUrl || (result as any)?.response?.url;
       if (url) {
-        window.open(url, '_blank', 'noopener,noreferrer');
+        window.location.href = url;
       } else {
         toast.success('Stripe connection initiated! Check your email for the next steps.');
       }

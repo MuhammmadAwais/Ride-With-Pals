@@ -36,7 +36,10 @@ import {
   useGetMyMembershipInfoQuery,
   useSubscribeToMembershipPlanMutation,
 } from '@/features/club/api/membershipApiSlice';
-import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiSlice';
+import {
+  useCheckStripeAccountStatusQuery,
+  useConnectStripeMutation,
+} from '@/features/club/api/stripeApiSlice';
 
 // ── Plan Form (owner) ─────────────────────────────────────────────────────────
 
@@ -229,6 +232,22 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
   // ✅ Check Stripe status — warn owner if Stripe not connected
   const { data: stripeStatus } = useCheckStripeAccountStatusQuery({ clubId });
   const isStripeConnected = stripeStatus?.connected || stripeStatus?.status === 'active';
+  const [connectStripe, { isLoading: isConnectingStripe }] = useConnectStripeMutation();
+
+  const handleConnectStripe = async () => {
+    if (!clubId) return;
+    try {
+      const result = await connectStripe({ clubId: Number(clubId) }).unwrap();
+      const url = result?.onboardingUrl || (result as any)?.url || (result as any)?.response?.onboardingUrl || (result as any)?.response?.url;
+      if (url) {
+        window.location.href = url;
+      } else {
+        toast.success('Stripe connection initiated!');
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to initiate Stripe connection.');
+    }
+  };
 
   const plans = plansData || [];
 
@@ -253,12 +272,14 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
               Connect a Stripe account to accept membership payments from athletes.
             </p>
           </div>
-          <a
-            href="/view/clubside/stripe-connect"
-            className="px-3 py-2 bg-amber-500 text-black text-[10px] font-bold uppercase tracking-wider rounded-lg hover:bg-amber-400 transition-colors cursor-pointer"
+          <button
+            onClick={handleConnectStripe}
+            disabled={isConnectingStripe}
+            className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-black text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50 border-0 outline-none"
           >
-            Connect
-          </a>
+            {isConnectingStripe && <Loader2 size={12} className="animate-spin" />}
+            {isConnectingStripe ? 'Connecting...' : 'Connect Stripe'}
+          </button>
         </div>
       )}
 

@@ -67,14 +67,19 @@ const Subscription = () => {
 
     try {
       const res = await clubCustomerPortal({ clubId }).unwrap();
-      if (res?.url) {
-        window.location.href = res.url;
+      const portalUrl = typeof res === 'string'
+        ? res
+        : (res?.url || (res as any)?.portalUrl || (res as any)?.response?.url || (res as any)?.response?.portalUrl || (typeof (res as any)?.response === 'string' ? (res as any)?.response : undefined));
+
+      if (typeof portalUrl === 'string' && portalUrl.startsWith('http')) {
+        window.location.href = portalUrl;
       } else {
-        toast.error("Could not open billing portal.");
+        toast.error((res as any)?.message || "Could not open billing portal.");
       }
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to open billing portal");
-      console.error(err);
+      const errMsg = err?.data?.message || err?.data?.error || err?.message || "Failed to open billing portal";
+      toast.error(errMsg);
+      console.error('Customer Portal Error:', err);
     }
   };
 
