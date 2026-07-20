@@ -37,7 +37,6 @@ import SelectRoleClub from '@/features/club/SelectRoleClub';
 // ── App Pages (Protected Shell) ──
 import { DashboardOverview } from '@/features/ClubSide/DashBoard';
 import ProfileAccount from '@/features/ClubSide/ProfileAccount';
-import ManageClub from '@/features/ClubSide/ManageClub';
 import Activities from '@/features/ClubSide/Activities';
 import Product from '@/features/ClubSide/Product';
 import AddProduct from '@/features/ClubSide/AddProduct';
@@ -137,7 +136,7 @@ export const router = createBrowserRouter(
         }
       >
         {/* ── Club Management (Clubside) ── */}
-        <Route path="/manage-club" element={<ManageClub />} />
+        <Route path="/manage-club" element={<Navigate to="/view/clubside/dashboard" replace />} />
         
         <Route path="/view/clubside">
           <Route path="dashboard" element={<DashboardOverview />} />

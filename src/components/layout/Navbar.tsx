@@ -14,13 +14,14 @@
  *  - Dropdown lists last 10 notifications with mark-as-read
  */
 import React, { useRef, useState, useEffect } from 'react';
-import { Menu, Bell, Sun, Moon, X, CheckCheck, Loader2 } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, X, CheckCheck, Loader2, Building2 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useActiveClub } from '@/hooks/useActiveClub';
+import { useAppSelector } from '@/hooks/useAppSelector';
 import {
   useGetUserNotificationQuery,
   useGetClubNotificationsQuery,
@@ -30,6 +31,7 @@ import {
 export interface NavbarProps {
   onMenuClick: () => void;
   pageTitle?: string;
+  onSwitchClubClick?: () => void;
 }
 
 // ── Notification Dropdown ──────────────────────────────────────────────────────
@@ -94,7 +96,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
         <div className="flex items-center gap-2">
           <Bell size={14} className="text-[#EB712B]" />
           <span className="text-xs font-bold uppercase tracking-wider text-text-main">
-            {isClubSide ? 'Club Alerts' : 'Notifications'}
+            {isClubSide ? "Club Alerts" : "Notifications"}
           </span>
           {unreadNotifs.length > 0 && (
             <span className="px-1.5 py-0.5 bg-[#EB712B] text-white text-[9px] font-black rounded-full">
@@ -109,11 +111,18 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
               disabled={isMarking}
               className="text-[9px] font-bold uppercase tracking-wider text-[#EB712B] hover:text-[#ff8036] cursor-pointer flex items-center gap-1 disabled:opacity-50"
             >
-              {isMarking ? <Loader2 size={10} className="animate-spin" /> : <CheckCheck size={10} />}
+              {isMarking ? (
+                <Loader2 size={10} className="animate-spin" />
+              ) : (
+                <CheckCheck size={10} />
+              )}
               Mark all read
             </button>
           )}
-          <button onClick={onClose} className="text-text-muted hover:text-text-main cursor-pointer">
+          <button
+            onClick={onClose}
+            className="text-text-muted hover:text-text-main cursor-pointer"
+          >
             <X size={14} />
           </button>
         </div>
@@ -126,11 +135,18 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
             <Loader2 size={20} className="animate-spin text-[#EB712B]" />
           </div>
         ) : notifications.length === 0 ? (
-          <div className="text-center py-10 px-4">
-            <Bell size={28} className="text-text-muted mx-auto mb-2 opacity-40" />
-            <p className="text-xs text-text-muted font-bold uppercase tracking-wider">No notifications yet</p>
+          <div className="text-center  py-10 px-4">
+            <Bell
+              size={28}
+              className="text-text-muted mx-auto mb-2 opacity-40"
+            />
+            <p className="text-xs text-text-muted font-bold uppercase tracking-wider">
+              No notifications yet
+            </p>
             <p className="text-[10px] text-text-muted mt-1">
-              {isClubSide ? "Club activity will appear here." : "Your activity will appear here."}
+              {isClubSide
+                ? "Club activity will appear here."
+                : "Your activity will appear here."}
             </p>
           </div>
         ) : (
@@ -141,22 +157,43 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
                 <div
                   key={notif.id || idx}
                   className={cn(
-                    'px-4 py-3 transition-colors hover:bg-hover cursor-default',
-                    isUnread && 'bg-[#EB712B]/5'
+                    "px-4 py-3 transition-colors hover:bg-hover cursor-default",
+                    isUnread && "bg-[#EB712B]/5",
                   )}
                 >
                   <div className="flex items-start gap-3">
                     {/* Unread indicator */}
-                    <div className={cn('w-2 h-2 rounded-full mt-1.5 shrink-0', isUnread ? 'bg-[#EB712B]' : 'bg-transparent border border-border')} />
+                    <div
+                      className={cn(
+                        "w-2 h-2 rounded-full mt-1.5 shrink-0",
+                        isUnread
+                          ? "bg-[#EB712B]"
+                          : "bg-transparent border border-border",
+                      )}
+                    />
                     <div className="flex-1 min-w-0">
-                      <p className={cn('text-xs leading-snug truncate', isUnread ? 'font-bold text-text-main' : 'text-text-muted')}>
-                        {notif.title || notif.message || notif.body || 'New notification'}
+                      <p
+                        className={cn(
+                          "text-xs leading-snug truncate",
+                          isUnread
+                            ? "font-bold text-text-main"
+                            : "text-text-muted",
+                        )}
+                      >
+                        {notif.title ||
+                          notif.message ||
+                          notif.body ||
+                          "New notification"}
                       </p>
                       {notif.body && notif.title && (
-                        <p className="text-[10px] text-text-muted mt-0.5 line-clamp-2 leading-snug">{notif.body}</p>
+                        <p className="text-[10px] text-text-muted mt-0.5 line-clamp-2 leading-snug">
+                          {notif.body}
+                        </p>
                       )}
                       <p className="text-[9px] text-text-muted mt-1 font-medium">
-                        {notif.createdAt ? new Date(notif.createdAt).toLocaleString() : ''}
+                        {notif.createdAt
+                          ? new Date(notif.createdAt).toLocaleString()
+                          : ""}
                       </p>
                     </div>
                   </div>
@@ -171,14 +208,15 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
       {notifications.length > 0 && (
         <div className="px-4 py-2.5 border-t border-border bg-hover/50 flex items-center justify-between">
           <p className="text-[9px] text-text-muted uppercase tracking-wider font-bold">
-            Showing {Math.min(notifications.length, 15)} of {notifications.length} notifications
+            Showing {Math.min(notifications.length, 15)} of{" "}
+            {notifications.length} notifications
           </p>
           <button
             className="text-[10px] font-bold text-[#EB712B] uppercase hover:underline"
             onClick={(e) => {
               e.preventDefault();
               if (!isClubSide) {
-                navigate('/view/userside/notifications');
+                navigate("/view/userside/notifications");
               }
               onClose();
             }}
@@ -193,12 +231,13 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
 
 // ── Main Navbar ────────────────────────────────────────────────────────────────
 
-const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard' }) => {
+const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard', onSwitchClubClick }) => {
   const { isDark, toggleTheme } = useTheme();
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const { clubId } = useActiveClub();
+  const { clubId, activeClub } = useActiveClub();
+  const myClubs = useAppSelector(s => s.club.myClubs);
 
   const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
 
@@ -274,8 +313,30 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard' })
         </h1>
       </div>
 
-      {/* ── Right: Theme toggle + Notification bell ── */}
-      <div className="flex items-center gap-2">
+      {/* Right Actions: Theme Toggle, Notifications, Switch Club */}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {isClubSide && activeClub && (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface border border-border mr-1 sm:mr-2">
+            {activeClub.logo ? (
+              <img src={activeClub.logo} alt="Club" className="w-5 h-5 rounded-full object-cover border border-border" />
+            ) : (
+              <Building2 size={16} className="text-text-muted" />
+            )}
+            <span className="text-xs font-bold text-text-main max-w-[100px] sm:max-w-[150px] truncate">
+              {activeClub.clubName}
+            </span>
+          </div>
+        )}
+
+        {isClubSide && myClubs.length > 1 && onSwitchClubClick && (
+          <button
+            onClick={onSwitchClubClick}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#EB712B]/10 text-[#EB712B] hover:bg-[#EB712B]/20 transition-colors whitespace-nowrap mr-2 border border-[#EB712B]/20 hidden sm:block"
+          >
+            Switch Club
+          </button>
+        )}
+
         {/* Theme Toggle — GSAP icon flip on swap */}
         <button
           onClick={toggleTheme}

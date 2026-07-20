@@ -24,7 +24,9 @@ import { APP_NAME } from '@/Constants';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { fetchMyClubs } from '@/features/club/slices/clubSlice';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useActiveClub } from '@/hooks/useActiveClub';
+import { ClubSelectionModal } from '@/features/club/components/ClubSelectionModal';
 
 /** Derive a human-readable page title from the current pathname. */
 function deriveTitle(pathname: string): string {
@@ -43,6 +45,10 @@ const AppLayout: React.FC = () => {
   const pageTitle = deriveTitle(location.pathname);
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const myClubs = useAppSelector((s) => s.club.myClubs);
+  const { activeClub, setActiveClub } = useActiveClub();
+  const [isModalManuallyOpened, setIsModalManuallyOpened] = useState(false);
+  const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
 
   // Bootstrap managed clubs so ProtectedRoute club-side guard and Sidebar both work correctly
   useEffect(() => {
@@ -63,6 +69,16 @@ const AppLayout: React.FC = () => {
     },
     { dependencies: [location.pathname], scope: contentRef },
   );
+
+  // Auto-select club if there is only 1 and we are in clubside
+  useEffect(() => {
+    if (isClubSide && !activeClub && myClubs.length === 1) {
+      setActiveClub(myClubs[0]);
+    }
+  }, [isClubSide, activeClub, myClubs, setActiveClub]);
+
+  const shouldForceModalOpen = isClubSide && !activeClub && myClubs.length > 1;
+  const showModal = isModalManuallyOpened || shouldForceModalOpen;
 
   return (
     <>
@@ -91,6 +107,7 @@ const AppLayout: React.FC = () => {
               <Navbar
                 onMenuClick={() => setSidebarOpen(true)}
                 pageTitle={pageTitle}
+                onSwitchClubClick={() => setIsModalManuallyOpened(true)}
               />
             </div>
 
@@ -105,6 +122,14 @@ const AppLayout: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <ClubSelectionModal
+        isOpen={showModal}
+        onClose={() => setIsModalManuallyOpened(false)}
+        clubs={myClubs}
+        onSelect={(club) => setActiveClub(club)}
+        isDismissible={!!activeClub}
+      />
     </>
   );
 };
