@@ -46,8 +46,8 @@ const RideJoining = () => {
 
   // Sync statuses once data loads
   useEffect(() => {
-    if (rideResponse) {
-      setIsJoined(!!rideResponse.isJoined);
+    if (rideResponse && rideResponse.isJoined) {
+      setIsJoined(true);
     }
   }, [rideResponse]);
 
@@ -64,8 +64,19 @@ const RideJoining = () => {
       leaders.push({ name: "Host", role: "Host" });
     }
 
+    let bannerImage = "/Images/CycleImage2.png";
+    const dataAny = data as any;
+    const logoPath = dataAny.club?.logo || dataAny.club?.coverImage || dataAny.logo || dataAny.coverImage || dataAny.image;
+    if (logoPath && logoPath !== "null" && logoPath.trim() !== "") {
+      bannerImage = (logoPath.startsWith("http://") || logoPath.startsWith("https://") || logoPath.startsWith("/"))
+        ? logoPath
+        : `https://api.ridewithpals.com/uploads/${logoPath}`;
+    }
+
     return {
       id: data.id || id,
+      clubId: data.clubId || data.club?.id,
+      isPublic: data.isPublic !== undefined ? data.isPublic : true,
       title: data.rideName || "Ride Event",
       host: "Organizer",
       date: data.date ? new Date(data.date).toLocaleDateString() : "TBD",
@@ -73,8 +84,11 @@ const RideJoining = () => {
       avgPace: data.pace || "N/A",
       distance: data.distance ? `${data.distance} km` : "N/A",
       activeParticipants: `${data.joinedParticipants?.length || 0} Riders`,
-      maxSlope: "N/A",
+      maxSlope: data.maxSlope ? `${data.maxSlope}%` : "N/A",
       supportCar: data.supportCarDriver ? "Available" : "Not Available",
+      elevationGain: data.elevationGain,
+      hasLiveBeacon: data.hasLiveBeacon,
+      image: bannerImage,
       description: data.description || "No description provided.",
       recommendedBike: data.isTrail ? "MTB / Gravel" : "Road Bike",
       leaders,
@@ -98,15 +112,29 @@ const RideJoining = () => {
   }, [meetingPoint]);
 
   const handleJoinClick = async () => {
+    if (rideDetails && !rideDetails.isPublic) {
+      toast.error("This is a private ride! Redirecting to the club...");
+      if (rideDetails.clubId) {
+        navigate(`/view/userside/club/${rideDetails.clubId}`);
+      }
+      return;
+    }
     try {
       if (id) {
         await joinRide({ rideId: Number(id) }).unwrap();
         setIsJoined(true);
         toast.success("Successfully joined the ride!");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to join ride:", error);
-      toast.error("Failed to join the ride or permission denied.");
+      if (error?.status === 403 || error?.data?.message?.toLowerCase().includes("private")) {
+        toast.error("This is a private ride! You must join the club first.");
+        if (rideDetails?.clubId) {
+          navigate(`/view/userside/club/${rideDetails.clubId}`);
+        }
+      } else {
+        toast.error("Failed to join the ride or permission denied.");
+      }
     }
   };
 
@@ -196,35 +224,28 @@ const RideJoining = () => {
           {/* Left Main Content */}
           <div className="lg:col-span-2 space-y-6">
             
-            {/* Interactive Dark Landscape Map View */}
+            {/* Ride Image Banner */}
             <div className="relative h-[380px] w-full bg-surface border border-border rounded-3xl p-2.5 overflow-hidden shadow-2xl group">
-              <MapContainer 
-                center={mapCenter} 
-                zoom={11} 
-                scrollWheelZoom={false}
-                className="h-full w-full rounded-2xl z-0 dark:invert-[92%] dark:hue-rotate-[180deg] dark:brightness-[92%] dark:contrast-[85%]"
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              <div className="h-full w-full rounded-2xl overflow-hidden relative z-0">
+                <img 
+                  src={rideDetails.image} 
+                  alt={rideDetails.title} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  onError={(e) => { (e.target as HTMLImageElement).src = "/Images/CycleImage2.png"; }}
                 />
-                <Marker position={mapCenter}>
-                  <Popup>
-                    <div className="text-black text-xs font-bold p-1">
-                      ⛰️ {rideDetails.title} <br /> {rideDetails.meetingPoint}
-                    </div>
-                  </Popup>
-                </Marker>
-              </MapContainer>
+                <div className="absolute inset-0 bg-gradient-to-t from-main-bg/80 via-transparent to-black/20" />
+              </div>
 
               {/* Glassmorphic Map Overlay Details */}
               <div className="absolute top-6 left-6 right-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pointer-events-none z-10">
                 <div className="bg-[#0a0a0a]/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-xs font-bold text-white flex items-center gap-2.5 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-[#EB712B] animate-pulse" /> Elevation Gain: 1,420m
+                  <span className="w-2 h-2 rounded-full bg-[#EB712B] animate-pulse" /> Elevation Gain: {rideDetails.elevationGain ? `${rideDetails.elevationGain}m` : 'N/A'}
                 </div>
-                <div className="bg-[#0a0a0a]/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-green-400 flex items-center gap-2 shadow-lg">
-                  Live Beacon Active <CheckCircle2 size={14} />
-                </div>
+                {rideDetails.hasLiveBeacon && (
+                  <div className="bg-[#0a0a0a]/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-green-400 flex items-center gap-2 shadow-lg">
+                    Live Beacon Active <CheckCircle2 size={14} />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -237,7 +258,7 @@ const RideJoining = () => {
                   <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-wider text-[#eb712a]">
                     <Zap size={12} /> {rideDetails.type} • {rideDetails.date}
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-text-main leading-tight">
+                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-text-main leading-tight flex items-center gap-3">
                     {rideDetails.title}
                   </h1>
                   <p className="text-xs font-bold text-text-muted tracking-wide">

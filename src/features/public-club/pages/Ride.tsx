@@ -33,6 +33,7 @@ interface RideItem {
   isRideJoined: boolean;
   isSaved: boolean;
   image: string;
+  isPublic: boolean;
 }
 
 interface RideProps {
@@ -147,7 +148,8 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
         organizerAvatar: organizerAvatar,
         isRideJoined: item.isRideJoined !== undefined ? item.isRideJoined : false,
         isSaved: savedRideIds.has(item.id || item.rideId),
-        image: bannerImage
+        image: bannerImage,
+        isPublic: item.isPublicRide !== undefined ? item.isPublicRide : (item.isPublic !== undefined ? item.isPublic : true)
       };
     });
   }, [rawData, savedRideIds]);
@@ -207,7 +209,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           {/* Ride Type Filters */}
           <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
             <Filter size={16} className="text-text-muted shrink-0 hidden md:block" />
-            {["All", "Road", "Gravel", "MTB", "Criterium"].map((type) => (
+            {["All", "Road", "Gravel", "MTB", "Criterium", "Asphalt", "Trail"].map((type) => (
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
@@ -262,7 +264,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                   <div className="space-y-4 z-10">
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1">
-                        <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1">
+                        <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1 mb-1">
                           {ride.title}
                         </h3>
                         <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">

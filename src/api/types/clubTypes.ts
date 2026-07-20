@@ -370,6 +370,10 @@ export type GetRideInfoByIdResponseResponse = {
     deletedAt:           null;
     club:                Club;
     isJoined:            boolean;
+    maxSlope?:           number;
+    elevationGain?:      number;
+    hasLiveBeacon?:      boolean;
+    isPublicRide?:       boolean;
 }
 
 export type JoinedParticipant = {

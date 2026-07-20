@@ -79,7 +79,6 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
 
   const [applyPermissions] = useApplyPermissionTogglesForSelectedMembersMutation();
   const [grantRevokeFullAccess, { isLoading: isTogglingFull }] = useGrantRevokeFullClubAccessForOneMemberMutation();
-  const [assignRole] = useAssignRoleToMemberMutation();
 
   const role = (member.role || 'user').toLowerCase();
   const isOwner = role === 'owner';
