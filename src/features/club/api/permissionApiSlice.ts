@@ -18,7 +18,7 @@ export const permissionApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: ['Permission'],
+      invalidatesTags: ['Permission', 'Club'],
     }),
 
     applyPermissionTogglesForSelectedMembers: builder.mutation<PermissionTypes.MemberPermissionElement[], PermissionTypes.ApplyPermissionTogglesForSelectedMembersRequest>({
@@ -27,7 +27,7 @@ export const permissionApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: ['Permission'],
+      invalidatesTags: ['Permission', 'Club'],
     }),
 
     grantRevokeFullClubAccessForOneMember: builder.mutation<PermissionTypes.FullAccessMemberElement, PermissionTypes.GrantRevokeFullClubAccessForOneMemberRequest>({
@@ -36,16 +36,16 @@ export const permissionApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: ['Permission'],
+      invalidatesTags: ['Permission', 'Club'],
     }),
 
     assignRoleToMember: builder.mutation<PermissionTypes.AssignRoleToMemberResponse, PermissionTypes.AssignRoleToMemberRequest>({
       query: (body) => ({
-        url: '/uuser/club/member/role',
+        url: '/user/club/member/role',
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Permission'],
+      invalidatesTags: ['Permission', 'Club'],
     }),
 
     removeFullAccessPermission: builder.mutation<PermissionTypes.RemoveFullAccessPermissionResponse, PermissionTypes.RemoveFullAccessPermissionRequest>({
@@ -54,7 +54,7 @@ export const permissionApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: ['Permission'],
+      invalidatesTags: ['Permission', 'Club'],
     }),
   }),
 });

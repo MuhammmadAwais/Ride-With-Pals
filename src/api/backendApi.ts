@@ -396,7 +396,7 @@ export const ClubService = logWrapper("ClubService", {
   },
 
   assignRoleToMember: async (data?: any, params?: Record<string, any>) => {
-    const response = await backendApi.post('/uuser/club/member/role', data, { params });
+    const response = await backendApi.post('/user/club/member/role', data, { params });
     return response.data;
   },
 
