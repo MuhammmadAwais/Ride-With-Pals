@@ -60,6 +60,7 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Members',          route: ROUTES.MEMBERS,          icon: <Users size={ICON_SIZE} /> },
   { label: 'Permissions',      route: ROUTES.CLUB_PERMISSIONS, icon: <ShieldAlert size={ICON_SIZE} /> },
   { label: 'Membership Plans', route: ROUTES.CLUB_MEMBERSHIP,  icon: <Crown size={ICON_SIZE} /> },
+  { label: 'Club Subscription', route: ROUTES.SUBSCRIPTION,    icon: <CreditCard size={ICON_SIZE} /> },
   { label: 'Stripe Payments',  route: ROUTES.STRIPE_CONNECT,   icon: <CreditCard size={ICON_SIZE} /> },
   { type: 'divider' },
   { label: 'Terms & Conditions', route: ROUTES.TERMS,          icon: <FileText size={ICON_SIZE} /> },
@@ -478,8 +479,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {profileMenuOpen && (
             <div className="profile-menu">
               <button
-                onClick={() => { setProfileMenuOpen(false); }}
-                style={{ color: 'var(--color-main-text)', background: 'transparent', border: 'none' }}
+                onClick={() => {
+                  setProfileMenuOpen(false);
+                  navigate(isAthleteSide ? ROUTES.PROFILE_ATHLETE : ROUTES.PROFILE);
+                }}
+                style={{ color: 'var(--color-main-text)', background: 'transparent', border: 'none', cursor: 'pointer' }}
               >
                 <Settings size={18} style={{ color: 'rgba(235,113,43,0.8)', flexShrink: 0 }} />
                 <span>Settings</span>

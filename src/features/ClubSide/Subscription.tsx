@@ -213,7 +213,7 @@ const Subscription = () => {
             </div>
 
             {/* Premium Yearly Tier */}
-            {plansData && plansData.map((plan) => {
+            {plansData && plansData.filter((plan: any) => parseFloat(plan.price || '0') > 0 && !plan.name?.toLowerCase().includes('free')).map((plan) => {
               const isPlanActive = currentSub?.planId === plan.id && isPro;
 
               return (

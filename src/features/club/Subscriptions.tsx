@@ -119,7 +119,7 @@ export default function Subscriptions() {
           </div>
 
           {/* Gold Pass Plan */}
-          {plans && plans.map((plan) => (
+          {plans && plans.filter((plan: any) => parseFloat(plan.price || '0') > 0 && !plan.name?.toLowerCase().includes('free')).map((plan) => (
             <div 
               key={plan.id}
               className="card-reveal opacity-0 group bg-[#1a1a1a] border border-[#EB712B]/20 rounded-2xl p-8 flex flex-col relative overflow-hidden transition-all duration-700 hover:border-[#EB712B]/50 hover:rounded-tr-[64px] hover:rounded-bl-[64px] hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(235,113,43,0.15)]"
