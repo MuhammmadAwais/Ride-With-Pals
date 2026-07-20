@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useGetRideInfoByIdQuery, useJoinRideMutation } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+
 import L from 'leaflet';
 
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
@@ -30,6 +30,7 @@ const RideJoining = () => {
   const [showToast, setShowToast] = useState(false);
 
   const [mapCenter, setMapCenter] = useState<[number, number]>([45.9184, 6.5862]);
+  {mapCenter}
 
   const rideIdNum = id ? Number(id) : 0;
   const { data: rideResponse, isLoading: loading } = useGetRideInfoByIdQuery(
