@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Calendar, 
@@ -71,9 +71,14 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
 
   const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
 
-  const { data: rawData, isLoading } = useGetPublicRidesQuery(
-    { search: '', limit: 50, offset: 0, clubId: activeClubId },
+  const { data: rawData, isLoading, isFetching } = useGetPublicRidesQuery(
+    { search: searchQuery || undefined, limit: 50, offset: 0, clubId: activeClubId },
+    { refetchOnMountOrArgChange: true } // Force fetch when component mounts to bypass cache issue
   );
+
+  useEffect(() => {
+    console.log("🚴‍♂️ [Ride.tsx] Rendered! Query State:", { isLoading, isFetching, data: rawData });
+  }, [isLoading, isFetching, rawData]);
 
   const [saveRide] = useSaveRideMutation();
   const [unsaveRide] = useUnsaveRideMutation();
@@ -95,7 +100,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
   };
 
   const rides = useMemo<RideItem[]>(() => {
-    const items = rawData?.response?.data || rawData?.data || rawData || [];
+    const items = rawData?.response?.data || rawData?.data || rawData?.rows || rawData || [];
     if (!Array.isArray(items)) return [];
     return items.map((item: any) => {
       let displayDistance = "N/A";
