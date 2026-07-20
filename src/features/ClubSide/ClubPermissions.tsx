@@ -31,7 +31,6 @@ import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import {
   useApplyPermissionTogglesForSelectedMembersMutation,
   useGrantRevokeFullClubAccessForOneMemberMutation,
-  useAssignRoleToMemberMutation,
 } from '@/features/club/api/permissionApiSlice';
 
 // ── Permission Mapping ─────────────────────────────────────────────────────────
