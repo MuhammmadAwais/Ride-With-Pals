@@ -48,10 +48,11 @@ export const SubscriptionService = {
     return await ApiSubscriptionService.listClubSubscription();
   },
   checkoutClubSubscription: async (clubId: number, planId: number) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
     return await ApiSubscriptionService.subscribeToClubPlan({
       planId,
-      successUrl: `https://app.ridewithpals.com/club/${clubId}/success`,
-      cancelUrl: `https://app.ridewithpals.com/club/${clubId}/cancel`,
+      successUrl: `${origin}/view/clubside/dashboard`,
+      cancelUrl: `${origin}/view/clubside/subscription`,
     }, { clubId });
   },
   createClubBillingPortalSession: async (clubId: number) => {

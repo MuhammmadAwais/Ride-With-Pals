@@ -32,11 +32,12 @@ export default function Subscriptions() {
     }
 
     try {
+      const origin = window.location.origin;
       const res = await subscribeToClubPlan({
         clubId,
         planId,
-        successUrl: `https://app.ridewithpals.com/club/${clubId}/success`,
-        cancelUrl: `https://app.ridewithpals.com/club/${clubId}/cancel`,
+        successUrl: `${origin}/view/clubside/dashboard`,
+        cancelUrl: `${origin}/view/clubside/subscription`,
       }).unwrap();
 
       if (res?.checkoutUrl) {

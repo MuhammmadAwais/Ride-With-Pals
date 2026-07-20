@@ -43,11 +43,12 @@ const Subscription = () => {
     }
 
     try {
+      const origin = window.location.origin;
       const res = await subscribeToClubPlan({
         clubId,
         planId,
-        successUrl: `https://app.ridewithpals.com/view/clubside/dashboard`,
-        cancelUrl: `https://app.ridewithpals.com/view/clubside/subscription`,
+        successUrl: `${origin}/view/clubside/dashboard`,
+        cancelUrl: `${origin}/view/clubside/subscription`,
       }).unwrap();
 
       if (res?.checkoutUrl) {
