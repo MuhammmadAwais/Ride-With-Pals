@@ -212,21 +212,21 @@ export default function WalletDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <StatCard
           title="Growth"
-          value="+14.2%"
+          value="0%"
           icon={TrendingUp}
           iconColor="text-emerald-500"
           bgColor="bg-emerald-500/10"
         />
         <StatCard
           title="Avg Ticket"
-          value="$124.50"
+          value="$0.00"
           icon={DollarSign}
           iconColor="text-[#EB712B]"
           bgColor="bg-[#EB712B]/10"
         />
         <StatCard
           title="Trust Score"
-          value="99.8%"
+          value="N/A"
           icon={ShieldCheck}
           iconColor="text-purple-500"
           bgColor="bg-purple-500/10"
@@ -385,7 +385,7 @@ export default function WalletDashboard() {
                     Amount
                   </label>
                   <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
-                    Available: $12,450.80
+                    Available: $0.00
                   </span>
                 </div>
                 <div className="relative">

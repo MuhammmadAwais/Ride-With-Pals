@@ -23,7 +23,6 @@ import {
   ChevronUp,
   Lock,
   UserCheck,
-  Building2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useActiveClub } from '@/hooks/useActiveClub';
@@ -80,7 +79,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
 
   const [applyPermissions] = useApplyPermissionTogglesForSelectedMembersMutation();
   const [grantRevokeFullAccess, { isLoading: isTogglingFull }] = useGrantRevokeFullClubAccessForOneMemberMutation();
-  const [assignRole, { isLoading: isAssigningRole }] = useAssignRoleToMemberMutation();
+  const [assignRole] = useAssignRoleToMemberMutation();
 
   const role = (member.role || 'user').toLowerCase();
   const isOwner = role === 'owner';
@@ -140,20 +139,6 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
       );
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to update full access.');
-    }
-  };
-
-  const handleRoleChange = async (newRoleId: number) => {
-    if (!targetUserId) return;
-    try {
-      await assignRole({
-        clubId,
-        userId: targetUserId,
-        roleId: newRoleId,
-      }).unwrap();
-      toast.success(`Role updated for ${fullName}`);
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update member role.');
     }
   };
 

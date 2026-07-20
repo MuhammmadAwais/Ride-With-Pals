@@ -60,9 +60,9 @@ const AnalyticsGrid = ({ stats }: { stats: any }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const segments = [
-    { color: '#3B82F6', value: 30, label: 'Inter-City' }, 
-    { color: '#10B981', value: 30, label: 'Joint' },      
-    { color: '#F97316', value: 40, label: 'Solo' },      
+    { color: '#3B82F6', value: stats?.segments?.interCity || 30, label: 'Inter-City' }, 
+    { color: '#10B981', value: stats?.segments?.joint || 30, label: 'Joint' },      
+    { color: '#F97316', value: stats?.segments?.solo || 40, label: 'Solo' },      
   ];
 
   const chartData = stats?.monthlyGrowth || [];
@@ -102,7 +102,7 @@ const AnalyticsGrid = ({ stats }: { stats: any }) => {
       <div className="bg-surface p-6 rounded-3xl border border-border">
         <h3 className="font-bold text-text-main">Revenue Forecast</h3>
         <p className="text-[10px] text-text-muted mb-6">Projected Earnings</p>
-        <p className="text-3xl font-black mb-2 text-text-main">${stats?.revenueForecast || '12,450.00'}</p>
+        <p className="text-3xl font-black mb-2 text-text-main">${stats?.revenueForecast || '0.00'}</p>
         <p className="text-[10px] text-green-400 flex items-center gap-1 mb-4">↗ Expected increase</p>
       </div>
     </div>
@@ -115,10 +115,10 @@ export const DashboardOverview = ({ stats }: { stats?: any }) => {
     <div className="w-full">
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 mb-10">
-        <KPICard title="Total Members" value={stats?.totalMembers || "456"} icon={<Users size={32} className="text-[#EB712B]" />} />
-        <KPICard title="Total Rides" value={stats?.totalRides || "102"} icon={<Car size={32} className="text-[#EB712B]" />} />
-        <KPICard title="Earning" value={`$${stats?.totalEarnings || "5,000"}`} icon={<DollarSign size={32} className="text-[#EB712B]" />} />
-        <KPICard title="Balance" value={`$${stats?.walletBalance || "10,000"}`} icon={<Wallet size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Total Members" value={stats?.totalMembers || "0"} icon={<Users size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Total Rides" value={stats?.totalRides || "0"} icon={<Car size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Earning" value={`$${stats?.totalEarnings || "0"}`} icon={<DollarSign size={32} className="text-[#EB712B]" />} />
+        <KPICard title="Balance" value={`$${stats?.walletBalance || "0"}`} icon={<Wallet size={32} className="text-[#EB712B]" />} />
       </div>
 
       {/* Elegant Divider Line */}

@@ -183,10 +183,10 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
 
       {/* Stats */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-        <StatCard title="Total Active Rides" value={leaderboardData.reduce((acc, val) => acc + val.rides, 0) || "0"} icon={Bike} />
-        <StatCard title="Federation Avg" value="94.2%" icon={Globe} />
-        <StatCard title="Top Clubs" value="12 Elite" icon={Trophy} />
-        <StatCard title="Records Broken" value="08" icon={Award} />
+        <StatCard title="Total Active Rides" value={leaderboardData.reduce((acc: any, val: any) => acc + (val.rides || 0), 0) || "0"} icon={Bike} />
+        <StatCard title="Ranked Members" value={leaderboardData.length || "0"} icon={Globe} />
+        <StatCard title="Avg Attendance" value={`${Math.round(leaderboardData.reduce((acc: any, val: any) => acc + parseFloat(val.attendance || "0"), 0) / (leaderboardData.length || 1)) || 0}%`} icon={Trophy} />
+        <StatCard title="Top Rides" value={leaderboardData.reduce((max: number, val: any) => Math.max(max, val.rides || 0), 0) || "0"} icon={Award} />
       </section>
 
       {/* Main Table */}

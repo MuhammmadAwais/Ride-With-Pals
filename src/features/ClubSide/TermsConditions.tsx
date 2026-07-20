@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FileText, ArrowLeft, Edit2, Loader2, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useActiveClub } from '@/hooks/useActiveClub';

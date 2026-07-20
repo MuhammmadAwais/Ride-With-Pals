@@ -13,7 +13,7 @@
  *  - Page content is rendered via <Outlet /> — eliminates the old DashBoard shell duplication.
  *  - GSAP entry animation plays on every route change (opacity 0 → 1, y 18 → 0).
  */
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useGSAP } from '@gsap/react';
@@ -24,7 +24,6 @@ import { APP_NAME } from '@/Constants';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { fetchMyClubs } from '@/features/club/slices/clubSlice';
-import { useEffect, useMemo } from 'react';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { ClubSelectionModal } from '@/features/club/components/ClubSelectionModal';
 

@@ -41,12 +41,15 @@ interface Activity {
   name: string;
   region: string;
   distance: string;
+  numericDistance?: number;
+  elevationGain?: number;
   level: "ADVANCED" | "PRO ELITE" | "INTERMEDIATE" | string;
   status: "IN PROGRESS" | "SCHEDULED" | "OPEN" | "COMPLETED" | "ARCHIVED" | string;
   participants: string;
   progress: number;
   imageUrl: string;
   leaderImageUrl: string;
+  date?: string | Date;
 }
 
 const TableSkeleton = () => (
