@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Bold,
   Italic,
@@ -11,16 +11,26 @@ import {
   FileImage,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useAddNewsMutation } from "@/features/club/api/newsApiSlice";
+import { useAddNewsMutation, useUpdateNewsMutation, useGetNewsByIdQuery } from "@/features/club/api/newsApiSlice";
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 
 export const NewsAdded = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { clubId } = useActiveClub();
   const permissions = useClubPermissions(clubId || undefined);
   
+  // Detect edit mode
+  const editingNewsId = searchParams.get('newsId') ? Number(searchParams.get('newsId')) : null;
+  const isEditMode = Boolean(editingNewsId);
+
+  const { data: existingNews } = useGetNewsByIdQuery(
+    { id: editingNewsId! },
+    { skip: !editingNewsId }
+  );
+
   if (!permissions.isLoading && !permissions.canPublishNews) {
     return (
       <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
@@ -44,9 +54,21 @@ export const NewsAdded = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  // Pre-fill form when editing
+  useEffect(() => {
+    if (existingNews) {
+      setTitle(existingNews.title || '');
+      setDescription(existingNews.description || '');
+      if (existingNews.image) {
+        setPreviewUrl(existingNews.image);
+      }
+    }
+  }, [existingNews]);
+
   const [addNews, { isLoading: loadingAdd }] = useAddNewsMutation();
+  const [updateNews, { isLoading: loadingUpdate }] = useUpdateNewsMutation();
   const [uploadFile, { isLoading: loadingUpload }] = useUploadFileMutation();
-  const loading = loadingAdd || loadingUpload;
+  const loading = loadingAdd || loadingUpload || loadingUpdate;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -76,26 +98,37 @@ export const NewsAdded = () => {
         return;
       }
       
-      let imageUrl = "";
+      let imageUrl = existingNews?.image || "";
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
         const uploadRes = await uploadFile(formData).unwrap();
         imageUrl = uploadRes.fileName || "";
       }
-      
-      await addNews({
-        title,
-        description,
-        clubId: Number(clubId),
-        image: imageUrl
-      }).unwrap();
-      
-      toast.success("News published successfully!");
+
+      if (isEditMode && editingNewsId) {
+        await updateNews({
+          id: editingNewsId,
+          title,
+          description,
+          clubId: Number(clubId),
+          image: imageUrl,
+        }).unwrap();
+        toast.success("News updated successfully!");
+      } else {
+        await addNews({
+          title,
+          description,
+          clubId: Number(clubId),
+          image: imageUrl
+        }).unwrap();
+        toast.success("News published successfully!");
+      }
+
       navigate("/view/clubside/news");
     } catch (error: any) {
-      console.error("Failed to add news:", error);
-      toast.error(error?.data?.message || "Failed to publish news.");
+      console.error("Failed to save news:", error);
+      toast.error(error?.data?.message || "Failed to save news.");
     }
   };
 
@@ -105,10 +138,10 @@ export const NewsAdded = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 p-6 border border-border rounded-3xl backdrop-blur-sm bg-surface shadow-lg">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-text-main">
-            Add News
+            {isEditMode ? 'Edit Article' : 'Add News'}
           </h1>
           <p className="text-text-muted text-sm font-medium">
-            Configure new system bulletin or market update
+            {isEditMode ? 'Update the news article content and media' : 'Configure new system bulletin or market update'}
           </p>
         </div>
 
@@ -264,7 +297,7 @@ export const NewsAdded = () => {
                 loading ? "bg-gray-500 cursor-not-allowed" : "bg-[#EB712B] hover:shadow-[0_0_30px_rgba(235,113,43,0.5)] active:scale-[0.98] cursor-pointer"
               }`}
             >
-              {loading ? "Publishing..." : "Save"}
+            {loading ? (isEditMode ? "Updating..." : "Publishing...") : (isEditMode ? "Update Article" : "Save")}
             </button>
           </div>
         </div>

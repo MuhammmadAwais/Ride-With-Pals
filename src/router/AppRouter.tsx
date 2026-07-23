@@ -62,6 +62,8 @@ import ClubPermissions from '@/features/ClubSide/ClubPermissions';
 import ClubMembership from '@/features/ClubSide/ClubMembership';
 import StripeConnect from '@/features/ClubSide/StripeConnect';
 import ClubDetails from '@/features/public-club/pages/ClubDetails';
+import Shop from '@/features/public-club/pages/Shop';
+import Marketplace from '@/features/public-club/pages/Marketplace';
 
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';
@@ -170,6 +172,8 @@ export const router = createBrowserRouter(
           <Route path="clubs" element={<Clubs />} />
           <Route path="club/:clubId" element={<ClubDetails />} />
           <Route path="rides" element={<Ride />} />
+          <Route path="shop" element={<Shop />} />
+          <Route path="marketplace" element={<Marketplace />} />
           <Route path="purchases" element={<MyPurchases />} />
           <Route path="wallet" element={<Wallet />} />
           <Route path="profile" element={<ProfileAccount role="athlete" />} />

@@ -570,9 +570,11 @@ export type GetClubJoinRequestParams = {
 }
 
 export type ManageJoinGroupRequest = {
-    clubId: number;
-    userId: number;
-    action: 'approve' | 'reject';
+    clubId?: number;
+    userId?: number;
+    action?: 'approve' | 'reject';
+    requestId?: number;
+    status?: 'approved' | 'rejected' | 'accepted';
 }
 
 export type GetClubDashboardStatsParams = {

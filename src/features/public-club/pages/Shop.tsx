@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Heart, MapPin, Grid3X3, List, Search, Filter, ShoppingBag, X, CheckCircle2 } from "lucide-react";
+import { Heart, MapPin, Grid3X3, List, Search, Filter, ShoppingBag, X, CheckCircle2, Loader2, Minus, Plus } from "lucide-react";
 import { useGetTheShopItemsQuery } from "@/features/club/api/shopApiSlice";
+import { useBuyShopItemMutation } from "@/features/club/api/shopOrderApiSlice";
 import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import type { ShopTypes } from "@/api/types";
 import { useActiveClub } from "@/hooks/useActiveClub";
+import { toast } from "sonner";
 
 interface ShopProduct {
   id: string;
   name: string;
   price: string;
+  rawPrice: number;
   location: string;
   image: string;
 }
@@ -24,6 +27,11 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [selectedProduct, setSelectedProduct] = useState<ShopProduct | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Checkout form state
+  const [quantity, setQuantity] = useState(1);
+  const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "delivery">("pickup");
+  const [address, setAddress] = useState({ fullName: "", phone: "", street: "", city: "", postalCode: "", country: "" });
 
   const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
   const resolvedClubId = propClubId || activeClubIdRedux;
@@ -47,11 +55,14 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
     { skip: !activeClubId }
   );
 
+  const [buyShopItem, { isLoading: isBuying }] = useBuyShopItemMutation();
+
   // Map API rows → ShopProduct view model
   const products: ShopProduct[] = (shopData?.rows || []).map((item: ShopTypes.Row) => ({
     id: item.id.toString(),
     name: item.name || "Unknown Item",
-    price: item.price ? `$${item.price}` : "Free",
+    price: item.price ? `€${parseFloat(item.price as any).toFixed(2)}` : "Free",
+    rawPrice: parseFloat(item.price as any) || 0,
     location: item.gender || "Club Store",
     image: item.image || "/Images/HelmetImage4.jpg",
   }));
@@ -62,6 +73,9 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
       const timer = setTimeout(() => {
         setIsSuccess(false);
         setSelectedProduct(null);
+        setQuantity(1);
+        setDeliveryMethod("pickup");
+        setAddress({ fullName: "", phone: "", street: "", city: "", postalCode: "", country: "" });
       }, 2500);
       return () => clearTimeout(timer);
     }
@@ -86,6 +100,25 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleBuy = async () => {
+    if (!selectedProduct) return;
+    if (deliveryMethod === "delivery" && (!address.fullName.trim() || !address.street.trim() || !address.city.trim())) {
+      toast.error("Please fill in your delivery address.");
+      return;
+    }
+    try {
+      await buyShopItem({
+        shopItemId: Number(selectedProduct.id),
+        quantity,
+        deliveryMethod,
+        ...(deliveryMethod === "delivery" ? { orderAddress: address } : {}),
+      }).unwrap();
+      setIsSuccess(true);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to place order. Please try again.");
+    }
+  };
 
   // ── Skeletons ──────────────────────────────────────────────────────────────
   const ShopSkeleton = () => (
@@ -208,7 +241,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                         <span className="truncate">{product.location}</span>
                       </div>
                       <button
-                        onClick={() => setSelectedProduct(product)}
+                        onClick={() => { setSelectedProduct(product); setQuantity(1); setDeliveryMethod("pickup"); }}
                         className="py-1.5 px-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#EB712B]/10 shrink-0"
                       >
                         <ShoppingBag size={11} /> Buy Now
@@ -224,10 +257,10 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
 
       {/* Checkout Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/70 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-surface border border-border rounded-3xl p-6 relative shadow-2xl space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/70 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-surface border border-border rounded-3xl relative shadow-2xl overflow-y-auto max-h-[90vh]">
             {isSuccess ? (
-              <div className="flex flex-col items-center justify-center py-8 space-y-4 text-center animate-fade-in">
+              <div className="flex flex-col items-center justify-center py-12 px-6 space-y-4 text-center">
                 <div className="w-16 h-16 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center justify-center text-green-400">
                   <CheckCircle2 size={32} className="animate-bounce" />
                 </div>
@@ -240,7 +273,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                 </div>
               </div>
             ) : (
-              <>
+              <div className="p-6 space-y-5">
                 <button
                   onClick={() => setSelectedProduct(null)}
                   className="absolute top-5 right-5 text-text-muted hover:text-text-main cursor-pointer transition-colors"
@@ -248,22 +281,74 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                   <X size={20} />
                 </button>
                 <div>
-                  <h2 className="text-lg font-black uppercase tracking-wider text-text-main pr-6">Complete Purchase</h2>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mt-1">Review your item and proceed to checkout</p>
+                  <h2 className="text-lg font-black uppercase tracking-wider text-text-main pr-8">Complete Purchase</h2>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mt-1">Review your order and checkout</p>
                 </div>
+
+                {/* Item summary */}
                 <div className="flex gap-4 bg-main-bg p-3 rounded-2xl border border-border items-center">
-                  <img src={selectedProduct.image} alt={selectedProduct.name} className="w-16 h-16 object-cover rounded-xl border border-border shrink-0" />
+                  <img src={selectedProduct.image} alt={selectedProduct.name} className="w-16 h-16 object-cover rounded-xl border border-border shrink-0" onError={(e) => { (e.target as HTMLImageElement).src = '/Images/HelmetImage4.jpg'; }} />
                   <div className="overflow-hidden space-y-1">
                     <h3 className="text-xs font-bold uppercase text-text-main truncate">{selectedProduct.name}</h3>
                     <span className="text-[10px] font-extrabold text-[#EB712B] block">{selectedProduct.price}</span>
                   </div>
                 </div>
-                <div className="bg-[#EB712B]/5 border border-[#EB712B]/10 rounded-2xl p-4 space-y-2">
-                  <span className="text-[10px] font-black text-[#EB712B] uppercase tracking-wider block">Secured Checkout</span>
-                  <p className="text-[10px] text-text-muted leading-relaxed">
-                    You are purchasing <strong>{selectedProduct.name}</strong> from a verified elite seller. Your payment method will be charged securely.
-                  </p>
+
+                {/* Quantity */}
+                <div>
+                  <p className="text-[9px] font-black text-text-muted uppercase tracking-wider mb-2">Quantity</p>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} className="w-8 h-8 rounded-xl bg-hover border border-border flex items-center justify-center cursor-pointer hover:border-[#EB712B]/30">
+                      <Minus size={14} />
+                    </button>
+                    <span className="font-black text-text-main w-6 text-center">{quantity}</span>
+                    <button onClick={() => setQuantity((q) => q + 1)} className="w-8 h-8 rounded-xl bg-hover border border-border flex items-center justify-center cursor-pointer hover:border-[#EB712B]/30">
+                      <Plus size={14} />
+                    </button>
+                    <span className="text-xs text-text-muted ml-2">= <strong className="text-[#EB712B]">€{(selectedProduct.rawPrice * quantity).toFixed(2)}</strong></span>
+                  </div>
                 </div>
+
+                {/* Delivery Method */}
+                <div>
+                  <p className="text-[9px] font-black text-text-muted uppercase tracking-wider mb-2">Delivery Method</p>
+                  <div className="flex gap-2">
+                    {(["pickup", "delivery"] as const).map((m) => (
+                      <button
+                        key={m}
+                        onClick={() => setDeliveryMethod(m)}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer border ${deliveryMethod === m ? "bg-[#EB712B] text-white border-[#EB712B]" : "bg-main-bg border-border text-text-muted hover:border-[#EB712B]/30"}`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Address fields (only for delivery) */}
+                {deliveryMethod === "delivery" && (
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-black text-text-muted uppercase tracking-wider">Delivery Address</p>
+                    {[
+                      { key: "fullName", placeholder: "Full Name" },
+                      { key: "phone", placeholder: "Phone" },
+                      { key: "street", placeholder: "Street & Number" },
+                      { key: "city", placeholder: "City" },
+                      { key: "postalCode", placeholder: "Postal Code" },
+                      { key: "country", placeholder: "Country" },
+                    ].map(({ key, placeholder }) => (
+                      <input
+                        key={key}
+                        type="text"
+                        placeholder={placeholder}
+                        value={(address as any)[key]}
+                        onChange={(e) => setAddress((prev) => ({ ...prev, [key]: e.target.value }))}
+                        className="w-full bg-main-bg border border-border rounded-xl px-3 py-2 text-xs text-text-main outline-none focus:border-[#EB712B]/50 transition-all"
+                      />
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex gap-3">
                   <button
                     onClick={() => setSelectedProduct(null)}
@@ -272,13 +357,15 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                     Cancel
                   </button>
                   <button
-                    onClick={() => setIsSuccess(true)}
-                    className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20"
+                    onClick={handleBuy}
+                    disabled={isBuying}
+                    className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20 disabled:opacity-60 flex items-center justify-center gap-2"
                   >
-                    Pay {selectedProduct.price}
+                    {isBuying ? <Loader2 size={14} className="animate-spin" /> : null}
+                    {isBuying ? "Placing Order..." : `Pay €${(selectedProduct.rawPrice * quantity).toFixed(2)}`}
                   </button>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>

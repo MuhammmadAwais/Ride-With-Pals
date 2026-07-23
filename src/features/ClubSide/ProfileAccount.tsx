@@ -5,6 +5,7 @@ import {
   Users,
   Lock,
   ShieldCheck,
+  Shield,
   Wallet,
   CreditCard,
   HelpCircle,
@@ -12,6 +13,7 @@ import {
   Info,
   AlertTriangle,
   ChevronRight,
+  ArrowRight,
   Moon,
   Sun,
   Globe,
@@ -21,11 +23,14 @@ import {
   AlertCircle,
   ChevronLeft,
   Search,
-  Check,
-  Shield,
-  ArrowRight,
   Bike,
+  Activity,
+  Loader2,
+  Check,
 } from "lucide-react";
+import { toast } from "sonner";
+import { useUpdatePasswordMutation, useUpdateScaleUnitSettingsMutation, useUserInfoQuery } from "@/features/auth/api/authApiSlice";
+import { useCheckStravaStatusQuery, useConnectStravaAccountMutation, useDisconnectStravaAccountMutation } from "@/features/club/api/stravaApiSlice";
 
 interface ProfileAccountProps {
   role?: 'organizer' | 'athlete';
@@ -50,6 +55,39 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
   const [selectedRole, setSelectedRole] = useState<"admin" | "user" | null>(
     null,
   );
+
+  // API Hooks
+  const { data: userProfileData } = useUserInfoQuery();
+  const [updatePassword, { isLoading: isUpdatingPassword }] = useUpdatePasswordMutation();
+  const [updateScaleUnit, { isLoading: isUpdatingScale }] = useUpdateScaleUnitSettingsMutation();
+  const [selectedScale, setSelectedScale] = useState<string>("kilometer");
+
+  // Strava Hooks
+  const { data: stravaStatus, isLoading: isLoadingStrava } = useCheckStravaStatusQuery();
+  const [connectStrava, { isLoading: isConnectingStrava }] = useConnectStravaAccountMutation();
+  const [disconnectStrava, { isLoading: isDisconnectingStrava }] = useDisconnectStravaAccountMutation();
+
+  const handleConnectStrava = async () => {
+    try {
+      const res = await connectStrava().unwrap();
+      if (res.authUrl || res.url || res.redirectUrl) {
+        window.location.href = res.authUrl || res.url || res.redirectUrl || '';
+      } else {
+        toast.info("Strava authentication initiated.");
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to initiate Strava connection.");
+    }
+  };
+
+  const handleDisconnectStrava = async () => {
+    try {
+      await disconnectStrava().unwrap();
+      toast.success("Disconnected from Strava.");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to disconnect Strava.");
+    }
+  };
   
   const handleLogout = () => {
     // 1. Clear authentication tokens or session storage (adjust according to your auth setup)
@@ -112,7 +150,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     }, 500);
   };
 
-  const handleSavePassword = () => {
+  const handleSavePassword = async () => {
     let newErrors = { current: "", new: "", confirm: "" };
     let isValid = true;
     if (!passwordData.current) {
@@ -129,7 +167,17 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     }
     setErrors(newErrors);
     if (isValid) {
-      setIsPasswordModalOpen(false);
+      try {
+        await updatePassword({
+          password: passwordData.current,
+          newPassword: passwordData.new,
+        }).unwrap();
+        toast.success("Password updated successfully!");
+        setIsPasswordModalOpen(false);
+        setPasswordData({ current: "", new: "", confirm: "" });
+      } catch (err: any) {
+        toast.error(err?.data?.message || "Failed to update password.");
+      }
     }
   };
 
@@ -282,6 +330,83 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 <span className="text-xs text-gray-500">v2.6.0</span>
               </div>
             </Link>{" "}
+          </div>
+        </section>
+
+        {/* Units & Settings */}
+        <section className="mb-8">
+          <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
+            Units & Integrations
+          </h3>
+          <div className={sectionCardStyle}>
+            {/* Scale Unit */}
+            <div className="flex items-center justify-between py-4 border-b border-white/5">
+              <div className="flex items-center gap-4">
+                <Globe className="text-[#EB712B]" size={20} />
+                <div>
+                  <p className="font-medium text-sm">Distance Unit</p>
+                  <p className="text-[10px] text-gray-500">Select scale unit for activity metrics</p>
+                </div>
+              </div>
+              <select
+                value={userProfileData?.scale || selectedScale}
+                onChange={async (e) => {
+                  const val = e.target.value as any;
+                  setSelectedScale(val);
+                  try {
+                    await updateScaleUnit({ scale: val }).unwrap();
+                    toast.success("Scale unit updated.");
+                  } catch (err: any) {
+                    toast.error(err?.data?.message || "Failed to update scale unit.");
+                  }
+                }}
+                disabled={isUpdatingScale}
+                className="bg-main-bg border border-border rounded-xl px-3 py-1.5 text-xs text-text-main outline-none focus:border-[#EB712B]"
+              >
+                <option value="kilometer">Kilometers (km)</option>
+                <option value="miles">Miles (mi)</option>
+                <option value="meter">Meters (m)</option>
+              </select>
+            </div>
+
+            {/* Strava Integration */}
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-4">
+                <Activity className="text-[#FC4C02]" size={20} />
+                <div>
+                  <p className="font-medium text-sm flex items-center gap-2">
+                    Strava Integration
+                    {stravaStatus?.connected && (
+                      <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
+                        Connected
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-[10px] text-gray-500">
+                    {stravaStatus?.connected
+                      ? `Syncing activities as ${stravaStatus.name || 'Strava User'}`
+                      : "Sync your rides with Strava"}
+                  </p>
+                </div>
+              </div>
+              {stravaStatus?.connected ? (
+                <button
+                  onClick={handleDisconnectStrava}
+                  disabled={isDisconnectingStrava}
+                  className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {isDisconnectingStrava ? <Loader2 size={12} className="animate-spin" /> : "Disconnect"}
+                </button>
+              ) : (
+                <button
+                  onClick={handleConnectStrava}
+                  disabled={isConnectingStrava}
+                  className="px-3 py-1.5 bg-[#FC4C02] hover:bg-[#e04300] text-white rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                >
+                  {isConnectingStrava ? <Loader2 size={12} className="animate-spin" /> : "Connect Strava"}
+                </button>
+              )}
+            </div>
           </div>
         </section>
 

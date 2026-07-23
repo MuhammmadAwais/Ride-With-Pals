@@ -6,6 +6,7 @@ import Leaderboard from "./Leaderboard";
 import Discount from "./Discount";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { fetchClubMembers } from "@/features/club/slices/clubSlice";
+import { useRemoveClubMemberMutation } from "@/features/club/api/clubApiSlice";
 import { 
   useCreateClubMembershipPlanMutation, 
   useUpdateClubMembershipPlanMutation, 
@@ -15,7 +16,7 @@ import {
 import { toast } from "sonner";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
-import { useRemoveClubMemberMutation } from "@/features/club/api/clubApiSlice";
+
 
 interface MembershipPlan {
   id: string;

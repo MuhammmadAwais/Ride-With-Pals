@@ -73,6 +73,22 @@ export const subscriptionApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ['Subscription'],
     }),
+
+    sendSubscriptionReminder: builder.mutation<{ message: string }, { clubId: number; targetUserId: number }>({
+      query: (body) => ({
+        url: '/user/club/membership/remind',
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    sendSubscriptionReminderToEveryone: builder.mutation<{ message: string; sentCount: number }, { clubId: number }>({
+      query: (body) => ({
+        url: '/user/club/membership/remind-all',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
@@ -85,4 +101,7 @@ export const {
   useSubscriptionPlanListQuery,
   useSubscribeToAnyPlanMutation,
   useCreateCustomerPortalQuery,
+  useLazyCreateCustomerPortalQuery,
+  useSendSubscriptionReminderMutation,
+  useSendSubscriptionReminderToEveryoneMutation,
 } = subscriptionApiSlice;

@@ -24,10 +24,12 @@ import {
   Edit2,
   Users,
   ShieldCheck,
+  List,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
+import SubscribersList from './SubscribersList';
 import {
   useListMembershipPlansQuery,
   useCreateClubMembershipPlanMutation,
@@ -226,6 +228,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
 const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingPlan, setEditingPlan] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'plans' | 'subscribers'>('plans');
 
   const { data: plansData, isLoading } = useListMembershipPlansQuery({ clubId });
   const [deletePlan, { isLoading: isDeleting }] = useDeleteMembershipPlanMutation();
@@ -263,6 +266,30 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
 
   return (
     <div className="space-y-8">
+      {/* Tabs */}
+      <div className="flex items-center gap-1.5 p-1 bg-surface border border-border rounded-xl self-start">
+        {[
+          { key: 'plans', label: 'Membership Plans', icon: <Crown size={13} /> },
+          { key: 'subscribers', label: 'Subscribers', icon: <List size={13} /> },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as any)}
+            className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === tab.key
+                ? 'bg-[#EB712B] text-white shadow-sm'
+                : 'text-text-muted hover:text-text-main hover:bg-hover'
+            }`}
+          >
+            {tab.icon} {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === 'subscribers' ? (
+        <SubscribersList clubId={clubId} />
+      ) : (
+        <>
       {/* Stripe warning banner */}
       {!isStripeConnected && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-center gap-3">
@@ -377,6 +404,8 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
           plan={editingPlan}
           onClose={() => { setShowForm(false); setEditingPlan(null); }}
         />
+      )}
+        </>
       )}
     </div>
   );

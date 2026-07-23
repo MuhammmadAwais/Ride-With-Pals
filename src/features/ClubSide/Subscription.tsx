@@ -7,6 +7,7 @@ import {
   useSubscribeToClubPlanMutation,
   useClubCustomerPortalMutation,
   useGetMySubscriptionQuery,
+  useLazyCreateCustomerPortalQuery,
 } from '@/features/subscriptions/api/subscriptionApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 
@@ -33,8 +34,22 @@ const Subscription = () => {
   // 3. Checkout mutation
   const [subscribeToClubPlan, { isLoading: isStartingCheckout }] = useSubscribeToClubPlanMutation();
 
-  // 4. Customer Portal mutation
+  // 4. Customer Portal mutation & lazy query
   const [clubCustomerPortal, { isLoading: isOpeningPortal }] = useClubCustomerPortalMutation();
+  const [triggerAppPortal, { isLoading: isOpeningAppPortal }] = useLazyCreateCustomerPortalQuery();
+
+  const handleOpenAppPortal = async () => {
+    try {
+      const res = await triggerAppPortal({ type: 'app', clubId: clubId || undefined }).unwrap();
+      if ((res as any)?.url) {
+        window.open((res as any).url, '_blank');
+      } else {
+        toast.info("Portal opened.");
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to open App Subscription Portal.");
+    }
+  };
 
   const handleCheckout = async (planId: number) => {
     if (!clubId) {

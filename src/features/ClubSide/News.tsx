@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { MessageSquare, Plus, ArrowUpRight, Newspaper, Bookmark } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { MessageSquare, Plus, ArrowUpRight, Newspaper, Bookmark, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useGetAllNewsQuery, useGetAllNewsCommentsQuery, useAddCommentMutation, useDelCommentMutation } from '@/features/club/api/newsApiSlice';
+import { useGetAllNewsQuery, useGetAllNewsCommentsQuery, useAddCommentMutation, useDelCommentMutation, useDeleteNewsMutation } from '@/features/club/api/newsApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -106,8 +106,17 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
   );
 };
 
-const NewsArticle = ({ item }: { item: any }) => {
+interface NewsArticleProps {
+  item: any;
+  canManage: boolean;
+  onDelete: (id: number) => void;
+  isDeletingId: number | null;
+}
+
+const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, isDeletingId }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
+  const isDeleting = isDeletingId === Number(item.id);
 
   return (
     <article className="group relative bg-surface border border-border rounded-3xl p-6 sm:p-8 overflow-hidden transition-all duration-700 ease-out hover:border-[#EB712B]/40 hover:-translate-y-1 shadow-xl">
@@ -126,8 +135,29 @@ const NewsArticle = ({ item }: { item: any }) => {
               </h2>
               <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted mt-1">{item.date}</p>
             </div>
-            <div className="shrink-0 group-hover:translate-x-1 transition-transform duration-300">
-              <ArrowUpRight className="text-text-muted opacity-50 group-hover:text-[#EB712B] transition-colors" size={20} />
+            <div className="flex items-center gap-2 shrink-0">
+              {canManage && (
+                <>
+                  <button
+                    onClick={() => navigate(`/view/clubside/news/add?newsId=${item.id}`)}
+                    className="p-1.5 rounded-lg text-text-muted hover:text-[#EB712B] hover:bg-[#EB712B]/10 transition-colors cursor-pointer"
+                    title="Edit article"
+                  >
+                    <Edit2 size={14} />
+                  </button>
+                  <button
+                    onClick={() => onDelete(Number(item.id))}
+                    disabled={isDeleting}
+                    className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer disabled:opacity-50"
+                    title="Delete article"
+                  >
+                    {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                  </button>
+                </>
+              )}
+              <div className="group-hover:translate-x-1 transition-transform duration-300">
+                <ArrowUpRight className="text-text-muted opacity-50 group-hover:text-[#EB712B] transition-colors" size={20} />
+              </div>
             </div>
           </div>
 
@@ -198,16 +228,30 @@ const NewsSkeleton = () => (
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
   const { clubId: activeClubIdRedux } = useActiveClub();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  // ✅ FIX: Use ONLY the active club from Redux/localStorage.
-  // No more fallback to first joined club — that caused wrong news for multi-club users.
   const activeClubId = clubId || activeClubIdRedux;
   const permissions = useClubPermissions(activeClubId || undefined);
+  const canManage = permissions.canPublishNews;
 
   const { data: newsData, isLoading } = useGetAllNewsQuery(
     { clubId: Number(activeClubId) },
     { skip: !activeClubId }
   );
+
+  const [deleteNews] = useDeleteNewsMutation();
+
+  const handleDelete = async (id: number) => {
+    setDeletingId(id);
+    try {
+      await deleteNews({ id }).unwrap();
+      toast.success('Article deleted successfully!');
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to delete article.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const newsItems = useMemo(() => {
     const items = newsData?.rows || [];
@@ -224,7 +268,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
     }));
   }, [newsData]);
 
-  // ✅ FIX: If no active club is selected, show a helpful prompt instead of auto-selecting first club
   if (!activeClubId) {
     return (
       <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
@@ -241,18 +284,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
     );
   }
 
-  // Determine where to link "Add Post" based on current side
-  const addPostLink = permissions.canPublishNews
-    ? (window.location.pathname.includes('/clubside') ? '/view/clubside/news/add' : '/view/clubside/news/add')
-    : null;
+  const addPostLink = canManage ? '/view/clubside/news/add' : null;
 
   return (
     <div className="min-h-screen text-text-main bg-main-bg p-4 sm:p-6 md:p-16 font-sans">
       <header className="max-w-4xl mx-auto mb-8 sm:mb-12">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-text-main">Community News</h1>
-          {/* ✅ Role-gated: only admins/owners with canPublishNews permission see this */}
-          {permissions.canPublishNews && addPostLink && (
+          {canManage && addPostLink && (
             <Link
               to={addPostLink}
               className="flex items-center justify-center gap-2 px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest w-full sm:w-auto text-center"
@@ -270,7 +309,15 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId }) => {
             No news articles available yet.
           </div>
         ) : (
-          newsItems.map((item) => <NewsArticle key={item.id} item={item} />)
+          newsItems.map((item) => (
+            <NewsArticle
+              key={item.id}
+              item={item}
+              canManage={canManage}
+              onDelete={handleDelete}
+              isDeletingId={deletingId}
+            />
+          ))
         )}
       </main>
     </div>

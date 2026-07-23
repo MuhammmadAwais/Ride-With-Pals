@@ -17,15 +17,34 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-// 4: Custom baseQuery wrapper to capture global API events
+// 4: Custom baseQuery wrapper to capture global API events & log requests/responses
 const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
   extraOptions
 ) => {
+  const requestUrl = typeof args === 'string' ? args : args.url;
+  const requestMethod = typeof args === 'string' ? 'GET' : (args.method || 'GET');
+  const requestBody = typeof args === 'string' ? undefined : args.body;
+  const requestParams = typeof args === 'string' ? undefined : args.params;
+
+  console.groupCollapsed(`🚀 [API REQUEST] ${requestMethod.toUpperCase()} ${requestUrl}`);
+  console.log('📍 Endpoint:', requestUrl);
+  console.log('⚡ Method:', requestMethod);
+  if (requestParams) console.log('🔍 Query Params:', requestParams);
+  if (requestBody) console.log('📦 Sending Request Body:', requestBody);
+  console.log('🏷️ RTK Endpoint:', api.endpoint);
+  console.groupEnd();
+
   const result = await baseQuery(args, api, extraOptions);
 
   if (result.error) {
+    console.groupCollapsed(`❌ [API ERROR] ${requestMethod.toUpperCase()} ${requestUrl}`);
+    console.log('📍 Endpoint:', requestUrl);
+    console.log('⚠️ Status Code:', result.error.status);
+    console.log('💥 Received Error Payload:', result.error.data || result.error);
+    console.groupEnd();
+
     if (result.error.status === 401) {
       // If a 401 response is caught, automatically trigger a logout cleanup action
       api.dispatch(logout());
@@ -35,6 +54,14 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
     }
     return result;
   }
+
+  console.groupCollapsed(`✅ [API RESPONSE] ${requestMethod.toUpperCase()} ${requestUrl}`);
+  console.log('📍 Endpoint:', requestUrl);
+  console.log('📥 Receiving Response Data:', result.data);
+  if (result.data && typeof result.data === 'object' && 'response' in result.data) {
+    console.log('🔓 Unwrapped Payload Data:', (result.data as any).response);
+  }
+  console.groupEnd();
 
   // 5: The backend encapsulates payloads in a { statusCode, message, response } JSON envelope.
   // Implement the transform hook at this base level to peel back this envelope and pass pure response data.

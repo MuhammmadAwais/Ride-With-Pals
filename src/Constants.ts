@@ -54,6 +54,8 @@ export const ROUTES = {
   RIDE:               '/view/userside/rides',
   SAVED_RIDES:        '/view/userside/saved-rides',
   PURCHASES:          '/view/userside/purchases',
+  SHOP:               '/view/userside/shop',
+  MARKETPLACE:        '/view/userside/marketplace',
   WALLET_ATHLETE:     '/view/userside/wallet',
   PROFILE_ATHLETE:    '/view/userside/profile',
   SUPPORT_ATHLETE:    '/view/userside/support',

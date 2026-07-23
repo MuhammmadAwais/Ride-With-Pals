@@ -31,6 +31,8 @@ import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import {
   useApplyPermissionTogglesForSelectedMembersMutation,
   useGrantRevokeFullClubAccessForOneMemberMutation,
+  useAssignRoleToMemberMutation,
+  useRemoveFullAccessPermissionMutation,
 } from '@/features/club/api/permissionApiSlice';
 
 // ── Permission Mapping ─────────────────────────────────────────────────────────
@@ -78,6 +80,28 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
 
   const [applyPermissions] = useApplyPermissionTogglesForSelectedMembersMutation();
   const [grantRevokeFullAccess, { isLoading: isTogglingFull }] = useGrantRevokeFullClubAccessForOneMemberMutation();
+  const [assignRole, { isLoading: isAssigningRole }] = useAssignRoleToMemberMutation();
+  const [removeFullAccess, { isLoading: isRemovingFull }] = useRemoveFullAccessPermissionMutation();
+
+  const handleAssignRole = async (roleId: number) => {
+    if (!targetUserId) return;
+    try {
+      await assignRole({ clubId, userId: targetUserId, roleId }).unwrap();
+      toast.success(`Role updated for ${fullName}`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to assign role.');
+    }
+  };
+
+  const handleRemoveFullAccess = async () => {
+    if (!targetUserId) return;
+    try {
+      await removeFullAccess({ clubId, userId: targetUserId }).unwrap();
+      toast.success(`Full access removed for ${fullName}`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to remove full access.');
+    }
+  };
 
   const role = (member.role || 'user').toLowerCase();
   const isOwner = role === 'owner';
@@ -194,6 +218,29 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
       {isExpanded && !isOwner && (
         <div className="border-t border-border p-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 bg-surface/50">
           
+          {/* Role Assignment */}
+          <div className="flex items-center justify-between gap-4 pb-3 border-b border-border">
+            <div>
+              <p className="text-xs font-bold text-text-main flex items-center gap-1.5">
+                <UserCheck size={14} className="text-[#EB712B]" /> Assign Role
+              </p>
+              <p className="text-[10px] text-text-muted mt-0.5">Current: <span className="capitalize font-bold text-text-main">{member.role || 'member'}</span></p>
+            </div>
+            <div className="flex items-center gap-2">
+              {isAssigningRole && <Loader2 size={14} className="animate-spin text-[#EB712B]" />}
+              <select
+                onChange={(e) => handleAssignRole(Number(e.target.value))}
+                defaultValue=""
+                disabled={isAssigningRole}
+                className="bg-main-bg border border-border rounded-xl px-3 py-1.5 text-xs text-text-main outline-none focus:border-[#EB712B]/50 cursor-pointer disabled:opacity-50"
+              >
+                <option value="" disabled>Change role...</option>
+                <option value="1">Admin</option>
+                <option value="2">User</option>
+              </select>
+            </div>
+          </div>
+
           {/* Full Access Toggle Card */}
           <div className="flex items-start justify-between gap-4 pb-3 border-b border-border">
             <div>
@@ -202,20 +249,31 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
               </p>
               <p className="text-[10px] text-text-muted mt-0.5">Overrides all permissions and grants complete access</p>
             </div>
-            <button
-              onClick={handleFullAccess}
-              disabled={isTogglingFull}
-              className="cursor-pointer shrink-0 disabled:opacity-50"
-              title={hasFullAccess ? 'Revoke full access' : 'Grant full access'}
-            >
-              {isTogglingFull ? (
-                <Loader2 size={24} className="animate-spin text-[#EB712B]" />
-              ) : hasFullAccess ? (
-                <ToggleRight size={30} className="text-[#EB712B]" />
-              ) : (
-                <ToggleLeft size={30} className="text-text-muted" />
+            <div className="flex items-center gap-2">
+              {hasFullAccess && (
+                <button
+                  onClick={handleRemoveFullAccess}
+                  disabled={isRemovingFull}
+                  className="text-[9px] font-bold uppercase text-red-400 hover:text-red-300 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
+                >
+                  {isRemovingFull ? <Loader2 size={10} className="animate-spin" /> : 'Remove'}
+                </button>
               )}
-            </button>
+              <button
+                onClick={handleFullAccess}
+                disabled={isTogglingFull}
+                className="cursor-pointer shrink-0 disabled:opacity-50"
+                title={hasFullAccess ? 'Revoke full access' : 'Grant full access'}
+              >
+                {isTogglingFull ? (
+                  <Loader2 size={24} className="animate-spin text-[#EB712B]" />
+                ) : hasFullAccess ? (
+                  <ToggleRight size={30} className="text-[#EB712B]" />
+                ) : (
+                  <ToggleLeft size={30} className="text-text-muted" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Individual Permission Items */}

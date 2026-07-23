@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation } from '@/features/club/api/clubApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
@@ -24,12 +24,14 @@ export default function ClubDetails() {
   const [activeTab, setActiveTab] = useState<TabType>('Overview');
   const currentUser = useAppSelector((state) => state.auth.user);
 
-  // Join Flow State
+  // Join / Leave Flow State
   const { handleJoinClub, isJoining } = useClub();
+  const [leaveClub, { isLoading: isLeaving }] = useLeaveClubMutation();
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
   const joinedRows = joinedClubsData?.rows || [];
   const { myClubs } = useAppSelector((s) => s.club);
   const isMember = joinedRows.some((c: any) => c.id === Number(clubId)) || myClubs.some((c: any) => c.id === Number(clubId));
+
 
   const [showCodeScreen, setShowCodeScreen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
@@ -106,6 +108,18 @@ export default function ClubDetails() {
       setShowDepositScreen(true);
     } else {
       await handleJoinClub(club.id);
+    }
+  };
+
+  const handleLeaveClub = async () => {
+    const targetClubId = club?.id || Number(clubId);
+    if (!targetClubId) return;
+    if (!window.confirm("Are you sure you want to leave this club?")) return;
+    try {
+      await leaveClub({ clubId: targetClubId }).unwrap();
+      toast.success("You have left the club successfully.");
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || "Failed to leave the club.");
     }
   };
 
@@ -272,9 +286,14 @@ export default function ClubDetails() {
               </button>
             )}
             {isMember && (
-              <div className="flex-1 md:flex-none px-8 py-3.5 bg-hover border border-border text-text-muted text-xs font-black uppercase tracking-widest rounded-xl cursor-default flex items-center justify-center">
-                ✓ Joined
-              </div>
+              <button 
+                onClick={handleLeaveClub}
+                disabled={isLeaving}
+                className="flex-1 md:flex-none px-8 py-3.5 bg-hover hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors text-xs font-black uppercase tracking-widest rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-50"
+                title="Click to leave club"
+              >
+                {isLeaving ? "Leaving..." : "✓ Joined (Leave)"}
+              </button>
             )}
             {!isOwner && (
               <button 

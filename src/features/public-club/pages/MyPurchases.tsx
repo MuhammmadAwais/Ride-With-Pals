@@ -1,16 +1,32 @@
 import { useState, useMemo } from 'react';
-import { Search, ShoppingBag, CheckCircle2 } from 'lucide-react';
+import { Search, ShoppingBag, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { useGetMyPurchasesListQuery } from '@/features/club/api/shopOrderApiSlice';
+import { useGetMyPurchasesListQuery, useUpdateShopOrderStatusMutation } from '@/features/club/api/shopOrderApiSlice';
+import { toast } from 'sonner';
 
 const MyPurchases = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   const { data: purchasesResponse, isLoading, isError } = useGetMyPurchasesListQuery({
     limit: 50,
     offset: 0
   });
+
+  const [updateShopOrderStatus] = useUpdateShopOrderStatusMutation();
+
+  const handleCancel = async (orderId: string) => {
+    setCancellingId(orderId);
+    try {
+      await updateShopOrderStatus({ orderId: Number(orderId) }).unwrap();
+      toast.success('Order cancelled successfully.');
+    } catch (err: any) {
+      toast.error(err?.data?.message || 'Failed to cancel order.');
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   const purchases = useMemo(() => {
     const rows = purchasesResponse?.rows || [];
@@ -22,6 +38,7 @@ const MyPurchases = () => {
       date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
       status: item.statusName || 'Processing',
       img: item.shop?.image || '/Images/CycleImage.png',
+      canCancel: !['Delivered', 'Cancelled'].includes(item.statusName || ''),
     }));
 
     if (!searchQuery) return mapped;
@@ -77,12 +94,33 @@ const MyPurchases = () => {
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center gap-1">
               <CheckCircle2 size={12} /> Delivered
             </span>
+          ) : item.status === 'Cancelled' ? (
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1">
+              <XCircle size={12} /> Cancelled
+            </span>
           ) : (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20">
               {item.status}
             </span>
           )}
         </div>
+      )
+    },
+    {
+      key: 'cancel',
+      label: '',
+      sortable: false,
+      render: (item) => (
+        item.canCancel ? (
+          <button
+            onClick={() => handleCancel(item.id)}
+            disabled={cancellingId === item.id}
+            className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-red-400 border border-red-500/20 bg-red-500/5 hover:bg-red-500/15 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+          >
+            {cancellingId === item.id ? <Loader2 size={11} className="animate-spin" /> : <XCircle size={11} />}
+            {cancellingId === item.id ? 'Cancelling...' : 'Cancel'}
+          </button>
+        ) : null
       )
     }
   ];

@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
-import { Bike, Globe, Trophy, Award, Filter, TrendingUp } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Bike, Globe, Trophy, Award, Filter, TrendingUp, Activity } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetClubLeaderboardAppRidesQuery } from '@/features/club/api/clubApiSlice';
+import { useGetStravaLeaderboardDataQuery } from '@/features/club/api/stravaApiSlice';
 import { useAppSelector } from '@/hooks/useAppSelector';
-
+import { useActiveClub } from '@/hooks/useActiveClub';
 
 const StatCard = ({ title, value, icon: Icon }: any) => (
   <div className="relative p-6 bg-surface border border-border backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 transition-all duration-500 group">
@@ -40,9 +41,8 @@ const LeaderboardSkeleton = () => (
   </div>
 );
 
-import { useActiveClub } from '@/hooks/useActiveClub';
-
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
+  const [activeTab, setActiveTab] = useState<'app' | 'strava'>('app');
   const joinedClubs = useAppSelector((state) => state.club.myClubs) || [];
   
   const { clubId: reduxClubId, setActiveClub } = useActiveClub();
@@ -58,27 +58,50 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     if (clubObj) setActiveClub(clubObj as any);
   };
 
-  const { data: rawLeaderboard, isLoading } = useGetClubLeaderboardAppRidesQuery(
+  // App Rides query
+  const { data: rawLeaderboard, isLoading: isLoadingApp } = useGetClubLeaderboardAppRidesQuery(
     { clubId: Number(activeClubId) },
-    { skip: !activeClubId }
+    { skip: !activeClubId || activeTab !== 'app' }
   );
 
+  // Strava query
+  const { data: stravaData, isLoading: isLoadingStrava } = useGetStravaLeaderboardDataQuery(
+    { clubId: Number(activeClubId) },
+    { skip: !activeClubId || activeTab !== 'strava' }
+  );
+
+  const isLoading = activeTab === 'app' ? isLoadingApp : isLoadingStrava;
+
   const leaderboardData = useMemo(() => {
-    const raw = rawLeaderboard as any;
-    const dataArray = raw?.rows || raw?.data || raw?.response?.data || [];
-    const items = Array.isArray(dataArray) ? dataArray : Array.isArray(rawLeaderboard) ? rawLeaderboard : [];
-    
-    return items.map((item: any, index: number) => ({
-      id: index + 1,
-      name: item.userName || item.name || 'Unknown Rider',
-      role: item.role || 'Member',
-      team: item.team || 'RWP Squad',
-      status: item.status || 'Active',
-      rides: item.ridesCount || item.totalRides || 0,
-      attendance: `${item.attendance || 100}%`,
-      avatar: item.profileImage || null
-    }));
-  }, [rawLeaderboard]);
+    if (activeTab === 'app') {
+      const raw = rawLeaderboard as any;
+      const dataArray = raw?.rows || raw?.data || raw?.response?.data || [];
+      const items = Array.isArray(dataArray) ? dataArray : Array.isArray(rawLeaderboard) ? rawLeaderboard : [];
+      
+      return items.map((item: any, index: number) => ({
+        id: index + 1,
+        name: item.userName || item.name || 'Unknown Rider',
+        role: item.role || 'Member',
+        team: item.team || 'RWP Squad',
+        status: item.status || 'Active',
+        rides: item.ridesCount || item.totalRides || 0,
+        attendance: `${item.attendance || 100}%`,
+        avatar: item.profileImage || null
+      }));
+    } else {
+      const items = Array.isArray(stravaData) ? stravaData : (stravaData as any)?.rows || [];
+      return items.map((item: any, index: number) => ({
+        id: index + 1,
+        name: item.fullName || 'Strava Rider',
+        role: 'Strava',
+        team: item.totalDistance ? `${item.totalDistance} km` : 'Strava Sync',
+        status: 'Active',
+        rides: item.totalRides || item.ridesCount || 0,
+        attendance: item.totalElevation ? `${item.totalElevation}m elev` : '100%',
+        avatar: item.profileImage || null
+      }));
+    }
+  }, [activeTab, rawLeaderboard, stravaData]);
 
   const columns: Column<any>[] = [
     {
@@ -94,15 +117,15 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       render: (user) => (
         <div className="flex items-center gap-4">
           {user.avatar ? (
-            <img src={user.avatar} className="w-10 h-10 rounded-full object-cover border border-white/5" alt="" />
+            <img src={user.avatar} className="w-10 h-10 rounded-full object-cover border border-border" alt="" />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#1a1a1a] to-[#252525] border border-white/5 flex items-center justify-center font-bold text-[#EB712B] text-xs uppercase">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#1a1a1a] to-[#252525] border border-border flex items-center justify-center font-bold text-[#EB712B] text-xs uppercase">
               {user.name.substring(0, 2)}
             </div>
           )}
           <div>
-            <div className="font-bold text-white transition-colors">{user.name}</div>
-            <div className="text-[10px] text-gray-500 uppercase tracking-widest">{user.role} • {user.team}</div>
+            <div className="font-bold text-text-main transition-colors">{user.name}</div>
+            <div className="text-[10px] text-text-muted uppercase tracking-widest">{user.role} • {user.team}</div>
           </div>
         </div>
       )
@@ -112,7 +135,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       label: 'Status',
       sortable: true,
       render: (user) => (
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border ${user.status === 'Active' ? 'border-emerald-500/20 text-emerald-400 bg-emerald-500/5' : 'border-gray-500/20 text-gray-500'}`}>
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border ${user.status === 'Active' ? 'border-emerald-500/20 text-emerald-400 bg-emerald-500/5' : 'border-border text-text-muted'}`}>
           {user.status === 'Active' && <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span></span>}
           {user.status}
         </span>
@@ -126,12 +149,9 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       cellClass: "text-right",
       render: (user) => (
         <div>
-          <div className="font-bold text-sm">{user.rides} <span className="text-gray-600 font-normal">Rides</span></div>
+          <div className="font-bold text-sm text-text-main">{user.rides} <span className="text-text-muted font-normal">Rides</span></div>
           <div className="flex justify-end items-center gap-2 mt-1">
-            <span className="text-[9px] text-gray-500 font-bold">{user.attendance}</span>
-            <div className="w-12 h-1 bg-white/5 rounded-full overflow-hidden">
-              <div className="h-full bg-[#EB712B] rounded-full" style={{ width: user.attendance }} />
-            </div>
+            <span className="text-[9px] text-text-muted font-bold">{user.attendance}</span>
           </div>
         </div>
       )
@@ -148,57 +168,65 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
             <TrendingUp size={14} className="text-[#EB712B]" />
             <span className="text-[10px] font-bold tracking-widest text-[#EB712B] uppercase">Performance Analytics</span>
           </div>
-          <h1 className="text-4xl md:text-4.4xl font-extrabold tracking-tighter text-text-main">Leaderboard</h1>
-          {clubId && <p className="text-xs text-[#EB712B] font-bold">Club ID: {clubId}</p>}
-          <p className="text-text-muted text-sm md:text-base max-w-lg leading-relaxed tracking-wide">
-            <span className="text-[#EB712B] font-bold">Global Performance Index:</span> Tracking elite cycling metrics and club rankings across the continental federation circuit.
+          <h1 className="text-4xl lg:text-6xl font-black text-text-main tracking-tighter">Leaderboard</h1>
+          <p className="text-text-muted text-sm max-w-xl">
+            Live metrics and performance ranking for current club members.
           </p>
         </div>
 
-        <div className="flex gap-3 flex-wrap items-center">
-          {!clubId && joinedClubs.length > 0 && (
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-xl hover:border-text-muted transition-all duration-300 cursor-pointer">
-              <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Club:</span>
+        {/* Club Selector & Source Tabs */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+          <div className="flex bg-surface p-1 rounded-xl border border-border">
+            <button
+              onClick={() => setActiveTab('app')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === 'app' ? 'bg-[#EB712B] text-white shadow-sm' : 'text-text-muted hover:text-text-main'}`}
+            >
+              <Bike size={14} /> App Rides
+            </button>
+            <button
+              onClick={() => setActiveTab('strava')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === 'strava' ? 'bg-[#FC4C02] text-white shadow-sm' : 'text-text-muted hover:text-text-main'}`}
+            >
+              <Activity size={14} /> Strava
+            </button>
+          </div>
+
+          {joinedClubs.length > 0 && (
+            <div className="relative">
               <select
-                value={activeClubId?.toString()}
+                value={activeClubId}
                 onChange={handleClubChange}
-                className="bg-transparent text-text-main text-xs font-black tracking-wider uppercase border-none focus:outline-none focus:ring-0 cursor-pointer min-w-[150px]"
+                className="w-full sm:w-64 bg-surface border border-border rounded-xl px-4 py-3 text-xs font-bold text-text-main appearance-none cursor-pointer hover:border-[#EB712B]/40 transition-colors focus:outline-none"
               >
                 {joinedClubs.map((club: any) => (
-                  <option key={club.id} value={club.id} className="bg-surface text-text-main uppercase font-bold text-xs">
-                    {club.clubName || "Unnamed Club"}
+                  <option key={club.id} value={club.id} className="bg-surface text-text-main">
+                    {club.clubName || club.name}
                   </option>
                 ))}
               </select>
+              <Filter className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={14} />
             </div>
           )}
-          <button className="group flex items-center gap-2 px-5 py-3 bg-surface border border-border rounded-xl hover:border-text-muted transition-all active:scale-95 text-xs font-bold tracking-widest text-text-muted hover:text-text-main cursor-pointer">
-            <Filter size={14} className="group-hover:rotate-180 transition-transform duration-500" /> Strava Imported
-          </button>
-          <button className="px-6 py-3 bg-surface border border-[#EB712B]/50 text-[#EB712B] rounded-xl hover:bg-[#EB712B] hover:text-white transition-all duration-300 text-xs font-bold tracking-widest cursor-pointer">
-            Rides Attended
-          </button>
         </div>
       </header>
 
-      {/* Stats */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-        <StatCard title="Total Active Rides" value={leaderboardData.reduce((acc: any, val: any) => acc + (val.rides || 0), 0) || "0"} icon={Bike} />
-        <StatCard title="Ranked Members" value={leaderboardData.length || "0"} icon={Globe} />
-        <StatCard title="Avg Attendance" value={`${Math.round(leaderboardData.reduce((acc: any, val: any) => acc + parseFloat(val.attendance || "0"), 0) / (leaderboardData.length || 1)) || 0}%`} icon={Trophy} />
-        <StatCard title="Top Rides" value={leaderboardData.reduce((max: number, val: any) => Math.max(max, val.rides || 0), 0) || "0"} icon={Award} />
-      </section>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <StatCard title="Active Racers" value={leaderboardData.length.toString()} icon={Bike} />
+        <StatCard title="Total Rides" value={leaderboardData.reduce((acc, curr) => acc + curr.rides, 0).toString()} icon={Trophy} />
+        <StatCard title="Top Participant" value={leaderboardData[0]?.name || "N/A"} icon={Award} />
+      </div>
 
-      {/* Main Table */}
-      <div className="relative min-h-[200px]">
+      {/* Table Section */}
+      <div className="bg-surface border border-border rounded-[32px] p-6 lg:p-8 shadow-2xl">
         {isLoading ? (
           <LeaderboardSkeleton />
-        ) : leaderboardData.length === 0 ? (
-          <div className="bg-surface rounded-3xl border border-border p-12 text-center text-text-muted">
-            No leaderboard data available for this club yet.
-          </div>
-        ) : (
+        ) : leaderboardData.length > 0 ? (
           <DataTable data={leaderboardData} columns={columns} />
+        ) : (
+          <div className="text-center py-12 text-text-muted font-bold text-xs uppercase tracking-wider">
+            No leaderboard data found for this club under {activeTab === 'app' ? 'App Rides' : 'Strava'}.
+          </div>
         )}
       </div>
     </div>

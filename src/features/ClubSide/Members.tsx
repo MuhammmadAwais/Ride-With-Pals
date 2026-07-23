@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban, MessageSquare } from 'lucide-react';
+import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban, MessageSquare, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { toast } from 'sonner';
 import { useGetClubMembersListQuery, useRemoveClubMemberMutation } from '@/features/club/api/clubApiSlice';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import UserProfileModal from './components/UserProfileModal';
 
 
 export interface Member {
@@ -51,6 +52,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const { clubId: activeClubIdRedux, setActiveClub } = useActiveClub();
   let activeClubIdStr = propClubId?.toString() || activeClubIdRedux?.toString() || null;
@@ -193,27 +195,27 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
             <MoreVertical size={16} />
           </button>
           
-          {activeMenuId === row.id && (
-            <div className="absolute right-0 top-full mt-1 w-48 bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-              <div className="p-1">
-                <button className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2">
-                  <Mail size={14} /> Message
-                </button>
-                <button className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2">
-                  <ShieldAlert size={14} /> Change Role
-                </button>
-                <button 
-                  onClick={() => navigate('/view/clubside/support', { 
-                    state: { 
-                      targetUserId: Number(row.id), 
-                      targetUserName: row.name, 
-                      targetUserAvatar: row.profilePhoto 
-                    } 
-                  })}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <MessageSquare size={14} /> Message
-                </button>
+            {activeMenuId === row.id && (
+              <div className="absolute right-0 top-full mt-1 w-48 bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                <div className="p-1">
+                  <button 
+                    onClick={() => { setSelectedUserId(Number(row.id)); setActiveMenuId(null); }}
+                    className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <Eye size={14} className="text-[#EB712B]" /> View Profile
+                  </button>
+                  <button 
+                    onClick={() => navigate('/view/clubside/support', { 
+                      state: { 
+                        targetUserId: Number(row.id), 
+                        targetUserName: row.name, 
+                        targetUserAvatar: row.profilePhoto 
+                      } 
+                    })}
+                    className="w-full text-left px-3 py-2 text-xs font-medium text-text-main hover:bg-hover rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <MessageSquare size={14} /> Message
+                  </button>
                 <div className="h-px bg-border my-1" />
                 <button 
                   onClick={() => handleRemoveMember(row.id)}
@@ -278,6 +280,14 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
             <h3 className="text-lg font-bold text-text-main mb-1">No members found</h3>
             <p className="text-sm text-text-muted">No members match your search criteria.</p>
           </div>
+        )}
+
+        {/* User Profile Modal */}
+        {selectedUserId && (
+          <UserProfileModal
+            userId={selectedUserId}
+            onClose={() => setSelectedUserId(null)}
+          />
         )}
       </div>
     </div>
