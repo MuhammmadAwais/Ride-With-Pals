@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Bike, Globe, Trophy, Award, Filter, TrendingUp, Activity } from 'lucide-react';
+import { Bike, Trophy, Award, Filter, TrendingUp, Activity } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetClubLeaderboardAppRidesQuery } from '@/features/club/api/clubApiSlice';
@@ -194,7 +194,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
           {joinedClubs.length > 0 && (
             <div className="relative">
               <select
-                value={activeClubId}
+                value={activeClubId ?? ''}
                 onChange={handleClubChange}
                 className="w-full sm:w-64 bg-surface border border-border rounded-xl px-4 py-3 text-xs font-bold text-text-main appearance-none cursor-pointer hover:border-[#EB712B]/40 transition-colors focus:outline-none"
               >
@@ -213,7 +213,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
         <StatCard title="Active Racers" value={leaderboardData.length.toString()} icon={Bike} />
-        <StatCard title="Total Rides" value={leaderboardData.reduce((acc, curr) => acc + curr.rides, 0).toString()} icon={Trophy} />
+        <StatCard title="Total Rides" value={leaderboardData.reduce((acc: number, curr: any) => acc + curr.rides, 0).toString()} icon={Trophy} />
         <StatCard title="Top Participant" value={leaderboardData[0]?.name || "N/A"} icon={Award} />
       </div>
 

@@ -58,12 +58,12 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
   // API Hooks
   const { data: userProfileData } = useUserInfoQuery();
-  const [updatePassword, { isLoading: isUpdatingPassword }] = useUpdatePasswordMutation();
+  const [updatePassword] = useUpdatePasswordMutation();
   const [updateScaleUnit, { isLoading: isUpdatingScale }] = useUpdateScaleUnitSettingsMutation();
   const [selectedScale, setSelectedScale] = useState<string>("kilometer");
 
   // Strava Hooks
-  const { data: stravaStatus, isLoading: isLoadingStrava } = useCheckStravaStatusQuery();
+  const { data: stravaStatus } = useCheckStravaStatusQuery();
   const [connectStrava, { isLoading: isConnectingStrava }] = useConnectStravaAccountMutation();
   const [disconnectStrava, { isLoading: isDisconnectingStrava }] = useDisconnectStravaAccountMutation();
 

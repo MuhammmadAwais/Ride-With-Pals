@@ -153,7 +153,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   const ridesByMonth = React.useMemo(() => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const currentMonth = new Date().getMonth();
-    const last6Months = [];
+    const last6Months: { name: string, rides: number, sales: number }[] = [];
     for (let i = 5; i >= 0; i--) {
       const idx = (currentMonth - i + 12) % 12;
       last6Months.push({ name: months[idx], rides: 0, sales: 0 });

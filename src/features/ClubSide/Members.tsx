@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, User, MoreVertical, X, Mail, ShieldAlert, Ban, MessageSquare, Eye } from 'lucide-react';
+import { Search, User, MoreVertical, X, Ban, MessageSquare, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
