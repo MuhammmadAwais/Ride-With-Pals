@@ -275,7 +275,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               { 
                 icon: Wallet, 
                 title: "Wallet", 
-                path: role === 'organizer' ? "/wallet" : "/athlete/wallet" 
+                path: role === 'organizer' ? "/view/clubside/wallet" : "/view/userside/wallet" 
               },
             ].map((item, idx) => (
               <div
@@ -300,7 +300,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           </h3>
           <div className={sectionCardStyle}>
             <Link 
-  to={location.pathname.startsWith('/clubs') || location.pathname.startsWith('/my-promos') ? "/support/athlete" : "/support/owner"} 
+  to={role === 'athlete' ? "/view/userside/support" : "/view/clubside/support"} 
   className="block w-full"
 >
   <div className={rowItemStyle}>

@@ -208,6 +208,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navContainerRef = useRef<HTMLElement>(null);
   const pillRef         = useRef<HTMLDivElement>(null);
   const roleDropdownRef = useRef<HTMLDivElement>(null);
+  const profileMenuRef  = useRef<HTMLDivElement>(null);
 
   // Close role switcher dropdown when clicking outside
   useEffect(() => {
@@ -224,8 +225,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     };
   }, [roleMenuOpen]);
 
+  // Close profile popup menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    }
+    if (profileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [profileMenuOpen]);
+
   // Determine which nav section to show based on current route
-  const isAthleteSide = location.pathname.startsWith('/view/userside');
+  const isClubSide    = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
+  const isAthleteSide = !isClubSide;
 
   const navItems = isAthleteSide ? ATHLETE_NAV_ITEMS : CLUB_NAV_ITEMS;
 
@@ -477,7 +494,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
 
         {/* ── Profile Footer ── */}
-        <div className="profile-footer">
+        <div className="profile-footer" ref={profileMenuRef}>
           {/* Profile popup menu */}
           {profileMenuOpen && (
             <div className="profile-menu">
