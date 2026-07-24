@@ -14,9 +14,11 @@ import Marketplace from './Marketplace';
 import Discount from '@/features/ClubSide/Discount';
 import Members from '@/features/ClubSide/Members';
 
-type TabType = 'Overview' | 'Rides' | 'News' | 'Leaderboard' | 'Marketplace' | 'Discounts' | 'Members';
+import Shop from './Shop';
 
-const TABS: TabType[] = ['Overview', 'Rides', 'News', 'Leaderboard', 'Marketplace', 'Discounts', 'Members'];
+type TabType = 'Overview' | 'Rides' | 'News' | 'Leaderboard' | 'Marketplace' | 'Shop' | 'Discounts' | 'Members';
+
+const TABS: TabType[] = ['Overview', 'Rides', 'News', 'Leaderboard', 'Marketplace', 'Shop', 'Discounts', 'Members'];
 
 export default function ClubDetails() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -218,6 +220,8 @@ export default function ClubDetails() {
         return <Leaderboard clubId={clubId} />;
       case 'Marketplace':
         return <Marketplace clubId={clubId} />;
+      case 'Shop':
+        return <Shop clubId={clubId} />;
       case 'Discounts':
         return <Discount role="athlete" clubId={clubId} />;
       case 'Members':
@@ -274,7 +278,7 @@ export default function ClubDetails() {
             <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-text-muted uppercase tracking-wider">
               <span className="flex items-center gap-1"><MapPin size={14} className="text-[#EB712B]"/> {club.location || "Global"}</span>
               <span>•</span>
-              <span className="flex items-center gap-1"><Users size={14} className="text-[#EB712B]"/> {club.totalMembers || 0} Members</span>
+              <span className="flex items-center gap-1"><Users size={14} className="text-[#EB712B]"/> {membersData?.length || club.totalMembers || 0} Members</span>
               <span>•</span>
               <span className="text-emerald-400">{club.clubPrivacyId === 1 ? "Public Club" : "Private Club"}</span>
             </div>

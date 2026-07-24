@@ -109,10 +109,10 @@ export const authApiSlice = apiSlice.injectEndpoints({
               isAthleteProfile: !!userInfoResult.isAthleteProfile,
               role: userInfoResult.isAthleteProfile ? 'athlete' : 'organizer',
               fullName: userInfoResult.fullName,
-              profileImage: userInfoResult.profileImage,
-              dob: userInfoResult.dob,
-              country: userInfoResult.country,
-              phone: userInfoResult.phone
+              profileImage: userInfoResult.profileImage || undefined,
+              dob: userInfoResult.dob || undefined,
+              country: userInfoResult.country || undefined,
+              phone: userInfoResult.phone || undefined
             };
             dispatch(setUser(user));
           } catch (e) {
@@ -204,10 +204,10 @@ export const authApiSlice = apiSlice.injectEndpoints({
               isAthleteProfile: !!userInfoResult.isAthleteProfile,
               role: userInfoResult.isAthleteProfile ? 'athlete' : 'organizer',
               fullName: userInfoResult.fullName,
-              profileImage: userInfoResult.profileImage,
-              dob: userInfoResult.dob,
-              country: userInfoResult.country,
-              phone: userInfoResult.phone
+              profileImage: userInfoResult.profileImage || undefined,
+              dob: userInfoResult.dob || undefined,
+              country: userInfoResult.country || undefined,
+              phone: userInfoResult.phone || undefined
             };
             dispatch(setUser(user));
           } catch (e) {

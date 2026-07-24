@@ -61,7 +61,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   
   if (!activeClubIdStr && joinedRows.length > 0) {
     activeClubIdStr = joinedRows[0].id.toString();
-    setActiveClub(joinedRows[0] as any);
+    setActiveClub(joinedRows[0]);
   }
 
   const effectiveClubId = activeClubIdStr ? Number(activeClubIdStr) : 0;
@@ -77,21 +77,23 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
       await removeMember({ clubId: effectiveClubId, userId: Number(userId) }).unwrap();
       toast.success("Member removed successfully!");
       setActiveMenuId(null);
-    } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || "Failed to remove member.");
+    } catch (err) {
+      toast.error((err as { data?: { message?: string }; message?: string })?.data?.message || (err as Error)?.message || "Failed to remove member.");
     }
   };
 
   const formattedMembers = useMemo<Member[]>(() => {
     if (!membersData) return [];
-    return membersData.map((m: any) => ({
-      id: (m.userId || m.id)?.toString(),
-      profilePhoto: m.profileImage || "",
-      name: ((m.firstName || '') + ' ' + (m.lastName || '')).trim() || m.username || 'Unnamed',
+    return membersData.map((m: { userId?: number; id?: number; profileImage?: string; fullName?: string; username?: string; phoneNumber?: string; email?: string; role?: string; subscriptionPlan?: string; createdAt?: string }) => ({
+      id: String(m.userId || m.id || ''),
+      profilePhoto: m.profileImage 
+        ? (m.profileImage.startsWith('http') ? m.profileImage : `https://api.ridewithpals.com/uploads/${m.profileImage}`)
+        : "",
+      name: m.fullName || m.username || 'Unnamed',
       phoneNo: m.phoneNumber || 'N/A',
       email: m.email || 'N/A',
       role: (m.role === 'Admin' ? 'Admin' : 'Member'),
-      subscriptionPlan: (['Silver', 'Gold', 'Diamond'].includes(m.subscriptionPlan) ? m.subscriptionPlan : 'Silver') as 'Silver' | 'Gold' | 'Diamond',
+      subscriptionPlan: (m.subscriptionPlan && ['Silver', 'Gold', 'Diamond'].includes(m.subscriptionPlan) ? m.subscriptionPlan : 'Silver') as 'Silver' | 'Gold' | 'Diamond',
       joinDate: m.createdAt ? new Date(m.createdAt).toLocaleDateString() : 'N/A',
       status: 'Active',
     }));

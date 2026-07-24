@@ -476,6 +476,9 @@ export type ManageJoinGroupRequestResponseResponse = {
 export type GetClubRidesParams = {
     clubId:  number | string;
     status?: string;
+    search?: string;
+    limit?: number;
+    offset?: number;
 }
 
 export type CreateClubProfileRequest = {

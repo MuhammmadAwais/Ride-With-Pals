@@ -40,13 +40,18 @@ export const useActiveClub = () => {
     }
   }, [currentClub, dispatch, userId, keyId, keyName, keyLogo, keyBanner]);
 
-  const setActiveClub = useCallback((club: Club) => {
+  const setActiveClub = useCallback((club: any) => {
+    if (!club) return;
     // 1. Update Redux (Triggers UI Reactivity)
-    dispatch(setCurrentClub(club));
+    dispatch(setCurrentClub(club as Club));
 
     // 2. Persist to localStorage (For hard refreshes)
-    localStorage.setItem(keyId, club.id.toString());
-    localStorage.setItem(keyName, club.clubName);
+    if (club.id) {
+      localStorage.setItem(keyId, club.id.toString());
+    }
+    if (club.clubName || club.name) {
+      localStorage.setItem(keyName, club.clubName || club.name);
+    }
     if (club.logo) {
       localStorage.setItem(keyLogo, club.logo);
     } else {

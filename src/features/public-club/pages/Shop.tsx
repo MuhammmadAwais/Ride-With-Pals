@@ -1,11 +1,136 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Heart, MapPin, Grid3X3, List, Search, Filter, ShoppingBag, X, CheckCircle2, Loader2, Minus, Plus } from "lucide-react";
-import { useGetTheShopItemsQuery } from "@/features/club/api/shopApiSlice";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Heart, MapPin, Grid3X3, List, Search, Filter, ShoppingBag, X, CheckCircle2, Loader2, Minus, Plus, Upload } from "lucide-react";
+import { useGetTheShopItemsQuery, useAddItemToShopMutation } from "@/features/club/api/shopApiSlice";
 import { useBuyShopItemMutation } from "@/features/club/api/shopOrderApiSlice";
-import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
+import { useGetJoinedClubsQuery, useGetClubInfoByIdQuery, useGetClubMembersListQuery } from "@/features/club/api/clubApiSlice";
+import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import type { ShopTypes } from "@/api/types";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { toast } from "sonner";
+
+// ── SKELETONS ───────────────────────────────────────────────────────────────
+const ShopSkeleton = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
+    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+      <div key={i} className="bg-surface border border-border rounded-3xl p-4 space-y-4">
+        <div className="w-full aspect-[4/3] bg-[#222] rounded-2xl" />
+        <div className="space-y-2 px-1">
+          <div className="w-2/3 h-3 bg-[#222] rounded" />
+          <div className="w-1/3 h-3 bg-[#222] rounded" />
+        </div>
+        <div className="flex justify-between items-center border-t border-border pt-3">
+          <div className="w-16 h-3 bg-[#222] rounded" />
+          <div className="w-20 h-7 bg-[#222] rounded-xl" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// ── ADD SHOP ITEM MODAL ───────────────────────────────────────────────────────
+interface AddShopItemModalProps {
+  onClose: () => void;
+  activeClubId: number;
+}
+
+function AddShopItemModal({ onClose, activeClubId }: AddShopItemModalProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const [addItem, { isLoading: isAdding }] = useAddItemToShopMutation();
+  const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImageFile(file);
+    setPreviewImage(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !price || Number(price) <= 0) {
+      toast.error("Please enter a valid name and price.");
+      return;
+    }
+
+    try {
+      let finalImageUrl = "";
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        const uploadRes = await uploadFile(formData).unwrap();
+        finalImageUrl = uploadRes.fileName;
+      }
+
+      await addItem({
+        clubId: activeClubId,
+        name: name.trim(),
+        price: Number(price),
+        description: description.trim(),
+        image: finalImageUrl || undefined,
+        quantity: 1,
+      }).unwrap();
+
+      toast.success("Product added to shop!");
+      onClose();
+    } catch (err) {
+      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to add product.");
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+      <form onSubmit={handleSubmit} className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-lg relative border border-border shadow-2xl space-y-5">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-black uppercase tracking-wider text-text-main">Add Product</h3>
+          <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main border-0 bg-transparent cursor-pointer">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div onClick={() => fileInputRef.current?.click()} className="h-32 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#EB712B]/50 transition-colors overflow-hidden relative bg-main-bg">
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*" />
+            {previewImage ? (
+              <img src={previewImage} alt="Preview" className="w-full h-full object-contain" />
+            ) : (
+              <>
+                {isUploading ? <Loader2 className="text-[#EB712B] animate-spin mb-2" size={20} /> : <Upload className="text-[#EB712B] mb-2" size={20} />}
+                <span className="text-[10px] text-text-muted font-bold">{isUploading ? "Uploading..." : "Upload Product Image"}</span>
+              </>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Product Name</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main" required />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Price (USD)</label>
+              <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main" min="0" required />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Description</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] min-h-[80px] text-text-main" />
+          </div>
+        </div>
+
+        <button type="submit" disabled={isAdding || isUploading} className="w-full py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black tracking-wider uppercase rounded-xl transition-all cursor-pointer shadow-lg border-0 outline-none disabled:opacity-50 mt-4">
+          {isAdding ? "Adding..." : "Add to Shop"}
+        </button>
+      </form>
+    </div>
+  );
+}
 
 interface ShopProduct {
   id: string;
@@ -26,7 +151,10 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [selectedProduct, setSelectedProduct] = useState<ShopProduct | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const currentUser = useAppSelector((state) => state.auth.user);
 
   // Checkout form state
   const [quantity, setQuantity] = useState(1);
@@ -40,15 +168,13 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
     skip: !!resolvedClubId,
   });
 
-  const activeClubId = useMemo(() => {
-    if (resolvedClubId) return resolvedClubId;
-    const firstJoined = joinedClubsData?.rows?.[0];
-    if (firstJoined) {
-      setActiveClub(firstJoined as any);
-      return firstJoined.id;
+  useEffect(() => {
+    if (!resolvedClubId && joinedClubsData?.rows?.[0]) {
+      setActiveClub(joinedClubsData.rows[0]);
     }
-    return undefined;
   }, [resolvedClubId, joinedClubsData, setActiveClub]);
+
+  const activeClubId = resolvedClubId || joinedClubsData?.rows?.[0]?.id;
 
   const { data: shopData, isLoading, isError } = useGetTheShopItemsQuery(
     { clubId: activeClubId!, limit: 50, offset: 0 },
@@ -57,12 +183,20 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
 
   const [buyShopItem, { isLoading: isBuying }] = useBuyShopItemMutation();
 
+  const { data: clubDataRes } = useGetClubInfoByIdQuery({ clubId: Number(activeClubId) }, { skip: !activeClubId });
+  const { data: membersData } = useGetClubMembersListQuery({ clubId: Number(activeClubId) }, { skip: !activeClubId });
+
+  const clubDataObj = clubDataRes as { response?: { userId?: number }; data?: { userId?: number }; userId?: number };
+  const isOwner = clubDataObj?.response?.userId === currentUser?.id || clubDataObj?.data?.userId === currentUser?.id || clubDataObj?.userId === currentUser?.id;
+  const currentMember = membersData?.find((m: { userId?: number; id?: number; role?: string }) => m.userId === currentUser?.id || m.id === currentUser?.id);
+  const hasPermission = isOwner || currentMember?.role === "Admin";
+
   // Map API rows → ShopProduct view model
   const products: ShopProduct[] = (shopData?.rows || []).map((item: ShopTypes.Row) => ({
     id: item.id.toString(),
     name: item.name || "Unknown Item",
-    price: item.price ? `€${parseFloat(item.price as any).toFixed(2)}` : "Free",
-    rawPrice: parseFloat(item.price as any) || 0,
+    price: item.price ? `€${parseFloat(item.price as unknown as string).toFixed(2)}` : "Free",
+    rawPrice: parseFloat(item.price as unknown as string) || 0,
     location: item.gender || "Club Store",
     image: item.image || "/Images/HelmetImage4.jpg",
   }));
@@ -115,29 +249,12 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
         ...(deliveryMethod === "delivery" ? { orderAddress: address } : {}),
       }).unwrap();
       setIsSuccess(true);
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to place order. Please try again.");
+    } catch (err) {
+      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to place order. Please try again.");
     }
   };
 
-  // ── Skeletons ──────────────────────────────────────────────────────────────
-  const ShopSkeleton = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-        <div key={i} className="bg-surface border border-border rounded-3xl p-4 space-y-4">
-          <div className="w-full aspect-[4/3] bg-[#222] rounded-2xl" />
-          <div className="space-y-2 px-1">
-            <div className="w-2/3 h-3 bg-[#222] rounded" />
-            <div className="w-1/3 h-3 bg-[#222] rounded" />
-          </div>
-          <div className="flex justify-between items-center border-t border-border pt-3">
-            <div className="w-16 h-3 bg-[#222] rounded" />
-            <div className="w-20 h-7 bg-[#222] rounded-xl" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+
 
   return (
     <div className="space-y-8 w-full">
@@ -183,6 +300,22 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
             </button>
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-4">
+        <div className="text-sm text-text-muted">Shop Items</div>
+        <button 
+          onClick={() => {
+            if (hasPermission) {
+              setShowAddModal(true);
+            } else {
+              toast.error("You don't have permission to add items to this shop.");
+            }
+          }}
+          className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-2 border-0 outline-none shadow-md shadow-[#EB712B]/10"
+        >
+          <Plus size={16} /> Add Product
+        </button>
       </div>
 
       {/* Product Grid / List */}
@@ -341,7 +474,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                         key={key}
                         type="text"
                         placeholder={placeholder}
-                        value={(address as any)[key]}
+                        value={address[key as keyof typeof address]}
                         onChange={(e) => setAddress((prev) => ({ ...prev, [key]: e.target.value }))}
                         className="w-full bg-main-bg border border-border rounded-xl px-3 py-2 text-xs text-text-main outline-none focus:border-[#EB712B]/50 transition-all"
                       />
@@ -371,6 +504,13 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
         </div>
       )}
 
+      {/* Add Listing Modal */}
+      {showAddModal && activeClubId && (
+        <AddShopItemModal 
+          activeClubId={Number(activeClubId)} 
+          onClose={() => setShowAddModal(false)} 
+        />
+      )}
     </div>
   );
 }

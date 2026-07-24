@@ -14,7 +14,7 @@ import {
   Bookmark
 } from "lucide-react";
 
-import { useGetPublicRidesQuery } from "@/features/club/api/clubApiSlice";
+import { useGetPublicRidesQuery, useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 import { toast } from "sonner";
 
@@ -72,10 +72,19 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
 
   const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
 
-  const { data: rawData, isLoading, isFetching } = useGetPublicRidesQuery(
+  const { data: publicRawData, isLoading: isLoadingPublic, isFetching: isFetchingPublic } = useGetPublicRidesQuery(
     { search: searchQuery || undefined, limit: 50, offset: 0, clubId: activeClubId },
-    { refetchOnMountOrArgChange: true } // Force fetch when component mounts to bypass cache issue
+    { skip: !!activeClubId, refetchOnMountOrArgChange: true } 
   );
+
+  const { data: clubRawData, isLoading: isLoadingClub, isFetching: isFetchingClub } = useGetClubRidesQuery(
+    { search: searchQuery || undefined, limit: 50, offset: 0, clubId: activeClubId! },
+    { skip: !activeClubId, refetchOnMountOrArgChange: true } 
+  );
+
+  const rawData = activeClubId ? clubRawData : publicRawData;
+  const isLoading = activeClubId ? isLoadingClub : isLoadingPublic;
+  const isFetching = activeClubId ? isFetchingClub : isFetchingPublic;
 
   useEffect(() => {
     console.log("🚴‍♂️ [Ride.tsx] Rendered! Query State:", { isLoading, isFetching, data: rawData });

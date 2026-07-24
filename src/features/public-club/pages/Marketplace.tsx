@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, MapPin, Grid3X3, List, Search, Filter, Plus, Trash2, Share2, Upload, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -66,68 +67,6 @@ function SuccessModal({ itemName, onClose }: SuccessModalProps) {
   );
 }
 
-// ── PURCHASE MODAL SUB-COMPONENT ──────────────────────────────────────────────
-interface PurchaseModalProps {
-  item: Product;
-  onCancel: () => void;
-  onConfirm: (itemName: string) => void;
-}
-
-function PurchaseModal({ item, onCancel, onConfirm }: PurchaseModalProps) {
-  return (
-    <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in zoom-in-95 duration-200">
-      <div className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-md relative border border-border shadow-2xl">
-        
-        <div className="relative w-full h-48 bg-main-bg rounded-2xl overflow-hidden border border-border mb-5 flex items-center justify-center">
-          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/90 to-transparent flex items-end p-4 justify-between">
-            <span className="text-base font-black text-white tracking-tight line-clamp-1">{item.name}</span>
-            <span className="text-lg font-black text-[#EB712B] shrink-0">{item.price}</span>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between bg-surface border border-border rounded-2xl p-4 mb-5">
-          <div className="flex items-center gap-3">
-            <img 
-              src={item.sellerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.sellerName}`} 
-              alt={item.sellerName} 
-              className="w-10 h-10 rounded-full object-cover border border-border"
-            />
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Sold by</p>
-              <h4 className="text-xs font-black uppercase tracking-tight text-text-main">{item.sellerName || "Elite Seller"}</h4>
-            </div>
-          </div>
-          <div className="w-9 h-9 bg-hover rounded-xl border border-border flex items-center justify-center text-text-muted cursor-pointer hover:bg-border transition-colors">
-            💬
-          </div>
-        </div>
-
-        <div className="space-y-2 mb-6">
-          <h5 className="text-[10px] font-black uppercase tracking-wider text-text-muted">Description</h5>
-          <p className="text-[11px] font-medium text-text-muted leading-relaxed max-h-20 overflow-y-auto pr-2">
-            {item.description || "No detailed description provided for this premium gear."}
-          </p>
-        </div>
-
-        <div className="flex gap-4">
-          <button 
-            onClick={onCancel}
-            className="flex-1 py-3.5 rounded-xl bg-surface hover:bg-hover border border-border text-text-main text-xs font-bold tracking-wider uppercase transition-colors cursor-pointer outline-none"
-          >
-            Cancel
-          </button>
-          <button 
-            onClick={() => onConfirm(item.name)}
-            className="flex-1 py-3.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black tracking-wider uppercase transition-colors cursor-pointer shadow-lg shadow-[#EB712B]/20 border-0 outline-none"
-          >
-            Pay {item.price}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ── ADD LISTING MODAL ─────────────────────────────────────────────────────────
 interface AddListingModalProps {
@@ -185,8 +124,8 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
 
       toast.success("Listing created successfully!");
       onClose();
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to create listing.");
+    } catch (err) {
+      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to create listing.");
       console.error(err);
     }
   };
@@ -307,8 +246,8 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
       await shareItem({ clubId, marketPlaceItemId: itemId }).unwrap();
       toast.success("Shared successfully to the club bulletin board!");
       onClose();
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to share listing.");
+    } catch (err) {
+      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to share listing.");
       console.error(err);
     }
   };
@@ -333,7 +272,7 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
           ) : clubs.length === 0 ? (
             <div className="text-center py-6 text-xs text-text-muted">You haven't joined any other clubs yet.</div>
           ) : (
-            clubs.map((c: any) => (
+            clubs.map((c: { id: number; logo?: string; clubName: string }) => (
               <button
                 key={c.id}
                 onClick={() => handleShare(c.id)}
@@ -351,6 +290,25 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
   );
 }
 
+// ── SKELETONS ───────────────────────────────────────────────────────────────
+const GridSkeleton = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
+    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+      <div key={i} className="bg-surface border border-border rounded-3xl p-4 space-y-4">
+        <div className="w-full aspect-[4/3] bg-[#222] rounded-2xl" />
+        <div className="space-y-2 px-1">
+          <div className="w-2/3 h-3 bg-[#222] rounded" />
+          <div className="w-1/3 h-3 bg-[#222] rounded" />
+        </div>
+        <div className="flex justify-between items-center border-t border-border pt-3">
+          <div className="w-16 h-3 bg-[#222] rounded" />
+          <div className="w-20 h-7 bg-[#222] rounded-xl" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 // ── MAIN MARKETPLACE COMPONENT ────────────────────────────────────────────────
 export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   const [activeTab, setActiveTab] = useState<"All" | "MyListings">("All");
@@ -359,14 +317,15 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
-  const [purchasingItem, setPurchasingItem] = useState<Product | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [purchasedItemName, setPurchasedItemName] = useState("");
+  const navigate = useNavigate();
 
   // Create Listing Form state
   const [showAddModal, setShowAddModal] = useState(false);
   // Share state
   const [sharingItemId, setSharingItemId] = useState<number | null>(null);
+  // Success modal state
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [purchasedItemName, setPurchasedItemName] = useState("");
 
   // Authenticated user
   const currentUser = useAppSelector((state) => state.auth.user);
@@ -434,8 +393,8 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
     try {
       await deleteListing({ marketPlaceItemId: Number(id) }).unwrap();
       toast.success("Listing deleted successfully!");
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to delete listing.");
+    } catch (err) {
+      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to delete listing.");
       console.error(err);
     }
   };
@@ -445,30 +404,23 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
     product.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const confirmPurchase = (itemName: string) => {
-    setPurchasedItemName(itemName);
-    setPurchasingItem(null);
-    setShowSuccess(true);
+  const handleBuyNow = (product: Product) => {
+    if (!currentUser) {
+      toast.error("Please log in to purchase items.");
+      return;
+    }
+    setPurchasedItemName(product.name);
+    navigate('/view/userside/support', {
+      state: {
+        targetUserId: product.sellerId,
+        targetUserName: product.sellerName || 'Elite Seller',
+        targetUserAvatar: product.sellerAvatar || '/Images/CycleImage.png',
+        prefillMessage: `Hi ${product.sellerName || 'there'}, I am interested in purchasing "${product.name}" for ${product.price}. Is it still available?`
+      }
+    });
   };
 
-  // ── Skeletons ──────────────────────────────────────────────────────────────
-  const GridSkeleton = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-        <div key={i} className="bg-surface border border-border rounded-3xl p-4 space-y-4">
-          <div className="w-full aspect-[4/3] bg-[#222] rounded-2xl" />
-          <div className="space-y-2 px-1">
-            <div className="w-2/3 h-3 bg-[#222] rounded" />
-            <div className="w-1/3 h-3 bg-[#222] rounded" />
-          </div>
-          <div className="flex justify-between items-center border-t border-border pt-3">
-            <div className="w-16 h-3 bg-[#222] rounded" />
-            <div className="w-20 h-7 bg-[#222] rounded-xl" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+
 
   return (
     <div className="space-y-8 w-full">
@@ -653,7 +605,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
                     </>
                   ) : (
                     <button 
-                      onClick={() => setPurchasingItem(product)}
+                      onClick={() => handleBuyNow(product)}
                       className="w-full py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer border-0 outline-none"
                     >
                       Buy Now
@@ -666,14 +618,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
         </div>
       )}
 
-      {/* Primary Payment Modal */}
-      {purchasingItem && (
-        <PurchaseModal 
-          item={purchasingItem}
-          onCancel={() => setPurchasingItem(null)}
-          onConfirm={confirmPurchase}
-        />
-      )}
+
 
       {/* Success Pop Up */}
       {showSuccess && (
