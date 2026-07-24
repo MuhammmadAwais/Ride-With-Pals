@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation } from '@/features/club/api/clubApiSlice';
+import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation, useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
@@ -46,6 +46,11 @@ export default function ClubDetails() {
   const [accountHolder, setAccountHolder] = useState("");
 
   const { data: clubData, isLoading, isError } = useGetClubInfoByIdQuery(
+    { clubId: Number(clubId) },
+    { skip: !clubId }
+  );
+
+  const { data: membersData } = useGetClubMembersListQuery(
     { clubId: Number(clubId) },
     { skip: !clubId }
   );
@@ -183,7 +188,7 @@ export default function ClubDetails() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-border mt-6">
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Members</p>
-                  <p className="text-lg font-black text-text-main">{club.totalMembers || 0}</p>
+                  <p className="text-lg font-black text-text-main">{membersData?.length || club.totalMembers || 0}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Ride Type</p>
@@ -191,7 +196,7 @@ export default function ClubDetails() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Status</p>
-                  <p className="text-sm font-bold text-emerald-400">{club.status === 1 ? 'Active' : 'Private'}</p>
+                  <p className="text-sm font-bold text-emerald-400">{club.isPrivate ? 'Private' : 'Public'}</p>
                 </div>
               </div>
             </div>

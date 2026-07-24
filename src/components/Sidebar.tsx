@@ -74,8 +74,6 @@ const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'Explore Clubs',    route: ROUTES.CLUBS,               icon: <Compass size={ICON_SIZE} /> },
   { label: 'Rides',            route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
   { label: 'Saved Rides',      route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
-  { label: 'Shop',             route: ROUTES.SHOP,                icon: <ShoppingBag size={ICON_SIZE} /> },
-  { label: 'Marketplace',      route: ROUTES.MARKETPLACE,         icon: <Store size={ICON_SIZE} /> },
   { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'Wallet',           route: ROUTES.WALLET_ATHLETE,      icon: <Wallet size={ICON_SIZE} /> },
   { type: 'divider' },
@@ -533,8 +531,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
               background: '#EB712B',
+              overflow: 'hidden'
             }}>
-              <User size={20} color="#fff" />
+              {user?.profileImage ? (
+                <img src={user.profileImage.startsWith('http') ? user.profileImage : `https://api.ridewithpals.com/uploads/${user.profileImage}`} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <User size={20} color="#fff" />
+              )}
             </div>
 
             {/* Name + Role */}
@@ -545,7 +548,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                 lineHeight: 1.3, marginBottom: '2px',
               }}>
-                {user?.name ?? 'Rider'}
+                {user?.fullName || user?.name || user?.email || 'Rider'}
               </p>
               <p style={{
                 fontFamily: 'var(--font-poppins)', fontSize: '12px',

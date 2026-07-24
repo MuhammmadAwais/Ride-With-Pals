@@ -1,6 +1,6 @@
 import { apiSlice } from '@/api/apiSlice';
 import { AuthTypes } from '@/api/types';
-import { setUser } from '../slices/authSlice';
+import { setUser, bypassOtpSuccess } from '../slices/authSlice';
 import type { AppUser } from '../types/authTypes';
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -91,7 +91,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const user: AppUser = {
+          let user: AppUser = {
             id: data.id,
             email: data.email,
             token: data.token,
@@ -99,6 +99,25 @@ export const authApiSlice = apiSlice.injectEndpoints({
             role: data.isAthleteProfile ? 'athlete' : 'organizer',
           };
           dispatch(setUser(user));
+          dispatch(bypassOtpSuccess());
+          
+          // Fetch full user info behind the scenes to populate missing profile fields
+          try {
+            const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
+            user = {
+              ...user,
+              isAthleteProfile: !!userInfoResult.isAthleteProfile,
+              role: userInfoResult.isAthleteProfile ? 'athlete' : 'organizer',
+              fullName: userInfoResult.fullName,
+              profileImage: userInfoResult.profileImage,
+              dob: userInfoResult.dob,
+              country: userInfoResult.country,
+              phone: userInfoResult.phone
+            };
+            dispatch(setUser(user));
+          } catch (e) {
+            console.warn('Failed to fetch full user info during login', e);
+          }
         } catch (err) {}
       },
     }),
@@ -168,7 +187,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const user: AppUser = {
+          let user: AppUser = {
             id: data.id,
             email: data.email,
             token: data.token,
@@ -176,6 +195,24 @@ export const authApiSlice = apiSlice.injectEndpoints({
             role: data.isAthleteProfile ? 'athlete' : 'organizer',
           };
           dispatch(setUser(user));
+          dispatch(bypassOtpSuccess());
+          
+          try {
+            const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
+            user = {
+              ...user,
+              isAthleteProfile: !!userInfoResult.isAthleteProfile,
+              role: userInfoResult.isAthleteProfile ? 'athlete' : 'organizer',
+              fullName: userInfoResult.fullName,
+              profileImage: userInfoResult.profileImage,
+              dob: userInfoResult.dob,
+              country: userInfoResult.country,
+              phone: userInfoResult.phone
+            };
+            dispatch(setUser(user));
+          } catch (e) {
+            console.warn('Failed to fetch full user info during firebase login', e);
+          }
         } catch (err) {}
       },
     }),
