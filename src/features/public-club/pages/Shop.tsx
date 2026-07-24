@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Heart, MapPin, Grid3X3, List, Search, Filter, ShoppingBag, X, CheckCircle2, Loader2, Minus, Plus, Upload } from "lucide-react";
 import { useGetTheShopItemsQuery, useAddItemToShopMutation } from "@/features/club/api/shopApiSlice";
 import { useBuyShopItemMutation } from "@/features/club/api/shopOrderApiSlice";
@@ -339,7 +339,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                 className={`bg-surface border border-border rounded-3xl p-4 space-y-4 transition-all duration-300 hover:border-[#EB712B]/30 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-[#EB712B]/5 flex flex-col justify-between ${viewMode === "list" ? "sm:flex-row sm:items-center sm:gap-6 sm:space-y-0 p-4" : ""}`}
               >
                 {/* Product Image */}
-                <div className={`relative bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${viewMode === "list" ? "w-28 h-28 aspect-square" : "w-full aspect-[4/3]"}`}>
+                <div className={`relative bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${viewMode === "list" ? "w-28 h-28 aspect-square" : "w-full aspect-4/3"}`}>
                   {imageErrors[product.id] ? (
                     <div className="w-full h-full bg-main-bg flex flex-col items-center justify-center gap-1.5 text-text-muted">
                       <span className="font-black text-[10px] uppercase tracking-wider">Premium Gear</span>
