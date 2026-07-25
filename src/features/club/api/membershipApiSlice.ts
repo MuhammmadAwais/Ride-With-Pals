@@ -43,7 +43,7 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
       query: (params) => ({
         url: '/user/club/membership/plan',
         method: 'DELETE',
-        params,
+        body: params,
       }),
       invalidatesTags: ['Subscription', 'Club'],
     }),

@@ -257,7 +257,7 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
 
   const handleDelete = async (planId: number) => {
     try {
-      await deletePlan({ planId }).unwrap();
+      await deletePlan({ planId, clubId }).unwrap();
       toast.success('Plan deleted successfully!');
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to delete plan.');

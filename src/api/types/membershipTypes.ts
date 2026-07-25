@@ -122,6 +122,7 @@ export type UpdateClubMembershipPlanRequest = {
 }
 
 export type DeleteMembershipPlanParams = {
+    clubId: number | string;
     planId: number | string;
 }
 
