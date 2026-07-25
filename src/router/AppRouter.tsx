@@ -64,6 +64,7 @@ import StripeConnect from '@/features/ClubSide/StripeConnect';
 import ClubDetails from '@/features/public-club/pages/ClubDetails';
 import Shop from '@/features/public-club/pages/Shop';
 import Marketplace from '@/features/public-club/pages/Marketplace';
+import UserSubscription from '@/features/public-club/pages/UserSubscription';
 
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';
@@ -175,7 +176,7 @@ export const router = createBrowserRouter(
           <Route path="shop" element={<Shop />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="purchases" element={<MyPurchases />} />
-          <Route path="wallet" element={<Wallet />} />
+          <Route path="subscription" element={<UserSubscription />} />
           <Route path="profile" element={<ProfileAccount role="athlete" />} />
           <Route path="support" element={<Support />} />
           <Route path="dashboard/ride/:id" element={<RideJoining />} />
@@ -229,7 +230,6 @@ export const router = createBrowserRouter(
         <Route path="/athlete/rides" element={<Navigate to="/view/userside/rides" replace />} />
         <Route path="/athlete/marketplace" element={<Navigate to="/view/userside/marketplace" replace />} />
         <Route path="/athlete/purchases" element={<Navigate to="/view/userside/purchases" replace />} />
-        <Route path="/athlete/wallet" element={<Navigate to="/view/userside/wallet" replace />} />
         <Route path="/athlete/leaderboard" element={<Navigate to="/view/userside/leaderboard" replace />} />
         <Route path="/athlete/news" element={<Navigate to="/view/userside/news" replace />} />
         <Route path="/athlete/promos" element={<Navigate to="/view/userside/promos" replace />} />

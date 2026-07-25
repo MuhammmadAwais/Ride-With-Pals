@@ -56,11 +56,11 @@ export const stravaApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    getStravaLeaderboardData: builder.query<StravaLeaderboardEntry[], { clubId: number | string }>({
+    getStravaLeaderboardData: builder.query<StravaLeaderboardEntry[], { clubId: number | string; period?: string }>({
       query: (params) => ({
-        url: '/user/club/leaderboard/strava',
+        url: '/user/club/leaderboard/km',
         method: 'GET',
-        params,
+        params: { period: 'year', ...params },
       }),
       providesTags: ['Club'],
     }),

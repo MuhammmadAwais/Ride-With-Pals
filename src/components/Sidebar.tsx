@@ -75,7 +75,7 @@ const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'Rides',            route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
   { label: 'Saved Rides',      route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
   { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
-  { label: 'Wallet',           route: ROUTES.WALLET_ATHLETE,      icon: <Wallet size={ICON_SIZE} /> },
+  { label: 'Subscription',     route: ROUTES.SUBSCRIPTION_ATHLETE,icon: <CreditCard size={ICON_SIZE} /> },
   { type: 'divider' },
   { label: 'Notifications',    route: ROUTES.NOTIFICATIONS,       icon: <Bell size={ICON_SIZE} /> },
   { label: 'Chat',             route: ROUTES.SUPPORT_ATHLETE,     icon: <MessageSquare size={ICON_SIZE} /> },

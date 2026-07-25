@@ -155,6 +155,8 @@ export type ClubCustomerPortalResponse = {
 
 export type SubscribeToAnyPlanRequest = {
     planId: number;
+    successUrl?: string;
+    cancelUrl?: string;
 }
 
 export type CreateCustomerPortalParams = {

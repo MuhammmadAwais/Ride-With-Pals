@@ -58,6 +58,7 @@ export const ROUTES = {
   MARKETPLACE:        '/view/userside/marketplace',
   WALLET_ATHLETE:     '/view/userside/wallet',
   PROFILE_ATHLETE:    '/view/userside/profile',
+  SUBSCRIPTION_ATHLETE: '/view/userside/subscription',
   SUPPORT_ATHLETE:    '/view/userside/support',
   NOTIFICATIONS:      '/view/userside/notifications',
   // ── Standalone (no shell) ──
