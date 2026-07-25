@@ -27,6 +27,12 @@ import {
   Activity,
   Loader2,
   Check,
+  Calendar,
+  MapPin,
+  Phone,
+  Clock,
+  FileText,
+  User as UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useUpdatePasswordMutation, useUpdateScaleUnitSettingsMutation, useUserInfoQuery } from "@/features/auth/api/authApiSlice";
@@ -57,21 +63,58 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
   );
 
   // API Hooks
-  const { data: userProfileData } = useUserInfoQuery();
+  const { data: userProfileData, refetch: refetchUserInfo } = useUserInfoQuery();
   const [updatePassword] = useUpdatePasswordMutation();
   const [updateScaleUnit, { isLoading: isUpdatingScale }] = useUpdateScaleUnitSettingsMutation();
   const [selectedScale, setSelectedScale] = useState<string>("kilometer");
 
   // Strava Hooks
-  const { data: stravaStatus } = useCheckStravaStatusQuery();
+  const { data: stravaStatus, refetch: refetchStravaStatus } = useCheckStravaStatusQuery();
   const [connectStrava, { isLoading: isConnectingStrava }] = useConnectStravaAccountMutation();
   const [disconnectStrava, { isLoading: isDisconnectingStrava }] = useDisconnectStravaAccountMutation();
 
+  // Refetch user & Strava info whenever user returns focus to this tab
+  useEffect(() => {
+    const handleFocus = () => {
+      refetchUserInfo();
+      refetchStravaStatus();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [refetchUserInfo, refetchStravaStatus]);
+
   const handleConnectStrava = async () => {
     try {
-      const res = await connectStrava().unwrap();
-      if (res.authUrl || res.url || res.redirectUrl) {
-        window.location.href = res.authUrl || res.url || res.redirectUrl || '';
+      const redirectUrl = `${window.location.origin}${window.location.pathname}`;
+      const res = await connectStrava({ redirectUrl }).unwrap();
+      const targetUrl = res.authorizeUrl || res.authUrl || res.url || res.redirectUrl || res.redirectUri;
+      if (targetUrl) {
+        const width = 600;
+        const height = 750;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        
+        const popup = window.open(
+          targetUrl,
+          'StravaAuthWindow',
+          `toolbar=no, location=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=${width}, height=${height}, top=${top}, left=${left}`
+        );
+
+        if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+          window.location.href = targetUrl;
+          return;
+        }
+
+        toast.info("Please authorize Strava in the popup window.");
+
+        const timer = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(timer);
+            refetchUserInfo();
+            refetchStravaStatus();
+            toast.success("Strava status refreshed!");
+          }
+        }, 1000);
       } else {
         toast.info("Strava authentication initiated.");
       }
@@ -202,228 +245,278 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
   
 
-  const sectionCardStyle =
-    "bg-surface p-4 md:p-6 rounded-2xl border border-border transition-colors";
-  const rowItemStyle =
-    "flex items-center justify-between py-4 border-b border-gray-100 dark:border-white/5 last:border-0 hover:bg-gray-50 dark:hover:bg-white/[0.05] px-2 md:px-4 -mx-4 transition-colors cursor-pointer group";
-
+ 
   return (
-    <div className="min-h-screen bg-main-bg text-text-main p-4 md:p-12 font-sans transition-colors duration-300">
-      <div className="max-w-4xl mx-auto w-full">
+    <div className="min-h-screen bg-main-bg text-text-main p-4 md:p-8 lg:p-12 font-sans transition-colors duration-300">
+      <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex justify-between items-start mb-10">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">
-              Profile & Account
+            <h1 className="text-3xl md:text-4xl font-black mb-2 tracking-tight uppercase">
+              Profile <span className="text-[#EB712B]">&</span> Account
             </h1>
-            <p className="text-gray-500 dark:text-[#888] text-sm">
-              Manage your personal information and application preferences.
+            <p className="text-gray-500 dark:text-[#888] text-xs font-bold tracking-widest uppercase mt-2">
+              Manage your personal information and application preferences
             </p>
           </div>
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center gap-2 bg-surface px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-all"
+            className="flex items-center gap-2 bg-surface border border-white/5 px-4 py-2.5 rounded-xl text-xs font-bold hover:border-white/20 transition-all shadow-lg active:scale-95"
           >
             {theme === "dark" ? (
               <Sun size={16} className="text-yellow-500" />
             ) : (
-              <Moon size={16} />
+              <Moon size={16} className="text-gray-400" />
             )}
-            {theme === "dark" ? "Light" : "Dark"}
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
           </button>
         </div>
 
-        {/* User Card */}
-        <div className="bg-surface p-6 rounded-2xl border border-border flex items-center justify-between mb-10">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-hover flex items-center justify-center">
-              👤
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">Rock Climber</h2>
-              <p className="text-gray-500 dark:text-[#888] text-sm">
-                Devon Lane
-              </p>
-            </div>
-          </div>
-          <button 
-      onClick={handleLogout}
-      className="bg-white/5 px-6 py-2 rounded-xl text-sm font-bold hover:bg-[#EB712B] transition-all cursor-pointer active:scale-95"
-    >
-      Logout
-    </button>
-        </div>
-
-        {/* Account Management */}
-        <section className="mb-8">
-          <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
-            Account Management
-          </h3>
-          <div className={sectionCardStyle}>
-            {[
-              ...(role === 'organizer' ? [
-                { icon: Users, title: "Manage Club", path: "/manage-club" },
-                { icon: ShieldCheck, title: "Admin Modules", action: handleOpenAdminModal },
-                { icon: Bike, title: "User Modules", action: handleOpenUserModal },
-                { icon: CreditCard, title: "Subscription", path: "/subscription" },
-              ] : []),
-              {
-                icon: Lock,
-                title: "Change Password",
-                action: () => setIsPasswordModalOpen(true),
-              },
-              { 
-                icon: Wallet, 
-                title: "Wallet", 
-                path: role === 'organizer' ? "/view/clubside/wallet" : "/view/userside/wallet" 
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                onClick={item.action || (() => item.path && navigate(item.path))}
-                className={rowItemStyle}
-              >
-                <div className="flex items-center gap-4">
-                  <item.icon className="text-[#EB712B]" size={20} />
-                  <span className="font-medium text-sm">{item.title}</span>
+        {/* BENTO GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          
+          {/* CARD 1: User Profile Summary (Spans 2 columns) */}
+          <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-[#EB712B]/20 transition-all duration-700"></div>
+            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="w-24 h-24 rounded-3xl bg-main-bg flex items-center justify-center border-2 border-white/10 overflow-hidden shadow-xl shrink-0">
+                  {userProfileData?.profileImage ? (
+                    <img src={userProfileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <UserIcon size={40} className="text-gray-400" />
+                  )}
                 </div>
-                <ChevronRight size={18} className="text-gray-400" />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Workspace & Support */}
-        <section className="mb-8">
-          <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
-            Workspace & Support
-          </h3>
-          <div className={sectionCardStyle}>
-            <Link 
-  to={role === 'athlete' ? "/view/userside/support" : "/view/clubside/support"} 
-  className="block w-full"
->
-  <div className={rowItemStyle}>
-    <div className="flex items-center gap-4">
-      <HelpCircle className="text-[#EB712B]" size={20} />
-      <span className="font-medium text-sm">Support & Help</span>
-    </div>
-    <ChevronRight size={18} />
-  </div>
-</Link>
-            <div
-              onClick={() => setIsLanguageModalOpen(true)}
-              className={`${rowItemStyle} cursor-pointer hover:bg-white/[0.05]`}
-            >
-              <div className="flex items-center gap-4">
-                <Languages className="text-[#EB712B]" size={20} />
-                <span className="font-medium text-sm">Languages</span>
-              </div>
-              <span className="text-xs text-gray-500">English (US)</span>
-            </div>
-            <Link to="/about-app" className="block cursor-pointer">
-              <div className={rowItemStyle}>
-                <div className="flex items-center gap-4">
-                  <Info className="text-[#EB712B]" size={20} />
-                  <span className="font-medium text-sm">About App</span>
-                </div>
-                <span className="text-xs text-gray-500">v2.6.0</span>
-              </div>
-            </Link>{" "}
-          </div>
-        </section>
-
-        {/* Units & Settings */}
-        <section className="mb-8">
-          <h3 className="text-xs text-gray-500 dark:text-[#888] font-bold uppercase mb-4 px-1">
-            Units & Integrations
-          </h3>
-          <div className={sectionCardStyle}>
-            {/* Scale Unit */}
-            <div className="flex items-center justify-between py-4 border-b border-white/5">
-              <div className="flex items-center gap-4">
-                <Globe className="text-[#EB712B]" size={20} />
                 <div>
-                  <p className="font-medium text-sm">Distance Unit</p>
-                  <p className="text-[10px] text-gray-500">Select scale unit for activity metrics</p>
-                </div>
-              </div>
-              <select
-                value={userProfileData?.scale || selectedScale}
-                onChange={async (e) => {
-                  const val = e.target.value as any;
-                  setSelectedScale(val);
-                  try {
-                    await updateScaleUnit({ scale: val }).unwrap();
-                    toast.success("Scale unit updated.");
-                  } catch (err: any) {
-                    toast.error(err?.data?.message || "Failed to update scale unit.");
-                  }
-                }}
-                disabled={isUpdatingScale}
-                className="bg-main-bg border border-border rounded-xl px-3 py-1.5 text-xs text-text-main outline-none focus:border-[#EB712B]"
-              >
-                <option value="kilometer">Kilometers (km)</option>
-                <option value="miles">Miles (mi)</option>
-                <option value="meter">Meters (m)</option>
-              </select>
-            </div>
-
-            {/* Strava Integration */}
-            <div className="flex items-center justify-between py-4">
-              <div className="flex items-center gap-4">
-                <Activity className="text-[#FC4C02]" size={20} />
-                <div>
-                  <p className="font-medium text-sm flex items-center gap-2">
-                    Strava Integration
-                    {stravaStatus?.connected && (
-                      <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">
-                        Connected
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-[10px] text-gray-500">
-                    {stravaStatus?.connected
-                      ? `Syncing activities as ${stravaStatus.name || 'Strava User'}`
-                      : "Sync your rides with Strava"}
+                  <h2 className="text-3xl font-black tracking-tight">{userProfileData?.fullName || "Alexander"}</h2>
+                  <p className="text-[#EB712B] font-bold text-sm tracking-wide mt-1">{userProfileData?.email}</p>
+                  <p className="text-xs text-gray-500 font-medium mt-3 flex items-center gap-2">
+                    <Calendar size={14} /> Joined {userProfileData?.createdAt ? new Date(userProfileData.createdAt).toLocaleDateString() : "Recently"}
                   </p>
                 </div>
               </div>
-              {stravaStatus?.connected ? (
-                <button
-                  onClick={handleDisconnectStrava}
-                  disabled={isDisconnectingStrava}
-                  className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50"
-                >
-                  {isDisconnectingStrava ? <Loader2 size={12} className="animate-spin" /> : "Disconnect"}
-                </button>
-              ) : (
-                <button
-                  onClick={handleConnectStrava}
-                  disabled={isConnectingStrava}
-                  className="px-3 py-1.5 bg-[#FC4C02] hover:bg-[#e04300] text-white rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
-                >
-                  {isConnectingStrava ? <Loader2 size={12} className="animate-spin" /> : "Connect Strava"}
-                </button>
+              <button 
+                onClick={handleLogout}
+                className="bg-white/5 hover:bg-[#EB712B] border border-white/10 hover:border-[#EB712B] px-8 py-3 rounded-2xl text-sm font-bold text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
+              >
+                Logout
+              </button>
+            </div>
+            {userProfileData?.description && (
+              <div className="mt-8 pt-6 border-t border-white/5 relative z-10">
+                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <FileText size={12} /> Bio
+                </h3>
+                <p className="text-sm text-gray-300 leading-relaxed font-medium">
+                  "{userProfileData.description}"
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* CARD 2: Personal Info */}
+          <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl relative overflow-hidden flex flex-col">
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+              <Info size={12} /> Contact Details
+            </h3>
+            <div className="space-y-6 flex-1">
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-white/5 text-[#EB712B]"><Phone size={18} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Phone</p>
+                  <p className="font-bold text-sm">{userProfileData?.phone || "Not provided"}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-white/5 text-[#EB712B]"><MapPin size={18} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Country</p>
+                  <p className="font-bold text-sm">{userProfileData?.country || "Not provided"}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="p-2.5 rounded-xl bg-white/5 text-[#EB712B]"><Calendar size={18} /></div>
+                <div>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Date of Birth</p>
+                  <p className="font-bold text-sm">{userProfileData?.dob || "Not provided"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD 3: Strava Integration (Spans 1 col, high visibility) */}
+          <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl relative overflow-hidden flex flex-col">
+            <div className="absolute -bottom-10 -right-10 opacity-5">
+              <Activity size={150} />
+            </div>
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+              <Activity size={12} className="text-[#FC4C02]" /> Integration
+            </h3>
+            <div className="flex-1 flex flex-col relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[#FC4C02]/10 flex items-center justify-center text-[#FC4C02]">
+                  <Activity size={24} />
+                </div>
+                <div>
+                  <h4 className="font-black text-lg">Strava</h4>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${userProfileData?.stravaAthleteId ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
+                      <span className={`relative inline-flex rounded-full h-2 w-2 ${userProfileData?.stravaAthleteId ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                      {userProfileData?.stravaAthleteId ? "Connected" : "Disconnected"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              {userProfileData?.stravaAthleteId && (
+                <div className="mb-6 space-y-2">
+                  <p className="text-xs text-gray-400 font-medium"><span className="text-gray-600 font-bold">Athlete ID:</span> {userProfileData.stravaAthleteId}</p>
+                  {userProfileData?.stravaConnectedAt && (
+                    <p className="text-xs text-gray-400 font-medium"><span className="text-gray-600 font-bold">Synced:</span> {new Date(userProfileData.stravaConnectedAt).toLocaleDateString()}</p>
+                  )}
+                </div>
               )}
+              
+              <div className="mt-auto">
+                {userProfileData?.stravaAthleteId ? (
+                  <button
+                    onClick={handleDisconnectStrava}
+                    disabled={isDisconnectingStrava}
+                    className="w-full py-3.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center"
+                  >
+                    {isDisconnectingStrava ? <Loader2 size={16} className="animate-spin" /> : "Disconnect Strava"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleConnectStrava}
+                    disabled={isConnectingStrava}
+                    className="w-full py-3.5 bg-[#FC4C02] hover:bg-[#e04300] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 shadow-lg flex items-center justify-center gap-2"
+                  >
+                    {isConnectingStrava ? <Loader2 size={16} className="animate-spin" /> : "Connect Account"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </section>
 
-        {/* Danger Zone */}
-        <section className="border border-red-500/20 bg-red-500/5 p-6 rounded-2xl">
-          <h3 className="text-xs text-red-500 font-bold uppercase mb-2 flex items-center gap-2">
-            <AlertTriangle size={14} /> Danger Zone
-          </h3>
-          <div className="flex justify-between items-center">
-            <p className="text-xs text-red-500/70">
-              Permanently delete your account and all data.
-            </p>
-            <button className="border border-red-500/50 text-red-500 px-4 py-2 rounded-lg text-xs font-bold hover:bg-red-500/10">
+          {/* CARD 4: Preferences (Spans 2 columns) */}
+          <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-2 relative overflow-hidden">
+             <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+              <Globe size={12} /> App Preferences
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-main-bg p-5 rounded-2xl border border-white/5">
+                <div className="flex items-center gap-3 mb-3">
+                  <MapPin size={16} className="text-[#EB712B]" />
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Distance Unit</p>
+                </div>
+                <select
+                  value={userProfileData?.scale || selectedScale}
+                  onChange={async (e) => {
+                    const val = e.target.value;
+                    setSelectedScale(val);
+                    try {
+                      await updateScaleUnit({ scale: val }).unwrap();
+                      toast.success("Scale unit updated.");
+                    } catch (err: any) {
+                      toast.error(err?.data?.message || "Failed to update scale unit.");
+                    }
+                  }}
+                  disabled={isUpdatingScale}
+                  className="w-full bg-hover border border-white/5 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-[#EB712B] transition-colors appearance-none cursor-pointer"
+                >
+                  <option value="kilometer">Kilometers (km)</option>
+                  <option value="miles">Miles (mi)</option>
+                  <option value="meter">Meters (m)</option>
+                </select>
+              </div>
+
+              <div className="bg-main-bg p-5 rounded-2xl border border-white/5">
+                <div className="flex items-center gap-3 mb-3">
+                  <Clock size={16} className="text-[#EB712B]" />
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Time Format</p>
+                </div>
+                <div className="w-full bg-hover border border-white/5 rounded-xl px-4 py-3 text-sm font-bold text-gray-400 flex justify-between items-center cursor-not-allowed">
+                  {userProfileData?.timeFormat || "12h (AM/PM)"}
+                  <Lock size={14} className="text-gray-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD 5: Account Management & Security (Spans 2 columns) */}
+          <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-2 relative overflow-hidden flex flex-col">
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+              <ShieldCheck size={12} /> Security & Workspace
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+              <div 
+                onClick={() => setIsPasswordModalOpen(true)}
+                className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all group flex flex-col justify-center"
+              >
+                <Lock className="text-[#EB712B] mb-3 group-hover:scale-110 transition-transform" size={24} />
+                <h4 className="font-bold text-sm mb-1">Change Password</h4>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Update security keys</p>
+              </div>
+              
+              <Link to={role === 'athlete' ? "/view/userside/support" : "/view/clubside/support"} className="block">
+                <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full group flex flex-col justify-center">
+                  <HelpCircle className="text-[#EB712B] mb-3 group-hover:scale-110 transition-transform" size={24} />
+                  <h4 className="font-bold text-sm mb-1">Support & Help</h4>
+                  <p className="text-[10px] text-gray-500 uppercase tracking-wider">Get assistance</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+          
+          {/* CARD 6: Management Modules (Organizer Only) */}
+          {role === 'organizer' && (
+            <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 relative overflow-hidden">
+               <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                <Users size={12} /> Management Tools
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <Link to="/manage-club" className="block">
+                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                    <div className="p-3 bg-white/5 rounded-xl mb-3 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-colors"><Users size={20} /></div>
+                    <h4 className="font-bold text-sm">Manage Club</h4>
+                  </div>
+                </Link>
+                <div onClick={handleOpenAdminModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                  <div className="p-3 bg-white/5 rounded-xl mb-3 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors"><ShieldCheck size={20} /></div>
+                  <h4 className="font-bold text-sm">Admin Modules</h4>
+                </div>
+                <div onClick={handleOpenUserModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                  <div className="p-3 bg-white/5 rounded-xl mb-3 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><Bike size={20} /></div>
+                  <h4 className="font-bold text-sm">User Modules</h4>
+                </div>
+                <Link to="/subscription" className="block">
+                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                    <div className="p-3 bg-white/5 rounded-xl mb-3 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors"><CreditCard size={20} /></div>
+                    <h4 className="font-bold text-sm">Subscription</h4>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          )}
+          
+          {/* CARD 7: Danger Zone */}
+          <div className="bg-red-500/5 p-8 rounded-[2rem] border border-red-500/20 shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div>
+              <h3 className="text-sm text-red-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                <AlertTriangle size={16} /> Danger Zone
+              </h3>
+              <p className="text-xs text-red-500/70 font-medium">Permanently delete your account and all associated data. This action cannot be undone.</p>
+            </div>
+            <button className="bg-transparent border-2 border-red-500/50 hover:bg-red-500/10 text-red-500 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg whitespace-nowrap">
               Delete Account
             </button>
           </div>
-        </section>
+
+        </div>
       </div>
 
       {/* Password Handler */}

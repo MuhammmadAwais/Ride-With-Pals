@@ -11,6 +11,7 @@ interface ChatWindowProps {
   messages: ChatMessage[];
   onSendMessage: (text: string) => void;
   onBack: () => void;
+  onOpenProfile?: (uId: any) => void;
   isHiddenOnMobile: boolean;
 }
 
@@ -37,7 +38,7 @@ function HexWallpaper(): React.ReactElement {
   );
 }
 
-export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHiddenOnMobile }: ChatWindowProps) {
+export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpenProfile, isHiddenOnMobile }: ChatWindowProps) {
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef   = useRef<HTMLDivElement>(null);
@@ -132,17 +133,51 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, isHidd
             <ArrowLeft size={20} />
           </button>
 
-          <div style={{ position: 'relative', flexShrink: 0 }}>
-            <img src={activeUser.avatar} alt={activeUser.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }} />
-          </div>
+          <div 
+            onClick={() => onOpenProfile?.(activeUser.id.toString().startsWith('new-') ? activeUser.id.toString().replace('new-', '') : activeUser.id)}
+            className="flex items-center gap-3 cursor-pointer group hover:opacity-80 transition-opacity"
+          >
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              {activeUser.avatar && (
+                <img
+                  src={activeUser.avatar.startsWith('http') || activeUser.avatar.startsWith('data:') ? activeUser.avatar : `https://api.ridewithpals.com/uploads/${activeUser.avatar}`}
+                  alt={activeUser.name}
+                  style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+              )}
+              <div
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'rgba(235,113,43,0.2)',
+                  color: '#EB712B',
+                  border: '1px solid rgba(235,113,43,0.3)',
+                  display: activeUser.avatar ? 'none' : 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  fontFamily: 'var(--font-poppins)',
+                }}
+              >
+                {(activeUser.name || 'U').charAt(0).toUpperCase()}
+              </div>
+            </div>
 
-          <div>
-            <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '15px', color: 'var(--color-main-text)', lineHeight: 1.2 }}>
-              {activeUser.name}
-            </h3>
-            <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'var(--color-secondary-text)' }}>
-              {activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Offline'}
-            </span>
+            <div>
+              <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '15px', color: 'var(--color-main-text)', lineHeight: 1.2 }} className="group-hover:text-[#EB712B] transition-colors">
+                {activeUser.name}
+              </h3>
+              <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'var(--color-secondary-text)' }}>
+                {activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Click to view profile'}
+              </span>
+            </div>
           </div>
         </div>
 

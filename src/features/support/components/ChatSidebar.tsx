@@ -103,11 +103,36 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
             >
               {/* Avatar + online dot */}
               <div style={{ position: 'relative', flexShrink: 0 }}>
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }}
-                />
+                {user.avatar && (
+                  <img
+                    src={user.avatar.startsWith('http') || user.avatar.startsWith('data:') ? user.avatar : `https://api.ridewithpals.com/uploads/${user.avatar}`}
+                    alt={user.name}
+                    style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                      const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                )}
+                <div
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: 'rgba(235,113,43,0.15)',
+                    color: '#EB712B',
+                    border: '1px solid rgba(235,113,43,0.3)',
+                    display: user.avatar ? 'none' : 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 700,
+                    fontSize: '16px',
+                    fontFamily: 'var(--font-poppins)',
+                  }}
+                >
+                  {(user.name || 'U').charAt(0).toUpperCase()}
+                </div>
                 {user.isOnline && (
                   <div style={{ position: 'absolute', bottom: '1px', right: '1px', width: '12px', height: '12px', borderRadius: '50%', background: '#10b981', border: '2px solid var(--color-main-bg)' }} />
                 )}

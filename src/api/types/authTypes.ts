@@ -72,9 +72,14 @@ export type UserInfoResponseResponse = {
     profileImage:     null | string;
     createdAt:        Date;
     updatedAt:        Date;
-    scale?:           string;
-    timezone?:        null;
-    timeFormat?:      string;
+    scale?:               string;
+    timezone?:            string | null;
+    timeFormat?:          string;
+    stravaAthleteId?:     number | null;
+    stravaConnectedAt?:   string | Date | null;
+    stravaAccessToken?:   string | null;
+    stravaRefreshToken?:  string | null;
+    stravaTokenExpiresAt?: string | Date | null;
 }
 
 export type UploadFileResponse = {

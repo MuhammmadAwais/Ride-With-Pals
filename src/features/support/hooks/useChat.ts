@@ -1,14 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { SocketService } from '@/features/chat/services/socketService';
 import type { ChatUser, ChatMessage } from '../utils/constants';
 
-export const useChat = (initialTargetUserId?: number, initialTargetUserName?: string, initialTargetUserAvatar?: string) => {
+export const useChat = (
+  initialTargetUserId?: number, 
+  initialTargetUserName?: string, 
+  initialTargetUserAvatar?: string,
+  initialPrefillMessage?: string
+) => {
   const { user } = useAppSelector((state) => state.auth);
   const [threads, setThreads] = useState<ChatUser[]>([]);
   const [messagesMap, setMessagesMap] = useState<Record<string, ChatMessage[]>>({});
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const prefillSentRef = useRef<boolean>(false);
 
   // 1. Connect and Fetch Threads on Mount
   useEffect(() => {
@@ -20,16 +26,15 @@ export const useChat = (initialTargetUserId?: number, initialTargetUserName?: st
     // Fetch thread list
     const fetchThreads = async () => {
       try {
-        let initialThreadId = null;
+        let initialThreadId: string | null = null;
 
         // If we have an initialTargetUserId, get or create the thread first
         if (initialTargetUserId) {
           try {
             const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { targetUserId: initialTargetUserId });
-            if (res?.id) {
-              initialThreadId = res.id.toString();
-            } else if (typeof res === 'number' || typeof res === 'string') {
-              initialThreadId = res.toString();
+            const realId = res?.id || res?.threadId || res?.data?.id || (typeof res === 'number' || typeof res === 'string' ? res : null);
+            if (realId) {
+              initialThreadId = realId.toString();
             }
           } catch (createErr) {
             console.error('Failed to getOrCreate thread:', createErr);
@@ -50,22 +55,37 @@ export const useChat = (initialTargetUserId?: number, initialTargetUserName?: st
         }
 
         const mappedThreads: ChatUser[] = rows.map((row: any) => {
-          const oId = row.otherUser?.id || (row.userTwoId === user.id ? row.userOneId : row.userTwoId);
-          const name = row.otherUser?.fullName || `User #${oId}`;
-          const avatar = row.otherUser?.profileImage || `https://i.pravatar.cc/150?u=${oId}`;
+          // Find the other participant who is NOT the current logged-in user
+          let other = null;
+          if (row.otherUser && Number(row.otherUser.id) !== Number(user.id)) {
+            other = row.otherUser;
+          } else if (row.userOne && Number(row.userOne.id) !== Number(user.id)) {
+            other = row.userOne;
+          } else if (row.userTwo && Number(row.userTwo.id) !== Number(user.id)) {
+            other = row.userTwo;
+          } else if (row.otherUser) {
+            other = row.otherUser;
+          }
+
+          const oId = other?.id || (Number(row.userTwoId) === Number(user.id) ? row.userOneId : row.userTwoId) || (Number(row.userOneId) === Number(user.id) ? row.userTwoId : row.userOneId);
+          const name = other?.fullName || other?.name || (oId ? `User #${oId}` : 'Chat Partner');
+          const rawAvatar = other?.profileImage || other?.avatar;
+          const avatar = rawAvatar
+            ? (rawAvatar.startsWith('http') || rawAvatar.startsWith('data:') ? rawAvatar : `https://api.ridewithpals.com/uploads/${rawAvatar}`)
+            : undefined;
           const lastMsg = row.lastMessage?.message || 'No messages yet';
 
           let timeStr = '';
-          if (row.lastMessageAt) {
-            const date = new Date(row.lastMessageAt);
+          if (row.lastMessageAt || row.updatedAt) {
+            const date = new Date(row.lastMessageAt || row.updatedAt);
             timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           }
 
           return {
-            id: row.id.toString(), // Use thread ID as the ChatUser id in our mapping
+            id: row.id.toString(),
             name,
             avatar,
-            isOnline: false, // Could be determined dynamically
+            isOnline: false,
             unreadCount: 0,
             lastMessage: lastMsg,
             lastMessageTime: timeStr,
@@ -75,10 +95,13 @@ export const useChat = (initialTargetUserId?: number, initialTargetUserName?: st
         if (initialThreadId) {
           const exists = mappedThreads.some(t => t.id === initialThreadId);
           if (!exists) {
+            const avatar = initialTargetUserAvatar
+              ? (initialTargetUserAvatar.startsWith('http') || initialTargetUserAvatar.startsWith('data:') ? initialTargetUserAvatar : `https://api.ridewithpals.com/uploads/${initialTargetUserAvatar}`)
+              : undefined;
             mappedThreads.unshift({
               id: initialThreadId,
               name: initialTargetUserName || `User #${initialTargetUserId}`,
-              avatar: initialTargetUserAvatar || '/Images/CycleImage.png',
+              avatar,
               isOnline: true,
               unreadCount: 0,
               lastMessage: 'Say Hi!',
@@ -98,8 +121,6 @@ export const useChat = (initialTargetUserId?: number, initialTargetUserName?: st
     };
 
     fetchThreads();
-
-    // Clean up socket listener for incoming threads could go here if needed.
   }, [user, initialTargetUserId, initialTargetUserName, initialTargetUserAvatar]);
 
   // 2. Load Messages when a Thread is selected
@@ -292,6 +313,18 @@ export const useChat = (initialTargetUserId?: number, initialTargetUserName?: st
       console.error("Failed to send message", err);
     }
   }, [activeThreadId]);
+
+  // Auto-send prefill message if passed (e.g. from Marketplace item "Buy Now")
+  useEffect(() => {
+    if (activeThreadId && initialPrefillMessage && !prefillSentRef.current) {
+      prefillSentRef.current = true;
+      // Small timeout to ensure thread socket join finishes
+      const timer = setTimeout(() => {
+        sendMessage(initialPrefillMessage);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [activeThreadId, initialPrefillMessage, sendMessage]);
 
   return {
     threads,

@@ -18,8 +18,10 @@ interface StravaStatusResponse {
 
 interface StravaConnectResponse {
   authUrl?: string;
+  authorizeUrl?: string;
   url?: string;
   redirectUrl?: string;
+  redirectUri?: string;
 }
 
 interface StravaLeaderboardEntry {
@@ -35,11 +37,13 @@ interface StravaLeaderboardEntry {
 
 export const stravaApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    connectStravaAccount: builder.mutation<StravaConnectResponse, void>({
-      query: () => ({
-        url: '/user/connect/strava',
-        method: 'POST',
+    connectStravaAccount: builder.mutation<StravaConnectResponse, { redirectUrl?: string } | void>({
+      query: (params) => ({
+        url: '/user/strava/connect',
+        method: 'GET',
+        params: params || undefined,
       }),
+      invalidatesTags: ['User'],
     }),
 
     checkStravaStatus: builder.query<StravaStatusResponse, void>({

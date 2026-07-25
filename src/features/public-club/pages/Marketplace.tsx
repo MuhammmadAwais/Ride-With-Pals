@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Heart, MapPin, Grid3X3, List, Search, Filter, Plus, Trash2, Share2, Upload, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import { ROUTES } from "@/Constants";
 import {
   useGetMarketplaceListQuery,
   useAddMarketPlaceItemMutation,
@@ -410,12 +411,22 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
       return;
     }
     setPurchasedItemName(product.name);
-    navigate('/view/userside/support', {
+
+    const formattedMessage = `🛒 Interested in Purchasing: ${product.name}
+💰 Price: ${product.price}
+📍 Location: ${product.location || 'Marketplace'}
+Condition: ${product.condition}
+
+Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on the Ride With Pals Marketplace and I'm interested in buying it. Is it still available?`;
+
+    const supportRoute = currentUser.isAthleteProfile ? ROUTES.SUPPORT_ATHLETE : ROUTES.SUPPORT_OWNER;
+
+    navigate(supportRoute, {
       state: {
         targetUserId: product.sellerId,
         targetUserName: product.sellerName || 'Elite Seller',
-        targetUserAvatar: product.sellerAvatar || '/Images/CycleImage.png',
-        prefillMessage: `Hi ${product.sellerName || 'there'}, I am interested in purchasing "${product.name}" for ${product.price}. Is it still available?`
+        targetUserAvatar: product.sellerAvatar,
+        prefillMessage: formattedMessage,
       }
     });
   };

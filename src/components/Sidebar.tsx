@@ -534,10 +534,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               overflow: 'hidden'
             }}>
               {user?.profileImage ? (
-                <img src={user.profileImage.startsWith('http') ? user.profileImage : `https://api.ridewithpals.com/uploads/${user.profileImage}`} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
+                <img
+                  src={user.profileImage.startsWith('http') || user.profileImage.startsWith('data:') ? user.profileImage : `https://api.ridewithpals.com/uploads/${user.profileImage}`}
+                  alt="Avatar"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                    const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div
+                style={{
+                  width: '100%', height: '100%',
+                  display: user?.profileImage ? 'none' : 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                }}
+              >
                 <User size={20} color="#fff" />
-              )}
+              </div>
             </div>
 
             {/* Name + Role */}
