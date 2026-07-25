@@ -134,7 +134,10 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
           </button>
 
           <div 
-            onClick={() => onOpenProfile?.(activeUser.id.toString().startsWith('new-') ? activeUser.id.toString().replace('new-', '') : activeUser.id)}
+            onClick={() => {
+              const targetId = activeUser.targetUserId || activeUser.id;
+              onOpenProfile?.(targetId.toString().startsWith('new-') ? targetId.toString().replace('new-', '') : targetId);
+            }}
             className="flex items-center gap-3 cursor-pointer group hover:opacity-80 transition-opacity"
           >
             <div style={{ position: 'relative', flexShrink: 0 }}>

@@ -9,6 +9,7 @@ export interface ChatUser {
   unreadCount: number;
   lastMessage: string;
   lastMessageTime: string;
+  targetUserId?: string | number;
 }
 
 export type MessageType = 'text' | 'image' | 'video' | 'audio';

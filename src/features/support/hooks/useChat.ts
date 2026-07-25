@@ -63,8 +63,6 @@ export const useChat = (
             other = row.userOne;
           } else if (row.userTwo && Number(row.userTwo.id) !== Number(user.id)) {
             other = row.userTwo;
-          } else if (row.otherUser) {
-            other = row.otherUser;
           }
 
           const oId = other?.id || (Number(row.userTwoId) === Number(user.id) ? row.userOneId : row.userTwoId) || (Number(row.userOneId) === Number(user.id) ? row.userTwoId : row.userOneId);
@@ -89,6 +87,7 @@ export const useChat = (
             unreadCount: 0,
             lastMessage: lastMsg,
             lastMessageTime: timeStr,
+            targetUserId: oId,
           };
         });
 
@@ -106,6 +105,7 @@ export const useChat = (
               unreadCount: 0,
               lastMessage: 'Say Hi!',
               lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              targetUserId: initialTargetUserId,
             });
           }
         }
