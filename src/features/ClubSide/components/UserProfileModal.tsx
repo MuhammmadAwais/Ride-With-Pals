@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Mail, Phone, Globe, Calendar, Loader2, User, MessageSquare, Clock, MapPin, ShieldCheck, Activity } from 'lucide-react';
+import { X, Phone,  Calendar, Loader2, User, MessageSquare, Clock, MapPin, Activity } from 'lucide-react';
 import { useGetOtherUserInfoQuery } from '@/features/auth/api/authApiSlice';
 import { useNavigate } from 'react-router-dom';
 

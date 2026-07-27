@@ -6,13 +6,13 @@ import {
   Lock,
   ShieldCheck,
   Shield,
-  Wallet,
+
   CreditCard,
   HelpCircle,
-  Languages,
+
   Info,
   AlertTriangle,
-  ChevronRight,
+
   ArrowRight,
   Moon,
   Sun,
@@ -70,6 +70,8 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
   // Strava Hooks
   const { data: stravaStatus, refetch: refetchStravaStatus } = useCheckStravaStatusQuery();
+  {stravaStatus}
+  
   const [connectStrava, { isLoading: isConnectingStrava }] = useConnectStravaAccountMutation();
   const [disconnectStrava, { isLoading: isDisconnectingStrava }] = useDisconnectStravaAccountMutation();
 

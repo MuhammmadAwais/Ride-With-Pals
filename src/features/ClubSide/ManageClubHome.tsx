@@ -230,8 +230,10 @@ const ManageClubHome = () => {
 
   // Delete associated membership plan
   const handleDeletePlan = async (id: string) => {
+    if (!clubId) return;
+
     try {
-      await deletePlan({ planId: Number(id) }).unwrap();
+      await deletePlan({ clubId, planId: Number(id) }).unwrap();
       toast.success("Membership plan deleted successfully!");
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to delete membership plan.");

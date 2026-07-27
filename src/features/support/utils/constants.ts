@@ -3,7 +3,7 @@
 export interface ChatUser {
   id: string;
   name: string;
-  avatar: string;
+  avatar?: string;
   isOnline: boolean;
   lastSeen?: string;
   unreadCount: number;
