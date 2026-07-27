@@ -1,43 +1,112 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2, Loader2, ShieldAlert } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useForClubOwnerUpdateOrderStatusMutation } from '@/features/club/api/shopOrderApiSlice';
+import { useForClubOwnerUpdateOrderStatusMutation, useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
+import { useAppSelector } from '@/hooks/useAppSelector';
+import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import type { ResponseElement } from '@/api/types/shopOrderTypes';
+import type { Club } from '@/features/club/types/clubTypes';
+
+const extractArray = (data: unknown): ResponseElement[] => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data as ResponseElement[];
+  const obj = data as Record<string, unknown>;
+  if (Array.isArray(obj?.response)) return obj.response as ResponseElement[];
+  if (Array.isArray(obj?.data)) return obj.data as ResponseElement[];
+  if (Array.isArray(obj?.rows)) return obj.rows as ResponseElement[];
+  const responseObj = obj?.response as Record<string, unknown> | undefined;
+  if (Array.isArray(responseObj?.rows)) return responseObj.rows as ResponseElement[];
+  const dataObj = obj?.data as Record<string, unknown> | undefined;
+  if (Array.isArray(dataObj?.rows)) return dataObj.rows as ResponseElement[];
+  return [];
+};
 
 const OrderDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
 
-  // ✅ Permission guard — only club owners should access order details
-  const { clubId } = useActiveClub();
-  const permissions = useClubPermissions(clubId || undefined);
+  const { clubId: clubIdStr, setActiveClub } = useActiveClub();
+  const myClubsFromReduxRaw = useAppSelector((state) => state.club.myClubs);
+  const myClubsFromRedux = useMemo(() => myClubsFromReduxRaw || [], [myClubsFromReduxRaw]);
+  const { data: joinedClubsData } = useGetJoinedClubsQuery();
 
-  // Get the order data passed from the navigation state
-  const order = location.state?.order;
+  useEffect(() => {
+    if (!clubIdStr) {
+      const clubsList = (Array.isArray(joinedClubsData) && joinedClubsData.length > 0)
+        ? joinedClubsData
+        : (Array.isArray((joinedClubsData as { rows?: unknown[] })?.rows) ? (joinedClubsData as { rows?: unknown[] }).rows || [] : myClubsFromRedux);
+      if (Array.isArray(clubsList) && clubsList.length > 0) {
+        console.log("📌 [Order Detail] Auto-selecting active club:", clubsList[0]);
+        setActiveClub(clubsList[0] as Club);
+      }
+    }
+  }, [clubIdStr, joinedClubsData, myClubsFromRedux, setActiveClub]);
 
-  const [isDelivered, setIsDelivered] = useState(order?.status === 'Delivered');
+  const effectiveClubId = clubIdStr ? Number(clubIdStr) : 0;
+  const permissions = useClubPermissions(effectiveClubId || undefined);
+
+  // Get the order data passed from the navigation state or fallback to API query
+  const stateOrder = location.state?.order;
+  const { data: orderListResponse } = useForClubOwnerOrderListQuery(
+    { clubId: effectiveClubId, limit: 100 },
+    { skip: !effectiveClubId || !!stateOrder }
+  );
+
+  const fallbackOrder = () => {
+    const rows = extractArray(orderListResponse);
+    const found = rows.find((o) => o.id?.toString() === id);
+    if (!found) return undefined;
+    const addressObj = found.orderAddress as { street?: string; city?: string } | undefined;
+    const addressStr = addressObj?.street 
+      ? `${addressObj.street || ''}, ${addressObj.city || ''}` 
+      : (found.deliveryMethod || 'Pickup');
+    return {
+      id: found.id?.toString(),
+      orderId: found.id?.toString() || '0',
+      productName: found.shop?.name || 'Unknown Product',
+      category: found.shop?.size || 'Uncategorized',
+      image: found.shop?.image || '/Images/CycleImage.png',
+      price: `€${found.totalPrice ? parseFloat(found.totalPrice).toFixed(2) : '0.00'}`,
+      recipient: found.buyer?.fullName || 'Unknown User',
+      address: addressStr,
+      date: found.createdAt ? new Date(found.createdAt).toLocaleDateString() : 'N/A',
+      status: found.statusId === 4 ? 'Delivered' : 'Active',
+      originalOrder: found
+    };
+  };
+
+  const order = stateOrder || fallbackOrder();
+
+  const [deliveredOverride, setDeliveredOverride] = useState(false);
+  const isDelivered = deliveredOverride || order?.status === 'Delivered';
   const [updateOrderStatus, { isLoading: isUpdating }] = useForClubOwnerUpdateOrderStatusMutation();
 
   const handleMarkDelivered = async () => {
     if (!order?.originalOrder?.id) return;
     try {
-      await updateOrderStatus({
+      console.log("📦 [Order Detail] Sending PUT /user/club/shop/order/status request:", {
+        orderId: Number(order.originalOrder.id),
+        statusId: 4
+      });
+      const response = await updateOrderStatus({
         orderId: Number(order.originalOrder.id),
         statusId: 4 // 4 = Delivered
       }).unwrap();
-      setIsDelivered(true);
+      console.log("📦 [Order Detail] Status update response:", response);
+      setDeliveredOverride(true);
       toast.success('Order marked as delivered successfully!');
-    } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update order status.');
+    } catch (err: unknown) {
+      toast.error((err as { data?: { message?: string } })?.data?.message || 'Failed to update order status.');
       console.error(err);
     }
   };
 
   // ✅ Block non-owners — they should never see another club's order details
-  if (!permissions.isLoading && !permissions.isOwner && clubId) {
+  if (!permissions.isLoading && !permissions.isOwner && effectiveClubId) {
     return (
       <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10 flex items-center justify-center">
         <div className="bg-surface border border-red-500/20 rounded-3xl p-12 text-center max-w-md space-y-4">
@@ -65,7 +134,7 @@ const OrderDetail = () => {
       {/* Navigation Header - fixed route to point to plain /order */}
       <div className="flex items-center gap-4 mb-8">
         <button 
-          onClick={() => navigate('/order')} 
+          onClick={() => navigate('/view/clubside/order')} 
           className="group flex items-center gap-2 text-text-muted hover:text-text-main transition-all cursor-pointer bg-transparent border-0 outline-none"
         >
           <div className="p-2 rounded-full bg-surface group-hover:bg-hover border border-border">

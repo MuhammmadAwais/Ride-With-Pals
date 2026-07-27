@@ -22,9 +22,19 @@ export type ResponseElement = {
     createdAt:  Date;
     updatedAt:  Date;
     deletedAt:  null;
-    shop?:      Shop;
-    buyer?:     Buyer;
-    club?:      Club;
+    shop?:          Shop;
+    buyer?:         Buyer;
+    club?:          Club;
+    deliveryMethod?: string;
+    orderAddress?: {
+        fullName?:   string;
+        phone?:      string;
+        street?:     string;
+        city?:       string;
+        state?:      string;
+        postalCode?: string;
+        country?:    string;
+    };
 }
 
 export type Buyer = {

@@ -1,44 +1,132 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
+import { useAppSelector } from '@/hooks/useAppSelector';
+import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
+import type { ResponseElement } from '@/api/types/shopOrderTypes';
+import type { Club } from '@/features/club/types/clubTypes';
+
+export interface OrderRow {
+  id?: string;
+  orderId: string;
+  productName: string;
+  category: string;
+  image: string;
+  price: string;
+  recipient: string;
+  address: string;
+  date: string;
+  status: 'Active' | 'Delivered';
+  originalOrder: ResponseElement;
+}
+
+const extractArray = (data: unknown): ResponseElement[] => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data as ResponseElement[];
+  const obj = data as Record<string, unknown>;
+  if (Array.isArray(obj?.response)) return obj.response as ResponseElement[];
+  if (Array.isArray(obj?.data)) return obj.data as ResponseElement[];
+  if (Array.isArray(obj?.rows)) return obj.rows as ResponseElement[];
+  const responseObj = obj?.response as Record<string, unknown> | undefined;
+  if (Array.isArray(responseObj?.rows)) return responseObj.rows as ResponseElement[];
+  const dataObj = obj?.data as Record<string, unknown> | undefined;
+  if (Array.isArray(dataObj?.rows)) return dataObj.rows as ResponseElement[];
+  return [];
+};
+
+const TableSkeleton = () => (
+  <div className="animate-pulse space-y-3 p-4 bg-surface rounded-3xl border border-border">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="w-10 h-10 rounded-2xl bg-hover/50" />
+          <div className="space-y-2">
+            <div className="w-24 h-4 bg-hover/50 rounded" />
+            <div className="w-16 h-3 bg-hover/50 rounded" />
+          </div>
+        </div>
+        <div className="w-20 h-4 bg-hover/50 rounded" />
+        <div className="w-16 h-4 bg-hover/50 rounded" />
+        <div className="w-24 h-4 bg-hover/50 rounded" />
+        <div className="w-16 h-4 bg-hover/50 rounded" />
+        <div className="w-20 h-8 bg-hover/50 rounded-lg" />
+      </div>
+    ))}
+  </div>
+);
 
 const Order = () => {
   const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const { clubId: clubIdStr } = useActiveClub();
-  const clubId = clubIdStr ? Number(clubIdStr) : undefined;
+  const { clubId: clubIdStr, setActiveClub } = useActiveClub();
+  const myClubsFromReduxRaw = useAppSelector((state) => state.club.myClubs);
+  const myClubsFromRedux = useMemo(() => myClubsFromReduxRaw || [], [myClubsFromReduxRaw]);
+  const { data: joinedClubsData } = useGetJoinedClubsQuery();
+
+  useEffect(() => {
+    if (!clubIdStr) {
+      const clubsList = (Array.isArray(joinedClubsData) && joinedClubsData.length > 0)
+        ? joinedClubsData
+        : (Array.isArray((joinedClubsData as { rows?: unknown[] })?.rows) ? (joinedClubsData as { rows?: unknown[] }).rows || [] : myClubsFromRedux);
+      if (Array.isArray(clubsList) && clubsList.length > 0) {
+        console.log("📌 [Order Management] Auto-selecting active club:", clubsList[0]);
+        setActiveClub(clubsList[0] as Club);
+      }
+    }
+  }, [clubIdStr, joinedClubsData, myClubsFromRedux, setActiveClub]);
+
+  const effectiveClubId = clubIdStr ? Number(clubIdStr) : 0;
 
   const { data: orderListResponse, isLoading, isError } = useForClubOwnerOrderListQuery(
     {
-      clubId: clubId || 0,
+      clubId: effectiveClubId,
       limit: 50,
       offset: 0,
       statusIds: activeTab === 'Active' ? '1,2,3' : '4',
     },
-    { skip: !clubId }
+    { skip: !effectiveClubId }
   );
 
+  useEffect(() => {
+    if (effectiveClubId) {
+      console.log("📦 [Order Management] Sending GET /user/club/shop/orders request for Club ID:", effectiveClubId, "Tab:", activeTab);
+    }
+  }, [effectiveClubId, activeTab]);
+
+  useEffect(() => {
+    if (orderListResponse) {
+      console.log("📦 [Order Management] Received order list API response:", orderListResponse);
+      console.log("📦 [Order Management] Extracted rows:", extractArray(orderListResponse));
+    }
+  }, [orderListResponse]);
+
   const orders = useMemo(() => {
-    const rows = orderListResponse?.rows || [];
-    const mapped = rows.map((o) => ({
-      id: o.id?.toString(),
-      orderId: o.id?.toString(),
-      productName: o.shop?.name || 'Unknown Product',
-      category: o.shop?.size || 'Uncategorized',
-      image: o.shop?.image || '/Images/CycleImage.png',
-      price: `$ ${o.totalPrice ? parseFloat(o.totalPrice).toFixed(2) : '0.00'}`,
-      recipient: o.buyer?.fullName || 'Unknown User',
-      address: 'N/A',
-      date: o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'N/A',
-      status: activeTab,
-      originalOrder: o
-    }));
+    const rows = extractArray(orderListResponse);
+    const mapped: OrderRow[] = rows.map((o) => {
+      const addressObj = o.orderAddress as { street?: string; city?: string } | undefined;
+      const addressStr = addressObj?.street 
+        ? `${addressObj.street || ''}, ${addressObj.city || ''}` 
+        : (o.deliveryMethod || 'Pickup');
+      return {
+        id: o.id?.toString(),
+        orderId: o.id?.toString() || '0',
+        productName: o.shop?.name || 'Unknown Product',
+        category: o.shop?.size || 'Uncategorized',
+        image: o.shop?.image || '/Images/CycleImage.png',
+        price: `€${o.totalPrice ? parseFloat(o.totalPrice).toFixed(2) : '0.00'}`,
+        recipient: o.buyer?.fullName || 'Unknown User',
+        address: addressStr,
+        date: o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'N/A',
+        status: activeTab,
+        originalOrder: o
+      };
+    });
 
     if (!searchQuery) return mapped;
 
@@ -50,7 +138,7 @@ const Order = () => {
     );
   }, [orderListResponse, activeTab, searchQuery]);
 
-  const columns: Column<any>[] = [
+  const columns: Column<OrderRow>[] = [
     {
       key: 'productName',
       label: 'Product',
@@ -117,27 +205,6 @@ const Order = () => {
     }
   ];
 
-  const TableSkeleton = () => (
-    <div className="animate-pulse space-y-3 p-4 bg-surface rounded-3xl border border-border">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="w-10 h-10 rounded-2xl bg-hover/50" />
-            <div className="space-y-2">
-              <div className="w-24 h-4 bg-hover/50 rounded" />
-              <div className="w-16 h-3 bg-hover/50 rounded" />
-            </div>
-          </div>
-          <div className="w-20 h-4 bg-hover/50 rounded" />
-          <div className="w-16 h-4 bg-hover/50 rounded" />
-          <div className="w-24 h-4 bg-hover/50 rounded" />
-          <div className="w-16 h-4 bg-hover/50 rounded" />
-          <div className="w-20 h-8 bg-hover/50 rounded-lg" />
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8 overflow-x-hidden">
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 gap-4">
@@ -147,7 +214,6 @@ const Order = () => {
         </div>
         
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full xl:w-auto">
-          {/* Search Bar Container */}
           <div className="relative w-full sm:w-72">
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
             <input
@@ -159,7 +225,6 @@ const Order = () => {
             />
           </div>
 
-          {/* Tab Buttons Container */}
           <div className="bg-surface p-1 rounded-xl border border-border flex self-end shrink-0">
             <button 
               onClick={() => setActiveTab('Active')} 
@@ -177,7 +242,7 @@ const Order = () => {
         </div>
       </div>
 
-      {!clubId ? (
+      {!effectiveClubId ? (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
           Please select a club to manage its orders.
         </div>
@@ -193,7 +258,7 @@ const Order = () => {
         </div>
       ) : (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
-          No orders found under "{activeTab}" matching your filter.
+          No orders found under &quot;{activeTab}&quot; matching your filter.
         </div>
       )}
     </div>
