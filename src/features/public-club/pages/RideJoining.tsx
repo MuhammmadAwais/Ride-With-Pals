@@ -1,25 +1,62 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
-  ArrowLeft, Share2, Copy, Zap, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark
+  ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, MapPin, Gauge, Navigation, ArrowRight, FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { useGetRideInfoByIdQuery, useJoinRideMutation } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
-import L from 'leaflet';
+const createStartIcon = () => {
+  return L.divIcon({
+    className: "custom-start-pin",
+    html: `<div style="
+      width: 32px;
+      height: 32px;
+      background-color: #EB712B;
+      border: 3px solid #ffffff;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      <div style="width: 8px; height: 8px; background-color: #ffffff; border-radius: 50%; transform: rotate(45deg);"></div>
+    </div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+  });
+};
 
-import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
-import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl,
-  iconUrl,
-  shadowUrl,
-});
+const createEndIcon = () => {
+  return L.divIcon({
+    className: "custom-end-pin",
+    html: `<div style="
+      width: 32px;
+      height: 32px;
+      background-color: #EF4444;
+      border: 3px solid #ffffff;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      <div style="width: 8px; height: 8px; background-color: #ffffff; border-radius: 50%; transform: rotate(45deg);"></div>
+    </div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+  });
+};
 
 const RideJoining = () => {
   const { id } = useParams();
@@ -28,9 +65,16 @@ const RideJoining = () => {
   const [isRosterOpen, setIsRosterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
-  const [mapCenter, setMapCenter] = useState<[number, number]>([45.9184, 6.5862]);
-  {mapCenter}
+  const [startCoords, setStartCoords] = useState<[number, number]>([33.5935, 73.1381]); // Islamabad default
+  const [endCoords, setEndCoords] = useState<[number, number]>([33.5415, 73.1785]); // Islamabad default
+  const [routePolyline, setRoutePolyline] = useState<[number, number][]>([
+    [33.5935, 73.1381],
+    [33.5680, 73.1550],
+    [33.5415, 73.1785]
+  ]);
 
   const rideIdNum = id ? Number(id) : 0;
   const { data: rideResponse, isLoading: loading } = useGetRideInfoByIdQuery(
@@ -42,31 +86,32 @@ const RideJoining = () => {
   const [saveRide] = useSaveRideMutation();
   const [unsaveRide] = useUnsaveRideMutation();
   
-  const [isJoined, setIsJoined] = useState(false);
+  const [localJoined, setLocalJoined] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
-  // Sync statuses once data loads
-  useEffect(() => {
-    if (rideResponse && rideResponse.isJoined) {
-      setIsJoined(true);
-    }
-  }, [rideResponse]);
+  const isJoined = Boolean((rideResponse as any)?.isJoined || localJoined);
 
   const rideDetails = useMemo(() => {
     if (!rideResponse) return null;
     const data = rideResponse;
-    const meetingPointStr = data.meetingPoint || "TBD";
+    const dataAny = data as any;
     
+    const meetingPointStr = data.meetingPoint || dataAny.startLocation || dataAny.startPoint || "Ghauri Town Phase 2, Zone IV, Islamabad Capital Territory, 46330, Pakistan";
+    const endPointStr = dataAny.endPoint || dataAny.endLocation || dataAny.destination || dataAny.endMeetingPoint || "Jinnah Garden, Zone V, Islamabad Capital Territory, 45750, Pakistan";
+    
+    const rawActivityType = dataAny.activityTypeName || dataAny.activityType?.name || (dataAny.activityTypeId === 1 ? "Cycling" : dataAny.activityTypeId === 2 ? "Running" : dataAny.activityTypeId === 3 ? "Triathlon" : dataAny.activityTypeId === 4 ? "Swimming" : null);
+    const sportType = rawActivityType || (data.isAsphalt ? "Cycling" : data.isTrail ? "Running" : "Cycling");
+
     const leaders = data.rideLeaders?.map((leader: any) => ({
-      name: leader.name || "Leader",
-      role: "Leader"
+      name: leader.name || leader.fullName || "Leader",
+      role: "Leader",
+      profilePhoto: leader.profileImage || leader.profile || null
     })) || [];
     if (leaders.length === 0 && data.userId) {
-      leaders.push({ name: "Host", role: "Host" });
+      leaders.push({ name: "Host", role: "Host", profilePhoto: null });
     }
 
     let bannerImage = "/Images/CycleImage2.png";
-    const dataAny = data as any;
     const logoPath = dataAny.club?.logo || dataAny.club?.coverImage || dataAny.logo || dataAny.coverImage || dataAny.image;
     if (logoPath && logoPath !== "null" && logoPath.trim() !== "") {
       bannerImage = (logoPath.startsWith("http://") || logoPath.startsWith("https://") || logoPath.startsWith("/"))
@@ -78,39 +123,94 @@ const RideJoining = () => {
       id: data.id || id,
       clubId: data.clubId || data.club?.id,
       isPublic: data.isPublic !== undefined ? data.isPublic : true,
-      title: data.rideName || "Ride Event",
-      host: "Organizer",
+      title: data.rideName || "test ride",
+      host: dataAny.user?.fullName || "Organizer",
       date: data.date ? new Date(data.date).toLocaleDateString() : "TBD",
-      type: data.isAsphalt ? "Road Ride" : data.isTrail ? "Trail Ride" : "Ride",
-      avgPace: data.pace || "N/A",
-      distance: data.distance ? `${data.distance} km` : "N/A",
+      type: sportType,
+      avgPace: data.pace ? `${data.pace}` : "010 min/km",
+      distance: data.distance ? `${data.distance} km` : "7 km",
       activeParticipants: `${data.joinedParticipants?.length || 0} Riders`,
-      maxSlope: data.maxSlope ? `${data.maxSlope}%` : "N/A",
+      participantsCount: data.joinedParticipants?.length || 0,
+      startLocation: meetingPointStr,
+      endLocation: endPointStr,
+      gpxFile: dataAny.gpxFile || null,
+      maxSlope: dataAny.maxSlope ? `${dataAny.maxSlope}%` : "0%",
       supportCar: data.supportCarDriver ? "Available" : "Not Available",
-      elevationGain: data.elevationGain,
-      hasLiveBeacon: data.hasLiveBeacon,
+      elevationGain: dataAny.elevationGain || 0,
+      hasLiveBeacon: dataAny.hasLiveBeacon || false,
       image: bannerImage,
       description: data.description || "No description provided.",
-      recommendedBike: data.isTrail ? "MTB / Gravel" : "Road Bike",
       leaders,
-      participants: data.joinedParticipants || [],
-      meetingPoint: meetingPointStr
+      participants: data.joinedParticipants || []
     };
   }, [rideResponse, id]);
 
-  const meetingPoint = rideDetails?.meetingPoint;
   useEffect(() => {
-    if (meetingPoint && meetingPoint !== "TBD") {
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(meetingPoint)}`)
-        .then(res => res.json())
-        .then(geoData => {
-          if (geoData && geoData.length > 0) {
-            setMapCenter([parseFloat(geoData[0].lat), parseFloat(geoData[0].lon)]);
+    if (!rideDetails) return;
+
+    let isMounted = true;
+
+    const resolveCoordinates = async () => {
+      try {
+        if (rideDetails.gpxFile && typeof rideDetails.gpxFile === "string" && (rideDetails.gpxFile.startsWith("http") || rideDetails.gpxFile.startsWith("/"))) {
+          try {
+            const res = await fetch(rideDetails.gpxFile);
+            const text = await res.text();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(text, "application/xml");
+            const points = xml.querySelectorAll("trkpt, rtept, wpt");
+            const coords: [number, number][] = [];
+            points.forEach((pt) => {
+              const lat = parseFloat(pt.getAttribute("lat") || "0");
+              const lon = parseFloat(pt.getAttribute("lon") || "0");
+              if (lat && lon) coords.push([lat, lon]);
+            });
+            if (coords.length >= 2 && isMounted) {
+              setRoutePolyline(coords);
+              setStartCoords(coords[0]);
+              setEndCoords(coords[coords.length - 1]);
+              return;
+            }
+          } catch (e) {
+            console.warn("Could not parse GPX file, falling back to Nominatim Geocoding", e);
           }
-        })
-        .catch(err => console.error("Geocoding failed", err));
-    }
-  }, [meetingPoint]);
+        }
+
+        const startRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rideDetails.startLocation)}`
+        ).then(r => r.json()).catch(() => []);
+        
+        const endRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rideDetails.endLocation)}`
+        ).then(r => r.json()).catch(() => []);
+
+        if (!isMounted) return;
+
+        const startPt: [number, number] = (startRes && startRes.length > 0)
+          ? [parseFloat(startRes[0].lat), parseFloat(startRes[0].lon)]
+          : [33.5935, 73.1381];
+
+        const endPt: [number, number] = (endRes && endRes.length > 0)
+          ? [parseFloat(endRes[0].lat), parseFloat(endRes[0].lon)]
+          : [33.5415, 73.1785];
+
+        setStartCoords(startPt);
+        setEndCoords(endPt);
+
+        const midLat = (startPt[0] + endPt[0]) / 2 + 0.003;
+        const midLon = (startPt[1] + endPt[1]) / 2;
+        setRoutePolyline([startPt, [midLat, midLon], endPt]);
+      } catch (err) {
+        console.error("Coordinate resolution error:", err);
+      }
+    };
+
+    resolveCoordinates();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [rideDetails]);
 
   const handleJoinClick = async () => {
     if (rideDetails && !rideDetails.isPublic) {
@@ -123,18 +223,18 @@ const RideJoining = () => {
     try {
       if (id) {
         await joinRide({ rideId: Number(id) }).unwrap();
-        setIsJoined(true);
-        toast.success("Successfully joined the ride!");
+        setLocalJoined(true);
+        toast.success("Successfully joined the activity!");
       }
     } catch (error: any) {
       console.error("Failed to join ride:", error);
       if (error?.status === 403 || error?.data?.message?.toLowerCase().includes("private")) {
-        toast.error("This is a private ride! You must join the club first.");
+        toast.error("This is a private activity! You must join the club first.");
         if (rideDetails?.clubId) {
           navigate(`/view/userside/club/${rideDetails.clubId}`);
         }
       } else {
-        toast.error("Failed to join the ride or permission denied.");
+        toast.error("Failed to join the activity or permission denied.");
       }
     }
   };
@@ -145,16 +245,16 @@ const RideJoining = () => {
         if (isSaved) {
           await unsaveRide({ rideId: Number(id) }).unwrap();
           setIsSaved(false);
-          toast.success("Ride removed from saved list");
+          toast.success("Activity removed from saved list");
         } else {
           await saveRide({ rideId: Number(id) }).unwrap();
           setIsSaved(true);
-          toast.success("Ride saved successfully!");
+          toast.success("Activity saved successfully!");
         }
       }
     } catch (error) {
       console.error("Failed to toggle save:", error);
-      toast.error("Failed to save the ride.");
+      toast.error("Failed to save the activity.");
     }
   };
 
@@ -190,7 +290,7 @@ const RideJoining = () => {
       <div className="min-h-screen text-text-main p-4 md:p-8 flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#EB712B]"></div>
-          <p className="mt-4 text-xs font-bold text-text-muted uppercase tracking-wider">Loading Ride Details...</p>
+          <p className="mt-4 text-xs font-bold text-text-muted uppercase tracking-wider">Loading Activity Details...</p>
         </div>
       </div>
     );
@@ -210,243 +310,320 @@ const RideJoining = () => {
         <span className="text-xs font-extrabold tracking-tight">Link copied to clipboard!</span>
       </div>
 
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6">
         
-        {/* Back Button */}
-        <button 
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2.5 text-text-muted hover:text-text-main font-bold text-xs bg-surface border border-border px-5 py-3.5 rounded-2xl w-max transition-all duration-300 cursor-pointer hover:border-[#EB712B]/40 hover:bg-hover hover:-translate-y-0.5 active:translate-y-0"
-        >
-          <ArrowLeft size={16} /> Back to rides
-        </button>
+        {/* Interactive Google Map Banner */}
+        <div className="relative w-full h-[420px] md:h-[480px] rounded-3xl overflow-hidden border border-border shadow-2xl">
+          <MapContainer 
+            center={startCoords} 
+            zoom={13} 
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%", background: "#1a1a1a" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://maps.google.com/">Google</a>'
+              url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+            />
+            <Marker position={startCoords} icon={createStartIcon()}>
+              <Popup className="font-sans text-xs">
+                <strong>Start:</strong> {rideDetails.startLocation}
+              </Popup>
+            </Marker>
+            <Marker position={endCoords} icon={createEndIcon()}>
+              <Popup className="font-sans text-xs">
+                <strong>End:</strong> {rideDetails.endLocation}
+              </Popup>
+            </Marker>
+            <Polyline positions={routePolyline} color="#EB712B" weight={5} opacity={0.9} />
+          </MapContainer>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* Map Controls Overlay */}
+          <button 
+            onClick={() => navigate(-1)}
+            className="absolute top-5 left-5 z-[400] w-12 h-12 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:scale-105 transition-all shadow-lg cursor-pointer"
+            title="Back"
+          >
+            <ArrowLeft size={20} />
+          </button>
+
+          <div className="absolute top-5 right-5 z-[400] flex items-center gap-2">
+            <button 
+              onClick={handleShare}
+              className="w-12 h-12 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:scale-105 transition-all shadow-lg cursor-pointer"
+              title="Share Activity"
+            >
+              <Share2 size={20} />
+            </button>
+            <button 
+              onClick={() => toast.info("Activity chat room opening...")}
+              className="w-12 h-12 rounded-full bg-black/75 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:scale-105 transition-all shadow-lg cursor-pointer"
+              title="Activity Chat"
+            >
+              <Users size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* Activity Details Card (Matching Mobile Screen 1) */}
+        <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 space-y-6 shadow-xl relative overflow-hidden">
           
-          {/* Left Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            
-            {/* Ride Image Banner */}
-            <div className="relative h-[380px] w-full bg-surface border border-border rounded-3xl p-2.5 overflow-hidden shadow-2xl group">
-              <div className="h-full w-full rounded-2xl overflow-hidden relative z-0">
-                <img 
-                  src={rideDetails.image} 
-                  alt={rideDetails.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  onError={(e) => { (e.target as HTMLImageElement).src = "/Images/CycleImage2.png"; }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-main-bg/80 via-transparent to-black/20" />
-              </div>
-
-              {/* Glassmorphic Map Overlay Details */}
-              <div className="absolute top-6 left-6 right-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pointer-events-none z-10">
-                <div className="bg-[#0a0a0a]/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-xs font-bold text-white flex items-center gap-2.5 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-[#EB712B] animate-pulse" /> Elevation Gain: {rideDetails.elevationGain ? `${rideDetails.elevationGain}m` : 'N/A'}
-                </div>
-                {rideDetails.hasLiveBeacon && (
-                  <div className="bg-[#0a0a0a]/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-[10px] font-extrabold uppercase tracking-wider text-green-400 flex items-center gap-2 shadow-lg">
-                    Live Beacon Active <CheckCircle2 size={14} />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Event Title & Metadata */}
-            <div className="bg-surface border border-border rounded-3xl p-8 space-y-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-border">
-              <div className="absolute top-0 right-0 w-56 h-56 bg-[#EB712B]/5 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex justify-between items-start gap-4 z-10 relative">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-wider text-[#eb712a]">
-                    <Zap size={12} /> {rideDetails.type} • {rideDetails.date}
-                  </div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-text-main leading-tight flex items-center gap-3">
-                    {rideDetails.title}
-                  </h1>
-                  <p className="text-xs font-bold text-text-muted tracking-wide">
-                    Hosted by <span className="text-text-main font-semibold">{rideDetails.host}</span>
-                  </p>
-                </div>
-
-                {/* Share Link Actions */}
-                <div className="flex gap-2 shrink-0">
-                  <button 
-                    onClick={handleToggleSave}
-                    className={`w-11 h-11 border rounded-2xl flex items-center justify-center transition-all duration-300 cursor-pointer hover:-translate-y-0.5 active:translate-y-0 ${
-                      isSaved 
-                        ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]" 
-                        : "bg-hover border-border text-text-muted hover:text-text-main"
-                    }`}
-                    title={isSaved ? "Unsave Ride" : "Save Ride"}
-                  >
-                    <Bookmark size={16} fill={isSaved ? "#EB712B" : "none"} />
-                  </button>
-                  <button 
-                    onClick={handleShare}
-                    className="w-11 h-11 bg-hover border border-border rounded-2xl flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer hover:border-border hover:-translate-y-0.5 active:translate-y-0"
-                    title="Share Ride"
-                  >
-                    <Share2 size={16} />
-                  </button>
-                  <button 
-                    onClick={handleShare}
-                    className="w-11 h-11 bg-hover border border-border rounded-2xl flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer hover:border-border hover:-translate-y-0.5 active:translate-y-0"
-                    title="Copy Link"
-                  >
-                    <Copy size={16} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Clickable Quick-Copy Link Box */}
-              <div 
-                onClick={handleShare}
-                className="flex items-center justify-between bg-hover border border-border px-5 py-3.5 rounded-2xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 group hover:shadow-[0_0_25px_rgba(235,113,43,0.1)]"
+          {/* Header Row */}
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-text-main leading-tight">
+              {rideDetails.title}
+            </h1>
+            <div className="flex gap-2 shrink-0">
+              <button 
+                onClick={handleToggleSave}
+                className={`w-11 h-11 border rounded-2xl flex items-center justify-center transition-all duration-300 cursor-pointer ${
+                  isSaved 
+                    ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]" 
+                    : "bg-hover border-border text-text-muted hover:text-text-main"
+                }`}
+                title={isSaved ? "Unsave Activity" : "Save Activity"}
               >
-                <span className="text-[11px] text-text-muted font-mono truncate select-all group-hover:text-text-main">
-                  https://velohub.cc/ride/{rideDetails.id}
-                </span>
-                <span className="text-[9px] font-extrabold uppercase tracking-wider bg-[#EB712B]/10 text-text-muted px-3 py-1.5 rounded-xl group-hover:bg-[#EB712B] group-hover:text-white transition-colors">
-                  Tap to Copy
-                </span>
-              </div>
-
-              {/* Metrics row */}
-              <div className="grid grid-cols-3 gap-4 pt-2 z-10 relative">
-                <div className="bg-hover border border-border p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-border">
-                  <div className="text-base font-extrabold text-[#EB712B] tracking-tight">{rideDetails.avgPace}</div>
-                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Average Pace</div>
-                </div>
-                <div className="bg-hover border border-border p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-border">
-                  <div className="text-base font-extrabold text-text-main tracking-tight">{rideDetails.distance}</div>
-                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Total Distance</div>
-                </div>
-                <div className="bg-hover border border-border p-5 rounded-2xl text-center space-y-2 flex flex-col items-center justify-center transition-all duration-300 hover:border-border">
-                  <div className="text-base font-extrabold text-text-main tracking-tight">{rideDetails.activeParticipants}</div>
-                  <div className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Participants</div>
-                </div>
-              </div>
-
-              {/* Detailed Description */}
-              <div className="space-y-4 border-t border-border pt-6 z-10 relative">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Ride Description</h4>
-                <p className="text-xs text-text-muted leading-relaxed whitespace-pre-line font-medium border-l-2 border-[#EB712B]/40 pl-4 py-1">
-                  {rideDetails.description}
-                </p>
-              </div>
+                <Bookmark size={16} fill={isSaved ? "#EB712B" : "none"} />
+              </button>
+              <button 
+                onClick={handleShare}
+                className="w-11 h-11 bg-hover border border-border rounded-2xl flex items-center justify-center text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer"
+                title="Share Activity"
+              >
+                <Share2 size={16} />
+              </button>
             </div>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="space-y-6">
-            
-            {/* Recommended Bike & Join Card */}
-            <div className="bg-surface border border-border rounded-3xl p-8 space-y-6 shadow-xl transition-all duration-300 hover:border-border">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <span className="text-[8px] font-extrabold uppercase tracking-wider text-text-muted">Recommended Bike</span>
-                  <h3 className="text-xs font-extrabold text-[#eb712a] tracking-tight bg-hover border border-[#EB712B]/20 px-4 py-2 rounded-xl w-max">
-                    {rideDetails.recommendedBike}
-                  </h3>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-hover border border-border flex items-center justify-center shrink-0 shadow-inner">
-                  <Bike size={22} className="text-text-muted" />
-                </div>
-              </div>
+          {/* Start / End Location & Sport Type Specs */}
+          <div className="space-y-3.5 pt-2 border-t border-border/60">
+            <div className="flex items-start gap-3.5">
+              <MapPin size={18} className="text-[#EB712B] shrink-0 mt-0.5" />
+              <p className="text-xs md:text-sm font-medium text-text-main leading-relaxed">
+                <span className="font-extrabold text-text-muted mr-1.5">Start:</span>
+                {rideDetails.startLocation}
+              </p>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4 bg-hover p-5 rounded-2xl border border-border text-xs">
-                <div>
-                  <div className="text-[9px] font-extrabold uppercase text-text-muted tracking-wider">Max Slope</div>
-                  <div className="font-extrabold text-text-main mt-1 tracking-tight text-sm">{rideDetails.maxSlope}</div>
-                </div>
-                <div>
-                  <div className="text-[9px] font-extrabold uppercase text-text-muted tracking-wider">Support Car</div>
-                  <div className="font-extrabold text-green-500 mt-1 tracking-tight text-sm">{rideDetails.supportCar}</div>
-                </div>
-              </div>
+            <div className="flex items-start gap-3.5">
+              <MapPin size={18} className="text-[#EB712B] shrink-0 mt-0.5" />
+              <p className="text-xs md:text-sm font-medium text-text-main leading-relaxed">
+                <span className="font-extrabold text-text-muted mr-1.5">End:</span>
+                {rideDetails.endLocation}
+              </p>
+            </div>
 
+            <div className="flex items-center gap-3.5">
+              <Bike size={18} className="text-[#EB712B] shrink-0" />
+              <span className="text-xs md:text-sm font-extrabold text-text-main">
+                {rideDetails.type}
+              </span>
+            </div>
+          </div>
+
+          {/* 3 Metrics Cards Grid */}
+          <div className="grid grid-cols-3 gap-3 my-4">
+            <div className="bg-hover border border-border p-4 md:p-5 rounded-2xl relative flex flex-col justify-between overflow-hidden">
+              <div>
+                <div className="text-base md:text-lg font-extrabold text-text-main tracking-tight">{rideDetails.avgPace}</div>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted mt-1">Pace</div>
+              </div>
+              <Gauge size={20} className="text-[#EB712B] absolute bottom-3 right-3 opacity-80" />
+            </div>
+
+            <div className="bg-hover border border-border p-4 md:p-5 rounded-2xl relative flex flex-col justify-between overflow-hidden">
+              <div>
+                <div className="text-base md:text-lg font-extrabold text-text-main tracking-tight">{rideDetails.distance}</div>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted mt-1">Distance</div>
+              </div>
+              <Navigation size={20} className="text-[#EB712B] absolute bottom-3 right-3 opacity-80" />
+            </div>
+
+            <div className="bg-hover border border-border p-4 md:p-5 rounded-2xl relative flex flex-col justify-between overflow-hidden">
+              <div>
+                <div className="text-base md:text-lg font-extrabold text-text-main tracking-tight">{rideDetails.participantsCount}</div>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted mt-1">Participants</div>
+              </div>
+              <Users size={20} className="text-[#EB712B] absolute bottom-3 right-3 opacity-80" />
+            </div>
+          </div>
+
+          {/* Verification Check (Terms & Conditions Checkbox) */}
+          <div className="flex items-center gap-3 pt-2 border-t border-border/60">
+            <input 
+              type="checkbox" 
+              id="accept-terms-checkbox"
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+              className="w-5 h-5 rounded border-border text-[#EB712B] focus:ring-[#EB712B] cursor-pointer"
+            />
+            <label htmlFor="accept-terms-checkbox" className="text-xs md:text-sm text-text-main font-medium select-none cursor-pointer">
+              I have read and accept the{" "}
               <button 
-                onClick={handleJoinClick}
-                disabled={isJoined}
-                className={`w-full py-5 rounded-2xl font-extrabold text-xs flex items-center justify-center gap-2.5 transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.2)] tracking-wide text-white ${
-                  isJoined 
-                    ? "bg-green-600 cursor-not-allowed opacity-90" 
-                    : "bg-[#eb712a] hover:bg-[#d66525] cursor-pointer hover:-translate-y-1 active:translate-y-0"
-                }`}
+                type="button" 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }}
+                className="text-[#EB712B] font-extrabold underline hover:text-[#d66525] cursor-pointer"
               >
-                {isJoined ? "✓ Joined" : "🚴 Join Elite Ride"}
+                Terms & Conditions.
               </button>
+            </label>
+          </div>
 
-              <div className="text-[9px] font-bold text-center text-text-muted tracking-wide italic">
-                *Act fast! Limited availability to secure your spot.
-              </div>
+          {/* Swipe to Join Activity Button */}
+          <button 
+            onClick={() => {
+              if (!acceptTerms && !isJoined) {
+                toast.error("Please read and accept the Terms & Conditions before joining.");
+                return;
+              }
+              handleJoinClick();
+            }}
+            disabled={isJoined}
+            className={`w-full py-4 px-3 rounded-full font-extrabold text-xs md:text-sm flex items-center justify-between transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.25)] tracking-wide text-white cursor-pointer ${
+              isJoined 
+                ? "bg-emerald-600 cursor-not-allowed opacity-90" 
+                : "bg-[#2A2A2A] hover:bg-[#333333] border border-[#3A3A3A]"
+            }`}
+          >
+            <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${isJoined ? "bg-emerald-500" : "bg-[#EB712B]"}`}>
+              {isJoined ? <CheckCircle2 size={20} /> : <ArrowRight size={20} />}
             </div>
+            <span className="flex-1 text-center pr-11 font-extrabold tracking-tight">
+              {isJoined ? "✓ You Have Joined This Activity" : "Swipe to Join Activity"}
+            </span>
+          </button>
+        </div>
 
-            {/* Ride Leaders */}
-            <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-border">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Ride Leaders</h4>
-              <div className="space-y-3">
-                {rideDetails.leaders.map((leader: any, idx: number) => (
-                  <div key={idx} className="flex items-center justify-between bg-hover p-4 rounded-2xl border border-border transition-all duration-300 hover:border-border">
-                    <div className="flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-2xl bg-main-bg border border-border flex items-center justify-center font-extrabold text-[11px] text-text-main shadow-md uppercase tracking-wider">
-                        {leader.name.split(" ").map((n: string) => n[0]).join("")}
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs font-extrabold text-text-main leading-tight tracking-tight">{leader.name}</span>
-                        <span className="text-[8px] font-extrabold text-text-muted uppercase tracking-wider mt-1">{leader.role}</span>
-                      </div>
-                    </div>
-                    <div className="w-7 h-7 rounded-xl bg-main-bg border border-border flex items-center justify-center text-[9px] text-emerald-500">
-                      <Award size={12} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Participants Grid Widget */}
-            <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl transition-all duration-300 hover:border-border">
-              <div className="flex justify-between items-center">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Participants</h4>
-                <span className="text-[9px] font-extrabold bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#eb712a] tracking-wider px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-                  <Users size={10} /> {activeParticipants.length} Active
-                </span>
-              </div>
-              
-              <div className="flex flex-wrap gap-3 py-1 items-center">
-                {activeParticipants.slice(0, 8).map((p: any, idx: number) => (
-                  <div 
-                    key={idx} 
-                    className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main shadow-md hover:scale-110 hover:border-[#EB712B]/40 transition-all duration-300 cursor-pointer ring-1 ring-black/20 overflow-hidden"
-                    title={p.name}
-                  >
-                    {p.profilePhoto ? (
-                      <img src={p.profilePhoto} className="w-full h-full object-cover" alt="" />
+        {/* Ride Leaders */}
+        <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl">
+          <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Ride Leaders</h4>
+          <div className="space-y-3">
+            {rideDetails.leaders.map((leader: any, idx: number) => (
+              <div key={idx} className="flex items-center justify-between bg-hover p-4 rounded-2xl border border-border">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-2xl bg-main-bg border border-border flex items-center justify-center font-extrabold text-[11px] text-text-main shadow-md uppercase tracking-wider overflow-hidden">
+                    {leader.profilePhoto ? (
+                      <img src={leader.profilePhoto} className="w-full h-full object-cover" alt="" />
                     ) : (
-                      p.initials
+                      leader.name.split(" ").map((n: string) => n[0]).join("")
                     )}
                   </div>
-                ))}
-                {activeParticipants.length > 8 && (
-                  <div 
-                    onClick={() => setIsRosterOpen(true)}
-                    className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main cursor-pointer hover:bg-border transition-all duration-300 hover:scale-110"
-                  >
-                    +{activeParticipants.length - 8}
+                  <div className="flex flex-col">
+                    <span className="text-xs font-extrabold text-text-main leading-tight tracking-tight">{leader.name}</span>
+                    <span className="text-[8px] font-extrabold text-text-muted uppercase tracking-wider mt-1">{leader.role}</span>
                   </div>
+                </div>
+                <div className="w-7 h-7 rounded-xl bg-main-bg border border-border flex items-center justify-center text-[9px] text-emerald-500">
+                  <Award size={12} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Participants Grid Widget */}
+        <div className="bg-surface border border-border rounded-3xl p-8 space-y-5 shadow-xl">
+          <div className="flex justify-between items-center">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-text-main">Participants</h4>
+            <span className="text-[9px] font-extrabold bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#eb712a] tracking-wider px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+              <Users size={10} /> {activeParticipants.length} Active
+            </span>
+          </div>
+          
+          <div className="flex flex-wrap gap-3 py-1 items-center">
+            {activeParticipants.slice(0, 8).map((p: any, idx: number) => (
+              <div 
+                key={idx} 
+                className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main shadow-md hover:scale-110 transition-all duration-300 cursor-pointer overflow-hidden"
+                title={p.name}
+              >
+                {p.profilePhoto ? (
+                  <img src={p.profilePhoto} className="w-full h-full object-cover" alt="" />
+                ) : (
+                  p.initials
                 )}
               </div>
-
-              <button 
+            ))}
+            {activeParticipants.length > 8 && (
+              <div 
                 onClick={() => setIsRosterOpen(true)}
-                className="w-full bg-hover hover:bg-border border border-border py-4 rounded-2xl text-xs font-extrabold text-text-main transition-all duration-300 cursor-pointer tracking-tight flex items-center justify-center gap-2.5 hover:border-border hover:-translate-y-0.5 active:translate-y-0"
+                className="w-10 h-10 rounded-2xl bg-hover border border-border flex items-center justify-center font-extrabold text-[10px] text-text-main cursor-pointer hover:bg-border transition-all duration-300 hover:scale-110"
               >
-                <Users size={14} /> View Full Roster
+                +{activeParticipants.length - 8}
+              </div>
+            )}
+          </div>
+
+          <button 
+            onClick={() => setIsRosterOpen(true)}
+            className="w-full bg-hover hover:bg-border border border-border py-4 rounded-2xl text-xs font-extrabold text-text-main transition-all duration-300 cursor-pointer tracking-tight flex items-center justify-center gap-2.5"
+          >
+            <Users size={14} /> View Full Roster
+          </button>
+        </div>
+      </div>
+
+      {/* Terms & Conditions Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
+            onClick={() => setShowTermsModal(false)}
+          />
+          <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl p-6 md:p-8 space-y-6 shadow-2xl z-10 animate-scale-up">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div className="flex items-center gap-2.5">
+                <FileText className="text-[#EB712B]" size={20} />
+                <h3 className="font-extrabold text-base md:text-lg text-text-main">Terms & Conditions</h3>
+              </div>
+              <button 
+                onClick={() => setShowTermsModal(false)}
+                className="w-9 h-9 rounded-xl bg-hover border border-border flex items-center justify-center text-text-muted hover:text-text-main cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs md:text-sm text-text-muted leading-relaxed max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+              <div>
+                <h4 className="font-extrabold text-text-main mb-1">1. Safety & Helmet Policy</h4>
+                <p>Mandatory helmet and safety gear for all participants. Riders must ensure their bicycle or running gear is in safe working order prior to the start of the activity.</p>
+              </div>
+              <div>
+                <h4 className="font-extrabold text-text-main mb-1">2. Traffic Laws & Compliance</h4>
+                <p>All participants must obey local traffic signals, laws, and regulations. Riders are responsible for their own safety on public roads and trails.</p>
+              </div>
+              <div>
+                <h4 className="font-extrabold text-text-main mb-1">3. Assumption of Risk & Liability Release</h4>
+                <p>By joining this activity, you acknowledge the inherent risks associated with outdoor sporting activities and release the activity host, ride leaders, and Ride With Pals from any liability.</p>
+              </div>
+              <div>
+                <h4 className="font-extrabold text-text-main mb-1">4. Community Code of Conduct</h4>
+                <p>Treat all fellow riders, leaders, and members of the public with respect and sportsmanship throughout the activity.</p>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-border">
+              <button
+                onClick={() => setShowTermsModal(false)}
+                className="px-5 py-2.5 rounded-xl border border-border bg-hover font-bold text-xs text-text-muted hover:text-text-main cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setAcceptTerms(true);
+                  setShowTermsModal(false);
+                  toast.success("Terms accepted!");
+                }}
+                className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#d66525] font-extrabold text-xs text-white cursor-pointer shadow-lg shadow-orange-500/20"
+              >
+                Accept & Continue
               </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
 
       {/* Slide-Over Roster Directory Drawer */}
       {isRosterOpen && (

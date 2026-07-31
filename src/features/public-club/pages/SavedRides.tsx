@@ -10,6 +10,7 @@
  * - Uses useGetSavedRidesListQuery + useUnsaveRideMutation
  * - Strictly athlete-side (no club management equivalent)
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -126,10 +127,10 @@ const SavedRides: React.FC = () => {
               <span className="text-xs font-bold uppercase tracking-widest text-[#EB712B]">Athlete Library</span>
             </div>
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-text-main">
-              Saved Rides
+              Saved Activities
             </h1>
             <p className="text-text-muted font-medium text-sm max-w-xl">
-              Your personal collection of bookmarked group rides.
+              Your personal collection of bookmarked group activities.
             </p>
           </div>
 
@@ -138,7 +139,7 @@ const SavedRides: React.FC = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
             <input
               type="text"
-              placeholder="Search saved rides..."
+              placeholder="Search saved activities..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border pl-11 pr-10 py-3 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
@@ -156,7 +157,7 @@ const SavedRides: React.FC = () => {
 
         {/* Stats bar */}
         <div className="flex items-center gap-6 text-xs text-text-muted">
-          <span className="font-bold text-text-main">{rides.length}</span> saved rides
+          <span className="font-bold text-text-main">{rides.length}</span> saved activities
           {searchQuery && (
             <>
               <span className="text-border">·</span>
@@ -172,7 +173,7 @@ const SavedRides: React.FC = () => {
           </div>
         ) : isError ? (
           <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-3">
-            <p className="text-red-500 font-bold uppercase text-xs tracking-wider">Failed to load saved rides.</p>
+            <p className="text-red-500 font-bold uppercase text-xs tracking-wider">Failed to load saved activities.</p>
             <p className="text-text-muted text-sm">Please check your connection and try again.</p>
           </div>
         ) : filtered.length === 0 ? (
@@ -181,19 +182,19 @@ const SavedRides: React.FC = () => {
               <BookmarkX size={32} className="text-[#EB712B]" />
             </div>
             <h2 className="text-xl font-bold text-text-main">
-              {searchQuery ? 'No rides match your search' : 'No Saved Rides Yet'}
+              {searchQuery ? 'No activities match your search' : 'No Saved Activities Yet'}
             </h2>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
               {searchQuery
                 ? 'Try adjusting your search query.'
-                : 'Browse rides and tap the bookmark icon to save them for later.'}
+                : 'Browse activities and tap the bookmark icon to save them for later.'}
             </p>
             {!searchQuery && (
               <button
-                onClick={() => navigate('/view/userside/rides')}
+                onClick={() => navigate('/view/userside/activities')}
                 className="mt-2 px-6 py-3 bg-[#EB712B] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#d05c19] transition-colors cursor-pointer border-0"
               >
-                Browse Rides
+                Browse Activities
               </button>
             )}
           </div>

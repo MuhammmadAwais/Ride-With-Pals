@@ -16,6 +16,7 @@ import Discount from '@/features/ClubSide/Discount';
 import Members from '@/features/ClubSide/Members';
 
 import Shop from './Shop';
+import Overviews from './Overviews';
 
 type TabType = 'Overview' | 'Rides' | 'News' | 'Leaderboard' | 'Marketplace' | 'Shop' | 'Discounts' | 'Members';
 
@@ -224,44 +225,8 @@ export default function ClubDetails() {
     switch (activeTab) {
       case 'Overview':
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            {/* About Section */}
-            <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 space-y-4 shadow-xl">
-              <h3 className="text-lg font-black uppercase tracking-wide text-text-main">About the Club</h3>
-              <p className="text-sm text-text-muted leading-relaxed">
-                {club.aboutClub || "No description provided."}
-              </p>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-border mt-6">
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Members</p>
-                  <p className="text-lg font-black text-text-main">{membersData?.length || getMemberCount(club)}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Ride Type</p>
-                  <p className="text-sm font-bold text-[#EB712B]">{club.clubType || 'All'}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Status</p>
-                  <p className="text-sm font-bold text-emerald-400">Active</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-black uppercase tracking-wide text-text-main">Upcoming Club Rides</h3>
-                <button 
-                  onClick={() => setActiveTab('Rides')}
-                  className="text-xs font-bold uppercase text-[#EB712B] hover:underline"
-                >
-                  View All &rarr;
-                </button>
-              </div>
-              <div className="text-center py-8 text-text-muted text-xs font-bold">
-                Check the Rides tab for the complete schedule.
-              </div>
-            </div>
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <Overviews clubId={clubId} club={club} />
           </div>
         );
       case 'Rides':

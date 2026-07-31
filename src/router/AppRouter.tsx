@@ -173,6 +173,7 @@ export const router = createBrowserRouter(
         <Route path="/view/userside">
           <Route path="clubs" element={<Clubs />} />
           <Route path="club/:clubId" element={<ClubDetails />} />
+          <Route path="activities" element={<Ride />} />
           <Route path="rides" element={<Ride />} />
           <Route path="calendar" element={<UserCalendar />} />
           <Route path="shop" element={<Shop />} />
@@ -182,6 +183,7 @@ export const router = createBrowserRouter(
           <Route path="profile" element={<ProfileAccount role="athlete" />} />
           <Route path="support" element={<Support />} />
           <Route path="dashboard/ride/:id" element={<RideJoining />} />
+          <Route path="saved-activities" element={<SavedRides />} />
           <Route path="saved-rides" element={<SavedRides />} />
           <Route path="notifications" element={<Notifications />} />
         </Route>

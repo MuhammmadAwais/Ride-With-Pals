@@ -72,9 +72,9 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
 
 const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'Explore Clubs',    route: ROUTES.CLUBS,               icon: <Compass size={ICON_SIZE} /> },
-  { label: 'Rides',            route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
+  { label: 'Activities',       route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
   { label: 'Calendar',         route: ROUTES.CALENDAR,            icon: <Calendar size={ICON_SIZE} /> },
-  { label: 'Saved Rides',      route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
+  { label: 'Saved Activities', route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
   { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'Subscription',     route: ROUTES.SUBSCRIPTION_ATHLETE,icon: <CreditCard size={ICON_SIZE} /> },
   { type: 'divider' },

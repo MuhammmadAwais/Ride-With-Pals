@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -39,6 +40,30 @@ interface RideItem {
 interface RideProps {
   clubId?: string | number;
 }
+
+const getRideSportType = (item: any): string => {
+  const typeId = Number(item.sportTypeId || item.activityTypeId || item.rideTypeId || item.clubTypeId);
+  if (typeId === 1) return "Cycling";
+  if (typeId === 2) return "Running";
+  if (typeId === 3) return "Triathlon";
+  if (typeId === 4) return "Swimming";
+
+  const str = (item.sportTypeName || item.activityTypeName || item.sportSubTypeName || item.rideType || item.type || "").toString().trim();
+  const lower = str.toLowerCase();
+  if (!str || lower === "road" || lower === "gravel" || lower === "mtb" || lower === "criterium" || lower === "asphalt" || lower === "trail" || lower === "cycling" || lower === "1" || lower.includes("biking") || lower.includes("cycling")) {
+    return "Cycling";
+  }
+  if (lower === "running" || lower === "run" || lower === "2" || lower.includes("running")) {
+    return "Running";
+  }
+  if (lower === "triathlon" || lower === "3" || lower.includes("triathlon")) {
+    return "Triathlon";
+  }
+  if (lower === "swimming" || lower === "swim" || lower === "4" || lower.includes("swimming")) {
+    return "Swimming";
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 const RideCardSkeleton = () => (
   <div className="bg-main-bg border border-border rounded-2xl overflow-hidden animate-pulse">
@@ -149,7 +174,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
         clubName: item.club?.clubName || item.clubName || "Independent",
         date: item.date || item.startDate || "TBD",
         location: item.meetingPoint || item.location || "TBD",
-        rideType: item.sportSubTypeName || item.activityTypeName || item.type || item.rideType || "Road",
+        rideType: getRideSportType(item),
         speed: displaySpeed,
         distance: displayDistance,
         participants: item.joinedParticipantsCount?.toString() || (Array.isArray(item.joinedParticipants) ? item.joinedParticipants.length.toString() : "0"),
@@ -162,6 +187,17 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
       };
     });
   }, [rawData, savedRideIds]);
+
+  const activityTypes = useMemo(() => {
+    const defaultTypes = ["All", "Cycling", "Running", "Triathlon", "Swimming"];
+    const dynamicSet = new Set<string>(defaultTypes);
+    rides.forEach(r => {
+      if (r.rideType && r.rideType !== "All") {
+        dynamicSet.add(r.rideType);
+      }
+    });
+    return Array.from(dynamicSet);
+  }, [rides]);
 
   const filteredRides = rides.filter(ride => {
     const query = searchQuery.trim().toLowerCase();
@@ -186,10 +222,10 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           <div className="space-y-2.5 relative">
             <div className="absolute -left-10 top-0 w-20 h-20 bg-[#EB712B]/10 rounded-full blur-3xl pointer-events-none" />
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-text-main via-text-main to-text-muted bg-clip-text text-transparent">
-              Upcoming Rides
+              Upcoming Activities
             </h1>
             <p className="text-text-muted font-medium text-sm max-w-xl">
-              Discover and join elite scheduled cycling group rides in your region.
+              Discover and join elite scheduled group activities in your region.
             </p>
           </div>
         </div>
@@ -200,7 +236,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input 
               type="text"
-              placeholder="Search by ride title, club, or location..."
+              placeholder="Search by activity title, club, or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border pl-12 pr-4 py-3.5 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
@@ -218,7 +254,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           {/* Ride Type Filters */}
           <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
             <Filter size={16} className="text-text-muted shrink-0 hidden md:block" />
-            {["All", "Road", "Gravel", "MTB", "Criterium", "Asphalt", "Trail"].map((type) => (
+            {activityTypes.map((type) => (
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
@@ -308,7 +344,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       <div className="flex items-center gap-3 text-xs text-text-muted">
                         <Bike size={15} className="text-text-muted shrink-0" />
                         <span className="font-medium text-xs text-text-main">
-                          Ride Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
+                          Sport Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
                         </span>
                       </div>
                     </div>
@@ -346,7 +382,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         </>
                       ) : (
                         <>
-                          Click to Join Ride <ArrowRight size={14} />
+                          Click to Join Activity <ArrowRight size={14} />
                         </>
                       )}
                     </button>
@@ -383,9 +419,9 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           /* Empty State Display */
           <div className="flex flex-col items-center justify-center bg-main-bg border border-border rounded-3xl p-16 text-center shadow-2xl">
             <Compass size={48} className="text-text-muted animate-pulse mb-4" />
-            <h3 className="font-extrabold text-lg text-text-main tracking-tight">No rides found</h3>
+            <h3 className="font-extrabold text-lg text-text-main tracking-tight">No activities found</h3>
             <p className="text-text-muted text-xs mt-1 max-w-sm">
-              We couldn't find any elite cycling events matching your search filters. Try resetting or adjusting your search parameters.
+              We couldn't find any activities matching your search filters. Try resetting or adjusting your search parameters.
             </p>
             <button 
               onClick={() => { setSearchQuery(""); setSelectedType("All"); }}
