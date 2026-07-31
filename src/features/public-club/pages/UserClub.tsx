@@ -1,17 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users, ShieldCheck } from "lucide-react";
+import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users, ShieldCheck, Bike, Activity, Trophy, Filter, X } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
 import { fetchMyClubs, fetchExploreClubs, fetchJoinedClubs } from "@/features/club/slices/clubSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 
-const getClubTypeName = (typeId?: number) => {
-  if (typeId === 2) return "Running";
-  if (typeId === 3) return "Cycling & Running";
-  return "Biking / Cycling";
+const getClubTypeName = (typeId?: number | string) => {
+  if (typeId === 2 || typeId === "2" || String(typeId).toLowerCase() === "running") return "Running";
+  if (
+    typeId === 3 ||
+    typeId === "3" ||
+    String(typeId).toLowerCase() === "triathlon" ||
+    String(typeId).toLowerCase() === "cycling & running"
+  )
+    return "Triathlon";
+  return "Cycling";
+};
+
+const renderSportBadge = (typeId?: number | string) => {
+  const t = getClubTypeName(typeId);
+  if (t === "Running") {
+    return (
+      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-600 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
+        <Activity size={11} className="shrink-0" /> RUNNING
+      </span>
+    );
+  }
+  if (t === "Triathlon") {
+    return (
+      <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-600 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
+        <Trophy size={11} className="shrink-0" /> TRIATHLON
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
+      <Bike size={11} className="shrink-0" /> CYCLING
+    </span>
+  );
 };
 
 const getClubImage = (logo?: string | null, coverImage?: string | null): string => {
@@ -79,6 +109,13 @@ export default function UserClub() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
 
+  // Mobile-matched Filter State
+  const [clubTypeFilter, setClubTypeFilter] = useState<"ALL" | "PUBLIC" | "PRIVATE">("ALL");
+  const [sportTypeFilter, setSportTypeFilter] = useState<"ALL" | "CYCLING" | "RUNNING" | "TRIATHLON">("ALL");
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [tempClubType, setTempClubType] = useState<"ALL" | "PUBLIC" | "PRIVATE">("ALL");
+  const [tempSportType, setTempSportType] = useState<"ALL" | "CYCLING" | "RUNNING" | "TRIATHLON">("ALL");
+
   React.useEffect(() => {
     dispatch(fetchMyClubs());
     dispatch(fetchJoinedClubs());
@@ -96,17 +133,34 @@ export default function UserClub() {
     return Array.from(map.values());
   }, [myClubs, joinedClubs]);
 
-  const filteredMyClubs = combinedMyClubs.filter(
-    (club) =>
-      club.clubName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      club.location?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filterClub = (club: any) => {
+    // 1. Search Query
+    if (searchQuery.trim() !== "") {
+      const q = searchQuery.toLowerCase();
+      const matchName = club.clubName?.toLowerCase().includes(q);
+      const matchLoc = club.location?.toLowerCase().includes(q);
+      const matchType = getClubTypeName(club.clubTypeId)?.toLowerCase().includes(q);
+      if (!matchName && !matchLoc && !matchType) return false;
+    }
 
-  const filteredDiscoverClubs = exploreClubs.filter(
-    (comm) =>
-      comm.clubName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      comm.location?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    // 2. Club Type Filter (PUBLIC = 1, PRIVATE != 1)
+    if (clubTypeFilter === "PUBLIC") {
+      if (club.clubPrivacyId !== 1) return false;
+    } else if (clubTypeFilter === "PRIVATE") {
+      if (club.clubPrivacyId === 1) return false;
+    }
+
+    // 3. Sport Type Filter (CYCLING / RUNNING / TRIATHLON)
+    if (sportTypeFilter !== "ALL") {
+      const sportName = getClubTypeName(club.clubTypeId).toUpperCase();
+      if (sportName !== sportTypeFilter) return false;
+    }
+
+    return true;
+  };
+
+  const filteredMyClubs = combinedMyClubs.filter(filterClub);
+  const filteredDiscoverClubs = exploreClubs.filter(filterClub);
 
   const handleSelectMyClub = (club: any) => {
     if (club.isManaged) {
@@ -155,20 +209,182 @@ export default function UserClub() {
           </button>
         </div>
 
-        {/* Search Input Bar */}
-        <div className="relative w-full">
-          <Search
-            className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Search communities by name or activity type (e.g. Biking, Running)..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-surface border border-border rounded-2xl py-5 pl-14 pr-6 text-sm focus:outline-none focus:border-[#EB712B] transition-all duration-300 text-text-main placeholder-gray-500 shadow-inner"
-          />
+        {/* Search Input Bar + Filter Button */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full items-center">
+          <div className="relative w-full">
+            <Search
+              className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted"
+              size={20}
+            />
+            <input
+              type="text"
+              placeholder="Search communities by name or activity type (e.g. Cycling, Running, Triathlon)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-surface border border-border rounded-2xl py-5 pl-14 pr-6 text-sm focus:outline-none focus:border-[#EB712B] transition-all duration-300 text-text-main placeholder-gray-500 shadow-inner"
+            />
+          </div>
+
+          <button
+            onClick={() => {
+              setTempClubType(clubTypeFilter);
+              setTempSportType(sportTypeFilter);
+              setShowFilterModal(true);
+            }}
+            className={`flex items-center justify-center gap-2.5 px-7 py-5 rounded-2xl font-black uppercase text-xs tracking-wider cursor-pointer transition-all duration-300 shrink-0 border ${
+              clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
+                ? "bg-[#EB712B] text-white border-[#EB712B] shadow-lg shadow-[#EB712B]/20"
+                : "bg-surface text-text-main border-border hover:border-[#EB712B]/50"
+            }`}
+          >
+            <Filter size={18} />
+            <span>Filter</span>
+            {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            )}
+          </button>
         </div>
+
+        {/* Active Filter Chips */}
+        {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
+          <div className="flex flex-wrap items-center gap-2 -mt-8">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-1">
+              Active Filters:
+            </span>
+            {clubTypeFilter !== "ALL" && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-black uppercase tracking-wider">
+                Club Type: {clubTypeFilter}
+                <X
+                  size={12}
+                  className="cursor-pointer hover:text-white"
+                  onClick={() => setClubTypeFilter("ALL")}
+                />
+              </span>
+            )}
+            {sportTypeFilter !== "ALL" && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-black uppercase tracking-wider">
+                Sport Type: {sportTypeFilter}
+                <X
+                  size={12}
+                  className="cursor-pointer hover:text-white"
+                  onClick={() => setSportTypeFilter("ALL")}
+                />
+              </span>
+            )}
+            <button
+              onClick={() => {
+                setClubTypeFilter("ALL");
+                setSportTypeFilter("ALL");
+              }}
+              className="text-[10px] font-bold text-text-muted hover:text-text-main underline cursor-pointer ml-2"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
+
+        {/* --- FILTER MODAL (Portal Mounted to Document Body for Unclipped Full-Viewport Backdrop) --- */}
+        {showFilterModal &&
+          createPortal(
+            <div
+              className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
+              onClick={() => setShowFilterModal(false)}
+            >
+              <div
+                className="bg-[#18181B] border border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative space-y-6 my-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <h3 className="text-base font-black uppercase tracking-wider text-white">
+                    Filter
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowFilterModal(false)}
+                    className="text-text-muted hover:text-white transition-colors p-1"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Club Type Section */}
+                <div className="space-y-3">
+                  <label className="text-xs font-black uppercase tracking-wider text-text-muted block">
+                    Club Type
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(["ALL", "PUBLIC", "PRIVATE"] as const).map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setTempClubType(type)}
+                        className={`py-3 px-3 rounded-xl font-black text-xs uppercase tracking-wider border transition-all ${
+                          tempClubType === type
+                            ? "bg-[#EB712B] text-white border-[#EB712B] shadow-lg shadow-[#EB712B]/20"
+                            : "bg-surface/60 text-text-muted border-white/5 hover:border-white/20 hover:text-white"
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sport Type Section */}
+                <div className="space-y-3">
+                  <label className="text-xs font-black uppercase tracking-wider text-text-muted block">
+                    Sport Type
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(["ALL", "CYCLING", "RUNNING", "TRIATHLON"] as const).map((sport) => (
+                      <button
+                        key={sport}
+                        type="button"
+                        onClick={() => setTempSportType(sport)}
+                        className={`py-3 px-3 rounded-xl font-black text-xs uppercase tracking-wider border transition-all flex items-center justify-center gap-1.5 ${
+                          tempSportType === sport
+                            ? "bg-[#EB712B] text-white border-[#EB712B] shadow-lg shadow-[#EB712B]/20"
+                            : "bg-surface/60 text-text-muted border-white/5 hover:border-white/20 hover:text-white"
+                        }`}
+                      >
+                        {sport === "CYCLING" && <Bike size={14} />}
+                        {sport === "RUNNING" && <Activity size={14} />}
+                        {sport === "TRIATHLON" && <Trophy size={14} />}
+                        <span>{sport}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="pt-4 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setClubTypeFilter(tempClubType);
+                      setSportTypeFilter(tempSportType);
+                      setShowFilterModal(false);
+                    }}
+                    className="w-full py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-[#EB712B]/20 transition-all active:scale-95 cursor-pointer"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setClubTypeFilter("ALL");
+                      setSportTypeFilter("ALL");
+                      setShowFilterModal(false);
+                    }}
+                    className="w-full py-2.5 text-text-muted hover:text-white font-bold text-xs underline uppercase tracking-wider transition-colors text-center cursor-pointer"
+                  >
+                    Clear Filter
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )}
 
         {/* --- MY CLUBS SECTION --- */}
         <section>
@@ -206,25 +422,23 @@ export default function UserClub() {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
                     
                     {/* Floating Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
-                      <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                        {getClubTypeName(club.clubTypeId)}
-                      </span>
-                      <div className="flex items-center gap-1.5">
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10 gap-2">
+                      {renderSportBadge(club.clubTypeId)}
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {isClubOwned(club, user, myClubs) && (
                           <span
-                            className="px-2.5 py-1 bg-amber-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md flex items-center gap-1 border border-amber-300/40"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
                             title="You own this club"
                           >
-                            <ShieldCheck size={11} /> OWNED
+                            <ShieldCheck size={11} className="shrink-0" /> OWNED
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border whitespace-nowrap shrink-0 ${
                           club.clubPrivacyId === 1 
                             ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
                             : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
                         }`}>
-                          {club.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {club.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                         </span>
                       </div>
                     </div>
@@ -325,25 +539,23 @@ export default function UserClub() {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
                     
                     {/* Floating Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
-                      <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
-                        {getClubTypeName(comm.clubTypeId)}
-                      </span>
-                      <div className="flex items-center gap-1.5">
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10 gap-2">
+                      {renderSportBadge(comm.clubTypeId)}
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {isClubOwned(comm, user, myClubs) && (
                           <span
-                            className="px-2.5 py-1 bg-amber-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md flex items-center gap-1 border border-amber-300/40"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
                             title="You own this club"
                           >
-                            <ShieldCheck size={11} /> OWNED
+                            <ShieldCheck size={11} className="shrink-0" /> OWNED
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border whitespace-nowrap shrink-0 ${
                           comm.clubPrivacyId === 1 
                             ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
                             : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
                         }`}>
-                          {comm.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {comm.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                         </span>
                       </div>
                     </div>
@@ -394,24 +606,22 @@ export default function UserClub() {
                       }}
                     />
                     <div className="space-y-1.5 w-full min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
-                          {getClubTypeName(comm.clubTypeId)}
-                        </span>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {renderSportBadge(comm.clubTypeId)}
                         {isClubOwned(comm, user, myClubs) && (
                           <span
-                            className="px-2 py-0.5 bg-amber-500 text-white rounded-lg text-[8px] font-black uppercase tracking-widest shadow-md flex items-center gap-1 border border-amber-300/40"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
                             title="You own this club"
                           >
-                            <ShieldCheck size={10} /> OWNED
+                            <ShieldCheck size={10} className="shrink-0" /> OWNED
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider border whitespace-nowrap shrink-0 ${
                           comm.clubPrivacyId === 1 
                             ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
                             : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10"
                         }`}>
-                          {comm.clubPrivacyId === 1 ? <Globe size={10} /> : <Lock size={10} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {comm.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
                         </span>
                       </div>
                       <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
