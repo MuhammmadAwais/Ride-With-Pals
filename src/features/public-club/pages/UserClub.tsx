@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users } from "lucide-react";
+import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users, ShieldCheck } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
-import { fetchMyClubs, fetchExploreClubs } from "@/features/club/slices/clubSlice";
+import { fetchMyClubs, fetchExploreClubs, fetchJoinedClubs } from "@/features/club/slices/clubSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 
 const getClubTypeName = (typeId?: number) => {
@@ -24,11 +25,55 @@ const getClubImage = (logo?: string | null, coverImage?: string | null): string 
   return `https://api.ridewithpals.com/uploads/${img}`;
 };
 
+const getMemberCount = (club: any) => {
+  if (!club) return 0;
+  const val =
+    club.participantCount ??
+    club.participant_count ??
+    club.memberCount ??
+    club.member_count ??
+    club.totalMembers ??
+    club.total_members ??
+    club.membersCount ??
+    club.members_count ??
+    club.userCount ??
+    club.user_count ??
+    club.count ??
+    club.total ??
+    club.clubMembers?.length ??
+    club.ClubMembers?.length ??
+    club.club_members?.length ??
+    club.user_clubs?.length ??
+    club.userClubs?.length ??
+    club.UserClubs?.length ??
+    club.members?.length ??
+    club.Members?.length ??
+    club.users?.length ??
+    club.Users?.length ??
+    club.participants?.length ??
+    club.Participants?.length ??
+    club._count?.user_clubs ??
+    club._count?.members ??
+    club._count?.users;
+
+  const count = Number(val);
+  if (!isNaN(count) && count > 0) return count;
+  return 0;
+};
+
+const isClubOwned = (club: any, user: any, myClubs: any[]) => {
+  if (!club) return false;
+  if (club.isOwner === true || club.owned === true || club.isManaged === true) return true;
+  if (user?.id && (club.ownerId === user.id || club.userId === user.id || club.owner_id === user.id)) return true;
+  if (myClubs && myClubs.some(c => (c.id === club.id || (c as any).clubId === club.id || c.id === (club as any).clubId))) return true;
+  return false;
+};
+
 export default function UserClub() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
-  const { myClubs, exploreClubs } = useAppSelector((s) => s.club);
+  const { myClubs, joinedClubs, exploreClubs } = useAppSelector((s) => s.club);
   const { setActiveClub } = useActiveClub();
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,10 +81,22 @@ export default function UserClub() {
 
   React.useEffect(() => {
     dispatch(fetchMyClubs());
+    dispatch(fetchJoinedClubs());
     dispatch(fetchExploreClubs());
   }, [dispatch]);
 
-  const filteredMyClubs = myClubs.filter(
+  const combinedMyClubs = React.useMemo(() => {
+    const map = new Map();
+    myClubs.forEach((c) => map.set(c.id, { ...c, isManaged: true }));
+    (joinedClubs || []).forEach((c) => {
+      if (!map.has(c.id)) {
+        map.set(c.id, { ...c, isManaged: false });
+      }
+    });
+    return Array.from(map.values());
+  }, [myClubs, joinedClubs]);
+
+  const filteredMyClubs = combinedMyClubs.filter(
     (club) =>
       club.clubName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       club.location?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -52,7 +109,9 @@ export default function UserClub() {
   );
 
   const handleSelectMyClub = (club: any) => {
-    setActiveClub(club);
+    if (club.isManaged) {
+      setActiveClub(club);
+    }
     navigate(`/view/userside/club/${club.id}`);
   };
 
@@ -151,13 +210,23 @@ export default function UserClub() {
                       <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
                         {getClubTypeName(club.clubTypeId)}
                       </span>
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
-                        club.clubPrivacyId === 1 
-                          ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
-                          : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
-                      }`}>
-                        {club.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {isClubOwned(club, user, myClubs) && (
+                          <span
+                            className="px-2.5 py-1 bg-amber-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md flex items-center gap-1 border border-amber-300/40"
+                            title="You own this club"
+                          >
+                            <ShieldCheck size={11} /> OWNED
+                          </span>
+                        )}
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border ${
+                          club.clubPrivacyId === 1 
+                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
+                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
+                        }`}>
+                          {club.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -176,13 +245,13 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{club.memberCount || club.totalMembers || club.membersCount || 0} Pals joined</span>
+                        <span>{getMemberCount(club)} Pals joined</span>
                       </div>
                       <span 
                         onClick={() => handleSelectMyClub(club)} 
                         className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer"
                       >
-                        Manage &rarr;
+                        {club.isManaged ? "Manage →" : "View Club →"}
                       </span>
                     </div>
                   </div>
@@ -260,13 +329,23 @@ export default function UserClub() {
                       <span className="px-3.5 py-1.5 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md">
                         {getClubTypeName(comm.clubTypeId)}
                       </span>
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
-                        comm.clubPrivacyId === 1 
-                          ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
-                          : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
-                      }`}>
-                        {comm.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {isClubOwned(comm, user, myClubs) && (
+                          <span
+                            className="px-2.5 py-1 bg-amber-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest shadow-md flex items-center gap-1 border border-amber-300/40"
+                            title="You own this club"
+                          >
+                            <ShieldCheck size={11} /> OWNED
+                          </span>
+                        )}
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border ${
+                          comm.clubPrivacyId === 1 
+                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
+                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
+                        }`}>
+                          {comm.clubPrivacyId === 1 ? <Globe size={11} /> : <Lock size={11} />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -285,7 +364,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{comm.memberCount || comm.totalMembers || comm.membersCount || 0}</span>
+                        <span>{getMemberCount(comm)} Pals joined</span>
                       </div>
                       <span 
                         onClick={() => handleSelectDiscoverClub(comm)} 
@@ -315,10 +394,18 @@ export default function UserClub() {
                       }}
                     />
                     <div className="space-y-1.5 w-full min-w-0">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <span className="px-3.5 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-widest w-fit shadow-md">
                           {getClubTypeName(comm.clubTypeId)}
                         </span>
+                        {isClubOwned(comm, user, myClubs) && (
+                          <span
+                            className="px-2 py-0.5 bg-amber-500 text-white rounded-lg text-[8px] font-black uppercase tracking-widest shadow-md flex items-center gap-1 border border-amber-300/40"
+                            title="You own this club"
+                          >
+                            <ShieldCheck size={10} /> OWNED
+                          </span>
+                        )}
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border ${
                           comm.clubPrivacyId === 1 
                             ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
@@ -335,7 +422,7 @@ export default function UserClub() {
                         <span className="truncate">{comm.location || "N/A"}</span>
                       </div>
                       <p className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                        {comm.memberCount || comm.totalMembers || comm.membersCount || 0} Pals joined
+                        {getMemberCount(comm)} Pals joined
                       </p>
                     </div>
                   </div>

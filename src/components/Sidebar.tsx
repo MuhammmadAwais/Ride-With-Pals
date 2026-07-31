@@ -16,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
-  Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Plus
+  Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Plus, Calendar
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -73,6 +73,7 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
 const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'Explore Clubs',    route: ROUTES.CLUBS,               icon: <Compass size={ICON_SIZE} /> },
   { label: 'Rides',            route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
+  { label: 'Calendar',         route: ROUTES.CALENDAR,            icon: <Calendar size={ICON_SIZE} /> },
   { label: 'Saved Rides',      route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
   { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'Subscription',     route: ROUTES.SUBSCRIPTION_ATHLETE,icon: <CreditCard size={ICON_SIZE} /> },

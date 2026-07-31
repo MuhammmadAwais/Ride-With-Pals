@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { ClubService as ApiClubService, RideService as ApiRideService, NewsService as ApiNewsService, ShopService as ApiShopService } from '@/api/backendApi';
@@ -79,7 +80,8 @@ export const useClub = () => {
       const payload: any = { clubId };
       if (invitationCode) payload.invitationCode = invitationCode;
       const response = await ApiClubService.joinClub(payload);
-      toast.success('Joined club successfully!');
+      const successMsg = response.message || (response.response?.status === 'pending' ? 'Your request to join has been sent!' : 'Joined club successfully!');
+      toast.success(successMsg);
       return response.response || response.data;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err.message || 'Failed to join club.';

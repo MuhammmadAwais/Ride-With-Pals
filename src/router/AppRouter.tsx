@@ -54,6 +54,7 @@ import AddDiscount from '@/features/ClubSide/AddDiscount';
 import Clubs from '@/features/public-club/pages/UserClub';
 import Ride from '@/features/public-club/pages/Ride';
 import RideJoining from '@/features/public-club/pages/RideJoining';
+import UserCalendar from '@/features/public-club/pages/UserCalendar';
 
 
 // ── New Architecture Audit Fixes ──
@@ -173,6 +174,7 @@ export const router = createBrowserRouter(
           <Route path="clubs" element={<Clubs />} />
           <Route path="club/:clubId" element={<ClubDetails />} />
           <Route path="rides" element={<Ride />} />
+          <Route path="calendar" element={<UserCalendar />} />
           <Route path="shop" element={<Shop />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="purchases" element={<MyPurchases />} />
@@ -185,6 +187,7 @@ export const router = createBrowserRouter(
         </Route>
 
         {/* ── Backwards Compatible Legacy Redirects ── */}
+        <Route path="/calendar" element={<Navigate to="/view/userside/calendar" replace />} />
         <Route path="/dashboard" element={<Navigate to="/view/clubside/dashboard" replace />} />
         <Route path="/activities" element={<Navigate to="/view/clubside/activities" replace />} />
         <Route path="/product" element={<Navigate to="/view/clubside/product" replace />} />

@@ -183,6 +183,15 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       providesTags: ['Ride'],
     }),
 
+    getPublicRidesByDate: builder.query<any, { date: string }>({
+      query: (params) => ({
+        url: '/user/activity/rides/by-date',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Ride'],
+    }),
+
     getClubTerms: builder.query<any, { clubId: number }>({
       query: (params) => ({
         url: '/user/club/terms',
@@ -233,6 +242,7 @@ export const {
   useRemoveClubMemberMutation,
   useGetClubLeaderboardAppRidesQuery,
   useGetPublicRidesQuery,
+  useGetPublicRidesByDateQuery,
   useGetClubTermsQuery,
   useAddClubTermsMutation,
   useUpdateClubTermsMutation,

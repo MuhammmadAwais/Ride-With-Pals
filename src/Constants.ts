@@ -51,6 +51,7 @@ export const ROUTES = {
   // ── Athlete Interface (protected, in AppLayout shell) ──
   CLUBS:              '/view/userside/clubs',
   CLUB_DETAILS:       '/view/userside/club/:clubId',
+  CALENDAR:           '/view/userside/calendar',
   RIDE:               '/view/userside/rides',
   SAVED_RIDES:        '/view/userside/saved-rides',
   PURCHASES:          '/view/userside/purchases',

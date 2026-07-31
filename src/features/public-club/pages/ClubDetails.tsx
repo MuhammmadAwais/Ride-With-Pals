@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare } from 'lucide-react';
@@ -19,6 +20,42 @@ import Shop from './Shop';
 type TabType = 'Overview' | 'Rides' | 'News' | 'Leaderboard' | 'Marketplace' | 'Shop' | 'Discounts' | 'Members';
 
 const TABS: TabType[] = ['Overview', 'Rides', 'News', 'Leaderboard', 'Marketplace', 'Shop', 'Discounts', 'Members'];
+
+const getMemberCount = (club: any) => {
+  if (!club) return 0;
+  const val =
+    club.participantCount ??
+    club.participant_count ??
+    club.memberCount ??
+    club.member_count ??
+    club.totalMembers ??
+    club.total_members ??
+    club.membersCount ??
+    club.members_count ??
+    club.userCount ??
+    club.user_count ??
+    club.count ??
+    club.total ??
+    club.clubMembers?.length ??
+    club.ClubMembers?.length ??
+    club.club_members?.length ??
+    club.user_clubs?.length ??
+    club.userClubs?.length ??
+    club.UserClubs?.length ??
+    club.members?.length ??
+    club.Members?.length ??
+    club.users?.length ??
+    club.Users?.length ??
+    club.participants?.length ??
+    club.Participants?.length ??
+    club._count?.user_clubs ??
+    club._count?.members ??
+    club._count?.users;
+
+  const count = Number(val);
+  if (!isNaN(count) && count > 0) return count;
+  return 0;
+};
 
 export default function ClubDetails() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -108,6 +145,14 @@ export default function ClubDetails() {
     }
   };
 
+  const handleRequestMembership = async () => {
+    if (club.restrictUnpaidMembers) {
+      setShowDepositScreen(true);
+    } else {
+      await handleJoinClub(club.id);
+    }
+  };
+
   const handleJoinClubClick = async () => {
     if (club.clubPrivacyId === 2) {
       setShowCodeScreen(true);
@@ -190,7 +235,7 @@ export default function ClubDetails() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-border mt-6">
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Members</p>
-                  <p className="text-lg font-black text-text-main">{membersData?.length || club.totalMembers || 0}</p>
+                  <p className="text-lg font-black text-text-main">{membersData?.length || getMemberCount(club)}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Ride Type</p>
@@ -198,17 +243,24 @@ export default function ClubDetails() {
                 </div>
                 <div>
                   <p className="text-[10px] uppercase font-bold text-text-muted tracking-wider mb-1">Status</p>
-                  <p className="text-sm font-bold text-emerald-400">{club.isPrivate ? 'Private' : 'Public'}</p>
+                  <p className="text-sm font-bold text-emerald-400">Active</p>
                 </div>
               </div>
             </div>
 
-            {/* Club Guidelines */}
-            <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 space-y-4 shadow-xl">
-              <h3 className="text-lg font-black uppercase tracking-wide text-text-main">Club Guidelines</h3>
-              <p className="text-sm text-text-muted leading-relaxed">
-                {club.clubRules || "No rules provided."}
-              </p>
+            <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-black uppercase tracking-wide text-text-main">Upcoming Club Rides</h3>
+                <button 
+                  onClick={() => setActiveTab('Rides')}
+                  className="text-xs font-bold uppercase text-[#EB712B] hover:underline"
+                >
+                  View All &rarr;
+                </button>
+              </div>
+              <div className="text-center py-8 text-text-muted text-xs font-bold">
+                Check the Rides tab for the complete schedule.
+              </div>
             </div>
           </div>
         );
@@ -278,7 +330,7 @@ export default function ClubDetails() {
             <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-text-muted uppercase tracking-wider">
               <span className="flex items-center gap-1"><MapPin size={14} className="text-[#EB712B]"/> {club.location || "Global"}</span>
               <span>•</span>
-              <span className="flex items-center gap-1"><Users size={14} className="text-[#EB712B]"/> {membersData?.length || club.totalMembers || 0} Members</span>
+              <span className="flex items-center gap-1"><Users size={14} className="text-[#EB712B]"/> {membersData?.length || getMemberCount(club)} Members</span>
               <span>•</span>
               <span className="text-emerald-400">{club.clubPrivacyId === 1 ? "Public Club" : "Private Club"}</span>
             </div>
@@ -286,13 +338,32 @@ export default function ClubDetails() {
 
           <div className="shrink-0 w-full md:w-auto flex gap-3">
             {!isMember && !showCodeScreen && !showDepositScreen && (
-              <button 
-                onClick={handleJoinClubClick}
-                disabled={isJoining}
-                className="flex-1 md:flex-none px-8 py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(235,113,43,0.3)] active:scale-95 disabled:opacity-50"
-              >
-                {isJoining ? "Joining..." : "Join Club"}
-              </button>
+              club.clubPrivacyId === 2 ? (
+                <>
+                  <button 
+                    onClick={handleRequestMembership}
+                    disabled={isJoining}
+                    className="flex-1 md:flex-none px-8 py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(235,113,43,0.3)] active:scale-95 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isJoining ? "Requesting..." : "Request Membership"}
+                  </button>
+                  <button 
+                    onClick={handleJoinClubClick}
+                    disabled={isJoining}
+                    className="flex-1 md:flex-none px-6 py-3.5 bg-surface border border-border hover:bg-hover text-text-main text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+                  >
+                    Join with Code
+                  </button>
+                </>
+              ) : (
+                <button 
+                  onClick={handleJoinClubClick}
+                  disabled={isJoining}
+                  className="flex-1 md:flex-none px-8 py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(235,113,43,0.3)] active:scale-95 disabled:opacity-50 cursor-pointer"
+                >
+                  {isJoining ? "Joining..." : "Join Club"}
+                </button>
+              )
             )}
             {isMember && (
               <button 
