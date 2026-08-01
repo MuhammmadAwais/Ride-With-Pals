@@ -171,12 +171,12 @@ const ManageClubHome = () => {
     try {
       if (editingPlanId) {
         await updatePlan({
-          planId: Number(editingPlanId),
+          feeId: Number(editingPlanId),
           clubId: clubId,
           name: packageName,
           price: Number(price),
-          currency: "USD",
-          billingInterval: duration === "1 Month" ? "month" : "year",
+          currency: "EUR",
+          billingInterval: duration === "1 Month" ? "monthly" : "annual",
           autoRenew: autoRenew === "Yes",
           discountPercent: Number(discount) || 0,
           features: featuresList
@@ -187,8 +187,8 @@ const ManageClubHome = () => {
           clubId: clubId,
           name: packageName,
           price: Number(price),
-          currency: "USD",
-          billingInterval: duration === "1 Month" ? "month" : "year",
+          currency: "EUR",
+          billingInterval: duration === "1 Month" ? "monthly" : "annual",
           autoRenew: autoRenew === "Yes",
           discountPercent: Number(discount) || 0,
           features: featuresList

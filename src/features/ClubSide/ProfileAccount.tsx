@@ -33,10 +33,13 @@ import {
   Clock,
   FileText,
   User as UserIcon,
+  Bell,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useUpdatePasswordMutation, useUpdateScaleUnitSettingsMutation, useUserInfoQuery } from "@/features/auth/api/authApiSlice";
 import { useCheckStravaStatusQuery, useConnectStravaAccountMutation, useDisconnectStravaAccountMutation } from "@/features/club/api/stravaApiSlice";
+import { useGetEmailNotificationSettingsQuery, useUpdateEmailNotificationSettingsMutation, type EmailNotificationSettings } from "@/features/notifications/api/notificationApiSlice";
+
 
 interface ProfileAccountProps {
   role?: 'organizer' | 'athlete';
@@ -75,15 +78,35 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
   const [connectStrava, { isLoading: isConnectingStrava }] = useConnectStravaAccountMutation();
   const [disconnectStrava, { isLoading: isDisconnectingStrava }] = useDisconnectStravaAccountMutation();
 
+  // Email Notification Hooks
+  const { data: emailSettingsRes, isLoading: isEmailSettingsLoading, refetch: refetchEmailSettings } = useGetEmailNotificationSettingsQuery();
+  const [updateEmailSettings, { isLoading: isUpdatingEmailSettings }] = useUpdateEmailNotificationSettingsMutation();
+  const emailSettings = emailSettingsRes?.response;
+
+  const handleToggleEmailSetting = async (key: keyof EmailNotificationSettings) => {
+    if (!emailSettings) return;
+    const nextSettings: EmailNotificationSettings = {
+      ...emailSettings,
+      [key]: !emailSettings[key],
+    };
+    try {
+      await updateEmailSettings(nextSettings).unwrap();
+      toast.success("Notification settings updated successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update notification settings.");
+    }
+  };
+
   // Refetch user & Strava info whenever user returns focus to this tab
   useEffect(() => {
     const handleFocus = () => {
       refetchUserInfo();
       refetchStravaStatus();
+      refetchEmailSettings();
     };
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
-  }, [refetchUserInfo, refetchStravaStatus]);
+  }, [refetchUserInfo, refetchStravaStatus, refetchEmailSettings]);
 
   const handleConnectStrava = async () => {
     try {
@@ -472,6 +495,65 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 </div>
               </Link>
             </div>
+          </div>
+          
+          {/* CARD 5.5: Email Notification Settings (Spans 4 columns) */}
+          <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 relative overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                <Bell size={12} className="text-[#EB712B]" /> Email Notification Preferences
+              </h3>
+              {isUpdatingEmailSettings && (
+                <span className="text-xs text-[#EB712B] flex items-center gap-1 font-bold">
+                  <Loader2 size={12} className="animate-spin" /> Saving...
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mb-6 font-medium">
+              Choose which events trigger instant email notifications to your inbox.
+            </p>
+            {isEmailSettingsLoading ? (
+              <div className="py-8 flex justify-center items-center">
+                <Loader2 size={24} className="animate-spin text-[#EB712B]" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { key: "feePaymentRequests" as const, title: "Fee Payment Requests", desc: "Membership fee payment reminders" },
+                  { key: "newRide" as const, title: "New Rides & Activities", desc: "When new club rides are published" },
+                  { key: "clubJoinResponse" as const, title: "Club Join Response", desc: "Status updates for club join requests" },
+                  { key: "rideUpdates" as const, title: "Ride & Activity Updates", desc: "Schedule changes & cancellations" },
+                  { key: "orderStatus" as const, title: "Shop Order Status", desc: "Order confirmation & delivery alerts" },
+                  { key: "subscriptionStatus" as const, title: "Subscription Status", desc: "Billing & plan renewal alerts" },
+                  { key: "clubJoinRequest" as const, title: "Club Join Requests", desc: "New member join applications" },
+                ].map((item) => {
+                  const isChecked = Boolean(emailSettings?.[item.key]);
+                  return (
+                    <div
+                      key={item.key}
+                      onClick={() => handleToggleEmailSetting(item.key)}
+                      className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all flex items-center justify-between gap-4"
+                    >
+                      <div>
+                        <h4 className="font-bold text-sm text-white">{item.title}</h4>
+                        <p className="text-[11px] text-gray-400 mt-0.5">{item.desc}</p>
+                      </div>
+                      <div
+                        className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 ease-in-out flex items-center ${
+                          isChecked ? "bg-[#EB712B]" : "bg-white/10"
+                        }`}
+                      >
+                        <div
+                          className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                            isChecked ? "translate-x-5" : "translate-x-0"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
           
           {/* CARD 6: Management Modules (Organizer Only) */}

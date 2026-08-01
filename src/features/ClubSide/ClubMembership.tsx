@@ -55,9 +55,22 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
   const isEditing = !!plan;
   const [name, setName] = useState(plan?.name || '');
   const [price, setPrice] = useState(plan?.price?.toString() || '');
-  const [duration, setDuration] = useState(plan?.duration || '1 Month');
-  const [autoRenew, setAutoRenew] = useState(plan?.autoRenew ?? true);
-  const [features, setFeatures] = useState<string[]>(plan?.features || []);
+  const [currency, setCurrency] = useState(plan?.currency?.toUpperCase() || 'EUR');
+  const [billingInterval, setBillingInterval] = useState(plan?.billingInterval || 'quarterly');
+  const [startDate, setStartDate] = useState(
+    plan?.startDate ? plan.startDate.split('T')[0] : new Date().toISOString().split('T')[0]
+  );
+  const [endDate, setEndDate] = useState(
+    plan?.endDate ? plan.endDate.split('T')[0] : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  );
+  const [allowStripe, setAllowStripe] = useState(plan?.allowStripe ?? true);
+  const [allowManual, setAllowManual] = useState(plan?.allowManual ?? true);
+  const [autoRenew, setAutoRenew] = useState(plan?.autoRenew ?? false);
+  const [assignmentTarget, setAssignmentTarget] = useState<'all' | 'specific' | 'none'>(plan?.assignmentTarget || 'all');
+  const [saveAsDraft, setSaveAsDraft] = useState(plan?.saveAsDraft ?? false);
+  const [features, setFeatures] = useState<string[]>(
+    plan?.features || ['Cycling license included', 'Paid activities included', 'Free coffee in our coffeeshop']
+  );
   const [featureInput, setFeatureInput] = useState('');
 
   const [createPlan, { isLoading: isCreating }] = useCreateClubMembershipPlanMutation();
@@ -78,19 +91,24 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
       return;
     }
     try {
-      const isYearly = duration.toLowerCase().includes('year') || duration.toLowerCase().includes('12');
       const payload = {
         clubId,
         name: name.trim(),
         price: Number(price),
-        currency: 'USD',
-        billingInterval: isYearly ? 'yearly' : 'monthly',
-        discountPercent: 0,
+        currency: currency.toUpperCase(),
+        billingInterval,
+        startDate: new Date(`${startDate}T00:00:00Z`).toISOString(),
+        endDate: new Date(`${endDate}T23:59:59Z`).toISOString(),
+        allowStripe,
+        allowManual,
         autoRenew,
+        assignmentTarget,
+        assignedMemberIds: plan?.assignedMemberIds || [],
+        saveAsDraft,
         features,
       };
       if (isEditing) {
-        await updatePlan({ ...payload, planId: plan.id }).unwrap();
+        await updatePlan({ ...payload, feeId: plan.id }).unwrap();
         toast.success('Plan updated successfully!');
       } else {
         await createPlan(payload).unwrap();
@@ -106,13 +124,18 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
     <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <form
         onSubmit={handleSubmit}
-        className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-lg relative border border-border shadow-2xl space-y-5"
+        className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto relative border border-border shadow-2xl space-y-5"
       >
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-black uppercase tracking-wider text-text-main">
-            {isEditing ? 'Edit Plan' : 'Create Membership Plan'}
-          </h3>
-          <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main cursor-pointer">
+        <div className="flex justify-between items-center pb-2 border-b border-border">
+          <div>
+            <h3 className="text-lg font-black uppercase tracking-wider text-text-main">
+              {isEditing ? 'Edit Membership Plan' : 'Create Membership Plan'}
+            </h3>
+            <p className="text-[11px] text-text-muted mt-0.5">
+              Configure billing interval, pricing, and payment rules
+            </p>
+          </div>
+          <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main cursor-pointer p-1">
             <X size={20} />
           </button>
         </div>
@@ -124,36 +147,104 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
-              placeholder="e.g. Premium Monthly"
+              placeholder="e.g. Annual Membership Fee 2026"
             />
           </div>
+
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Price (USD) *</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Price *</label>
             <input
               type="number"
+              step="any"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
-              placeholder="29.99"
+              placeholder="25.00"
               min="0"
             />
           </div>
+
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Duration</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Currency</label>
             <select
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs text-text-main outline-none focus:border-[#EB712B]"
             >
-              {['1 Month', '3 Months', '6 Months', '12 Months'].map((d) => (
-                <option key={d} value={d}>{d}</option>
+              {['EUR', 'USD', 'GBP', 'CAD', 'AUD'].map((c) => (
+                <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
-          <div className="col-span-2 flex items-center justify-between p-3 bg-main-bg border border-border rounded-xl">
+
+          <div className="col-span-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Billing Interval</label>
+            <select
+              value={billingInterval}
+              onChange={(e) => setBillingInterval(e.target.value)}
+              className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs text-text-main outline-none focus:border-[#EB712B]"
+            >
+              <option value="monthly">Monthly - Every Month</option>
+              <option value="quarterly">Quarterly - Every 3 Months</option>
+              <option value="semi-annual">Semi-Annual - Every 6 Months</option>
+              <option value="annual">Annual - Yearly</option>
+              <option value="one-time">One-Time Fee</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Start Date</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
+            />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">End Date</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
+            />
+          </div>
+
+          {/* Payment Option Toggles */}
+          <div className="flex items-center justify-between p-3 bg-main-bg border border-border rounded-xl">
+            <div>
+              <p className="text-xs font-bold text-text-main">Allow Stripe</p>
+              <p className="text-[10px] text-text-muted">Online payment via card</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAllowStripe((p: boolean) => !p)}
+              className={`w-10 h-6 rounded-full transition-colors cursor-pointer relative ${allowStripe ? 'bg-[#EB712B]' : 'bg-border'}`}
+            >
+              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow ${allowStripe ? 'left-5' : 'left-1'}`} />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-main-bg border border-border rounded-xl">
+            <div>
+              <p className="text-xs font-bold text-text-main">Allow Manual</p>
+              <p className="text-[10px] text-text-muted">Offline / Cash transfer</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAllowManual((p: boolean) => !p)}
+              className={`w-10 h-6 rounded-full transition-colors cursor-pointer relative ${allowManual ? 'bg-[#EB712B]' : 'bg-border'}`}
+            >
+              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow ${allowManual ? 'left-5' : 'left-1'}`} />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-main-bg border border-border rounded-xl">
             <div>
               <p className="text-xs font-bold text-text-main">Auto-Renew</p>
-              <p className="text-[10px] text-text-muted">Automatically renew when plan expires</p>
+              <p className="text-[10px] text-text-muted">Automatically renew plan</p>
             </div>
             <button
               type="button"
@@ -163,12 +254,39 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
               <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow ${autoRenew ? 'left-5' : 'left-1'}`} />
             </button>
           </div>
+
+          <div className="flex items-center justify-between p-3 bg-main-bg border border-border rounded-xl">
+            <div>
+              <p className="text-xs font-bold text-text-main">Save as Draft</p>
+              <p className="text-[10px] text-text-muted">Keep hidden until active</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSaveAsDraft((p: boolean) => !p)}
+              className={`w-10 h-6 rounded-full transition-colors cursor-pointer relative ${saveAsDraft ? 'bg-[#EB712B]' : 'bg-border'}`}
+            >
+              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow ${saveAsDraft ? 'left-5' : 'left-1'}`} />
+            </button>
+          </div>
+
+          <div className="col-span-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Assignment Target</label>
+            <select
+              value={assignmentTarget}
+              onChange={(e) => setAssignmentTarget(e.target.value as any)}
+              className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs text-text-main outline-none focus:border-[#EB712B]"
+            >
+              <option value="all">All Club Members</option>
+              <option value="specific">Specific Members</option>
+              <option value="none">None (Voluntary)</option>
+            </select>
+          </div>
         </div>
 
         {/* Features */}
         <div>
           <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-2">Features</label>
-          <div className="space-y-2 mb-2">
+          <div className="space-y-2 mb-2 max-h-36 overflow-y-auto pr-1">
             {features.map((f, i) => (
               <div key={i} className="flex items-center justify-between bg-main-bg border border-border rounded-xl px-3 py-2">
                 <span className="text-xs text-text-main">{f}</span>
@@ -200,7 +318,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
@@ -212,7 +330,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
           <button
             type="submit"
             disabled={isBusy}
-            className="flex-1 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer border-0 outline-none disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer border-0 outline-none disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#EB712B]/20"
           >
             {isBusy && <Loader2 size={14} className="animate-spin" />}
             {isBusy ? 'Saving...' : (isEditing ? 'Update Plan' : 'Create Plan')}
@@ -349,52 +467,69 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
-          {plans.map((plan: any) => (
-            <div key={plan.id} className="bg-surface border border-border rounded-3xl p-6 space-y-4 relative group hover:border-[#EB712B]/30 transition-all">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="text-base font-bold text-text-main">{plan.name}</h3>
-                  <p className="text-xs text-text-muted mt-1">{plan.duration} · {plan.autoRenew ? 'Auto-renew' : 'No auto-renew'}</p>
+          {plans.map((plan: any) => {
+            const displayInterval = plan.billingInterval
+              ? plan.billingInterval.charAt(0).toUpperCase() + plan.billingInterval.slice(1)
+              : plan.duration || 'Monthly';
+            const currencySymbol =
+              (plan.currency || 'EUR').toUpperCase() === 'EUR' ? '€' :
+              (plan.currency || 'EUR').toUpperCase() === 'GBP' ? '£' : '$';
+
+            return (
+              <div key={plan.id} className="bg-surface border border-border rounded-3xl p-6 space-y-4 relative group hover:border-[#EB712B]/30 transition-all shadow-md">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-base font-bold text-text-main">{plan.name}</h3>
+                    <p className="text-xs text-text-muted mt-1">
+                      {displayInterval} · {plan.autoRenew ? 'Auto-renew' : 'No auto-renew'}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <button
+                      onClick={() => { setEditingPlan(plan); setShowForm(true); }}
+                      className="p-2 rounded-xl bg-surface hover:bg-hover border border-border text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
+                    >
+                      <Edit2 size={13} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(plan.id)}
+                      disabled={isDeleting}
+                      className="p-2 rounded-xl bg-surface hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors cursor-pointer"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  <button
-                    onClick={() => { setEditingPlan(plan); setShowForm(true); }}
-                    className="p-2 rounded-xl bg-surface hover:bg-hover border border-border text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
-                  >
-                    <Edit2 size={13} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(plan.id)}
-                    disabled={isDeleting}
-                    className="p-2 rounded-xl bg-surface hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors cursor-pointer"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+
+                <div className="text-3xl font-black text-[#EB712B] flex items-baseline gap-1">
+                  <span>{currencySymbol}{plan.price}</span>
+                  <span className="text-sm text-text-muted font-medium">/ {displayInterval}</span>
+                </div>
+
+                {plan.features && plan.features.length > 0 && (
+                  <div className="space-y-2">
+                    {plan.features.map((f: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2 text-xs text-text-muted">
+                        <Check size={12} className="text-[#EB712B]" />
+                        {f}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Subscriber count */}
+                <div className="pt-3 border-t border-border flex items-center justify-between text-[11px] text-text-muted">
+                  <div className="flex items-center gap-1.5">
+                    <Users size={13} className="text-[#EB712B]" />
+                    <span>{plan.paidCount || 0} active athletes</span>
+                  </div>
+                  <span className="font-semibold text-text-main">
+                    {plan.assignmentTarget === 'specific' ? 'Assigned Members' : 'All Club Members'}
+                  </span>
                 </div>
               </div>
-
-              <div className="text-3xl font-black text-[#EB712B]">
-                ${plan.price} <span className="text-sm text-text-muted font-medium">/ {plan.duration}</span>
-              </div>
-
-              {plan.features && plan.features.length > 0 && (
-                <div className="space-y-2">
-                  {plan.features.map((f: string, i: number) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-text-muted">
-                      <Check size={12} className="text-[#EB712B]" />
-                      {f}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Subscriber count */}
-              <div className="pt-3 border-t border-border flex items-center gap-2 text-[10px] text-text-muted">
-                <Users size={12} />
-                <span>Subscriber data available in Members tab</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

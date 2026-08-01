@@ -2,7 +2,7 @@
  * @fileoverview SubscribersList — Owner-only view of all membership subscribers.
  *
  * APIs wired:
- * - useListSubscribedMemberQuery        GET  /user/club/membership/subscribers
+ * - useListSubscribedMemberQuery        GET  /user/club/membership/members
  * - useChangeClubMemberFeeStatusMutation POST /user/club/membership/manual-pay
  * - useSendSubscriptionReminderMutation  POST /user/club/subscription/reminder
  * - useSendSubscriptionReminderToEveryoneMutation POST /user/club/subscription/reminder/all
@@ -77,10 +77,10 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
   const [markingPaidId, setMarkingPaidId] = useState<number | null>(null);
 
   const { data, isLoading, isFetching } = useListSubscribedMemberQuery({
-    clubId,
+    clubId: Number(clubId),
     limit: LIMIT,
     offset,
-  });
+  }, { skip: !clubId });
 
   const [changeClubMemberFeeStatus] = useChangeClubMemberFeeStatusMutation();
   const [sendReminder] = useSendSubscriptionReminderMutation();

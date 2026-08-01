@@ -634,12 +634,12 @@ export const MembershipService = logWrapper("MembershipService", {
   },
 
   createClubMembershipPlan: async (data?: any, params?: Record<string, any>) => {
-    const response = await backendApi.post('/user/club/membership/plan', data, { params });
+    const response = await backendApi.post('/user/club/membership/fee', data, { params });
     return response.data;
   },
 
   updateClubMembershipPlan: async (data?: any, params?: Record<string, any>) => {
-    const response = await backendApi.put('/user/club/membership/plan', data, { params });
+    const response = await backendApi.put('/user/club/membership/fee', data, { params });
     return response.data;
   },
 
@@ -660,12 +660,32 @@ export const MembershipService = logWrapper("MembershipService", {
   },
 
   listSubscribedMember: async (params?: Record<string, any>) => {
-    const response = await backendApi.get('/user/club/membership/subscribers', { params });
+    const response = await backendApi.get('/user/club/membership/members', { params });
     return response.data;
   },
 
   changeClubMemberFeeStatus: async (data?: any, params?: Record<string, any>) => {
     const response = await backendApi.post('/user/club/membership/manual-pay', data, { params });
+    return response.data;
+  },
+
+  getClubMembershipOverview: async (params?: Record<string, any>) => {
+    const response = await backendApi.get('/user/club/membership/overview', { params });
+    return response.data;
+  },
+
+  exemptMemberFee: async (data?: any, params?: Record<string, any>) => {
+    const response = await backendApi.post('/user/club/membership/exempt', data, { params });
+    return response.data;
+  },
+
+  changeAssignedFee: async (data?: any, params?: Record<string, any>) => {
+    const response = await backendApi.post('/user/club/membership/change/fee', data, { params });
+    return response.data;
+  },
+
+  resetMembershipFeePending: async (data?: any, params?: Record<string, any>) => {
+    const response = await backendApi.post('/user/club/membership/reset-pending', data, { params });
     return response.data;
   },
 });

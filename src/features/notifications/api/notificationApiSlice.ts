@@ -47,8 +47,35 @@ export const notificationApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Notification'],
     }),
+
+    getEmailNotificationSettings: builder.query<{ statusCode: number; message: string; response: EmailNotificationSettings }, void>({
+      query: () => ({
+        url: '/user/email/notification/settings',
+        method: 'GET',
+      }),
+      providesTags: ['EmailNotification' as any],
+    }),
+
+    updateEmailNotificationSettings: builder.mutation<{ statusCode: number; message: string; response: EmailNotificationSettings }, EmailNotificationSettings>({
+      query: (body) => ({
+        url: '/user/email/notification/settings',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['EmailNotification' as any],
+    }),
   }),
 });
+
+export interface EmailNotificationSettings {
+  feePaymentRequests: boolean;
+  newRide: boolean;
+  clubJoinResponse: boolean;
+  rideUpdates: boolean;
+  orderStatus: boolean;
+  subscriptionStatus: boolean;
+  clubJoinRequest: boolean;
+}
 
 export const {
   useGetUserNotificationQuery,
@@ -56,4 +83,7 @@ export const {
   useMarkAsReadNotificationsMutation,
   useSendSubscriptionReminderMutation,
   useSendSubscriptionReminderToEveryoneMutation,
+  useGetEmailNotificationSettingsQuery,
+  useUpdateEmailNotificationSettingsMutation,
 } = notificationApiSlice;
+

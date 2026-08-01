@@ -66,6 +66,8 @@ import ClubDetails from '@/features/public-club/pages/ClubDetails';
 import Shop from '@/features/public-club/pages/Shop';
 import Marketplace from '@/features/public-club/pages/Marketplace';
 import UserSubscription from '@/features/public-club/pages/UserSubscription';
+import UserWallet from '@/features/public-club/pages/UserWallet';
+
 
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';
@@ -180,6 +182,7 @@ export const router = createBrowserRouter(
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="purchases" element={<MyPurchases />} />
           <Route path="subscription" element={<UserSubscription />} />
+          <Route path="wallet" element={<UserWallet />} />
           <Route path="profile" element={<ProfileAccount role="athlete" />} />
           <Route path="support" element={<Support />} />
           <Route path="dashboard/ride/:id" element={<RideJoining />} />

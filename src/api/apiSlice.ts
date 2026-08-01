@@ -87,7 +87,9 @@ export const apiSlice = createApi({
     'Subscription',
     'Notification',
     'Permission',
-    'Discount'
+    'Discount',
+    'Wallet',
+    'EmailNotification'
   ],
   // 7: Export an empty endpoints array for decoupled slice injection
   endpoints: () => ({}),

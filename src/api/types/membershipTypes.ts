@@ -104,13 +104,21 @@ export type CreateClubMembershipPlanRequest = {
     price:           number;
     currency:        string;
     billingInterval: string;
-    autoRenew:       boolean;
-    discountPercent: number;
-    features:        string[];
+    autoRenew?:      boolean;
+    discountPercent?: number;
+    features?:       string[];
+    startDate?:      string;
+    endDate?:        string;
+    allowStripe?:    boolean;
+    allowManual?:    boolean;
+    assignmentTarget?: string;
+    assignedMemberIds?: number[];
+    saveAsDraft?:    boolean;
 }
 
 export type UpdateClubMembershipPlanRequest = {
-    planId:           number;
+    planId?:          number;
+    feeId?:           number;
     clubId:           number;
     name?:            string;
     price?:           number;
@@ -119,11 +127,20 @@ export type UpdateClubMembershipPlanRequest = {
     autoRenew?:       boolean;
     discountPercent?: number;
     features?:        string[];
+    startDate?:       string;
+    endDate?:         string;
+    allowStripe?:     boolean;
+    allowManual?:     boolean;
+    assignmentTarget?: string;
+    assignedMemberIds?: number[];
+    saveAsDraft?:     boolean;
 }
 
 export type DeleteMembershipPlanParams = {
     clubId: number | string;
-    planId: number | string;
+    planId?: number | string;
+    feeId?: number | string;
+    id?: number | string;
 }
 
 export type DeleteMembershipPlanResponse = {
@@ -144,18 +161,58 @@ export type ListSubscribedMemberParams = {
     clubId:  number | string;
     limit?:  number | string;
     offset?: number | string;
+    status?: string;
 }
 
 export type ChangeClubMemberFeeStatusRequest = {
     clubId: number;
     userId: number;
-    planId: number;
+    planId?: number;
+    feeId?: number;
 }
 
 export type ChangeClubMemberFeeStatusResponse = {
     statusCode: number;
     message:    string;
     response:   Row;
+}
+
+export type GetClubMembershipOverviewParams = {
+    clubId: number | string;
+}
+
+export type ClubMembershipOverviewResponse = {
+    statusCode: number;
+    message:    string;
+    response: {
+        totalCollected: number;
+        totalExpected: number;
+        paidMemberCount: number;
+        pendingMemberCount: number;
+        notRenewedMemberCount: number;
+        activeFees: any[];
+    };
+}
+
+export type ExemptMemberFeeRequest = {
+    clubId: number;
+    feeId?: number;
+    planId?: number;
+    userId: number;
+    isExempt: boolean;
+}
+
+export type ChangeAssignedFeeRequest = {
+    clubId: number;
+    userId: number;
+    newFeeId: number;
+}
+
+export type ResetMembershipFeePendingRequest = {
+    clubId: number;
+    feeId?: number;
+    planId?: number;
+    userId: number;
 }
 
 

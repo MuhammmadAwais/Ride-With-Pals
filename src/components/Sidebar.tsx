@@ -16,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
-  Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Plus, Calendar
+  Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Plus, Calendar, ShoppingBag
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -45,7 +45,7 @@ type NavEntry = NavItem | NavDivider;
 
 // ─── Nav Config ───────────────────────────────────────────────────────────────
 
-const ICON_SIZE = 20;
+const ICON_SIZE = 18;
 
 /** Club Management nav (organizers / owners). */
 const CLUB_NAV_ITEMS: NavEntry[] = [
@@ -53,7 +53,8 @@ const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Activities',       route: ROUTES.ACTIVITIES,       icon: <Bike size={ICON_SIZE} /> },
   { label: 'Create Ride',      route: ROUTES.ADD_RIDE,         icon: <Plus size={ICON_SIZE} /> },
   { label: 'Product',          route: ROUTES.PRODUCT,          icon: <Car size={ICON_SIZE} /> },
-  { label: 'Order',            route: ROUTES.ORDER,            icon: <Wallet size={ICON_SIZE} /> },
+  { label: 'Order',            route: ROUTES.ORDER,            icon: <ShoppingBag size={ICON_SIZE} /> },
+  { label: 'Club Wallet',      route: ROUTES.WALLET,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'News',             route: ROUTES.NEWS,             icon: <Newspaper size={ICON_SIZE} /> },
   { label: 'Leaderboard',      route: ROUTES.LEADERBOARD,      icon: <Trophy size={ICON_SIZE} /> },
   { label: 'Discount',         route: ROUTES.DISCOUNT,         icon: <Percent size={ICON_SIZE} /> },
@@ -75,7 +76,8 @@ const ATHLETE_NAV_ITEMS: NavEntry[] = [
   { label: 'Activities',       route: ROUTES.RIDE,                icon: <Bike size={ICON_SIZE} /> },
   { label: 'Calendar',         route: ROUTES.CALENDAR,            icon: <Calendar size={ICON_SIZE} /> },
   { label: 'Saved Activities', route: ROUTES.SAVED_RIDES,         icon: <Bookmark size={ICON_SIZE} /> },
-  { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <Wallet size={ICON_SIZE} /> },
+  { label: 'My Purchases',     route: ROUTES.PURCHASES,           icon: <ShoppingBag size={ICON_SIZE} /> },
+  { label: 'My Wallet',        route: ROUTES.WALLET_ATHLETE,      icon: <Wallet size={ICON_SIZE} /> },
   { label: 'Subscription',     route: ROUTES.SUBSCRIPTION_ATHLETE,icon: <CreditCard size={ICON_SIZE} /> },
   { type: 'divider' },
   { label: 'Notifications',    route: ROUTES.NOTIFICATIONS,       icon: <Bell size={ICON_SIZE} /> },
