@@ -83,13 +83,13 @@ const ManageClubHome = () => {
   useEffect(() => {
     if (plansData) {
       const plans = plansData.map((p: any) => ({
-        id: p.id.toString(),
-        packageName: p.name || p.packageName,
-        price: p.price.toString(),
-        duration: p.duration || "1 Month",
+        id: String(p.id),
+        packageName: p.name || p.packageName || 'Unnamed Plan',
+        price: String(p.price),
+        duration: p.billingInterval || p.duration || 'monthly',
         autoRenew: p.autoRenew ? "Yes" : "No",
-        discount: p.discount || "",
-        featuresList: p.features || []
+        discount: String(p.discountPercent || ''),
+        featuresList: Array.isArray(p.features) ? p.features : []
       }));
       setMembershipPlans(plans);
     }
@@ -103,7 +103,7 @@ const ManageClubHome = () => {
   const [showMembershipForm, setShowMembershipForm] = useState(false);
   const [packageName, setPackageName] = useState("");
   const [price, setPrice] = useState("");
-  const [duration, setDuration] = useState("1 Month");
+  const [duration, setDuration] = useState("monthly");
   const [autoRenew, setAutoRenew] = useState("Yes");
   const [discount, setDiscount] = useState("");
   const [featureInput, setFeatureInput] = useState("");
@@ -176,9 +176,8 @@ const ManageClubHome = () => {
           name: packageName,
           price: Number(price),
           currency: "EUR",
-          billingInterval: duration === "1 Month" ? "monthly" : "annual",
+          billingInterval: duration,
           autoRenew: autoRenew === "Yes",
-          discountPercent: Number(discount) || 0,
           features: featuresList
         }).unwrap();
         toast.success("Membership plan updated successfully!");
@@ -188,9 +187,8 @@ const ManageClubHome = () => {
           name: packageName,
           price: Number(price),
           currency: "EUR",
-          billingInterval: duration === "1 Month" ? "monthly" : "annual",
+          billingInterval: duration,
           autoRenew: autoRenew === "Yes",
-          discountPercent: Number(discount) || 0,
           features: featuresList
         }).unwrap();
         toast.success("Membership plan created successfully!");
@@ -200,7 +198,7 @@ const ManageClubHome = () => {
       setEditingPlanId(null);
       setPackageName("");
       setPrice("");
-      setDuration("1 Month");
+      setDuration("monthly");
       setAutoRenew("Yes");
       setDiscount("");
       setFeaturesList([

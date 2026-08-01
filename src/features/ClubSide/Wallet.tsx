@@ -32,21 +32,29 @@ const WalletDashboard: React.FC = () => {
   const myClubsFromRedux = useMemo(() => myClubsFromReduxRaw || [], [myClubsFromReduxRaw]);
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
 
+  const extractClubs = (data: any): any[] => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.rows)) return data.rows;
+    if (Array.isArray(data.response?.rows)) return data.response.rows;
+    if (Array.isArray(data.data)) return data.data;
+    return [];
+  };
+
   useEffect(() => {
-    if (!clubIdStr) {
-      const clubsList = (Array.isArray(joinedClubsData) && joinedClubsData.length > 0)
-        ? joinedClubsData
+    if (!clubIdStr || clubIdStr === 0) {
+      const clubsList = extractClubs(joinedClubsData).length > 0
+        ? extractClubs(joinedClubsData)
         : myClubsFromRedux;
       if (clubsList.length > 0) {
-        const firstClubId = (clubsList[0] as any)?.id || (clubsList[0] as any)?.clubId;
-        if (firstClubId) {
-          setActiveClub(firstClubId.toString());
-        }
+        setActiveClub(clubsList[0]);
       }
     }
   }, [clubIdStr, joinedClubsData, myClubsFromRedux, setActiveClub]);
 
-  const effectiveClubId = clubIdStr ? Number(clubIdStr) : 0;
+  const effectiveClubId = (clubIdStr && clubIdStr !== 0)
+    ? Number(clubIdStr)
+    : (extractClubs(joinedClubsData)[0]?.id || myClubsFromRedux[0]?.id || 0);
 
   useEffect(() => {
     if (effectiveClubId) {
@@ -65,10 +73,11 @@ const WalletDashboard: React.FC = () => {
     }
   }, [walletResponse]);
 
-  const walletData = walletResponse?.response || {
-    pendingEarnings: 0,
-    totalEarnings: 0,
-    transactions: [] as WalletTransaction[],
+  const rawData: any = walletResponse?.response || (walletResponse as any)?.data || walletResponse || {};
+  const walletData = {
+    pendingEarnings: Number(rawData.pendingEarnings || 0),
+    totalEarnings: Number(rawData.totalEarnings || 0),
+    transactions: (Array.isArray(rawData.transactions) ? rawData.transactions : []) as WalletTransaction[],
   };
 
   const transactions = useMemo(() => walletData.transactions || [], [walletData.transactions]);

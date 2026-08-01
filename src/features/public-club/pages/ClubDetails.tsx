@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare } from 'lucide-react';
+import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation, useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { ClubMembershipModal } from '../components/ClubMembershipModal';
 
 // Import refactored tab components
 import Ride from './Ride';
@@ -73,6 +74,7 @@ export default function ClubDetails() {
   const isMember = joinedRows.some((c: any) => c.id === Number(clubId)) || myClubs.some((c: any) => c.id === Number(clubId));
 
 
+  const [showMembershipModal, setShowMembershipModal] = useState(false);
   const [showCodeScreen, setShowCodeScreen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [codeError, setCodeError] = useState("");
@@ -302,6 +304,15 @@ export default function ClubDetails() {
           </div>
 
           <div className="shrink-0 w-full md:w-auto flex gap-3">
+            <button
+              type="button"
+              onClick={() => setShowMembershipModal(true)}
+              title="View & Subscribe to Club Membership Plans"
+              className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-[#EB712B]/15 to-amber-500/15 border border-[#EB712B]/40 hover:border-[#EB712B] text-[#EB712B] text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+            >
+              <Crown size={16} />
+              <span>Membership</span>
+            </button>
             {!isMember && !showCodeScreen && !showDepositScreen && (
               club.clubPrivacyId === 2 ? (
                 <>
@@ -519,6 +530,12 @@ export default function ClubDetails() {
           </div>
         </div>
       )}
+
+      <ClubMembershipModal
+        clubId={Number(clubId)}
+        isOpen={showMembershipModal}
+        onClose={() => setShowMembershipModal(false)}
+      />
     </div>
   );
 }

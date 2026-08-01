@@ -105,16 +105,17 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
 
     listMembershipPlans: builder.query<MembershipTypes.ResponseElement[], MembershipTypes.ListMembershipPlansParams>({
       query: (params) => ({
-        url: '/user/club/membership/overview',
+        url: '/user/club/membership/plans',
         method: 'GET',
         params,
       }),
       transformResponse: (res: any) => {
-        if (Array.isArray(res)) return res;
-        if (Array.isArray(res?.response?.activeFees)) return res.response.activeFees;
-        if (Array.isArray(res?.response)) return res.response;
-        if (Array.isArray(res?.activeFees)) return res.activeFees;
-        if (Array.isArray(res?.data)) return res.data;
+        // apiSlice.ts auto-unwraps { statusCode, message, response } → response at the base level
+        const data = res?.response ?? res?.data ?? res;
+        if (Array.isArray(data)) return data;
+        if (Array.isArray(data?.rows)) return data.rows;
+        if (Array.isArray(data?.plans)) return data.plans;
+        if (Array.isArray(data?.activeFees)) return data.activeFees;
         return [];
       },
       providesTags: ['Subscription'],
@@ -153,6 +154,9 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
         params,
       }),
+      transformResponse: (res: any) => {
+        return res?.response ?? res?.data ?? res ?? {};
+      },
       providesTags: ['Subscription'],
     }),
 
@@ -182,6 +186,14 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Subscription', 'Club'],
     }),
+
+    sendPaymentReminderNotification: builder.mutation<any, { clubId: number; feeId: number; target: 'pending' | 'expired' }>({
+      query: (body) => ({
+        url: '/user/club/membership/pay/reminder/notification',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
@@ -199,4 +211,5 @@ export const {
   useExemptMemberFeeMutation,
   useChangeAssignedFeeMutation,
   useResetMembershipFeePendingMutation,
+  useSendPaymentReminderNotificationMutation,
 } = membershipApiSlice;

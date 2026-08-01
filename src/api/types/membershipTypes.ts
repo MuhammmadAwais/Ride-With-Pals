@@ -167,8 +167,11 @@ export type ListSubscribedMemberParams = {
 export type ChangeClubMemberFeeStatusRequest = {
     clubId: number;
     userId: number;
-    planId?: number;
-    feeId?: number;
+    feeId: number;
+    amount: number;
+    paymentDate: string;
+    paymentMethod: 'cash' | 'bank_transfer' | 'bizum' | 'other';
+    note?: string;
 }
 
 export type ChangeClubMemberFeeStatusResponse = {

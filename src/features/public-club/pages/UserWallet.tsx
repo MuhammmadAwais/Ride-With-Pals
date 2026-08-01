@@ -24,10 +24,11 @@ const UserWallet: React.FC = () => {
 
   const { data: walletResponse, isLoading, refetch } = useGetUserWalletQuery();
 
-  const walletData = walletResponse?.response || {
-    totalSpent: 0,
-    currency: 'usd',
-    transactions: [] as WalletTransaction[],
+  const rawData: any = walletResponse?.response || (walletResponse as any)?.data || walletResponse || {};
+  const walletData = {
+    totalSpent: Number(rawData.totalSpent || 0),
+    currency: rawData.currency || 'usd',
+    transactions: (Array.isArray(rawData.transactions) ? rawData.transactions : []) as WalletTransaction[],
   };
 
   const transactions = useMemo(() => walletData.transactions || [], [walletData.transactions]);

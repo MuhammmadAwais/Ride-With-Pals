@@ -106,11 +106,17 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
   const handleMarkAsPaid = async (row: any) => {
     setMarkingPaidId(row.id);
     try {
+      // POST /user/club/membership/manual-pay requires:
+      // clubId, feeId, userId, amount, paymentDate, paymentMethod
+      // row.planId IS the feeId on the subscription row
       await changeClubMemberFeeStatus({
         clubId,
         userId: row.userId,
-        planId: row.planId,
-      }).unwrap();
+        feeId: row.planId,     // planId on the row references the membership fee plan id
+        amount: row.plan?.price ? Number(row.plan.price) : 0,
+        paymentDate: new Date().toISOString(),
+        paymentMethod: 'cash',
+      } as any).unwrap();
       toast.success(`${row.user?.fullName || 'Member'} marked as paid!`);
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to mark as paid.');
