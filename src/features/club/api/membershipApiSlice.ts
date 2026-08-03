@@ -116,6 +116,7 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
         if (Array.isArray(data?.rows)) return data.rows;
         if (Array.isArray(data?.plans)) return data.plans;
         if (Array.isArray(data?.activeFees)) return data.activeFees;
+        if (Array.isArray(data?.subscriptions)) return data.subscriptions;
         return [];
       },
       providesTags: ['Subscription'],

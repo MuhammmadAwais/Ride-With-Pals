@@ -10,6 +10,36 @@ import {
 } from "@/features/subscriptions/api/subscriptionApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 
+const getPlanFeatures = (plan: any): string[] => {
+  if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
+    return plan.features;
+  }
+  const list: string[] = [];
+  if (plan.config?.marketplaceItems) {
+    list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
+  } else {
+    list.push("Unlimited Marketplace Listings");
+  }
+  if (plan.config?.numberOfRides) {
+    list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+  } else {
+    list.push("Unlimited Group Rides & Events");
+  }
+  if (plan.config?.unlimitedClubMembers) {
+    list.push("Unlimited Club Members");
+  } else {
+    list.push("Unlimited Club Members");
+  }
+  if (plan.config?.clubStripeIntegration) {
+    list.push("Stripe Direct Payout Integrations");
+  } else {
+    list.push("Stripe Direct Payout Integrations");
+  }
+  list.push("Advanced Analytics & Reporting");
+  list.push("Verified Pro Badge");
+  return Array.from(new Set(list));
+};
+
 export default function Subscriptions() {
   const navigate = useNavigate();
   const container = useRef(null);
@@ -25,9 +55,20 @@ export default function Subscriptions() {
 
   const [subscribeToClubPlan, { isLoading: isProcessing }] = useSubscribeToClubPlanMutation();
 
-  const handleCheckout = async (planId: number) => {
+  const handleSelectFree = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    navigate("/club-profile-setup");
+  };
+
+  const handleCheckout = async (e: React.MouseEvent, planId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!clubId) {
-      toast.error("No club selected.");
+      toast.error("Please create or select a club first before upgrading.");
+      navigate("/club-profile-setup");
       return;
     }
 
@@ -40,7 +81,7 @@ export default function Subscriptions() {
         cancelUrl: `${origin}/view/clubside/subscription`,
       }).unwrap();
 
-      if (res?.checkoutUrl) {
+      if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
         window.location.href = res.checkoutUrl;
       } else {
         toast.error("Could not initiate checkout.");
@@ -63,6 +104,10 @@ export default function Subscriptions() {
       }
     );
   }, { scope: container });
+
+  const paidPlans = (plans || []).filter(
+    (plan: any) => parseFloat(plan.price || '0') > 0 && !plan.name?.toLowerCase().includes('free')
+  );
 
   return (
     <div ref={container} className="min-h-screen bg-[#111111] flex flex-col items-center justify-center p-6 md:p-12 font-sans selection:bg-[#EB712B] selection:text-white">
@@ -99,6 +144,10 @@ export default function Subscriptions() {
             <div className="mb-6">
               <span className="text-[11px] font-bold tracking-[0.2em] text-gray-500 uppercase">Entry</span>
               <h2 className="text-2xl font-bold text-white mt-1">Free Limited</h2>
+              <div className="flex items-baseline gap-1 mt-3">
+                <span className="text-4xl font-black tracking-tighter text-white">$0</span>
+                <span className="text-gray-500 text-xs font-semibold">/month</span>
+              </div>
             </div>
 
             <ul className="space-y-4 mb-8">
@@ -111,7 +160,8 @@ export default function Subscriptions() {
 
             <div className="pt-8 border-t border-white/5">
               <button 
-                onClick={() => navigate("/select-role-club")} 
+                type="button"
+                onClick={handleSelectFree} 
                 className="w-full py-3 rounded-xl bg-[#1a1a1a] border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition-all duration-300 cursor-pointer border-0 outline-none"
               >
                 Continue with Free
@@ -119,48 +169,52 @@ export default function Subscriptions() {
             </div>
           </div>
 
-          {/* Gold Pass Plan */}
-          {plans && plans.filter((plan: any) => parseFloat(plan.price || '0') > 0 && !plan.name?.toLowerCase().includes('free')).map((plan) => (
-            <div 
-              key={plan.id}
-              className="card-reveal opacity-0 group bg-[#1a1a1a] border border-[#EB712B]/20 rounded-2xl p-8 flex flex-col relative overflow-hidden transition-all duration-700 hover:border-[#EB712B]/50 hover:rounded-tr-[64px] hover:rounded-bl-[64px] hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(235,113,43,0.15)]"
-            >
-              <div className="absolute top-6 right-6 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] text-[10px] font-bold tracking-widest uppercase rounded-full border border-[#EB712B]/20">
-                Best Value
-              </div>
+          {/* Gold Pass / Paid Plan(s) */}
+          {paidPlans.map((plan: any) => {
+            const planFeatures = getPlanFeatures(plan);
 
-              <div className="mb-6">
-                <span className="text-[11px] font-bold tracking-[0.2em] text-[#EB712B] uppercase">Pro Tier</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <h2 className="text-3xl font-bold text-white">${parseFloat(plan.price).toFixed(0)}</h2>
-                  <span className="text-gray-500 text-xs">/ {plan.billingInterval || "year"}</span>
+            return (
+              <div 
+                key={plan.id}
+                className="card-reveal opacity-0 group bg-[#1a1a1a] border border-[#EB712B]/20 rounded-2xl p-8 flex flex-col relative overflow-hidden transition-all duration-700 hover:border-[#EB712B]/50 hover:rounded-tr-[64px] hover:rounded-bl-[64px] hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(235,113,43,0.15)]"
+              >
+                <div className="absolute top-6 right-6 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] text-[10px] font-bold tracking-widest uppercase rounded-full border border-[#EB712B]/20">
+                  Best Value
+                </div>
+
+                <div className="mb-6">
+                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#EB712B] uppercase">Pro Tier</span>
+                  <h2 className="text-2xl font-bold text-white mt-1">{plan.name}</h2>
+                  {plan.description && (
+                    <p className="text-gray-400 text-xs mt-1 font-medium">{plan.description}</p>
+                  )}
+                  <div className="flex items-baseline gap-2 mt-3">
+                    <h2 className="text-3xl font-bold text-white">${parseFloat(plan.price || '0').toFixed(0)}</h2>
+                    <span className="text-gray-500 text-xs">/ {plan.billingInterval || "year"}</span>
+                  </div>
+                </div>
+
+                <ul className="space-y-4 mb-8">
+                  {planFeatures.map((item: string, idx: number) => (
+                    <li key={idx} className="flex items-center gap-3 text-gray-200 text-sm">
+                      <Check size={16} className="text-[#EB712B]" /> {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="pt-8 border-t border-white/10">
+                  <button 
+                    type="button"
+                    onClick={(e) => handleCheckout(e, plan.id)} 
+                    disabled={isProcessing}
+                    className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)] disabled:opacity-50 border-0 outline-none cursor-pointer"
+                  >
+                    {isProcessing ? "PROCESSING..." : "GO PREMIUM NOW"} <ArrowRight size={16} />
+                  </button>
                 </div>
               </div>
-
-              <ul className="space-y-4 mb-8">
-                {[
-                  plan.config?.unlimitedItemInMarketplace && "Unlimited Marketplace Listings",
-                  plan.config?.unlimitedClubMembers && "Unlimited Club Members",
-                  plan.config?.clubStripeIntegration && "Stripe Direct Payout Integrations",
-                  plan.config?.unlimitedRides && "Unlimited Group Rides & Events",
-                ].filter(Boolean).map((item: any) => (
-                  <li key={item} className="flex items-center gap-3 text-gray-200 text-sm">
-                    <Check size={16} className="text-[#EB712B]" /> {item}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="pt-8 border-t border-white/10">
-                <button 
-                  onClick={() => handleCheckout(plan.id)} 
-                  disabled={isProcessing}
-                  className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)] disabled:opacity-50 border-0 outline-none cursor-pointer"
-                >
-                  {isProcessing ? "PROCESSING..." : "GO PREMIUM NOW"} <ArrowRight size={16} />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -8,41 +8,85 @@ import {
   useSubscribeToAnyPlanMutation,
 } from "@/features/subscriptions/api/subscriptionApiSlice";
 
+const getPlanFeatures = (plan: any): string[] => {
+  if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
+    return plan.features;
+  }
+  const list: string[] = [];
+  if (plan.config?.marketplaceItems) {
+    list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
+  } else if (plan.config?.unlimitedItemInMarketplace || plan.config?.unlimitedMarketplace) {
+    list.push("Unlimited Marketplace listings");
+  } else {
+    list.push("Unlimited Marketplace listings");
+  }
+  if (plan.config?.numberOfRides) {
+    list.push(`Up to ${plan.config.numberOfRides} Rides`);
+  } else {
+    list.push("Unlimited Group Rides & Events");
+  }
+  if (plan.config?.unlimitedClubMembers) {
+    list.push("Unlimited Club Members");
+  }
+  if (plan.config?.clubStripeIntegration) {
+    list.push("Stripe Direct Payout Integrations");
+  }
+  list.push("Advanced Performance Analytics");
+  list.push("Verified Pro Badge");
+  list.push("Early Gear Drops");
+  list.push("Live Performance Streaming");
+  return Array.from(new Set(list));
+};
+
 const AuthSubscription = () => {
   const navigate = useNavigate();
   const user = useAppSelector((s) => s.auth.user);
   const [selectedPlan, setSelectedPlan] = useState<string>("yearly");
+  const [subscribingId, setSubscribingId] = useState<number | null>(null);
 
   // Get SaaS subscription plans from API
   const { data: plansResponse, isLoading: isLoadingPlans } = useSubscriptionPlanListQuery();
   const plans = plansResponse?.rows || [];
 
-  const [subscribeToAnyPlan, { isLoading: isCheckoutLoading }] = useSubscribeToAnyPlanMutation();
+  const [subscribeToAnyPlan] = useSubscribeToAnyPlanMutation();
 
-  const handleNavigation = async () => {
-    if (selectedPlan === "free") {
-      if (user?.role === 'owner' || user?.role === 'organizer') {
-        navigate("/club-profile-setup");
-      } else {
-        navigate("/create-profile");
-      }
+  const paidPlans = plans.filter(
+    (p: any) => parseFloat(p.price || '0') > 0 && !p.name?.toLowerCase().includes('free')
+  );
+
+  const handleSelectFree = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (user?.role === 'owner' || user?.role === 'organizer') {
+      navigate("/club-profile-setup");
     } else {
-      // Find a paid plan (usually yearly/monthly)
-      const paidPlan = plans.find(p => parseFloat(p.price) > 0);
-      if (paidPlan) {
-        try {
-          const res = await subscribeToAnyPlan({ planId: paidPlan.id }).unwrap();
-          if (res?.checkoutUrl) {
-            window.location.href = res.checkoutUrl; // Redirect to Stripe
-          } else {
-            toast.error("Could not initiate checkout.");
-          }
-        } catch (err: any) {
-          toast.error(err?.data?.message || "Failed to start checkout");
-        }
+      navigate("/create-profile");
+    }
+  };
+
+  const handleSelectPaidPlan = async (e: React.MouseEvent, plan: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!plan || !plan.id) return;
+    if (parseFloat(plan.price || '0') === 0) {
+      handleSelectFree();
+      return;
+    }
+
+    setSubscribingId(plan.id);
+    try {
+      const res = await subscribeToAnyPlan({ planId: plan.id }).unwrap();
+      if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
+        window.location.href = res.checkoutUrl; // Redirect to Stripe
       } else {
-        toast.error("Paid plan not found");
+        toast.error("Could not initiate checkout.");
       }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to start checkout");
+    } finally {
+      setSubscribingId(null);
     }
   };
 
@@ -124,99 +168,87 @@ const AuthSubscription = () => {
               </div>
 
               <button 
-                onClick={handleNavigation}
+                type="button"
+                onClick={(e) => handleSelectFree(e)}
                 className={`w-full py-4 rounded-2xl font-bold transition-all duration-300 border cursor-pointer ${
                   selectedPlan === "free"
                     ? "bg-white text-black border-white hover:bg-gray-200"
                     : "bg-[#1a1a1a] text-gray-300 border-[#333333] hover:bg-[#222]"
                 }`}
               >
-                Current Plan
+                Continue with Free
               </button>
             </div>
 
-            {/* YEARLY SUBSCRIPTION PLAN */}
-            {plans.map((plan) => (
-              <div 
-                key={plan.id}
-                onClick={() => setSelectedPlan("yearly")}
-                className={`relative bg-[#121212] border-2 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden shadow-2xl ${
-                  selectedPlan === "yearly" 
-                    ? "border-[#EB712B] shadow-[#EB712B]/10 scale-[1.02]" 
-                    : "border-[#262626] hover:border-[#EB712B]/50 hover:scale-[1.01]"
-                }`}
-              >
-                {/* Animated Glow Accent / Popular Tag */}
-                <div className="absolute top-0 right-8 flex items-center gap-2">
-                  <span className="animate-pulse bg-[#EB712B] text-white text-[9px] font-extrabold px-3 py-1 rounded-b-lg uppercase tracking-wider shadow-md">
-                    Save 20%
-                  </span>
-                </div>
+            {/* PAID SUBSCRIPTION PLAN(S) */}
+            {paidPlans.map((plan: any) => {
+              const planFeatures = getPlanFeatures(plan);
+              const isSelected = selectedPlan === String(plan.id) || selectedPlan === "yearly";
 
-                <div>
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="text-[10px] font-extrabold text-[#EB712B] uppercase tracking-widest block bg-[#EB712B]/10 px-3 py-1 rounded-md">
-                      Elite Performance
-                    </span>
-                    <div className="flex gap-1.5 text-[#EB712B] bg-[#1a1a1a] p-2 rounded-xl border border-[#262626]">
-                      <Car className="w-5 h-5" /> 
-                      <Crown className="w-5 h-5" />
-                    </div>
-                  </div>
-                  
-                  <h2 className="text-2xl font-black mb-1 tracking-tight">{plan.name}</h2>
-                  <div className="flex items-baseline gap-1 mb-6">
-                    <span className="text-5xl font-black tracking-tighter">${parseFloat(plan.price).toFixed(0)}</span>
-                    <span className="text-gray-500 text-sm font-semibold">/{plan.billingInterval || "year"}</span>
-                  </div>
-
-                  <ul className="space-y-4 mb-8">
-                    <li className="flex items-center gap-3 text-sm font-medium text-gray-200">
-                      <span className="w-6 h-6 rounded-full bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] shrink-0">
-                        <Check className="w-4 h-4" />
-                      </span>
-                      Unlimited Marketplace listings
-                    </li>
-                    <li className="flex items-center gap-3 text-sm font-medium text-gray-200">
-                      <span className="w-6 h-6 rounded-full bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] shrink-0">
-                        <Check className="w-4 h-4" />
-                      </span>
-                      Advanced Performance Analytics
-                    </li>
-                    <li className="flex items-center gap-3 text-sm font-medium text-gray-200">
-                      <span className="w-6 h-6 rounded-full bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] shrink-0">
-                        <Check className="w-4 h-4" />
-                      </span>
-                      Verified Pro Badge
-                    </li>
-                    <li className="flex items-center gap-3 text-sm font-medium text-gray-200">
-                      <span className="w-6 h-6 rounded-full bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] shrink-0">
-                        <Check className="w-4 h-4" />
-                      </span>
-                      Early Gear Drops
-                    </li>
-                    <li className="flex items-center gap-3 text-sm font-medium text-gray-200">
-                      <span className="w-6 h-6 rounded-full bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] shrink-0">
-                        <Check className="w-4 h-4" />
-                      </span>
-                      Live Performance Streaming
-                    </li>
-                  </ul>
-                </div>
-
-                <button 
-                  onClick={handleNavigation}
-                  disabled={isCheckoutLoading}
-                  className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] border-0 outline-none disabled:opacity-50"
+              return (
+                <div 
+                  key={plan.id}
+                  onClick={() => setSelectedPlan(String(plan.id))}
+                  className={`relative bg-[#121212] border-2 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden shadow-2xl ${
+                    isSelected 
+                      ? "border-[#EB712B] shadow-[#EB712B]/10 scale-[1.02]" 
+                      : "border-[#262626] hover:border-[#EB712B]/50 hover:scale-[1.01]"
+                  }`}
                 >
-                  {isCheckoutLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>Upgrade to Pro <span className="text-lg leading-none mt-0.5">→</span></>
-                  )}
-                </button>
-              </div>
-            ))}
+                  {/* Animated Glow Accent / Popular Tag */}
+                  <div className="absolute top-0 right-8 flex items-center gap-2">
+                    <span className="animate-pulse bg-[#EB712B] text-white text-[9px] font-extrabold px-3 py-1 rounded-b-lg uppercase tracking-wider shadow-md">
+                      Save 20%
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-start mb-4">
+                      <span className="text-[10px] font-extrabold text-[#EB712B] uppercase tracking-widest block bg-[#EB712B]/10 px-3 py-1 rounded-md">
+                        Elite Performance
+                      </span>
+                      <div className="flex gap-1.5 text-[#EB712B] bg-[#1a1a1a] p-2 rounded-xl border border-[#262626]">
+                        <Car className="w-5 h-5" /> 
+                        <Crown className="w-5 h-5" />
+                      </div>
+                    </div>
+                    
+                    <h2 className="text-2xl font-black mb-1 tracking-tight">{plan.name}</h2>
+                    {plan.description && (
+                      <p className="text-gray-400 text-xs mb-3 font-medium">{plan.description}</p>
+                    )}
+                    <div className="flex items-baseline gap-1 mb-6">
+                      <span className="text-5xl font-black tracking-tighter">${parseFloat(plan.price || '0').toFixed(0)}</span>
+                      <span className="text-gray-500 text-sm font-semibold">/{plan.billingInterval || "year"}</span>
+                    </div>
+
+                    <ul className="space-y-4 mb-8">
+                      {planFeatures.map((feat: string, idx: number) => (
+                        <li key={idx} className="flex items-center gap-3 text-sm font-medium text-gray-200">
+                          <span className="w-6 h-6 rounded-full bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] shrink-0">
+                            <Check className="w-4 h-4" />
+                          </span>
+                          {feat}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <button 
+                    type="button"
+                    onClick={(e) => handleSelectPaidPlan(e, plan)}
+                    disabled={subscribingId !== null}
+                    className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] border-0 outline-none disabled:opacity-50"
+                  >
+                    {subscribingId === plan.id ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>Upgrade to Pro <span className="text-lg leading-none mt-0.5">→</span></>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
 
           </div>
         )}

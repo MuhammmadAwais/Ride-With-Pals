@@ -10,6 +10,36 @@ import {
 } from '@/features/subscriptions/api/subscriptionApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 
+const getPlanFeatures = (plan: any): string[] => {
+  if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
+    return plan.features;
+  }
+  const list: string[] = [];
+  if (plan.config?.marketplaceItems) {
+    list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
+  } else {
+    list.push("Unlimited Marketplace Listings");
+  }
+  if (plan.config?.numberOfRides) {
+    list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+  } else {
+    list.push("Unlimited Group Rides & Events");
+  }
+  if (plan.config?.unlimitedClubMembers) {
+    list.push("Unlimited Club Members");
+  } else {
+    list.push("Unlimited Club Members");
+  }
+  if (plan.config?.clubStripeIntegration) {
+    list.push("Stripe Direct Payout Integrations");
+  } else {
+    list.push("Stripe Direct Payout Integrations");
+  }
+  list.push("Advanced Analytics & Reporting");
+  list.push("Verified Pro Badge");
+  return Array.from(new Set(list));
+};
+
 const Subscription = () => {
   const navigate = useNavigate();
   const { clubId: clubIdStr } = useActiveClub();
@@ -36,9 +66,12 @@ const Subscription = () => {
   // 4. Customer Portal mutation
   const [clubCustomerPortal, { isLoading: isOpeningPortal }] = useClubCustomerPortalMutation();
 
-  const handleCheckout = async (planId: number) => {
+  const handleCheckout = async (e: React.MouseEvent, planId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!clubId) {
-      toast.error("No club selected.");
+      toast.error("Please create or select a club first before upgrading.");
+      navigate("/club-profile-setup");
       return;
     }
 
@@ -51,7 +84,7 @@ const Subscription = () => {
         cancelUrl: `${origin}/view/clubside/subscription`,
       }).unwrap();
 
-      if (res?.checkoutUrl) {
+      if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
         window.location.href = res.checkoutUrl;
       } else {
         toast.error("Could not initiate checkout.");
@@ -240,16 +273,11 @@ const Subscription = () => {
                   </div>
                   
                   <div className="text-4xl font-bold text-text-main mb-8">
-                    ${plan.price} <span className="text-sm text-text-muted font-medium">/ {plan.billingInterval || "year"}</span>
+                    ${parseFloat(plan.price || '0').toFixed(0)} <span className="text-sm text-text-muted font-medium">/ {plan.billingInterval || "year"}</span>
                   </div>
                   
                   <div className="space-y-4 mb-8 flex-grow">
-                    {[
-                      plan.config?.unlimitedItemInMarketplace && "Unlimited Marketplace Items",
-                      plan.config?.unlimitedClubMembers && "Unlimited Club Members",
-                      plan.config?.clubStripeIntegration && "Stripe Direct Payout Integrations",
-                      plan.config?.unlimitedRides && "Unlimited Group Rides & Events",
-                    ].filter(Boolean).map((feat, i) => (
+                    {getPlanFeatures(plan).map((feat, i) => (
                       <div key={i} className="flex items-center gap-3 text-sm text-text-main">
                         <Check size={18} className="text-[#EB712B]" /> {feat}
                       </div>
@@ -258,6 +286,7 @@ const Subscription = () => {
                   
                   {isPlanActive ? (
                     <button 
+                      type="button"
                       onClick={handleOpenPortal}
                       disabled={isOpeningPortal}
                       className="w-full bg-[#EB712B] text-white py-4 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 border-0 cursor-pointer outline-none"
@@ -267,7 +296,8 @@ const Subscription = () => {
                     </button>
                   ) : (
                     <button 
-                      onClick={() => handleCheckout(plan.id)} 
+                      type="button"
+                      onClick={(e) => handleCheckout(e, plan.id)} 
                       disabled={isStartingCheckout}
                       className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-[0_10px_20px_-10px_rgba(235,113,43,0.5)] flex items-center justify-center gap-2 border-0 cursor-pointer outline-none disabled:opacity-50"
                     >

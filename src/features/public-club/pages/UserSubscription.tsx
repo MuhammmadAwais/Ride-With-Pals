@@ -1,4 +1,4 @@
-import  { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Check, Crown, ArrowLeft, Loader2, ExternalLink, PartyPopper } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -10,6 +10,29 @@ import {
   useSubscribeToAnyPlanMutation,
   useLazyCreateCustomerPortalQuery,
 } from '@/features/subscriptions/api/subscriptionApiSlice';
+
+const getPlanFeatures = (plan: any): string[] => {
+  if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
+    return plan.features;
+  }
+  const list: string[] = [];
+  if (plan.config?.marketplaceItems) {
+    list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
+  } else {
+    list.push("Unlimited Marketplace Listings");
+  }
+  if (plan.config?.numberOfRides) {
+    list.push(`Up to ${plan.config.numberOfRides} Rides`);
+  } else {
+    list.push("Unlimited Group Rides & Events");
+  }
+  if (plan.config?.premiumChat) {
+    list.push("Premium Chat Features");
+  }
+  list.push("Advanced Performance Analytics");
+  list.push("Verified Pro Badge");
+  return Array.from(new Set(list));
+};
 
 const UserSubscription = () => {
   const navigate = useNavigate();
@@ -35,7 +58,9 @@ const UserSubscription = () => {
   // 4. Customer Portal mutation (lazy query)
   const [createCustomerPortal, { isFetching: isOpeningPortal }] = useLazyCreateCustomerPortalQuery();
 
-  const handleCheckout = async (planId: number) => {
+  const handleCheckout = async (e: React.MouseEvent, planId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
       const origin = window.location.origin;
       const res = await subscribeToPlan({ 
@@ -44,7 +69,7 @@ const UserSubscription = () => {
         cancelUrl: `${origin}/view/userside/subscription?cancel=true`
       }).unwrap();
 
-      if (res?.checkoutUrl) {
+      if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
         window.location.href = res.checkoutUrl;
       } else {
         toast.error("Could not initiate checkout.");
@@ -235,15 +260,11 @@ const UserSubscription = () => {
                   </div>
                   
                   <div className="text-4xl font-bold text-text-main mb-8">
-                    ${plan.price} <span className="text-sm text-text-muted font-medium">/ {plan.billingInterval || "month"}</span>
+                    ${parseFloat(plan.price || '0').toFixed(0)} <span className="text-sm text-text-muted font-medium">/ {plan.billingInterval || "month"}</span>
                   </div>
                   
                   <div className="space-y-4 mb-8 flex-grow">
-                    {[
-                      plan.config?.marketplaceItems ? `Up to ${plan.config.marketplaceItems} Marketplace Items` : "Unlimited Marketplace Items",
-                      plan.config?.numberOfRides ? `Up to ${plan.config.numberOfRides} Rides` : "Unlimited Rides",
-                      plan.config?.premiumChat && "Premium Chat Features",
-                    ].filter(Boolean).map((feat, i) => (
+                    {getPlanFeatures(plan).map((feat, i) => (
                       <div key={i} className="flex items-center gap-3 text-sm text-text-main">
                         <Check size={18} className="text-[#EB712B]" /> {feat}
                       </div>
@@ -252,6 +273,7 @@ const UserSubscription = () => {
                   
                   {isPlanActive ? (
                     <button 
+                      type="button"
                       onClick={handleOpenPortal}
                       disabled={isOpeningPortal}
                       className="w-full bg-[#EB712B] text-white py-4 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 border-0 cursor-pointer outline-none"
@@ -261,9 +283,10 @@ const UserSubscription = () => {
                     </button>
                   ) : (
                     <button 
-                      onClick={() => handleCheckout(plan.id)} 
+                      type="button"
+                      onClick={(e) => handleCheckout(e, plan.id)} 
                       disabled={isStartingCheckout}
-                      className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-[0_10px_20px_-10px_rgba(235,113,43,0.5)] flex items-center justify-center gap-2 border-0 cursor-pointer outline-none disabled:opacity-50"
+                      className="w-full bg-main-bg hover:bg-[#EB712B] text-text-main hover:text-white py-4 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 border border-border hover:border-[#EB712B] cursor-pointer outline-none"
                     >
                       {isStartingCheckout && <Loader2 size={16} className="animate-spin" />}
                       Subscribe Now

@@ -57,10 +57,20 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
   const handleSubscribe = async (plan: any) => {
     setSubscribingId(plan.id);
     try {
-      await subscribe({
+      const origin = window.location.origin;
+      const res: any = await subscribe({
         clubId: Number(clubId),
         planId: plan.id,
-      }).unwrap();
+        successUrl: `${origin}/view/userside/club/${clubId}`,
+        cancelUrl: `${origin}/view/userside/club/${clubId}`,
+      } as any).unwrap();
+
+      const checkoutUrl = res?.checkoutUrl || res?.url || res?.response?.checkoutUrl || res?.response?.url;
+      if (typeof checkoutUrl === 'string' && checkoutUrl.startsWith('http')) {
+        window.location.href = checkoutUrl;
+        return;
+      }
+
       toast.success(`Successfully subscribed to ${plan.name}!`);
       refetchMyInfo();
     } catch (err: any) {
