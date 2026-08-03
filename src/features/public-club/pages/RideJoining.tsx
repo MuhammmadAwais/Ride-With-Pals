@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
-  ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, MapPin, Gauge, Navigation, ArrowRight, FileText
+  ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, MapPin, Gauge, Navigation,  FileText
 } from "lucide-react";
 import { toast } from "sonner";
 import { useGetRideInfoByIdQuery, useJoinRideMutation, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
