@@ -1110,8 +1110,19 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                       className="flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-hover border border-white/5" />
-                        <span className="text-sm font-semibold text-white">
+                        {(m as any).avatar ? (
+                          <img 
+                            src={(m as any).avatar} 
+                            alt={m.name} 
+                            className="w-9 h-9 rounded-full object-cover border border-[#EB712B]/30 shrink-0" 
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full bg-[#EB712B]/15 border border-[#EB712B]/30 flex items-center justify-center font-bold text-xs text-[#EB712B] uppercase shrink-0 shadow-sm">
+                            {m.name.split(' ').map((n) => n[0]).join('').substring(0, 2)}
+                          </div>
+                        )}
+                        <span className="text-sm font-semibold text-text-main">
                           {m.name}
                         </span>
                         {m.isAdmin && (

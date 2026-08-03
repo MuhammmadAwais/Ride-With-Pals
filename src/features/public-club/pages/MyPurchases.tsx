@@ -5,6 +5,16 @@ import type { Column } from "@/components/ui/DataTable";
 import { useGetMyPurchasesListQuery, useUpdateShopOrderStatusMutation } from '@/features/club/api/shopOrderApiSlice';
 import { toast } from 'sonner';
 
+const formatItemImage = (img?: string | null): string => {
+  if (!img || img === 'null' || img.trim() === '') return '/Images/HelmetImage4.jpg';
+  if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:')) return img;
+  if (img.startsWith('/')) {
+    if (img.startsWith('/Images/')) return img;
+    return `https://api.ridewithpals.com${img}`;
+  }
+  return `https://api.ridewithpals.com/uploads/${img}`;
+};
+
 const MyPurchases = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [cancellingId, setCancellingId] = useState<string | null>(null);
@@ -30,16 +40,19 @@ const MyPurchases = () => {
 
   const purchases = useMemo(() => {
     const rows = purchasesResponse?.rows || [];
-    const mapped = rows.map((item) => ({
-      id: item.id?.toString() || Math.random().toString(),
-      product: item.shop?.name || 'Unknown Item',
-      category: item.shop?.size || 'Gear',
-      price: item.totalPrice ? `$${parseFloat(item.totalPrice).toFixed(2)}` : '$0.00',
-      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
-      status: item.statusName || 'Processing',
-      img: item.shop?.image || '/Images/CycleImage.png',
-      canCancel: !['Delivered', 'Cancelled'].includes(item.statusName || ''),
-    }));
+    const mapped = rows.map((item) => {
+      const rawImg = item.shop?.image || (item as any).shopItem?.image || (item as any).image;
+      return {
+        id: item.id?.toString() || Math.random().toString(),
+        product: item.shop?.name || (item as any).shopItem?.name || 'Gear Item',
+        category: item.shop?.size || (item as any).shopItem?.size || 'Gear',
+        price: item.totalPrice ? `$${parseFloat(item.totalPrice).toFixed(2)}` : '$0.00',
+        date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
+        status: item.statusName || 'Processing',
+        img: formatItemImage(rawImg),
+        canCancel: !['Delivered', 'Cancelled'].includes(item.statusName || ''),
+      };
+    });
 
     if (!searchQuery) return mapped;
 
@@ -58,7 +71,14 @@ const MyPurchases = () => {
       sortable: true,
       render: (item) => (
         <div className="flex items-center gap-4">
-          <img src={item.img} alt={item.product} className="w-12 h-12 rounded-xl object-cover bg-surface border border-border" />
+          <img 
+            src={item.img} 
+            alt={item.product} 
+            className="w-12 h-12 rounded-xl object-cover bg-surface border border-border shrink-0 shadow-sm"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = '/Images/HelmetImage4.jpg';
+            }}
+          />
           <div>
             <div className="font-bold text-sm text-text-main">{item.product}</div>
             <div className="text-[10px] uppercase tracking-wider text-text-muted font-bold">{item.category}</div>

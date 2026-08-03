@@ -11,23 +11,23 @@ import {
   EyeOff,
   Trash2,
 } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { toast } from "sonner";
 import { useGetTheShopItemsQuery, useDeleteShopItemMutation } from "@/features/club/api/shopApiSlice";
+import { useForClubOwnerOrderListQuery } from "@/features/club/api/shopOrderApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 
-const chartData: any[] = [];
+const formatProductImage = (img?: string | null): string => {
+  if (!img || img === 'null' || img.trim() === '') return '/Images/BottleImage.png';
+  if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:')) return img;
+  if (img.startsWith('/')) {
+    if (img.startsWith('/Images/')) return img;
+    return `https://api.ridewithpals.com${img}`;
+  }
+  return `https://api.ridewithpals.com/uploads/${img}`;
+};
 
 interface ProductType {
   id: number;
@@ -56,24 +56,46 @@ const Product = () => {
     { skip: !clubId }
   );
 
+  const { data: ordersData } = useForClubOwnerOrderListQuery(
+    { clubId, limit: 50, offset: 0 },
+    { skip: !clubId }
+  );
+
   const [deleteShopItem] = useDeleteShopItemMutation();
 
   const products = useMemo<ProductType[]>(() => {
     const rows = shopData?.rows || [];
-    return rows.map((p) => ({
-      id: p.id,
-      name: p.name || "Unnamed Item",
-      sku: `SKU-${p.id}`,
-      code: `PROD-${p.id}`,
-      category: p.size || "General",
-      price: p.price?.toString() || "0.00",
-      status: p.isActive ? "IN STOCK" : "LIMITED",
-      image: p.image || "/Images/BottleImage.png",
-      gallery: p.image ? [p.image] : ["/Images/BottleImage.png"],
-      units: 0,
-      sales: "0"
-    }));
+    return rows.map((p) => {
+      const formattedImg = formatProductImage(p.image);
+      return {
+        id: p.id,
+        name: p.name || "Unnamed Item",
+        sku: `SKU-${p.id}`,
+        code: `PROD-${p.id}`,
+        category: p.size || "General",
+        price: p.price?.toString() || "0.00",
+        status: p.isActive ? "IN STOCK" : "LIMITED",
+        image: formattedImg,
+        gallery: [formattedImg],
+        units: 0,
+        sales: "0"
+      };
+    });
   }, [shopData]);
+
+  const activeOrdersCount = useMemo(() => {
+    const rows = ordersData?.rows || [];
+    return rows.filter((r) => r.statusName !== 'Cancelled' && r.statusName !== 'Delivered').length;
+  }, [ordersData]);
+
+  const pendingAuditCount = useMemo(() => {
+    const rows = ordersData?.rows || [];
+    return rows.filter((r) => r.statusName === 'Pending' || r.statusName === 'Processing').length;
+  }, [ordersData]);
+
+  const totalCatalogValue = useMemo(() => {
+    return products.reduce((acc, p) => acc + (parseFloat(p.price) || 0), 0).toFixed(2);
+  }, [products]);
 
   const handleDelete = async (id: number) => {
     try {
@@ -338,63 +360,54 @@ const Product = () => {
         {isLoading ? <TableSkeleton /> : <DataTable data={products} columns={columns} />}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 bg-surface p-4 md:p-6 rounded-2xl border border-border h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <XAxis
-                dataKey="name"
-                stroke="#888"
-                fontSize={10}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                stroke="#888"
-                fontSize={10}
-                axisLine={false}
-                tickLine={false}
-              />
-              <CartesianGrid
-                stroke="#333"
-                strokeDasharray="3 3"
-                vertical={false}
-              />
-              <Tooltip
-                contentStyle={{ backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)", color: "var(--color-text-main)" }}
-                itemStyle={{ color: "var(--color-text-main)" }}
-              />
-              <Line
-                type="monotone"
-                dataKey="val1"
-                stroke="#EB712B"
-                strokeWidth={3}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="val2"
-                stroke="#8884d8"
-                strokeWidth={3}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 bg-surface p-6 rounded-2xl border border-border shadow-xl flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between border-b border-border pb-4 mb-4">
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-text-main">Catalog & Inventory Summary</h3>
+              <span className="text-[10px] font-extrabold bg-[#EB712B]/10 text-[#EB712B] px-3 py-1 rounded-full border border-[#EB712B]/20">
+                Live Data
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-4 text-center py-2">
+              <div className="bg-hover p-4 rounded-xl border border-border">
+                <p className="text-[10px] uppercase font-bold text-text-muted">Total Products</p>
+                <h4 className="text-xl md:text-2xl font-black text-text-main mt-1">{products.length}</h4>
+              </div>
+              <div className="bg-hover p-4 rounded-xl border border-border">
+                <p className="text-[10px] uppercase font-bold text-text-muted">Active Catalog Value</p>
+                <h4 className="text-xl md:text-2xl font-black text-[#EB712B] mt-1">${totalCatalogValue}</h4>
+              </div>
+              <div className="bg-hover p-4 rounded-xl border border-border">
+                <p className="text-[10px] uppercase font-bold text-text-muted">Total Club Orders</p>
+                <h4 className="text-xl md:text-2xl font-black text-text-main mt-1">{ordersData?.count || 0}</h4>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-text-muted mt-4">
+            Manage your club's official apparel, gear, and merchandise listings. Active orders are synced directly with your club shop orders API.
+          </p>
         </div>
+
         <div className="flex flex-col gap-4">
-          <div className="bg-surface p-6 rounded-2xl border border-[#EB712B]/50 flex justify-between items-center shadow-lg">
+          <div className="bg-surface p-6 rounded-2xl border border-[#EB712B]/30 flex justify-between items-center shadow-lg hover:border-[#EB712B]/60 transition-all">
             <div>
               <p className="text-text-muted text-xs uppercase font-bold">Active Orders</p>
-              <h3 className="text-2xl md:text-3xl font-bold mt-2 text-text-main">124</h3>
+              <h3 className="text-2xl md:text-3xl font-bold mt-1 text-text-main">{activeOrdersCount}</h3>
             </div>
-            <ShoppingCart className="text-[#EB712B]" size={24} />
+            <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center">
+              <ShoppingCart className="text-[#EB712B]" size={22} />
+            </div>
           </div>
-          <div className="bg-surface p-6 rounded-2xl border border-green-500/50 flex justify-between items-center shadow-lg">
+
+          <div className="bg-surface p-6 rounded-2xl border border-emerald-500/30 flex justify-between items-center shadow-lg hover:border-emerald-500/60 transition-all">
             <div>
               <p className="text-text-muted text-xs uppercase font-bold">Pending Audit</p>
-              <h3 className="text-2xl md:text-3xl font-bold mt-2 text-text-main">08</h3>
+              <h3 className="text-2xl md:text-3xl font-bold mt-1 text-text-main">{pendingAuditCount.toString().padStart(2, '0')}</h3>
             </div>
-            <ClipboardCheck className="text-green-500" size={24} />
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+              <ClipboardCheck className="text-emerald-500" size={22} />
+            </div>
           </div>
         </div>
       </div>

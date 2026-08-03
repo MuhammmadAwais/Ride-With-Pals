@@ -258,7 +258,7 @@ const RideJoining = () => {
       }
 
       if (error?.status === 403 || error?.data?.message?.toLowerCase().includes("private")) {
-        toast.error("This is a private activity! You must join the club first.");
+        toast.error("You must join the club first. Incase if you already a member subscribe to membership of this club.");
         if (rideDetails?.clubId) {
           navigate(`/view/userside/club/${rideDetails.clubId}`);
         }
@@ -346,7 +346,7 @@ const RideJoining = () => {
           <MapContainer 
             center={startCoords} 
             zoom={13} 
-            scrollWheelZoom={false}
+            scrollWheelZoom={true}
             style={{ height: "100%", width: "100%", background: "#1a1a1a" }}
           >
             <TileLayer
@@ -497,7 +497,7 @@ const RideJoining = () => {
             </label>
           </div>
 
-          {/* Swipe to Join Activity Button */}
+          {/* Click to Join Activity Button */}
           <button 
             onClick={() => {
               if (!acceptTerms && !isJoined) {
@@ -507,17 +507,17 @@ const RideJoining = () => {
               handleJoinClick();
             }}
             disabled={isJoined}
-            className={`w-full py-4 px-3 rounded-full font-extrabold text-xs md:text-sm flex items-center justify-between transition-all duration-300 shadow-[0_10px_30px_rgba(235,113,43,0.25)] tracking-wide text-white cursor-pointer ${
+            className={`w-full py-4 px-3 rounded-full font-extrabold text-xs md:text-sm flex items-center justify-between transition-all duration-300 tracking-wide text-white cursor-pointer ${
               isJoined 
                 ? "bg-emerald-600 cursor-not-allowed opacity-90" 
                 : "bg-[#2A2A2A] hover:bg-[#333333] border border-[#3A3A3A]"
             }`}
           >
             <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${isJoined ? "bg-emerald-500" : "bg-[#EB712B]"}`}>
-              {isJoined ? <CheckCircle2 size={20} /> : <ArrowRight size={20} />}
+              {<CheckCircle2 size={20} /> }
             </div>
             <span className="flex-1 text-center pr-11 font-extrabold tracking-tight">
-              {isJoined ? "✓ You Have Joined This Activity" : "Swipe to Join Activity"}
+              {isJoined ? "✓ You Have Joined This Activity" : "Click to Join Activity"}
             </span>
           </button>
         </div>
@@ -593,7 +593,7 @@ const RideJoining = () => {
 
       {/* Terms & Conditions Modal */}
       {showTermsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
           <div 
             className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
             onClick={() => setShowTermsModal(false)}
@@ -656,7 +656,7 @@ const RideJoining = () => {
 
       {/* Slide-Over Roster Directory Drawer */}
       {isRosterOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-[99999] flex justify-end">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in cursor-pointer"

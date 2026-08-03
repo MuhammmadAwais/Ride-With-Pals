@@ -28,6 +28,17 @@ import {
   useMarkAsReadNotificationsMutation,
 } from '@/features/notifications/api/notificationApiSlice';
 
+const formatClubLogo = (club: any): string => {
+  const img = club?.logo || club?.logoUrl || club?.coverImage || club?.image;
+  if (!img || img === 'null' || img.trim() === '') return '';
+  if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:')) return img;
+  if (img.startsWith('/')) {
+    if (img.startsWith('/Images/')) return img;
+    return `https://api.ridewithpals.com${img}`;
+  }
+  return `https://api.ridewithpals.com/uploads/${img}`;
+};
+
 export interface NavbarProps {
   onMenuClick: () => void;
   pageTitle?: string;
@@ -315,18 +326,28 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard', o
 
       {/* Right Actions: Theme Toggle, Notifications, Switch Club */}
       <div className="flex items-center gap-1 sm:gap-2">
-        {isClubSide && activeClub && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface border border-border mr-1 sm:mr-2">
-            {activeClub.logo ? (
-              <img src={activeClub.logo} alt="Club" className="w-5 h-5 rounded-full object-cover border border-border" />
-            ) : (
-              <Building2 size={16} className="text-text-muted" />
-            )}
-            <span className="text-xs font-bold text-text-main max-w-[100px] sm:max-w-[150px] truncate">
-              {activeClub.clubName}
-            </span>
-          </div>
-        )}
+        {isClubSide && activeClub && (() => {
+          const logoSrc = formatClubLogo(activeClub);
+          return (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface border border-border mr-1 sm:mr-2">
+              {logoSrc ? (
+                <img 
+                  src={logoSrc} 
+                  alt="Club" 
+                  className="w-5 h-5 rounded-full object-cover border border-border"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = 'none';
+                  }} 
+                />
+              ) : (
+                <Building2 size={16} className="text-text-muted" />
+              )}
+              <span className="text-xs font-bold text-text-main max-w-[100px] sm:max-w-[150px] truncate">
+                {activeClub.clubName}
+              </span>
+            </div>
+          );
+        })()}
 
         {isClubSide && myClubs.length > 1 && onSwitchClubClick && (
           <button
