@@ -8,33 +8,52 @@ import {
   useSubscribeToAnyPlanMutation,
 } from "@/features/subscriptions/api/subscriptionApiSlice";
 
+const formatPlanPrice = (price: any): string => {
+  const num = parseFloat(String(price || '0'));
+  if (isNaN(num)) return '0';
+  if (num >= 500 && num % 100 === 0) {
+    return (num / 100).toFixed(0);
+  }
+  return num.toFixed(0);
+};
+
 const getPlanFeatures = (plan: any): string[] => {
   if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
     return plan.features;
   }
   const list: string[] = [];
-  if (plan.config?.marketplaceItems) {
+  if (plan.config?.unlimitedItemInMarketplace || plan.config?.unlimitedMarketplace) {
+    list.push("Unlimited Marketplace Listings");
+  } else if (plan.config?.marketplaceItems) {
     list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
-  } else if (plan.config?.unlimitedItemInMarketplace || plan.config?.unlimitedMarketplace) {
-    list.push("Unlimited Marketplace listings");
   } else {
-    list.push("Unlimited Marketplace listings");
+    list.push("Unlimited Marketplace Listings");
   }
-  if (plan.config?.numberOfRides) {
-    list.push(`Up to ${plan.config.numberOfRides} Rides`);
+  if (plan.config?.unlimitedRides || plan.config?.numberOfRides) {
+    if (plan.config.unlimitedRides) {
+      list.push("Unlimited Group Rides & Events");
+    } else {
+      list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+    }
   } else {
     list.push("Unlimited Group Rides & Events");
   }
   if (plan.config?.unlimitedClubMembers) {
     list.push("Unlimited Club Members");
+  } else {
+    list.push("Up to 50 Club Members");
   }
   if (plan.config?.clubStripeIntegration) {
     list.push("Stripe Direct Payout Integrations");
   }
+  if (plan.config?.paidActivities) {
+    list.push("Paid Activities & Ticketing");
+  }
+  if (plan.config?.stravaConnection) {
+    list.push("Strava & GPS Route Syncing");
+  }
   list.push("Advanced Performance Analytics");
   list.push("Verified Pro Badge");
-  list.push("Early Gear Drops");
-  list.push("Live Performance Streaming");
   return Array.from(new Set(list));
 };
 
@@ -51,7 +70,7 @@ const AuthSubscription = () => {
   const [subscribeToAnyPlan] = useSubscribeToAnyPlanMutation();
 
   const paidPlans = plans.filter(
-    (p: any) => parseFloat(p.price || '0') > 0 && !p.name?.toLowerCase().includes('free')
+    (p: any) => parseFloat(String(p.price || '0')) > 0 && !p.name?.toLowerCase().includes('free')
   );
 
   const handleSelectFree = (e?: React.MouseEvent) => {
@@ -59,6 +78,7 @@ const AuthSubscription = () => {
       e.preventDefault();
       e.stopPropagation();
     }
+    sessionStorage.setItem('selected_subscription_plan', 'free');
     if (user?.role === 'owner' || user?.role === 'organizer') {
       navigate("/club-profile-setup");
     } else {
@@ -66,11 +86,29 @@ const AuthSubscription = () => {
     }
   };
 
-  const handleSelectPaidPlan = async (e: React.MouseEvent, plan: any) => {
+  const handleContinueWithPlan = (e: React.MouseEvent, plan: any) => {
     e.preventDefault();
     e.stopPropagation();
     if (!plan || !plan.id) return;
-    if (parseFloat(plan.price || '0') === 0) {
+    if (parseFloat(String(plan.price || '0')) === 0) {
+      handleSelectFree();
+      return;
+    }
+    // Save selected plan and continue onboarding without forcing Stripe redirect
+    sessionStorage.setItem('selected_subscription_plan', String(plan.id));
+    toast.success(`Selected ${plan.name} plan!`);
+    if (user?.role === 'owner' || user?.role === 'organizer') {
+      navigate("/club-profile-setup");
+    } else {
+      navigate("/create-profile");
+    }
+  };
+
+  const handleStripeCheckout = async (e: React.MouseEvent, plan: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!plan || !plan.id) return;
+    if (parseFloat(String(plan.price || '0')) === 0) {
       handleSelectFree();
       return;
     }
@@ -125,7 +163,7 @@ const AuthSubscription = () => {
               onClick={() => setSelectedPlan("free")}
               className={`bg-[#121212] border rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 cursor-pointer relative overflow-hidden ${
                 selectedPlan === "free" 
-                  ? "border-gray-500 shadow-xl shadow-white/5 scale-[1.02]" 
+                  ? "border-[#EB712B] shadow-xl shadow-[#EB712B]/10 scale-[1.02]" 
                   : "border-[#1f1f1f] hover:border-[#333333] hover:scale-[1.01]"
               }`}
             >
@@ -176,7 +214,7 @@ const AuthSubscription = () => {
                     : "bg-[#1a1a1a] text-gray-300 border-[#333333] hover:bg-[#222]"
                 }`}
               >
-                Continue with Free
+                Continue with Free →
               </button>
             </div>
 
@@ -218,7 +256,7 @@ const AuthSubscription = () => {
                       <p className="text-gray-400 text-xs mb-3 font-medium">{plan.description}</p>
                     )}
                     <div className="flex items-baseline gap-1 mb-6">
-                      <span className="text-5xl font-black tracking-tighter">${parseFloat(plan.price || '0').toFixed(0)}</span>
+                      <span className="text-5xl font-black tracking-tighter">${formatPlanPrice(plan.price)}</span>
                       <span className="text-gray-500 text-sm font-semibold">/{plan.billingInterval || "year"}</span>
                     </div>
 
@@ -234,18 +272,27 @@ const AuthSubscription = () => {
                     </ul>
                   </div>
 
-                  <button 
-                    type="button"
-                    onClick={(e) => handleSelectPaidPlan(e, plan)}
-                    disabled={subscribingId !== null}
-                    className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] border-0 outline-none disabled:opacity-50"
-                  >
-                    {subscribingId === plan.id ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>Upgrade to Pro <span className="text-lg leading-none mt-0.5">→</span></>
-                    )}
-                  </button>
+                  <div className="space-y-2.5">
+                    <button 
+                      type="button"
+                      onClick={(e) => handleContinueWithPlan(e, plan)}
+                      className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] border-0 outline-none"
+                    >
+                      Select Plan & Continue →
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => handleStripeCheckout(e, plan)}
+                      disabled={subscribingId !== null}
+                      className="w-full py-2.5 bg-transparent text-gray-400 hover:text-white rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border border-white/10 hover:border-white/20 flex items-center justify-center gap-1.5"
+                    >
+                      {subscribingId === plan.id ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        "Pay Now with Stripe"
+                      )}
+                    </button>
+                  </div>
                 </div>
               );
             })}

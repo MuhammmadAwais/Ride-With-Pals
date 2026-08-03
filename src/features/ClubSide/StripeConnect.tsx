@@ -35,13 +35,18 @@ const StripeConnect: React.FC = () => {
 
   const { data: stripeStatus, isLoading: isLoadingStatus } = useCheckStripeAccountStatusQuery(
     { clubId: clubId! },
-    { skip: !clubId || !permissions.isOwner }
+    { 
+      skip: !clubId || !permissions.isOwner,
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    }
   );
 
   const [connectStripe, { isLoading: isConnecting }] = useConnectStripeMutation();
 
-  const isConnected = stripeStatus?.connected || stripeStatus?.status === 'active';
-  const isRestricted = stripeStatus?.status === 'restricted';
+  const stripeData = (stripeStatus as any)?.response || stripeStatus || {};
+  const isConnected = Boolean(stripeData?.connected || stripeData?.status === 'active' || stripeData?.onboardingComplete || stripeData?.chargesEnabled || stripeData?.detailsSubmitted);
+  const isRestricted = stripeData?.status === 'restricted';
 
   const handleConnect = async () => {
     if (!clubId) return;

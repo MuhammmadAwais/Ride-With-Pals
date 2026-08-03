@@ -5,8 +5,10 @@ import {
   ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, MapPin, Gauge, Navigation, ArrowRight, FileText
 } from "lucide-react";
 import { toast } from "sonner";
-import { useGetRideInfoByIdQuery, useJoinRideMutation } from "@/features/club/api/clubApiSlice";
+import { useGetRideInfoByIdQuery, useJoinRideMutation, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { ClubService } from "@/features/club/services/clubService";
 
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -88,6 +90,20 @@ const RideJoining = () => {
   
   const [localJoined, setLocalJoined] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+
+  const { data: joinedClubsData } = useGetJoinedClubsQuery();
+  const joinedRows = joinedClubsData?.rows || [];
+  const { myClubs } = useAppSelector((s) => s.club);
+
+  const isClubMemberOrOwner = useMemo(() => {
+    if (!rideResponse) return false;
+    const cid = Number((rideResponse as any)?.clubId || (rideResponse as any)?.club?.id);
+    if (!cid) return false;
+    return (
+      joinedRows.some((c: any) => Number(c.id) === cid) ||
+      myClubs.some((c: any) => Number(c.id) === cid)
+    );
+  }, [rideResponse, joinedRows, myClubs]);
 
   const isJoined = Boolean((rideResponse as any)?.isJoined || localJoined);
 
@@ -213,8 +229,8 @@ const RideJoining = () => {
   }, [rideDetails]);
 
   const handleJoinClick = async () => {
-    if (rideDetails && !rideDetails.isPublic) {
-      toast.error("This is a private ride! Redirecting to the club...");
+    if (rideDetails && !rideDetails.isPublic && !isClubMemberOrOwner) {
+      toast.error("This is a private ride! You must join the club first.");
       if (rideDetails.clubId) {
         navigate(`/view/userside/club/${rideDetails.clubId}`);
       }
@@ -228,13 +244,26 @@ const RideJoining = () => {
       }
     } catch (error: any) {
       console.error("Failed to join ride:", error);
+      const isPrivateOrForbidden = error?.status === 403 || error?.data?.message?.toLowerCase().includes("private") || error?.data?.message?.toLowerCase().includes("club");
+      if (rideDetails?.clubId && (isPrivateOrForbidden || isClubMemberOrOwner)) {
+        try {
+          await ClubService.joinClub(Number(rideDetails.clubId));
+          await joinRide({ rideId: Number(id) }).unwrap();
+          setLocalJoined(true);
+          toast.success("Successfully joined the activity!");
+          return;
+        } catch (retryErr: any) {
+          console.error("Retry join ride after joinClub failed:", retryErr);
+        }
+      }
+
       if (error?.status === 403 || error?.data?.message?.toLowerCase().includes("private")) {
         toast.error("This is a private activity! You must join the club first.");
         if (rideDetails?.clubId) {
           navigate(`/view/userside/club/${rideDetails.clubId}`);
         }
       } else {
-        toast.error("Failed to join the activity or permission denied.");
+        toast.error(error?.data?.message || "Failed to join the activity.");
       }
     }
   };

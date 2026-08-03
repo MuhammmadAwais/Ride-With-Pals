@@ -9,6 +9,9 @@ export const stripeApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
         params,
       }),
+      transformResponse: (response: any) => {
+        return response?.response || response || {};
+      },
       invalidatesTags: ['Club'],
     }),
 
@@ -18,6 +21,10 @@ export const stripeApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
         params,
       }),
+      transformResponse: (response: any) => {
+        return response?.response || response || {};
+      },
+      keepUnusedDataFor: 0,
       providesTags: ['Club'],
     }),
   }),

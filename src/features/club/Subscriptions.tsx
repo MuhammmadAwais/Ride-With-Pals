@@ -10,30 +10,49 @@ import {
 } from "@/features/subscriptions/api/subscriptionApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 
+const formatPlanPrice = (price: any): string => {
+  const num = parseFloat(String(price || '0'));
+  if (isNaN(num)) return '0';
+  if (num >= 500 && num % 100 === 0) {
+    return (num / 100).toFixed(0);
+  }
+  return num.toFixed(0);
+};
+
 const getPlanFeatures = (plan: any): string[] => {
   if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
     return plan.features;
   }
   const list: string[] = [];
-  if (plan.config?.marketplaceItems) {
+  if (plan.config?.unlimitedItemInMarketplace || plan.config?.unlimitedMarketplace) {
+    list.push("Unlimited Marketplace Listings");
+  } else if (plan.config?.marketplaceItems) {
     list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
   } else {
     list.push("Unlimited Marketplace Listings");
   }
-  if (plan.config?.numberOfRides) {
-    list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+  if (plan.config?.unlimitedRides || plan.config?.numberOfRides) {
+    if (plan.config.unlimitedRides) {
+      list.push("Unlimited Group Rides & Events");
+    } else {
+      list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+    }
   } else {
     list.push("Unlimited Group Rides & Events");
   }
   if (plan.config?.unlimitedClubMembers) {
     list.push("Unlimited Club Members");
   } else {
-    list.push("Unlimited Club Members");
+    list.push("Up to 50 Club Members");
   }
   if (plan.config?.clubStripeIntegration) {
     list.push("Stripe Direct Payout Integrations");
-  } else {
-    list.push("Stripe Direct Payout Integrations");
+  }
+  if (plan.config?.paidActivities) {
+    list.push("Paid Activities & Ticketing");
+  }
+  if (plan.config?.stravaConnection) {
+    list.push("Strava & GPS Route Syncing");
   }
   list.push("Advanced Analytics & Reporting");
   list.push("Verified Pro Badge");
@@ -60,6 +79,16 @@ export default function Subscriptions() {
       e.preventDefault();
       e.stopPropagation();
     }
+    sessionStorage.setItem('selected_club_plan', 'free');
+    navigate("/club-profile-setup");
+  };
+
+  const handleContinueWithPlan = (e: React.MouseEvent, plan: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!plan || !plan.id) return;
+    sessionStorage.setItem('selected_club_plan', String(plan.id));
+    toast.success(`Selected ${plan.name} plan!`);
     navigate("/club-profile-setup");
   };
 
@@ -73,12 +102,9 @@ export default function Subscriptions() {
     }
 
     try {
-      const origin = window.location.origin;
       const res = await subscribeToClubPlan({
         clubId,
         planId,
-        successUrl: `${origin}/view/clubside/dashboard`,
-        cancelUrl: `${origin}/view/clubside/subscription`,
       }).unwrap();
 
       if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
@@ -189,7 +215,7 @@ export default function Subscriptions() {
                     <p className="text-gray-400 text-xs mt-1 font-medium">{plan.description}</p>
                   )}
                   <div className="flex items-baseline gap-2 mt-3">
-                    <h2 className="text-3xl font-bold text-white">${parseFloat(plan.price || '0').toFixed(0)}</h2>
+                    <h2 className="text-3xl font-bold text-white">${formatPlanPrice(plan.price)}</h2>
                     <span className="text-gray-500 text-xs">/ {plan.billingInterval || "year"}</span>
                   </div>
                 </div>
@@ -202,14 +228,25 @@ export default function Subscriptions() {
                   ))}
                 </ul>
 
-                <div className="pt-8 border-t border-white/10">
+                <div className="pt-8 border-t border-white/10 space-y-2.5">
+                  <button 
+                    type="button"
+                    onClick={(e) => handleContinueWithPlan(e, plan)} 
+                    className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)] border-0 outline-none cursor-pointer"
+                  >
+                    Select Plan & Continue <ArrowRight size={16} />
+                  </button>
                   <button 
                     type="button"
                     onClick={(e) => handleCheckout(e, plan.id)} 
                     disabled={isProcessing}
-                    className="w-full py-3 rounded-xl bg-[#EB712B] text-white text-sm font-semibold transition-all duration-300 hover:bg-[#d16226] flex items-center justify-center gap-2 shadow-[0_8px_16px_-4px_rgba(235,113,43,0.4)] disabled:opacity-50 border-0 outline-none cursor-pointer"
+                    className="w-full py-2.5 bg-transparent text-gray-400 hover:text-white rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border border-white/10 hover:border-white/20 flex items-center justify-center gap-1.5"
                   >
-                    {isProcessing ? "PROCESSING..." : "GO PREMIUM NOW"} <ArrowRight size={16} />
+                    {isProcessing ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      "Pay Now with Stripe"
+                    )}
                   </button>
                 </div>
               </div>

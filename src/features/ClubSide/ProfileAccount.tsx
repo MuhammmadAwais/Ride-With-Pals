@@ -277,21 +277,21 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
         {/* Header */}
         <div className="flex justify-between items-start mb-10">
           <div>
-            <h1 className="text-3xl md:text-4xl font-black mb-2 tracking-tight uppercase">
+            <h1 className="text-3xl md:text-4xl font-black mb-2 tracking-tight uppercase text-text-main">
               Profile <span className="text-[#EB712B]">&</span> Account
             </h1>
-            <p className="text-gray-500 dark:text-[#888] text-xs font-bold tracking-widest uppercase mt-2">
+            <p className="text-text-muted text-xs font-bold tracking-widest uppercase mt-2">
               Manage your personal information and application preferences
             </p>
           </div>
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center gap-2 bg-surface border border-white/5 px-4 py-2.5 rounded-xl text-xs font-bold hover:border-white/20 transition-all shadow-lg active:scale-95"
+            className="flex items-center gap-2 bg-surface border border-border px-4 py-2.5 rounded-xl text-xs font-bold text-text-main hover:border-[#EB712B]/40 transition-all shadow-lg active:scale-95 cursor-pointer"
           >
             {theme === "dark" ? (
               <Sun size={16} className="text-yellow-500" />
             ) : (
-              <Moon size={16} className="text-gray-400" />
+              <Moon size={16} className="text-[#EB712B]" />
             )}
             {theme === "dark" ? "Light Mode" : "Dark Mode"}
           </button>
@@ -305,34 +305,34 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-[#EB712B]/20 transition-all duration-700"></div>
             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <div className="w-24 h-24 rounded-3xl bg-main-bg flex items-center justify-center border-2 border-white/10 overflow-hidden shadow-xl shrink-0">
+                <div className="w-24 h-24 rounded-3xl bg-main-bg flex items-center justify-center border-2 border-border overflow-hidden shadow-xl shrink-0">
                   {userProfileData?.profileImage ? (
                     <img src={userProfileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <UserIcon size={40} className="text-gray-400" />
+                    <UserIcon size={40} className="text-text-muted" />
                   )}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black tracking-tight">{userProfileData?.fullName || "Alexander"}</h2>
+                  <h2 className="text-3xl font-black tracking-tight text-text-main">{userProfileData?.fullName || "Alexander"}</h2>
                   <p className="text-[#EB712B] font-bold text-sm tracking-wide mt-1">{userProfileData?.email}</p>
-                  <p className="text-xs text-gray-500 font-medium mt-3 flex items-center gap-2">
+                  <p className="text-xs text-text-muted font-medium mt-3 flex items-center gap-2">
                     <Calendar size={14} /> Joined {userProfileData?.createdAt ? new Date(userProfileData.createdAt).toLocaleDateString() : "Recently"}
                   </p>
                 </div>
               </div>
               <button 
                 onClick={handleLogout}
-                className="bg-white/5 hover:bg-[#EB712B] border border-white/10 hover:border-[#EB712B] px-8 py-3 rounded-2xl text-sm font-bold text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
+                className="bg-red-500/10 hover:bg-red-500 border border-red-500/20 hover:border-red-500 px-8 py-3 rounded-2xl text-sm font-bold text-red-500 hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
               >
                 Logout
               </button>
             </div>
             {userProfileData?.description && (
-              <div className="mt-8 pt-6 border-t border-white/5 relative z-10">
-                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <div className="mt-8 pt-6 border-t border-border relative z-10">
+                <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2 flex items-center gap-2">
                   <FileText size={12} /> Bio
                 </h3>
-                <p className="text-sm text-gray-300 leading-relaxed font-medium">
+                <p className="text-sm text-text-main leading-relaxed font-semibold">
                   "{userProfileData.description}"
                 </p>
               </div>
@@ -341,29 +341,29 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
           {/* CARD 2: Personal Info */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl relative overflow-hidden flex flex-col">
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
               <Info size={12} /> Contact Details
             </h3>
             <div className="space-y-6 flex-1">
               <div className="flex items-start gap-4">
-                <div className="p-2.5 rounded-xl bg-white/5 text-[#EB712B]"><Phone size={18} /></div>
+                <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B]"><Phone size={18} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Phone</p>
-                  <p className="font-bold text-sm">{userProfileData?.phone || "Not provided"}</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5">Phone</p>
+                  <p className="font-bold text-sm text-text-main">{userProfileData?.phone || "Not provided"}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="p-2.5 rounded-xl bg-white/5 text-[#EB712B]"><MapPin size={18} /></div>
+                <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B]"><MapPin size={18} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Country</p>
-                  <p className="font-bold text-sm">{userProfileData?.country || "Not provided"}</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5">Country</p>
+                  <p className="font-bold text-sm text-text-main">{userProfileData?.country || "Not provided"}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="p-2.5 rounded-xl bg-white/5 text-[#EB712B]"><Calendar size={18} /></div>
+                <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B]"><Calendar size={18} /></div>
                 <div>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Date of Birth</p>
-                  <p className="font-bold text-sm">{userProfileData?.dob || "Not provided"}</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5">Date of Birth</p>
+                  <p className="font-bold text-sm text-text-main">{userProfileData?.dob || "Not provided"}</p>
                 </div>
               </div>
             </div>
@@ -374,7 +374,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="absolute -bottom-10 -right-10 opacity-5">
               <Activity size={150} />
             </div>
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
+            <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
               <Activity size={12} className="text-[#FC4C02]" /> Integration
             </h3>
             <div className="flex-1 flex flex-col relative z-10">
@@ -383,13 +383,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <Activity size={24} />
                 </div>
                 <div>
-                  <h4 className="font-black text-lg">Strava</h4>
+                  <h4 className="font-black text-lg text-text-main">Strava</h4>
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
                       <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${userProfileData?.stravaAthleteId ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
                       <span className={`relative inline-flex rounded-full h-2 w-2 ${userProfileData?.stravaAthleteId ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                       {userProfileData?.stravaAthleteId ? "Connected" : "Disconnected"}
                     </span>
                   </div>
@@ -398,9 +398,9 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               
               {userProfileData?.stravaAthleteId && (
                 <div className="mb-6 space-y-2">
-                  <p className="text-xs text-gray-400 font-medium"><span className="text-gray-600 font-bold">Athlete ID:</span> {userProfileData.stravaAthleteId}</p>
+                  <p className="text-xs text-text-muted font-medium"><span className="text-text-main font-bold">Athlete ID:</span> {userProfileData.stravaAthleteId}</p>
                   {userProfileData?.stravaConnectedAt && (
-                    <p className="text-xs text-gray-400 font-medium"><span className="text-gray-600 font-bold">Synced:</span> {new Date(userProfileData.stravaConnectedAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-text-muted font-medium"><span className="text-text-main font-bold">Synced:</span> {new Date(userProfileData.stravaConnectedAt).toLocaleDateString()}</p>
                   )}
                 </div>
               )}
@@ -429,14 +429,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
           {/* CARD 4: Preferences (Spans 2 columns) */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-2 relative overflow-hidden">
-             <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+             <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
               <Globe size={12} /> App Preferences
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-main-bg p-5 rounded-2xl border border-white/5">
+              <div className="bg-main-bg p-5 rounded-2xl border border-border">
                 <div className="flex items-center gap-3 mb-3">
                   <MapPin size={16} className="text-[#EB712B]" />
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Distance Unit</p>
+                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Distance Unit</p>
                 </div>
                 <select
                   value={userProfileData?.scale || selectedScale}
@@ -451,22 +451,21 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                     }
                   }}
                   disabled={isUpdatingScale}
-                  className="w-full bg-hover border border-white/5 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-[#EB712B] transition-colors appearance-none cursor-pointer"
+                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
                 >
                   <option value="kilometer">Kilometers (km)</option>
-                  <option value="miles">Miles (mi)</option>
-                  <option value="meter">Meters (m)</option>
+                  <option value="mile">Miles (mi)</option>
                 </select>
               </div>
 
-              <div className="bg-main-bg p-5 rounded-2xl border border-white/5">
+              <div className="bg-main-bg p-5 rounded-2xl border border-border">
                 <div className="flex items-center gap-3 mb-3">
                   <Clock size={16} className="text-[#EB712B]" />
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Time Format</p>
+                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Time Format</p>
                 </div>
-                <div className="w-full bg-hover border border-white/5 rounded-xl px-4 py-3 text-sm font-bold text-gray-400 flex justify-between items-center cursor-not-allowed">
+                <div className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main flex justify-between items-center cursor-not-allowed opacity-75">
                   {userProfileData?.timeFormat || "12h (AM/PM)"}
-                  <Lock size={14} className="text-gray-500" />
+                  <Lock size={14} className="text-text-muted" />
                 </div>
               </div>
             </div>
@@ -474,24 +473,24 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
           {/* CARD 5: Account Management & Security (Spans 2 columns) */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-2 relative overflow-hidden flex flex-col">
-            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
               <ShieldCheck size={12} /> Security & Workspace
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
               <div 
                 onClick={() => setIsPasswordModalOpen(true)}
-                className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all group flex flex-col justify-center"
+                className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all group flex flex-col justify-center"
               >
                 <Lock className="text-[#EB712B] mb-3 group-hover:scale-110 transition-transform" size={24} />
-                <h4 className="font-bold text-sm mb-1">Change Password</h4>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider">Update security keys</p>
+                <h4 className="font-bold text-sm text-text-main mb-1">Change Password</h4>
+                <p className="text-[10px] text-text-muted uppercase tracking-wider">Update security keys</p>
               </div>
               
               <Link to={role === 'athlete' ? "/view/userside/support" : "/view/clubside/support"} className="block">
-                <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full group flex flex-col justify-center">
+                <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full group flex flex-col justify-center">
                   <HelpCircle className="text-[#EB712B] mb-3 group-hover:scale-110 transition-transform" size={24} />
-                  <h4 className="font-bold text-sm mb-1">Support & Help</h4>
-                  <p className="text-[10px] text-gray-500 uppercase tracking-wider">Get assistance</p>
+                  <h4 className="font-bold text-sm text-text-main mb-1">Support & Help</h4>
+                  <p className="text-[10px] text-text-muted uppercase tracking-wider">Get assistance</p>
                 </div>
               </Link>
             </div>
@@ -500,7 +499,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           {/* CARD 5.5: Email Notification Settings (Spans 4 columns) */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 relative overflow-hidden flex flex-col">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+              <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2">
                 <Bell size={12} className="text-[#EB712B]" /> Email Notification Preferences
               </h3>
               {isUpdatingEmailSettings && (
@@ -509,7 +508,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 </span>
               )}
             </div>
-            <p className="text-xs text-gray-400 mb-6 font-medium">
+            <p className="text-xs text-text-muted mb-6 font-medium">
               Choose which events trigger instant email notifications to your inbox.
             </p>
             {isEmailSettingsLoading ? (
@@ -532,15 +531,15 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                     <div
                       key={item.key}
                       onClick={() => handleToggleEmailSetting(item.key)}
-                      className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all flex items-center justify-between gap-4"
+                      className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all flex items-center justify-between gap-4 shadow-sm"
                     >
                       <div>
-                        <h4 className="font-bold text-sm text-white">{item.title}</h4>
-                        <p className="text-[11px] text-gray-400 mt-0.5">{item.desc}</p>
+                        <h4 className="font-bold text-sm text-text-main">{item.title}</h4>
+                        <p className="text-[11px] text-text-muted mt-0.5">{item.desc}</p>
                       </div>
                       <div
                         className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 ease-in-out flex items-center ${
-                          isChecked ? "bg-[#EB712B]" : "bg-white/10"
+                          isChecked ? "bg-[#EB712B]" : "bg-gray-300 dark:bg-white/15"
                         }`}
                       >
                         <div
@@ -559,28 +558,28 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           {/* CARD 6: Management Modules (Organizer Only) */}
           {role === 'organizer' && (
             <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 relative overflow-hidden">
-               <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+               <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
                 <Users size={12} /> Management Tools
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <Link to="/manage-club" className="block">
-                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
-                    <div className="p-3 bg-white/5 rounded-xl mb-3 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-colors"><Users size={20} /></div>
-                    <h4 className="font-bold text-sm">Manage Club</h4>
+                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                    <div className="p-3 bg-[#EB712B]/10 rounded-xl mb-3 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-colors"><Users size={20} /></div>
+                    <h4 className="font-bold text-sm text-text-main">Manage Club</h4>
                   </div>
                 </Link>
-                <div onClick={handleOpenAdminModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
-                  <div className="p-3 bg-white/5 rounded-xl mb-3 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors"><ShieldCheck size={20} /></div>
-                  <h4 className="font-bold text-sm">Admin Modules</h4>
+                <div onClick={handleOpenAdminModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                  <div className="p-3 bg-purple-500/10 rounded-xl mb-3 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors"><ShieldCheck size={20} /></div>
+                  <h4 className="font-bold text-sm text-text-main">Admin Modules</h4>
                 </div>
-                <div onClick={handleOpenUserModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
-                  <div className="p-3 bg-white/5 rounded-xl mb-3 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><Bike size={20} /></div>
-                  <h4 className="font-bold text-sm">User Modules</h4>
+                <div onClick={handleOpenUserModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                  <div className="p-3 bg-emerald-500/10 rounded-xl mb-3 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><Bike size={20} /></div>
+                  <h4 className="font-bold text-sm text-text-main">User Modules</h4>
                 </div>
                 <Link to="/subscription" className="block">
-                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-white/5 hover:border-white/10 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
-                    <div className="p-3 bg-white/5 rounded-xl mb-3 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors"><CreditCard size={20} /></div>
-                    <h4 className="font-bold text-sm">Subscription</h4>
+                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                    <div className="p-3 bg-blue-500/10 rounded-xl mb-3 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors"><CreditCard size={20} /></div>
+                    <h4 className="font-bold text-sm text-text-main">Subscription</h4>
                   </div>
                 </Link>
               </div>
@@ -595,7 +594,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               </h3>
               <p className="text-xs text-red-500/70 font-medium">Permanently delete your account and all associated data. This action cannot be undone.</p>
             </div>
-            <button className="bg-transparent border-2 border-red-500/50 hover:bg-red-500/10 text-red-500 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg whitespace-nowrap">
+            <button className="bg-transparent border-2 border-red-500/50 hover:bg-red-500/10 text-red-500 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg whitespace-nowrap cursor-pointer">
               Delete Account
             </button>
           </div>
@@ -606,19 +605,19 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
       {/* Password Handler */}
       {isPasswordModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-hover border border-white/10 p-8 rounded-2xl w-full max-w-lg shadow-2xl">
+          <div className="bg-surface border border-border p-8 rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-text-main">
                   Change Password
                 </h2>
-                <p className="text-gray-400 text-sm mt-1">
+                <p className="text-text-muted text-sm mt-1">
                   Ensure your account is protected with a strong password.
                 </p>
               </div>
               <button
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-text-muted hover:text-text-main"
               >
                 <X size={20} />
               </button>
@@ -632,7 +631,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Current Password"
-                    className={`w-full bg-surface p-3 rounded-lg border ${errors.current ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
+                    className={`w-full bg-surface p-3 rounded-lg border ${errors.current ? "border-[#EB712B]" : "border-border"} text-text-main outline-none focus:border-[#EB712B]`}
                     onChange={(e) => {
                       setPasswordData({
                         ...passwordData,
@@ -644,7 +643,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-gray-500 hover:text-white"
+                    className="absolute right-3 top-3.5 text-text-muted hover:text-text-main"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -662,7 +661,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="New Password"
-                    className={`w-full bg-surface p-3 rounded-lg border ${errors.new ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
+                    className={`w-full bg-surface p-3 rounded-lg border ${errors.new ? "border-[#EB712B]" : "border-border"} text-text-main outline-none focus:border-[#EB712B]`}
                     onChange={(e) => {
                       setPasswordData({ ...passwordData, new: e.target.value });
                       if (errors.new) setErrors({ ...errors, new: "" });
@@ -671,7 +670,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-gray-500 hover:text-white"
+                    className="absolute right-3 top-3.5 text-text-muted hover:text-text-main"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -689,7 +688,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Confirm New Password"
-                    className={`w-full bg-surface p-3 rounded-lg border ${errors.confirm ? "border-[#EB712B]" : "border-white/10"} text-white outline-none focus:border-[#EB712B]`}
+                    className={`w-full bg-surface p-3 rounded-lg border ${errors.confirm ? "border-[#EB712B]" : "border-border"} text-text-main outline-none focus:border-[#EB712B]`}
                     onChange={(e) => {
                       setPasswordData({
                         ...passwordData,
@@ -701,7 +700,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-gray-500 hover:text-white"
+                    className="absolute right-3 top-3.5 text-text-muted hover:text-text-main"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -715,7 +714,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             </div>
 
             {/* Info Box */}
-            <div className="flex gap-3 bg-surface p-4 rounded-lg mt-6 border border-white/5 text-gray-400 text-xs">
+            <div className="flex gap-3 bg-main-bg p-4 rounded-lg mt-6 border border-border text-text-muted text-xs">
               <AlertCircle size={32} className="text-[#EB712B] shrink-0" />
               <p>
                 Use at least 8 characters, including a mix of letters, numbers,
@@ -728,7 +727,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="flex justify-end gap-4 mt-8">
               <button
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="text-gray-400 font-bold hover:text-white"
+                className="text-text-muted font-bold hover:text-text-main"
               >
                 Cancel
               </button>
@@ -746,17 +745,17 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
       {/* Permissions Model */}
       {isPermissionsModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+          <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-md shadow-2xl">
             <div className="flex justify-between items-start mb-8">
               <div>
-                <h2 className="text-xl font-bold text-white">Permissions</h2>
-                <p className="text-gray-400 text-sm mt-1">
+                <h2 className="text-xl font-bold text-text-main">Permissions</h2>
+                <p className="text-text-muted text-sm mt-1">
                   Manage access levels for your club
                 </p>
               </div>
               <button
                 onClick={() => setIsPermissionsModalOpen(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-text-muted hover:text-text-main"
               >
                 <X size={20} />
               </button>
@@ -787,13 +786,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                       handleOpenUserModal();
                     }
                   }}
-                  className={`p-4 rounded-2xl border transition-all text-left ${selectedRole === item.id ? "bg-hover border-[#EB712B]" : "bg-hover border-white/5"}`}
+                  className={`p-4 rounded-2xl border transition-all text-left ${selectedRole === item.id ? "bg-main-bg border-[#EB712B]" : "bg-main-bg border-border"}`}
                 >
                   <item.icon className="text-[#EB712B] mb-3" size={24} />
-                  <h3 className="text-sm font-bold text-white mb-1">
+                  <h3 className="text-sm font-bold text-text-main mb-1">
                     {item.label}
                   </h3>
-                  <p className="text-[10px] text-gray-500 leading-tight">
+                  <p className="text-[10px] text-text-muted leading-tight">
                     {item.desc}
                   </p>
                 </button>

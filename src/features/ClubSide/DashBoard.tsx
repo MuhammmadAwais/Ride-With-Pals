@@ -118,7 +118,11 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
 
   const { data: stripeStatus } = useCheckStripeAccountStatusQuery(
     { clubId: effectiveClubId },
-    { skip: !effectiveClubId }
+    { 
+      skip: !effectiveClubId,
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    }
   );
 
   const [respondToJoinRequest] = useManageJoinGroupRequestMutation();
@@ -155,13 +159,17 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   const totalProductsCount = shopProducts.length;
   const totalPlansCount = membershipPlans.length;
 
+  const stripeData = (stripeStatus as any)?.response || stripeStatus || {};
+  const statsData = (stats as any)?.response || stats || {};
   const isStripeConnected = Boolean(
-    stripeStatus?.connected ||
-    stripeStatus?.status === 'active' ||
-    stripeStatus?.onboardingComplete ||
-    stripeStatus?.chargesEnabled ||
-    stripeStatus?.detailsSubmitted ||
-    stats?.stripeOnboardingComplete
+    stripeData?.connected ||
+    stripeData?.status === 'active' ||
+    stripeData?.onboardingComplete ||
+    stripeData?.chargesEnabled ||
+    stripeData?.detailsSubmitted ||
+    statsData?.stripeOnboardingComplete ||
+    statsData?.stripeConnected ||
+    statsData?.isStripeConnected
   );
 
   const hasMembershipPlans = Boolean(

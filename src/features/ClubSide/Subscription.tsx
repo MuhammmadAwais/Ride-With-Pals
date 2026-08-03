@@ -10,30 +10,49 @@ import {
 } from '@/features/subscriptions/api/subscriptionApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 
+const formatPlanPrice = (price: any): string => {
+  const num = parseFloat(String(price || '0'));
+  if (isNaN(num)) return '0';
+  if (num >= 500 && num % 100 === 0) {
+    return (num / 100).toFixed(0);
+  }
+  return num.toFixed(0);
+};
+
 const getPlanFeatures = (plan: any): string[] => {
   if (plan.features && Array.isArray(plan.features) && plan.features.length > 0) {
     return plan.features;
   }
   const list: string[] = [];
-  if (plan.config?.marketplaceItems) {
+  if (plan.config?.unlimitedItemInMarketplace || plan.config?.unlimitedMarketplace) {
+    list.push("Unlimited Marketplace Listings");
+  } else if (plan.config?.marketplaceItems) {
     list.push(`Up to ${plan.config.marketplaceItems} Marketplace Items`);
   } else {
     list.push("Unlimited Marketplace Listings");
   }
-  if (plan.config?.numberOfRides) {
-    list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+  if (plan.config?.unlimitedRides || plan.config?.numberOfRides) {
+    if (plan.config.unlimitedRides) {
+      list.push("Unlimited Group Rides & Events");
+    } else {
+      list.push(`Up to ${plan.config.numberOfRides} Group Rides & Events`);
+    }
   } else {
     list.push("Unlimited Group Rides & Events");
   }
   if (plan.config?.unlimitedClubMembers) {
     list.push("Unlimited Club Members");
   } else {
-    list.push("Unlimited Club Members");
+    list.push("Up to 50 Club Members");
   }
   if (plan.config?.clubStripeIntegration) {
     list.push("Stripe Direct Payout Integrations");
-  } else {
-    list.push("Stripe Direct Payout Integrations");
+  }
+  if (plan.config?.paidActivities) {
+    list.push("Paid Activities & Ticketing");
+  }
+  if (plan.config?.stravaConnection) {
+    list.push("Strava & GPS Route Syncing");
   }
   list.push("Advanced Analytics & Reporting");
   list.push("Verified Pro Badge");
@@ -273,7 +292,7 @@ const Subscription = () => {
                   </div>
                   
                   <div className="text-4xl font-bold text-text-main mb-8">
-                    ${parseFloat(plan.price || '0').toFixed(0)} <span className="text-sm text-text-muted font-medium">/ {plan.billingInterval || "year"}</span>
+                    ${formatPlanPrice(plan.price)} <span className="text-sm text-text-muted font-medium">/ {plan.billingInterval || "year"}</span>
                   </div>
                   
                   <div className="space-y-4 mb-8 flex-grow">
