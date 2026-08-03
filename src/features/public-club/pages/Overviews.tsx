@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { 
-  MapPin, Info, Users, Loader2, Bike, Globe, Lock, Mail, Phone, 
-  ExternalLink, Award, Sparkles, Shield, Calendar, TrendingUp, 
-  CheckCircle2, ArrowUpRight, Heart, Share2, Compass
+  MapPin, Users, Loader2, Bike, Globe, Lock, Mail, Phone, 
+  ExternalLink, Award, Sparkles, Calendar, TrendingUp, 
+  CheckCircle2, ArrowUpRight, Compass
 } from "lucide-react";
 import { ClubService } from "@/features/club/services/clubService";
 import { toast } from "sonner";

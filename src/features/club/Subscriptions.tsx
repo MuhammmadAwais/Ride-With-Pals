@@ -102,9 +102,12 @@ export default function Subscriptions() {
     }
 
     try {
+      const origin = window.location.origin;
       const res = await subscribeToClubPlan({
         clubId,
         planId,
+        successUrl: `${origin}/dashboard`,
+        cancelUrl: window.location.href,
       }).unwrap();
 
       if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {

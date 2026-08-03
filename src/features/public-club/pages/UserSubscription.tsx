@@ -1,9 +1,7 @@
-import { useState, useRef } from 'react';
-import { Check, Crown, ArrowLeft, Loader2, ExternalLink, PartyPopper } from 'lucide-react';
+import { useState } from 'react';
+import { Check, Crown, ArrowLeft, Loader2, ExternalLink } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import {
   useGetMySubscriptionQuery,
   useSubscriptionPlanListQuery,
@@ -60,6 +58,27 @@ const getPlanFeatures = (plan: any): string[] => {
   return Array.from(new Set(list));
 };
 
+const SuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+    <div className="bg-surface border border-border p-8 rounded-[2rem] max-w-md w-full text-center relative overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[#EB712B]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="mx-auto w-24 h-24 bg-[#EB712B]/10 rounded-full flex items-center justify-center mb-6">
+        <Crown size={48} className="text-[#EB712B]" />
+      </div>
+      <h2 className="text-3xl font-black text-text-main mb-4 tracking-tight">Subscription Active!</h2>
+      <p className="text-text-muted mb-8 leading-relaxed">
+        Welcome to the Premium Plan! You now have full access to marketplace listings, unlimited rides, and all premium features.
+      </p>
+      <button 
+        onClick={onClose}
+        className="w-full bg-[#EB712B] text-white py-4 rounded-2xl font-bold hover:bg-[#ff8c4a] transition-colors border-0 cursor-pointer outline-none shadow-lg"
+      >
+        Return to App
+      </button>
+    </div>
+  </div>
+);
+
 const UserSubscription = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -88,7 +107,6 @@ const UserSubscription = () => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const origin = window.location.origin;
       const res = await subscribeToPlan({ 
         planId
       }).unwrap();
@@ -125,45 +143,9 @@ const UserSubscription = () => {
 
   const isPro = userSub && userSub.status === "active";
 
-  // --- Success Modal Component ---
-  const SuccessModal = () => {
-    const modalRef = useRef<HTMLDivElement>(null);
-    
-    useGSAP(() => {
-      gsap.from(modalRef.current, {
-        y: 50,
-        opacity: 0,
-        scale: 0.9,
-        duration: 0.6,
-        ease: 'back.out(1.5)',
-      });
-    }, []);
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
-        <div ref={modalRef} className="bg-surface border border-border p-8 rounded-[2rem] max-w-md w-full text-center relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#EB712B]/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="mx-auto w-24 h-24 bg-[#EB712B]/10 rounded-full flex items-center justify-center mb-6">
-            <PartyPopper size={48} className="text-[#EB712B]" />
-          </div>
-          <h2 className="text-3xl font-black text-text-main mb-4 tracking-tight">Subscription Active!</h2>
-          <p className="text-text-muted mb-8 leading-relaxed">
-            Welcome to the Premium Plan! You now have full access to marketplace listings, unlimited rides, and all premium features.
-          </p>
-          <button 
-            onClick={handleCloseModal}
-            className="w-full bg-[#EB712B] text-white py-4 rounded-2xl font-bold hover:bg-[#ff8c4a] transition-colors border-0 cursor-pointer outline-none shadow-lg"
-          >
-            Return to App
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen text-text-main p-8 md:p-16 bg-main-bg w-full relative">
-      {showSuccessModal && <SuccessModal />}
+      {showSuccessModal && <SuccessModal onClose={handleCloseModal} />}
 
       <button 
         onClick={() => navigate('/view/userside/profile')} 

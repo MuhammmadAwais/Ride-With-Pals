@@ -255,12 +255,28 @@ interface PlanFormProps {
   onClose: () => void;
 }
 
+const calculateEndDate = (interval: string, start: Date = new Date()): string => {
+  const end = new Date(start);
+  const lower = interval.toLowerCase();
+  if (lower === 'monthly' || lower === 'month') {
+    end.setMonth(end.getMonth() + 1);
+  } else if (lower === 'quarterly') {
+    end.setMonth(end.getMonth() + 3);
+  } else if (lower === 'semi-annual') {
+    end.setMonth(end.getMonth() + 6);
+  } else {
+    end.setFullYear(end.getFullYear() + 1);
+  }
+  return end.toISOString();
+};
+
 const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
   const isEditing = !!plan;
   const [name, setName] = useState(plan?.name || '');
   const [price, setPrice] = useState(plan?.price?.toString() || '');
   const [currency, setCurrency] = useState(plan?.currency?.toUpperCase() || 'EUR');
   const [billingInterval, setBillingInterval] = useState(plan?.billingInterval || 'quarterly');
+  const [showCustomDates, setShowCustomDates] = useState(isEditing && Boolean(plan?.startDate || plan?.endDate));
   const [startDate, setStartDate] = useState(
     plan?.startDate ? plan.startDate.split('T')[0] : new Date().toISOString().split('T')[0]
   );
@@ -295,14 +311,21 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
       return;
     }
     try {
+      const startIso = showCustomDates
+        ? new Date(`${startDate}T00:00:00Z`).toISOString()
+        : new Date().toISOString();
+      const endIso = showCustomDates
+        ? new Date(`${endDate}T23:59:59Z`).toISOString()
+        : calculateEndDate(billingInterval);
+
       const payload = {
         clubId,
         name: name.trim(),
         price: Number(price),
         currency: currency.toUpperCase(),
         billingInterval,
-        startDate: new Date(`${startDate}T00:00:00Z`).toISOString(),
-        endDate: new Date(`${endDate}T23:59:59Z`).toISOString(),
+        startDate: startIso,
+        endDate: endIso,
         allowStripe,
         allowManual,
         autoRenew,
@@ -338,9 +361,9 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
   );
 
   return (
-    <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 sm:p-6 animate-in fade-in duration-200">
       <form onSubmit={handleSubmit}
-        className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto relative border border-border shadow-2xl space-y-5">
+        className="bg-surface text-text-main rounded-3xl p-6 sm:p-8 w-full max-w-2xl max-h-[88vh] overflow-y-auto overflow-x-hidden custom-scrollbar relative border border-border shadow-2xl space-y-6">
         <div className="flex justify-between items-center pb-2 border-b border-border">
           <div>
             <h3 className="text-lg font-black uppercase tracking-wider text-text-main">
@@ -396,15 +419,63 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
             </div>
           </div>
 
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Start Date</label>
-            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-              className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main" />
-          </div>
-          <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">End Date</label>
-            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-              className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main" />
+          <div className="col-span-2 border border-border rounded-2xl p-4 bg-main-bg/40 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-text-main">Custom Validity Dates (Optional)</p>
+                <p className="text-[10px] text-text-muted">
+                  {showCustomDates
+                    ? "Specify a fixed start and end date for this plan"
+                    : "By default, plan starts immediately and renews automatically per interval"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCustomDates((p) => !p)}
+                className={`w-10 h-6 rounded-full transition-colors cursor-pointer relative ${
+                  showCustomDates ? 'bg-[#EB712B]' : 'bg-border'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow ${
+                    showCustomDates ? 'left-5' : 'left-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {showCustomDates && (
+              <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/50 animate-in fade-in duration-200">
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    className="w-full bg-surface border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    className="w-full bg-surface border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <Toggle val={allowStripe} set={setAllowStripe} label="Allow Stripe" sub="Online payment via card" />
@@ -425,7 +496,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
 
         <div>
           <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-2">Features</label>
-          <div className="space-y-2 mb-2 max-h-36 overflow-y-auto pr-1">
+          <div className="space-y-2 mb-2 max-h-36 overflow-y-auto custom-scrollbar pr-1">
             {features.map((f, i) => (
               <div key={i} className="flex items-center justify-between bg-main-bg border border-border rounded-xl px-3 py-2">
                 <span className="text-xs text-text-main">{f}</span>
