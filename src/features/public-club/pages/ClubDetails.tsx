@@ -308,7 +308,7 @@ export default function ClubDetails() {
               type="button"
               onClick={() => setShowMembershipModal(true)}
               title="View & Subscribe to Club Membership Plans"
-              className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-[#EB712B]/15 to-amber-500/15 border border-[#EB712B]/40 hover:border-[#EB712B] text-[#EB712B] text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+              className="flex items-center justify-center gap-2 px-5 py-3.5 bg-[#EB712B]/10 hover:bg-[#EB712B]/20 border border-[#EB712B]/30 text-[#EB712B] text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
             >
               <Crown size={16} />
               <span>Membership</span>
