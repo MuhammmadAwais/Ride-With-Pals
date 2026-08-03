@@ -19,6 +19,7 @@ import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiS
 import { useGetClubDiscountsQuery } from '@/features/club/api/discountApiSlice';
 import { useGetTheShopItemsQuery } from '@/features/club/api/shopApiSlice';
 import { useListMembershipPlansQuery } from '@/features/club/api/membershipApiSlice';
+import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { toast } from 'sonner';
@@ -115,6 +116,11 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
     { skip: !effectiveClubId }
   );
 
+  const { data: stripeStatus } = useCheckStripeAccountStatusQuery(
+    { clubId: effectiveClubId },
+    { skip: !effectiveClubId }
+  );
+
   const [respondToJoinRequest] = useManageJoinGroupRequestMutation();
 
   const stats = passedStats || fetchedStats;
@@ -148,6 +154,20 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   // Shop & Plans analytics
   const totalProductsCount = shopProducts.length;
   const totalPlansCount = membershipPlans.length;
+
+  const isStripeConnected = Boolean(
+    stripeStatus?.connected ||
+    stripeStatus?.status === 'active' ||
+    stripeStatus?.onboardingComplete ||
+    stripeStatus?.chargesEnabled ||
+    stripeStatus?.detailsSubmitted ||
+    stats?.stripeOnboardingComplete
+  );
+
+  const hasMembershipPlans = Boolean(
+    stats?.hasActivePlans ||
+    totalPlansCount > 0
+  );
 
   // Prepare monthly chart data from real rides & orders
   const ridesByMonth = React.useMemo(() => {
@@ -196,7 +216,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
     <div className="w-full space-y-8 animate-in fade-in duration-500">
       
       {/* ── Stripe & Plans Onboarding Alert Banner ── */}
-      {stats && (!stats.stripeOnboardingComplete || !stats.hasActivePlans || totalPlansCount === 0) && (
+      {stats && (!isStripeConnected || !hasMembershipPlans) && (
         <div className="bg-surface border border-border p-6 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
           <div className="flex items-center gap-4">
             <div className="p-3.5 bg-[#EB712B]/10 text-[#EB712B] rounded-2xl shrink-0 border border-[#EB712B]/20">
@@ -205,17 +225,17 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             <div>
               <h4 className="text-base font-bold text-text-main">Action Required for Monetization & Full Access</h4>
               <p className="text-xs text-text-muted mt-1 leading-relaxed">
-                {!stats.stripeOnboardingComplete
+                {!isStripeConnected
                   ? "Connect your Stripe account to collect membership dues, ride fees, and marketplace revenues."
                   : "Configure your membership plans so athletes can join and subscribe to your club."}
               </p>
             </div>
           </div>
           <button
-            onClick={() => navigate(!stats.stripeOnboardingComplete ? '/view/clubside/stripe-connect' : '/view/clubside/membership-plans')}
+            onClick={() => navigate(!isStripeConnected ? '/view/clubside/stripe-connect' : '/view/clubside/membership-plans')}
             className="px-6 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-2xl transition-all shadow-md active:scale-95 shrink-0 cursor-pointer"
           >
-            {!stats.stripeOnboardingComplete ? "Connect Stripe" : "Create Membership Plans"}
+            {!isStripeConnected ? "Connect Stripe" : "Create Membership Plans"}
           </button>
         </div>
       )}
