@@ -47,7 +47,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // 3. User is fully onboarded (Athlete Profile exists).
   // Allow them to visit the role selection page or other specific onboarding pages.
-  const allowedOnboardingRoutes = ['/select-role', '/create-profile', '/club-profile-setup', '/club-subscriptions', '/select-role-club'];
+  const allowedOnboardingRoutes = ['/select-role', '/create-profile', '/club-profile-setup', '/club-subscriptions', '/select-role-club', '/auth-subscription'];
   if (allowedOnboardingRoutes.includes(location.pathname)) {
     return <>{children}</>;
   }

@@ -48,7 +48,12 @@ const SelectRole = () => {
       ...activeUser,
       role: 'owner'
     }));
-    navigate("/auth-subscription");
+    const selectedPlan = sessionStorage.getItem('selected_subscription_plan');
+    if (selectedPlan) {
+      navigate("/club-profile-setup");
+    } else {
+      navigate("/auth-subscription");
+    }
   };
 
   return (

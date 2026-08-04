@@ -82,7 +82,7 @@ const AuthSubscription = () => {
     if (user?.role === 'owner' || user?.role === 'organizer') {
       navigate("/club-profile-setup");
     } else {
-      navigate("/create-profile");
+      navigate("/select-role");
     }
   };
 
@@ -100,7 +100,7 @@ const AuthSubscription = () => {
     if (user?.role === 'owner' || user?.role === 'organizer') {
       navigate("/club-profile-setup");
     } else {
-      navigate("/create-profile");
+      navigate("/select-role");
     }
   };
 
@@ -226,7 +226,7 @@ const AuthSubscription = () => {
               return (
                 <div 
                   key={plan.id}
-                  onClick={() => setSelectedPlan(String(plan.id))}
+                  onClick={(e) => handleStripeCheckout(e, plan)}
                   className={`relative bg-[#121212] border-2 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden shadow-2xl ${
                     isSelected 
                       ? "border-[#EB712B] shadow-[#EB712B]/10 scale-[1.02]" 
@@ -272,27 +272,21 @@ const AuthSubscription = () => {
                     </ul>
                   </div>
 
-                  <div className="space-y-2.5">
-                    <button 
-                      type="button"
-                      onClick={(e) => handleContinueWithPlan(e, plan)}
-                      className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] border-0 outline-none"
-                    >
-                      Select Plan & Continue →
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => handleStripeCheckout(e, plan)}
-                      disabled={subscribingId !== null}
-                      className="w-full py-2.5 bg-transparent text-gray-400 hover:text-white rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer border border-white/10 hover:border-white/20 flex items-center justify-center gap-1.5"
-                    >
-                      {subscribingId === plan.id ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      ) : (
-                        "Pay Now with Stripe"
-                      )}
-                    </button>
-                  </div>
+                  <button 
+                    type="button"
+                    onClick={(e) => handleStripeCheckout(e, plan)}
+                    disabled={subscribingId !== null}
+                    className="w-full py-4 bg-[#EB712B] text-white rounded-2xl font-extrabold hover:bg-[#d16226] transition-all duration-300 cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 tracking-wide hover:translate-y-[-1px] border-0 outline-none disabled:opacity-50"
+                  >
+                    {subscribingId === plan.id ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Redirecting to Stripe...
+                      </>
+                    ) : (
+                      "Subscribe Now with Stripe →"
+                    )}
+                  </button>
                 </div>
               );
             })}
