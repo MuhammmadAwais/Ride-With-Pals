@@ -537,14 +537,19 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
                         className="accent-[#EB712B] w-4 h-4 cursor-pointer"
                       />
                       <div className="flex items-center gap-2">
-                        {m.user?.profilePicUrl ? (
-                          <img src={m.user.profilePicUrl} alt={m.user.firstName || m.user.fullName} className="w-6 h-6 rounded-full object-cover" />
+                        {m.profileImage || m.profilePicUrl || m.user?.profilePicUrl ? (
+                          <img src={m.profileImage || m.profilePicUrl || m.user?.profilePicUrl} alt={m.fullName || m.username || m.memberName || m.name || m.user?.firstName || m.user?.fullName} className="w-6 h-6 rounded-full object-cover" />
                         ) : (
                           <div className="w-6 h-6 rounded-full bg-[#EB712B]/20 text-[#EB712B] flex items-center justify-center text-[10px] font-bold">
-                            {m.user?.firstName?.[0] || m.user?.fullName?.[0] || 'U'}
+                            {(m.fullName?.[0] || m.username?.[0] || m.memberName?.[0] || m.name?.[0] || m.user?.firstName?.[0] || m.user?.fullName?.[0] || 'U').toUpperCase()}
                           </div>
                         )}
-                        <span className="text-xs text-text-main truncate max-w-[120px]">{m.user?.firstName} {m.user?.lastName} {(!m.user?.firstName && !m.user?.lastName) ? m.user?.fullName : ''}</span>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-xs text-text-main truncate max-w-[120px]">
+                            {m.fullName || m.username || m.memberName || m.name || (m.user ? `${m.user.firstName || ''} ${m.user.lastName || ''}`.trim() || m.user.fullName : `Member #${m.userId || m.id}`)}
+                          </span>
+                          {m.email && <span className="text-[10px] text-text-muted truncate max-w-[120px]">{m.email}</span>}
+                        </div>
                       </div>
                     </label>
                   ))}
