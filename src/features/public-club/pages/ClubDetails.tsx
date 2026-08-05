@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation, useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
+import { useGetMyMembershipInfoQuery } from '@/features/club/api/membershipApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { ClubMembershipModal } from '../components/ClubMembershipModal';
@@ -96,6 +97,13 @@ export default function ClubDetails() {
     { clubId: Number(clubId) },
     { skip: !clubId }
   );
+
+  const { data: myMembershipInfo } = useGetMyMembershipInfoQuery(
+    { clubId: Number(clubId) },
+    { skip: !clubId }
+  );
+  
+  const hasActiveMembership = myMembershipInfo?.status === 'active';
 
   if (isLoading) {
     return (
@@ -308,10 +316,14 @@ export default function ClubDetails() {
               type="button"
               onClick={() => setShowMembershipModal(true)}
               title="View & Subscribe to Club Membership Plans"
-              className="flex items-center justify-center gap-2 px-5 py-3.5 bg-[#EB712B]/10 hover:bg-[#EB712B]/20 border border-[#EB712B]/30 text-[#EB712B] text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+              className={`flex items-center justify-center gap-2 px-5 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer ${
+                hasActiveMembership
+                  ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
+                  : 'bg-[#EB712B]/10 hover:bg-[#EB712B]/20 border border-[#EB712B]/30 text-[#EB712B]'
+              }`}
             >
-              <Crown size={16} />
-              <span>Membership</span>
+              <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-[#EB712B]"} />
+              <span>{hasActiveMembership ? 'Member' : 'Membership'}</span>
             </button>
             {!isMember && !showCodeScreen && !showDepositScreen && (
               club.clubPrivacyId === 2 ? (

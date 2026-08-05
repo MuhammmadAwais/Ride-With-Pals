@@ -1,6 +1,6 @@
 import { useState, useRef, useLayoutEffect, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, Calendar, Loader2, Search, X, Camera, Upload, Check } from "lucide-react";
+import { ChevronDown, Calendar, Loader2, Search, X, Upload, Check } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import { backendApi } from "@/api/backendApi";

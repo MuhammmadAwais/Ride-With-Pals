@@ -86,24 +86,6 @@ const AuthSubscription = () => {
     }
   };
 
-  const handleContinueWithPlan = (e: React.MouseEvent, plan: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!plan || !plan.id) return;
-    if (parseFloat(String(plan.price || '0')) === 0) {
-      handleSelectFree();
-      return;
-    }
-    // Save selected plan and continue onboarding without forcing Stripe redirect
-    sessionStorage.setItem('selected_subscription_plan', String(plan.id));
-    toast.success(`Selected ${plan.name} plan!`);
-    if (user?.role === 'owner' || user?.role === 'organizer') {
-      navigate("/club-profile-setup");
-    } else {
-      navigate("/select-role");
-    }
-  };
-
   const handleStripeCheckout = async (e: React.MouseEvent, plan: any) => {
     e.preventDefault();
     e.stopPropagation();

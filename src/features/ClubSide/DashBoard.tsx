@@ -112,7 +112,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   );
 
   const { data: membershipPlansResponse } = useListMembershipPlansQuery(
-    { clubId: effectiveClubId },
+    { clubId: effectiveClubId, includeInactive: true },
     { skip: !effectiveClubId }
   );
 

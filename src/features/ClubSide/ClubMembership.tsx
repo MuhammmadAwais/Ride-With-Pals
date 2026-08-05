@@ -53,6 +53,7 @@ import {
   useCheckStripeAccountStatusQuery,
   useConnectStripeMutation,
 } from '@/features/club/api/stripeApiSlice';
+import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useSendSubscriptionReminderMutation } from '@/features/subscriptions/api/subscriptionApiSlice';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -287,6 +288,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
   const [allowManual, setAllowManual] = useState(plan?.allowManual ?? true);
   const [autoRenew, setAutoRenew] = useState(plan?.autoRenew ?? false);
   const [assignmentTarget, setAssignmentTarget] = useState<'all' | 'specific' | 'none'>(plan?.assignmentTarget || 'all');
+  const [assignedMemberIds, setAssignedMemberIds] = useState<number[]>(plan?.assignedMemberIds || []);
   const [saveAsDraft, setSaveAsDraft] = useState(plan?.saveAsDraft ?? false);
   const [features, setFeatures] = useState<string[]>(
     plan?.features || ['Cycling license included', 'Paid activities included', 'Free coffee in our coffeeshop']
@@ -296,6 +298,17 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
   const [createPlan, { isLoading: isCreating }] = useCreateClubMembershipPlanMutation();
   const [updatePlan, { isLoading: isUpdating }] = useUpdateClubMembershipPlanMutation();
   const isBusy = isCreating || isUpdating;
+
+  const { data: membersList, isLoading: membersLoading } = useGetClubMembersListQuery(
+    { clubId: Number(clubId) },
+    { skip: assignmentTarget !== 'specific' || !clubId }
+  );
+
+  const toggleMember = (memberId: number) => {
+    setAssignedMemberIds((prev) =>
+      prev.includes(memberId) ? prev.filter((id) => id !== memberId) : [...prev, memberId]
+    );
+  };
 
   const handleAddFeature = () => {
     if (featureInput.trim()) {
@@ -330,7 +343,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
         allowManual,
         autoRenew,
         assignmentTarget,
-        assignedMemberIds: plan?.assignedMemberIds || [],
+        assignedMemberIds: assignmentTarget === 'specific' ? assignedMemberIds : [],
         saveAsDraft,
         features,
       };
@@ -492,6 +505,42 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
               <option value="none">None (Voluntary)</option>
             </select>
           </div>
+
+          {assignmentTarget === 'specific' && (
+            <div className="col-span-2 border border-border rounded-2xl p-4 bg-main-bg/40 animate-in fade-in duration-200">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-3">Select Members to Assign</label>
+              {membersLoading ? (
+                <div className="flex items-center gap-2 text-xs text-text-muted">
+                  <Loader2 size={14} className="animate-spin" /> Loading members...
+                </div>
+              ) : membersList && membersList.length > 0 ? (
+                <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto custom-scrollbar">
+                  {membersList.map((m: any) => (
+                    <label key={m.userId} className="flex items-center gap-2 p-2 rounded-lg hover:bg-border/30 cursor-pointer transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={assignedMemberIds.includes(m.userId)}
+                        onChange={() => toggleMember(m.userId)}
+                        className="accent-[#EB712B] w-4 h-4 cursor-pointer"
+                      />
+                      <div className="flex items-center gap-2">
+                        {m.profilePicUrl ? (
+                          <img src={m.profilePicUrl} alt={m.firstName} className="w-6 h-6 rounded-full object-cover" />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-[#EB712B]/20 text-[#EB712B] flex items-center justify-center text-[10px] font-bold">
+                            {m.firstName?.[0] || 'U'}
+                          </div>
+                        )}
+                        <span className="text-xs text-text-main truncate max-w-[120px]">{m.firstName} {m.lastName}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-text-muted">No members found in this club.</p>
+              )}
+            </div>
+          )}
         </div>
 
         <div>
@@ -553,7 +602,7 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
       await markAsPaid({
         clubId,
         userId: row.userId,
-        feeId: row.planId,
+        feeId: row.feeId || row.planId,
         amount: Number(amount),
         paymentDate: new Date(`${paymentDate}T12:00:00Z`).toISOString(),
         paymentMethod,
@@ -600,7 +649,10 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
 
         <div>
           <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Payment Date</label>
-          <input type="date" value={paymentDate} onChange={(e) => setPaymentDate(e.target.value)}
+          <input type="date" value={paymentDate} onChange={(e) => {
+            setPaymentDate(e.target.value);
+            e.target.blur(); // Force close calendar on selection
+          }}
             className="w-full bg-main-bg border border-border rounded-xl p-3 text-sm text-text-main outline-none focus:border-[#EB712B]" />
         </div>
 
@@ -962,7 +1014,7 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
 
 const STATUS_TABS = [
   { key: '', label: 'All' },
-  { key: 'active', label: 'Paid' },
+  { key: 'paid', label: 'Paid' },
   { key: 'pending', label: 'Pending' },
   { key: 'not_renewed', label: 'Not Renewed' },
   { key: 'exempt', label: 'Exempt' },
@@ -1243,7 +1295,7 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
   const [selectedDetailPlanId, setSelectedDetailPlanId] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'send' | 'members'>('overview');
 
-  const { data: plansData, isLoading: plansLoading } = useListMembershipPlansQuery({ clubId });
+  const { data: plansData, isLoading: plansLoading } = useListMembershipPlansQuery({ clubId, includeInactive: true });
   const { data: overview, isLoading: overviewLoading } = useGetClubMembershipOverviewQuery({ clubId });
   const [deletePlan, { isLoading: isDeleting }] = useDeleteMembershipPlanMutation();
 

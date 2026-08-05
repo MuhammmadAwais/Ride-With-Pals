@@ -150,6 +150,7 @@ export type DeleteMembershipPlanResponse = {
 
 export type ListMembershipPlansParams = {
     clubId: number | string;
+    includeInactive?: boolean;
 }
 
 export type GetMembershipPlanInfoByIDParams = {
@@ -162,6 +163,7 @@ export type ListSubscribedMemberParams = {
     limit?:  number | string;
     offset?: number | string;
     status?: string;
+    feeId?: number | string;
 }
 
 export type ChangeClubMemberFeeStatusRequest = {

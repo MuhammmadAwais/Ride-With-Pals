@@ -50,7 +50,7 @@ const ManageClubHome = () => {
   const { currentClubMembers } = useAppSelector((state) => state.club);
 
   const { data: plansData } = useListMembershipPlansQuery(
-    { clubId: clubId || 0 },
+    { clubId: clubId || 0, includeInactive: true },
     { skip: !clubId }
   );
 

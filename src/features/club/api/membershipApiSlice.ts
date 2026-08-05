@@ -93,11 +93,11 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
 
     deleteMembershipPlan: builder.mutation<MembershipTypes.DeleteMembershipPlanResponse, MembershipTypes.DeleteMembershipPlanParams>({
       query: (params) => ({
-        url: '/user/club/membership/plan',
+        url: '/user/club/membership/fee',
         method: 'DELETE',
         body: {
           clubId: Number(params.clubId),
-          planId: Number((params as any).planId ?? (params as any).feeId ?? (params as any).id),
+          feeId: Number((params as any).planId ?? (params as any).feeId ?? (params as any).id),
         },
       }),
       invalidatesTags: ['Subscription', 'Club'],
@@ -105,7 +105,7 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
 
     listMembershipPlans: builder.query<MembershipTypes.ResponseElement[], MembershipTypes.ListMembershipPlansParams>({
       query: (params) => ({
-        url: '/user/club/membership/plans',
+        url: '/user/club/membership/fees',
         method: 'GET',
         params,
       }),
@@ -137,6 +137,12 @@ export const membershipApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
         params,
       }),
+      transformResponse: (res: any) => {
+        const data = res?.response ?? res?.data ?? res;
+        if (Array.isArray(data)) return data;
+        if (Array.isArray(data?.rows)) return data.rows;
+        return [];
+      },
       providesTags: ['Subscription'],
     }),
 

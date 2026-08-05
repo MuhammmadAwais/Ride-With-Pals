@@ -82,10 +82,10 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-[80] p-4 animate-in fade-in duration-200">
-      <div className="bg-surface border border-border rounded-3xl p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto space-y-6 shadow-2xl relative">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border pb-4">
-          <div className="flex items-center gap-3">
+      <div className="bg-surface border border-border rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl relative overflow-hidden">
+        {/* Sticky Header */}
+        <div className="flex items-center justify-between border-b border-border p-6 md:px-8 bg-surface/95 backdrop-blur z-10 sticky top-0 shrink-0">
+          <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-[#EB712B]/20 to-[#EB712B]/5 border border-[#EB712B]/30 rounded-2xl flex items-center justify-center text-[#EB712B] shadow-sm">
               <Crown size={24} />
             </div>
@@ -93,18 +93,21 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
               <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B]">
                 Official Membership
               </span>
-              <h3 className="text-xl font-black text-text-main tracking-tight">
+              <h3 className="text-xl font-black text-text-main tracking-tight mt-0.5">
                 Club Membership Plans
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-text-muted hover:text-text-main p-2 rounded-xl hover:bg-hover transition-colors cursor-pointer"
+            className="text-text-muted hover:text-text-main p-2 rounded-xl hover:bg-hover transition-colors cursor-pointer shrink-0"
           >
             <X size={20} />
           </button>
         </div>
+
+        {/* Scrollable Body */}
+        <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-1 space-y-6">
 
         {/* Current Membership Status Banner */}
         {!myInfoLoading && (
@@ -262,13 +265,10 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
                         </div>
 
                         {isCurrentPlan ? (
-                          <button
-                            type="button"
-                            disabled
-                            className="px-5 py-2.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-black rounded-xl cursor-not-allowed flex items-center gap-1.5"
-                          >
-                            <CheckCircle2 size={14} /> Subscribed
-                          </button>
+                          <div className="px-5 py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-black uppercase tracking-wider rounded-xl flex items-center gap-2 shadow-sm">
+                            <CheckCircle2 size={16} />
+                            Your Current Plan
+                          </div>
                         ) : (
                           <button
                             type="button"
@@ -298,8 +298,9 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
           )}
         </div>
 
-        {/* Footer */}
-        <div className="flex justify-end pt-2">
+        </div>
+        {/* Sticky Footer */}
+        <div className="flex justify-end p-4 border-t border-border bg-surface/95 backdrop-blur shrink-0">
           <button
             type="button"
             onClick={onClose}
