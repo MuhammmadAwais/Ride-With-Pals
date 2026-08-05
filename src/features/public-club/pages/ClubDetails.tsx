@@ -323,7 +323,7 @@ export default function ClubDetails() {
               }`}
             >
               <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-[#EB712B]"} />
-              <span>{hasActiveMembership ? 'Member' : 'Membership'}</span>
+              <span>{hasActiveMembership ? ((myMembershipInfo as any)?.feeName || myMembershipInfo?.plan?.name || 'Active Member') : 'Membership'}</span>
             </button>
             {!isMember && !showCodeScreen && !showDepositScreen && (
               club.clubPrivacyId === 2 ? (

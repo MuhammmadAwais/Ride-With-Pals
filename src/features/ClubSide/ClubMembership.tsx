@@ -8,7 +8,7 @@
  *
  * Athlete view — list available plans + subscribe + active membership banner
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Crown,
   Plus,
@@ -59,6 +59,15 @@ import { useSendSubscriptionReminderMutation } from '@/features/subscriptions/ap
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
+
+const useModalScrollLock = () => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+};
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   active:    { label: 'Paid',       color: 'text-green-400',  bg: 'bg-green-500/10 border border-green-500/20' },
@@ -460,31 +469,35 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
             {showCustomDates && (
               <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/50 animate-in fade-in duration-200">
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                  <label htmlFor="planStartDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
                     Start Date
                   </label>
                   <input
+                    id="planStartDate"
+                    name="planStartDate"
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    onFocus={(e) => e.stopPropagation()}
-                    onKeyDown={(e) => e.stopPropagation()}
-                    className="w-full bg-surface border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
+                    onClick={(e) => {
+                      try { (e.target as HTMLInputElement).showPicker?.(); } catch(err) {}
+                    }}
+                    className="w-full bg-surface border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main relative z-50 cursor-pointer"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                  <label htmlFor="planEndDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
                     End Date
                   </label>
                   <input
+                    id="planEndDate"
+                    name="planEndDate"
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    onFocus={(e) => e.stopPropagation()}
-                    onKeyDown={(e) => e.stopPropagation()}
-                    className="w-full bg-surface border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
+                    onClick={(e) => {
+                      try { (e.target as HTMLInputElement).showPicker?.(); } catch(err) {}
+                    }}
+                    className="w-full bg-surface border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main relative z-50 cursor-pointer"
                   />
                 </div>
               </div>
@@ -524,14 +537,14 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
                         className="accent-[#EB712B] w-4 h-4 cursor-pointer"
                       />
                       <div className="flex items-center gap-2">
-                        {m.profilePicUrl ? (
-                          <img src={m.profilePicUrl} alt={m.firstName} className="w-6 h-6 rounded-full object-cover" />
+                        {m.user?.profilePicUrl ? (
+                          <img src={m.user.profilePicUrl} alt={m.user.firstName || m.user.fullName} className="w-6 h-6 rounded-full object-cover" />
                         ) : (
                           <div className="w-6 h-6 rounded-full bg-[#EB712B]/20 text-[#EB712B] flex items-center justify-center text-[10px] font-bold">
-                            {m.firstName?.[0] || 'U'}
+                            {m.user?.firstName?.[0] || m.user?.fullName?.[0] || 'U'}
                           </div>
                         )}
-                        <span className="text-xs text-text-main truncate max-w-[120px]">{m.firstName} {m.lastName}</span>
+                        <span className="text-xs text-text-main truncate max-w-[120px]">{m.user?.firstName} {m.user?.lastName} {(!m.user?.firstName && !m.user?.lastName) ? m.user?.fullName : ''}</span>
                       </div>
                     </label>
                   ))}
@@ -587,6 +600,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void }> = ({ row, clubId, onClose }) => {
+  useModalScrollLock();
   const [amount, setAmount] = useState(row.plan?.price ? String(row.plan.price) : '');
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'bank_transfer' | 'bizum' | 'other'>('cash');
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
@@ -601,8 +615,8 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
     try {
       await markAsPaid({
         clubId,
-        userId: row.userId,
-        feeId: row.feeId || row.planId,
+        userId: row.userId || row.id,
+        feeId: row.feeId || row.planId || row.plan?.id,
         amount: Number(amount),
         paymentDate: new Date(`${paymentDate}T12:00:00Z`).toISOString(),
         paymentMethod,
@@ -648,12 +662,18 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
         </div>
 
         <div>
-          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Payment Date</label>
-          <input type="date" value={paymentDate} onChange={(e) => {
-            setPaymentDate(e.target.value);
-            e.target.blur(); // Force close calendar on selection
-          }}
-            className="w-full bg-main-bg border border-border rounded-xl p-3 text-sm text-text-main outline-none focus:border-[#EB712B]" />
+          <label htmlFor="markPaymentDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Payment Date</label>
+          <input 
+            id="markPaymentDate"
+            name="markPaymentDate"
+            type="date" 
+            value={paymentDate} 
+            onChange={(e) => setPaymentDate(e.target.value)}
+            onClick={(e) => {
+              try { (e.target as HTMLInputElement).showPicker?.(); } catch(err) {}
+            }}
+            className="w-full bg-main-bg border border-border rounded-xl p-3 text-sm text-text-main outline-none focus:border-[#EB712B] relative z-50 cursor-pointer" 
+          />
         </div>
 
         <div>
@@ -684,13 +704,14 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ChangeFeeModal: React.FC<{ row: any; clubId: number; plans: any[]; onClose: () => void }> = ({ row, clubId, plans, onClose }) => {
+  useModalScrollLock();
   const [selectedFeeId, setSelectedFeeId] = useState<number | null>(null);
   const [changeFee, { isLoading }] = useChangeAssignedFeeMutation();
 
   const handleSubmit = async () => {
     if (!selectedFeeId) { toast.error('Please select a fee plan'); return; }
     try {
-      await changeFee({ clubId, userId: row.userId, newFeeId: selectedFeeId }).unwrap();
+      await changeFee({ clubId, userId: row.userId || row.id, newFeeId: selectedFeeId }).unwrap();
       toast.success(`Fee plan changed for ${row.user?.fullName || 'member'}!`);
       onClose();
     } catch (err: any) {
@@ -739,6 +760,7 @@ const ChangeFeeModal: React.FC<{ row: any; clubId: number; plans: any[]; onClose
 // ─────────────────────────────────────────────────────────────────────────────
 
 const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onClose: () => void }> = ({ row, clubId, plans, onClose }) => {
+  useModalScrollLock();
   const [showMarkPaid, setShowMarkPaid] = useState(false);
   const [showChangeFee, setShowChangeFee] = useState(false);
   const [sendReminder, { isLoading: isSendingReminder }] = useSendSubscriptionReminderMutation();
@@ -759,7 +781,8 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
 
   const handleExempt = async () => {
     try {
-      await exemptMember({ clubId, feeId: row.planId, userId: row.userId, isExempt: !isExempt }).unwrap();
+      const targetFeeId = row.feeId || row.planId || row.plan?.id;
+      await exemptMember({ clubId, feeId: targetFeeId, userId: row.userId || row.id, isExempt: !isExempt }).unwrap();
       toast.success(isExempt ? 'Exemption removed.' : `${row.user?.fullName || 'Member'} exempted from payment.`);
       onClose();
     } catch (err: any) {
@@ -769,7 +792,8 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
 
   const handleResetPending = async () => {
     try {
-      await resetPending({ clubId, feeId: row.planId, userId: row.userId }).unwrap();
+      const targetFeeId = row.feeId || row.planId || row.plan?.id;
+      await resetPending({ clubId, feeId: targetFeeId, userId: row.userId || row.id }).unwrap();
       toast.success(`${row.user?.fullName || 'Member'} reset to pending.`);
       onClose();
     } catch (err: any) {
@@ -1176,32 +1200,35 @@ const OverviewTab: React.FC<{
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Collected', value: fmtCurrency(totalCollected), icon: <DollarSign size={16} className="text-green-400" />, color: 'text-green-400', bg: 'bg-green-500/10' },
-              { label: 'Expected', value: fmtCurrency(totalExpected), icon: <TrendingUp size={16} className="text-[#EB712B]" />, color: 'text-[#EB712B]', bg: 'bg-[#EB712B]/10' },
-              { label: 'Paid', value: String(paidCount), icon: <CheckCircle2 size={16} className="text-green-400" />, color: 'text-green-400', bg: 'bg-green-500/10' },
-              { label: 'Pending', value: String(pendingCount + notRenewedCount), icon: <Clock size={16} className="text-amber-400" />, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+              { label: 'Collected', value: fmtCurrency(totalCollected), icon: <DollarSign size={18} className="text-emerald-500" />, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+              { label: 'Expected', value: fmtCurrency(totalExpected), icon: <TrendingUp size={18} className="text-[#EB712B]" />, color: 'text-[#EB712B]', bg: 'bg-[#EB712B]/10' },
+              { label: 'Paid', value: String(paidCount), icon: <CheckCircle2 size={18} className="text-emerald-500" />, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+              { label: 'Pending', value: String(pendingCount + notRenewedCount), icon: <Clock size={18} className="text-amber-500" />, color: 'text-amber-400', bg: 'bg-amber-500/10' },
             ].map((stat) => (
-              <div key={stat.label} className="bg-surface border border-border rounded-2xl p-4">
-                <div className={`w-8 h-8 ${stat.bg} rounded-xl flex items-center justify-center mb-2`}>{stat.icon}</div>
-                <p className={`text-lg font-black ${stat.color}`}>{stat.value}</p>
-                <p className="text-[10px] text-text-muted mt-0.5 uppercase tracking-wider font-bold">{stat.label}</p>
+              <div key={stat.label} className="group relative bg-surface border border-border rounded-3xl p-5 overflow-hidden hover:border-[#EB712B]/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-full blur-2xl transition-opacity duration-500 -mr-10 -mt-10" />
+                <div className={`w-10 h-10 ${stat.bg} rounded-2xl flex items-center justify-center mb-3 shadow-inner`}>{stat.icon}</div>
+                <p className={`text-2xl font-black tracking-tight ${stat.color} drop-shadow-sm`}>{stat.value}</p>
+                <p className="text-[10px] text-text-muted mt-1 uppercase tracking-widest font-black opacity-80">{stat.label}</p>
               </div>
             ))}
           </div>
 
           {/* Progress Bar */}
           {totalExpected > 0 && (
-            <div className="bg-surface border border-border rounded-2xl p-5 space-y-3">
+            <div className="bg-gradient-to-br from-surface to-main-bg border border-border rounded-3xl p-6 space-y-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-text-main">Collection Progress</p>
-                <p className="text-xs font-black text-[#EB712B]">{progress.toFixed(0)}%</p>
+                <p className="text-xs font-black uppercase tracking-widest text-text-muted">Collection Progress</p>
+                <div className="px-3 py-1 bg-[#EB712B]/10 rounded-full">
+                  <p className="text-xs font-black text-[#EB712B]">{progress.toFixed(0)}%</p>
+                </div>
               </div>
-              <div className="w-full h-3 bg-main-bg rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#EB712B] to-amber-400 rounded-full transition-all duration-700"
+              <div className="w-full h-4 bg-main-bg border border-border/50 rounded-full overflow-hidden p-0.5 shadow-inner">
+                <div className="h-full bg-gradient-to-r from-[#EB712B] via-amber-500 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(235,113,43,0.5)]"
                   style={{ width: `${progress}%` }} />
               </div>
-              <p className="text-[10px] text-text-muted">
-                {fmtCurrency(totalCollected)} collected of {fmtCurrency(totalExpected)} expected
+              <p className="text-[11px] font-bold text-text-muted/80">
+                <span className="text-text-main">{fmtCurrency(totalCollected)}</span> collected of <span className="text-text-main">{fmtCurrency(totalExpected)}</span> expected
               </p>
             </div>
           )}
@@ -1229,30 +1256,39 @@ const OverviewTab: React.FC<{
         ) : (
           <div className="space-y-3">
             {plans.map((plan: any) => (
-              <div key={plan.id} className="bg-surface border border-border rounded-2xl p-5 hover:border-[#EB712B]/20 transition-all group">
-                <div className="flex items-start justify-between gap-4">
+              <div key={plan.id} className="relative bg-gradient-to-br from-surface to-main-bg border border-border rounded-3xl p-6 hover:border-[#EB712B]/40 transition-all duration-300 group hover:shadow-xl hover:shadow-[#EB712B]/5 overflow-hidden hover:-translate-y-0.5">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EB712B]/5 rounded-bl-full -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-110" />
+                <div className="flex items-start justify-between gap-4 relative z-10">
                   <div
                     onClick={() => onViewDetail(plan.id)}
                     className="flex-1 min-w-0 cursor-pointer"
                     title="Click to view plan details"
                   >
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-sm font-bold text-text-main truncate group-hover:text-[#EB712B] transition-colors">{plan.name}</h3>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h3 className="text-lg font-black text-text-main truncate group-hover:text-[#EB712B] transition-colors">{plan.name}</h3>
                       {plan.saveAsDraft && (
-                        <span className="px-2 py-0.5 bg-slate-500/10 border border-slate-500/20 rounded-full text-[9px] font-bold text-slate-400 uppercase tracking-wider">Draft</span>
+                        <span className="px-2.5 py-1 bg-slate-500/10 border border-slate-500/20 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest shadow-sm">Draft</span>
                       )}
                     </div>
-                    <p className="text-[10px] text-text-muted mt-1">
-                      {fmtCurrency(plan.price, plan.currency)} / {plan.billingInterval}
-                      {plan.endDate && ` · Until ${fmtDate(plan.endDate)}`}
-                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-sm font-black text-text-main">{fmtCurrency(plan.price, plan.currency)}</span>
+                      <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">/ {plan.billingInterval}</span>
+                    </div>
+                    {plan.endDate && (
+                      <p className="text-[10px] text-text-muted/80 mt-1 font-bold">
+                        Valid until {fmtDate(plan.endDate)}
+                      </p>
+                    )}
                     {plan.features && plan.features.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
+                      <div className="flex flex-wrap gap-2 mt-4">
                         {plan.features.slice(0, 3).map((f: string, i: number) => (
-                          <span key={i} className="px-2 py-0.5 bg-main-bg border border-border rounded-full text-[9px] text-text-muted">{f}</span>
+                          <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-main-bg/80 border border-border/60 rounded-xl">
+                             <Check size={10} className="text-[#EB712B]" />
+                             <span className="text-[10px] font-bold text-text-main">{f}</span>
+                          </div>
                         ))}
                         {plan.features.length > 3 && (
-                          <span className="px-2 py-0.5 bg-main-bg border border-border rounded-full text-[9px] text-text-muted">+{plan.features.length - 3} more</span>
+                          <span className="px-3 py-1.5 bg-main-bg/80 border border-border/60 rounded-xl text-[10px] font-bold text-text-muted">+{plan.features.length - 3} more</span>
                         )}
                       </div>
                     )}

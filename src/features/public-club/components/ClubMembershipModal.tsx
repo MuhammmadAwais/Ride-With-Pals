@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Crown, Check, Loader2, X, CheckCircle2, ShieldCheck, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -48,11 +48,24 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
 
   const [subscribe] = useSubscribeToMembershipPlanMutation();
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const plans: any[] = plansData || [];
   const currentStatus = myInfo?.status || 'none';
-  const myPlanId = myInfo?.planId || myInfo?.plan?.id;
+  const myPlanId = (myInfo as any)?.feeId || myInfo?.planId || myInfo?.plan?.id;
+  const currentPlan = plans.find((p) => p.id === myPlanId);
+  const currentPlanPrice = currentPlan?.price || myInfo?.plan?.price || (myInfo as any)?.planSnapshot?.price || 0;
 
   const handleSubscribe = async (plan: any) => {
     setSubscribingId(plan.id);
@@ -148,9 +161,9 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
                       ? 'Pending Payment'
                       : 'No Active Membership'}
                   </span>
-                  {myInfo?.plan?.name && (
+                  {((myInfo as any)?.feeName || myInfo?.plan?.name) && (
                     <span className="text-xs font-bold text-text-muted">
-                      ({myInfo.plan.name})
+                      ({(myInfo as any).feeName || myInfo?.plan?.name})
                     </span>
                   )}
                 </div>
@@ -268,6 +281,10 @@ export const ClubMembershipModal: React.FC<ClubMembershipModalProps> = ({
                           <div className="px-5 py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-black uppercase tracking-wider rounded-xl flex items-center gap-2 shadow-sm">
                             <CheckCircle2 size={16} />
                             Your Current Plan
+                          </div>
+                        ) : myPlanId && currentStatus === 'active' && plan.price <= currentPlanPrice ? (
+                          <div className="px-5 py-2.5 bg-slate-500/10 border border-slate-500/20 text-slate-400 text-[11px] font-black uppercase tracking-wider rounded-xl flex items-center gap-2 shadow-sm">
+                            Included in Membership
                           </div>
                         ) : (
                           <button
