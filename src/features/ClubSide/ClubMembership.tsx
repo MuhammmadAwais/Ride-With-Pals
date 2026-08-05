@@ -769,6 +769,7 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
 
   const isExempt = row.isExempt || row.paymentStatus === 'exempt' || row.status === 'exempt';
   const statusCfg = getStatusConfig(row);
+  const targetFeeId = row.feeId || row.planId || row.plan?.id;
 
   const handleSendReminder = async () => {
     try {
@@ -781,7 +782,6 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
 
   const handleExempt = async () => {
     try {
-      const targetFeeId = row.feeId || row.planId || row.plan?.id;
       await exemptMember({ clubId, feeId: targetFeeId, userId: row.userId || row.id, isExempt: !isExempt }).unwrap();
       toast.success(isExempt ? 'Exemption removed.' : `${row.user?.fullName || 'Member'} exempted from payment.`);
       onClose();
@@ -792,7 +792,6 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
 
   const handleResetPending = async () => {
     try {
-      const targetFeeId = row.feeId || row.planId || row.plan?.id;
       await resetPending({ clubId, feeId: targetFeeId, userId: row.userId || row.id }).unwrap();
       toast.success(`${row.user?.fullName || 'Member'} reset to pending.`);
       onClose();
@@ -864,40 +863,48 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
         <div>
           <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-2">Fee Actions</p>
           <div className="space-y-2">
-            <FeeAction
-              icon={<Send size={16} className="text-[#EB712B]" />}
-              label="Send Payment Request"
-              sublabel="Send reminder via email and push notification"
-              onClick={handleSendReminder}
-              isLoading={isSendingReminder}
-              accent
-            />
-            <FeeAction
-              icon={<CheckCircle2 size={16} className="text-green-400" />}
-              label="Mark as Paid Manually"
-              sublabel="Record a cash or offline payment"
-              onClick={() => setShowMarkPaid(true)}
-            />
+            {targetFeeId && (
+              <>
+                <FeeAction
+                  icon={<Send size={16} className="text-[#EB712B]" />}
+                  label="Send Payment Request"
+                  sublabel="Send reminder via email and push notification"
+                  onClick={handleSendReminder}
+                  isLoading={isSendingReminder}
+                  accent
+                />
+                <FeeAction
+                  icon={<CheckCircle2 size={16} className="text-green-400" />}
+                  label="Mark as Paid Manually"
+                  sublabel="Record a cash or offline payment"
+                  onClick={() => setShowMarkPaid(true)}
+                />
+              </>
+            )}
             <FeeAction
               icon={<ArrowLeftRight size={16} className="text-sky-400" />}
-              label="Change Assigned Fee"
-              sublabel="Move this member to a different fee plan"
+              label={targetFeeId ? "Change Assigned Fee" : "Assign Fee Plan"}
+              sublabel={targetFeeId ? "Move this member to a different fee plan" : "Assign a membership fee plan to this member"}
               onClick={() => setShowChangeFee(true)}
             />
-            <FeeAction
-              icon={<Percent size={16} className="text-slate-400" />}
-              label={isExempt ? 'Remove Exemption' : 'Exempt from Payment'}
-              sublabel={isExempt ? 'Re-assign this member to the fee' : 'Mark as not required to pay'}
-              onClick={handleExempt}
-              isLoading={isExempting}
-            />
-            <FeeAction
-              icon={<RefreshCw size={16} className="text-amber-400" />}
-              label="Reset to Pending"
-              sublabel="Clear payment status and reset to pending"
-              onClick={handleResetPending}
-              isLoading={isResetting}
-            />
+            {targetFeeId && (
+              <>
+                <FeeAction
+                  icon={<Percent size={16} className="text-slate-400" />}
+                  label={isExempt ? 'Remove Exemption' : 'Exempt from Payment'}
+                  sublabel={isExempt ? 'Re-assign this member to the fee' : 'Mark as not required to pay'}
+                  onClick={handleExempt}
+                  isLoading={isExempting}
+                />
+                <FeeAction
+                  icon={<RefreshCw size={16} className="text-amber-400" />}
+                  label="Reset to Pending"
+                  sublabel="Clear payment status and reset to pending"
+                  onClick={handleResetPending}
+                  isLoading={isResetting}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
