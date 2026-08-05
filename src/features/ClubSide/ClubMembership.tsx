@@ -55,9 +55,8 @@ import {
 } from '@/features/club/api/stripeApiSlice';
 import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useSendSubscriptionReminderMutation } from '@/features/subscriptions/api/subscriptionApiSlice';
+import DataTable, { type Column } from '@/components/ui/DataTable';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
 const useModalScrollLock = () => {
@@ -824,18 +823,22 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
   );
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end justify-center z-[60] p-4 animate-in fade-in duration-200" onClick={onClose}>
-      <div className="bg-surface border border-border rounded-3xl p-5 w-full max-w-lg space-y-5 shadow-2xl mb-2 animate-in slide-in-from-bottom-4 duration-300"
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200" onClick={onClose} style={{ overscrollBehavior: 'none' }}>
+      <div className="bg-surface border border-border rounded-3xl p-5 w-full max-w-md space-y-5 shadow-2xl animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}>
         {/* Member Info */}
         <div className="flex items-center justify-between pb-4 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-[#EB712B]/20 flex items-center justify-center">
-              <span className="text-sm font-black text-[#EB712B]">{initials(row.user?.fullName)}</span>
+            <div className="w-11 h-11 rounded-2xl bg-[#EB712B]/20 flex items-center justify-center overflow-hidden">
+              {row.profileImage || row.profilePicUrl || row.user?.profilePicUrl ? (
+                 <img src={row.profileImage || row.profilePicUrl || row.user?.profilePicUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                 <span className="text-sm font-black text-[#EB712B]">{initials(row.fullName || row.memberName || row.name || row.user?.fullName)}</span>
+              )}
             </div>
             <div>
-              <p className="text-sm font-black text-text-main">{row.user?.fullName || 'Member'}</p>
-              <p className="text-[10px] text-text-muted">{row.user?.email}</p>
+              <p className="text-sm font-black text-text-main">{row.fullName || row.memberName || row.name || row.user?.fullName || 'Member'}</p>
+              <p className="text-[10px] text-text-muted">{row.email || row.user?.email}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -1069,6 +1072,88 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
 
   const members: any[] = Array.isArray(membersData) ? membersData : [];
 
+  const columns: Column<any>[] = [
+    {
+      key: 'name',
+      label: 'Member',
+      sortable: true,
+      render: (row) => {
+        const name = row.fullName || row.memberName || row.name || row.user?.fullName || `Member #${row.userId || row.id}`;
+        return (
+          <div 
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => setSelectedMember(row)}
+            title="Click to view member actions"
+          >
+            <div className="w-10 h-10 rounded-full bg-hover flex items-center justify-center flex-shrink-0 border border-border overflow-hidden">
+              {row.profileImage || row.profilePicUrl || row.user?.profilePicUrl ? (
+                <img src={row.profileImage || row.profilePicUrl || row.user?.profilePicUrl} alt={name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-[#EB712B]/20 text-[#EB712B] font-black flex items-center justify-center uppercase text-xs">
+                  {name.slice(0, 2)}
+                </div>
+              )}
+            </div>
+            <div>
+              <div className="text-sm font-bold text-text-main group-hover:text-[#EB712B] transition-colors">{name}</div>
+              <div className="text-[10px] text-text-muted">{row.email || row.user?.email || '—'}</div>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: 'plan',
+      label: 'Fee Plan',
+      sortable: true,
+      render: (row) => {
+        const planName = row.planName || row.plan?.name || 'Club Membership';
+        return (
+          <div>
+            <div className="text-sm font-medium text-text-main">{planName}</div>
+            {row.currentPeriodEnd && <div className="text-[10px] text-text-muted">Valid until {fmtDate(row.currentPeriodEnd)}</div>}
+          </div>
+        );
+      }
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      sortable: true,
+      render: (row) => {
+        const status = row.status || 'pending';
+        const statusBadge = {
+          active: { label: 'Paid', bg: 'bg-green-500/10 text-green-400 border-green-500/20' },
+          pending: { label: 'Pending', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
+          not_renewed: { label: 'Not Renewed', bg: 'bg-red-500/10 text-red-400 border-red-500/20' },
+          exempt: { label: 'Exempt', bg: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
+        }[status as string] || { label: status, bg: 'bg-slate-500/10 text-slate-400 border-slate-500/20' };
+        
+        return (
+          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider ${statusBadge.bg}`}>
+            {statusBadge.label}
+          </span>
+        );
+      }
+    },
+    {
+      key: 'actions',
+      label: '',
+      sortable: false,
+      render: (row) => (
+        <div className="flex justify-end">
+          <button 
+            onClick={() => setSelectedMember(row)}
+            className="p-2 rounded-lg hover:bg-[#EB712B]/10 text-text-muted hover:text-[#EB712B] transition-colors"
+            title="View Actions"
+          >
+            <ArrowLeftRight size={16} />
+          </button>
+        </div>
+      )
+    }
+  ];
+
   return (
     <>
       {selectedMember && (
@@ -1117,48 +1202,7 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {members.map((m: any) => {
-              const name = m.name || m.username || m.user?.name || `Member #${m.userId || m.id}`;
-              const status = m.status || 'pending';
-              const planName = m.planName || m.plan?.name || 'Club Membership';
-
-              const statusBadge = {
-                active: { label: 'Paid', bg: 'bg-green-500/10 text-green-400 border-green-500/20' },
-                pending: { label: 'Pending', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-                not_renewed: { label: 'Not Renewed', bg: 'bg-red-500/10 text-red-400 border-red-500/20' },
-                exempt: { label: 'Exempt', bg: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-              }[status as string] || { label: status, bg: 'bg-slate-500/10 text-slate-400 border-slate-500/20' };
-
-              return (
-                <div
-                  key={m.id || m.userId}
-                  onClick={() => setSelectedMember(m)}
-                  className="bg-surface border border-border hover:border-[#EB712B]/40 rounded-2xl p-4 flex items-center justify-between gap-4 transition-all cursor-pointer group"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-main-bg border border-border flex items-center justify-center font-black text-xs text-[#EB712B] uppercase shrink-0">
-                      {name.slice(0, 2)}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-text-main truncate group-hover:text-[#EB712B] transition-colors">
-                        {name}
-                      </p>
-                      <p className="text-[10px] text-text-muted truncate">
-                        {planName} {m.currentPeriodEnd && `· Valid until ${fmtDate(m.currentPeriodEnd)}`}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider ${statusBadge.bg}`}>
-                      {statusBadge.label}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <DataTable data={members} columns={columns} />
         )}
       </div>
     </>
@@ -1268,59 +1312,77 @@ const OverviewTab: React.FC<{
         ) : (
           <div className="space-y-3">
             {plans.map((plan: any) => (
-              <div key={plan.id} className="relative bg-gradient-to-br from-surface to-main-bg border border-border rounded-3xl p-6 hover:border-[#EB712B]/40 transition-all duration-300 group hover:shadow-xl hover:shadow-[#EB712B]/5 overflow-hidden hover:-translate-y-0.5">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EB712B]/5 rounded-bl-full -mr-8 -mt-8 transition-transform duration-500 group-hover:scale-110" />
-                <div className="flex items-start justify-between gap-4 relative z-10">
+              <div key={plan.id} className="relative bg-surface border border-border rounded-2xl p-6 transition-all duration-300 group hover:border-[#EB712B]/30 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden">
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#EB712B]/20 group-hover:bg-[#EB712B] transition-colors duration-300" />
+                
+                <div className="flex items-start justify-between gap-4 ml-2">
                   <div
                     onClick={() => onViewDetail(plan.id)}
                     className="flex-1 min-w-0 cursor-pointer"
                     title="Click to view plan details"
                   >
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <h3 className="text-lg font-black text-text-main truncate group-hover:text-[#EB712B] transition-colors">{plan.name}</h3>
+                    <div className="flex items-center gap-3 flex-wrap mb-2">
+                      <div className="flex items-center gap-2">
+                        <Crown size={18} className="text-[#EB712B]" />
+                        <h3 className="text-lg font-black text-text-main truncate group-hover:text-[#EB712B] transition-colors">{plan.name}</h3>
+                      </div>
                       {plan.saveAsDraft && (
                         <span className="px-2.5 py-1 bg-slate-500/10 border border-slate-500/20 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest shadow-sm">Draft</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-sm font-black text-text-main">{fmtCurrency(plan.price, plan.currency)}</span>
-                      <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">/ {plan.billingInterval}</span>
+
+                    <div className="grid grid-cols-2 gap-4 mt-5">
+                      <div>
+                        <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">Fee Amount</p>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-xl font-black text-text-main">{fmtCurrency(plan.price, plan.currency)}</span>
+                          <span className="text-[10px] font-bold text-text-muted uppercase">/ {plan.billingInterval}</span>
+                        </div>
+                      </div>
+                      {plan.endDate && (
+                        <div>
+                          <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">Valid Until</p>
+                          <p className="text-sm font-bold text-text-main mt-1">{fmtDate(plan.endDate)}</p>
+                        </div>
+                      )}
                     </div>
-                    {plan.endDate && (
-                      <p className="text-[10px] text-text-muted/80 mt-1 font-bold">
-                        Valid until {fmtDate(plan.endDate)}
-                      </p>
-                    )}
+
                     {plan.features && plan.features.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mt-4">
-                        {plan.features.slice(0, 3).map((f: string, i: number) => (
-                          <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-main-bg/80 border border-border/60 rounded-xl">
-                             <Check size={10} className="text-[#EB712B]" />
-                             <span className="text-[10px] font-bold text-text-main">{f}</span>
-                          </div>
-                        ))}
-                        {plan.features.length > 3 && (
-                          <span className="px-3 py-1.5 bg-main-bg/80 border border-border/60 rounded-xl text-[10px] font-bold text-text-muted">+{plan.features.length - 3} more</span>
-                        )}
+                      <div className="mt-5 border-t border-border/50 pt-4">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-3">Included Features</p>
+                        <div className="flex flex-wrap gap-2">
+                          {plan.features.slice(0, 3).map((f: string, i: number) => (
+                            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-main-bg border border-border rounded-xl">
+                              <Check size={10} className="text-[#EB712B]" />
+                              <span className="text-[10px] font-bold text-text-main">{f}</span>
+                            </div>
+                          ))}
+                          {plan.features.length > 3 && (
+                            <span className="px-3 py-1.5 bg-main-bg border border-border rounded-xl text-[10px] font-bold text-text-muted">+{plan.features.length - 3} more</span>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+
+                  <div className="flex flex-col items-end gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => onViewDetail(plan.id)}
                       title="View Plan Details"
-                      className="w-8 h-8 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-[#EB712B] hover:border-[#EB712B]/30 transition-all cursor-pointer"
+                      className="w-9 h-9 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-[#EB712B] hover:border-[#EB712B]/30 transition-all cursor-pointer shadow-sm hover:shadow-md"
                     >
-                      <Eye size={13} />
+                      <Eye size={15} />
                     </button>
                     <button onClick={() => onEdit(plan)}
-                      className="w-8 h-8 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-[#EB712B] hover:border-[#EB712B]/30 transition-all cursor-pointer">
-                      <Edit2 size={13} />
+                      title="Edit Plan"
+                      className="w-9 h-9 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-sky-400 hover:border-sky-400/30 transition-all cursor-pointer shadow-sm hover:shadow-md">
+                      <Edit2 size={15} />
                     </button>
                     <button onClick={() => onDelete(plan.id)} disabled={isDeleting}
-                      className="w-8 h-8 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-red-400 hover:border-red-500/30 transition-all cursor-pointer disabled:opacity-50">
-                      {isDeleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
+                      title="Delete Plan"
+                      className="w-9 h-9 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-red-400 hover:border-red-500/30 transition-all cursor-pointer disabled:opacity-50 shadow-sm hover:shadow-md">
+                      {isDeleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
                     </button>
                   </div>
                 </div>

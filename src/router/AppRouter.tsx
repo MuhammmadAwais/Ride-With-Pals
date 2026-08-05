@@ -67,7 +67,7 @@ import Shop from '@/features/public-club/pages/Shop';
 import Marketplace from '@/features/public-club/pages/Marketplace';
 import UserSubscription from '@/features/public-club/pages/UserSubscription';
 import UserWallet from '@/features/public-club/pages/UserWallet';
-
+/* eslint-disable react-refresh/only-export-components */
 
 // ── New Polished Support Page ──
 import Support from '@/features/support/Support';

@@ -92,18 +92,18 @@ const RideJoining = () => {
   const [isSaved, setIsSaved] = useState(false);
 
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
-  const joinedRows = joinedClubsData?.rows || [];
   const { myClubs } = useAppSelector((s) => s.club);
 
   const isClubMemberOrOwner = useMemo(() => {
     if (!rideResponse) return false;
     const cid = Number((rideResponse as any)?.clubId || (rideResponse as any)?.club?.id);
     if (!cid) return false;
+    const joinedRows = joinedClubsData?.rows || [];
     return (
       joinedRows.some((c: any) => Number(c.id) === cid) ||
       myClubs.some((c: any) => Number(c.id) === cid)
     );
-  }, [rideResponse, joinedRows, myClubs]);
+  }, [rideResponse, joinedClubsData?.rows, myClubs]);
 
   const isJoined = Boolean((rideResponse as any)?.isJoined || localJoined);
 

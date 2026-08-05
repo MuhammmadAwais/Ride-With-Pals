@@ -15,6 +15,26 @@ const formatItemImage = (img?: string | null): string => {
   return `https://api.ridewithpals.com/uploads/${img}`;
 };
 
+const TableSkeleton = () => (
+  <div className="animate-pulse space-y-4 p-6 bg-surface rounded-3xl border border-border">
+    {[1, 2, 3, 4].map((i) => (
+      <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
+        <div className="flex items-center gap-4 flex-1">
+          <div className="w-12 h-12 rounded-xl bg-hover/50" />
+          <div className="space-y-2">
+            <div className="w-32 h-4 bg-hover/50 rounded" />
+            <div className="w-20 h-3 bg-hover/50 rounded" />
+          </div>
+        </div>
+        <div className="w-24 h-4 bg-hover/50 rounded" />
+        <div className="w-20 h-4 bg-hover/50 rounded" />
+        <div className="w-20 h-4 bg-hover/50 rounded" />
+        <div className="w-24 h-7 bg-hover/50 rounded-full" />
+      </div>
+    ))}
+  </div>
+);
+
 const MyPurchases = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [cancellingId, setCancellingId] = useState<string | null>(null);
@@ -145,25 +165,7 @@ const MyPurchases = () => {
     }
   ];
 
-  const TableSkeleton = () => (
-    <div className="animate-pulse space-y-4 p-6 bg-surface rounded-3xl border border-border">
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
-          <div className="flex items-center gap-4 flex-1">
-            <div className="w-12 h-12 rounded-xl bg-hover/50" />
-            <div className="space-y-2">
-              <div className="w-32 h-4 bg-hover/50 rounded" />
-              <div className="w-20 h-3 bg-hover/50 rounded" />
-            </div>
-          </div>
-          <div className="w-24 h-4 bg-hover/50 rounded" />
-          <div className="w-20 h-4 bg-hover/50 rounded" />
-          <div className="w-20 h-4 bg-hover/50 rounded" />
-          <div className="w-24 h-7 bg-hover/50 rounded-full" />
-        </div>
-      ))}
-    </div>
-  );
+
 
   return (
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8">

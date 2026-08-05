@@ -112,7 +112,7 @@ const UserSubscription = () => {
       }).unwrap();
 
       if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
-        window.location.href = res.checkoutUrl;
+        window.location.assign(res.checkoutUrl);
       } else {
         toast.error("Could not initiate checkout.");
       }
@@ -130,7 +130,7 @@ const UserSubscription = () => {
         : (res?.url || (res as any)?.portalUrl || (res as any)?.response?.url || (res as any)?.response?.portalUrl);
 
       if (typeof portalUrl === 'string' && portalUrl.startsWith('http')) {
-        window.location.href = portalUrl;
+        window.location.assign(portalUrl);
       } else {
         toast.error((res as any)?.message || "Could not open billing portal.");
       }
