@@ -4,7 +4,19 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { landingHtml } from './landingTemplate';
+
+// Import newly converted native React sections
+import { Navigation } from './components/Navigation';
+import { HeroSection } from './components/HeroSection';
+import { HowitWorksSection } from './components/HowitWorksSection';
+import { BentoSection } from './components/BentoSection';
+import { FeaturesSection } from './components/FeaturesSection';
+import { ComparisonSection } from './components/ComparisonSection';
+import { TestimonialsSection } from './components/TestimonialsSection';
+import { PricingSection } from './components/PricingSection';
+import { FAQSection } from './components/FAQSection';
+import { BlogSection } from './components/BlogSection';
+import { CTASection } from './components/CTASection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,6 +60,17 @@ const LandingPage: React.FC = () => {
           min-height: 100vh;
           position: relative;
         }
+        
+        /* Hide Framer Badge elements */
+        #__framer-badge-container, 
+        .framer-badge,
+        [href*="framer.com/badge"],
+        [href*="framer.link"] {
+          display: none !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+
         .clario-landing-wrapper a, .clario-landing-wrapper button {
           transition: transform 0.2s ease, opacity 0.2s ease !important;
         }
@@ -153,55 +176,98 @@ const LandingPage: React.FC = () => {
   useGSAP(() => {
     if (!containerRef.current) return;
     
-    // Animate the navigation
-    gsap.fromTo(
-      'nav',
-      { y: -50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
-    );
+    const initAnimations = () => {
+      // Animate the navigation
+      gsap.fromTo(
+        'nav',
+        { y: -50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
+      );
 
-    // Animate all major sections on scroll
-    const sections = gsap.utils.toArray('section') as HTMLElement[];
-    sections.forEach((section, i) => {
-      // If it's the first section (hero), animate immediately
-      if (i === 0) {
-        gsap.fromTo(
-          section.querySelectorAll('h1, h2, p, a, button'),
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.2 }
-        );
-        gsap.fromTo(
-          section.querySelectorAll('img'),
-          { scale: 0.95, opacity: 0, y: 40 },
-          { scale: 1, opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: 'power3.out', delay: 0.4 }
-        );
-      } else {
-        // Other sections fade in as you scroll
-        gsap.fromTo(
-          section,
-          { y: 50, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
+      // Animate all major sections on scroll
+      const sections = gsap.utils.toArray('section') as HTMLElement[];
+      sections.forEach((section, i) => {
+        section.style.willChange = 'transform, opacity';
+        
+        // If it's the first section (hero), animate immediately
+        if (i === 0) {
+          gsap.fromTo(
+            section.querySelectorAll('h1, h2, p, a, button'),
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.2 }
+          );
+          gsap.fromTo(
+            section.querySelectorAll('img'),
+            { scale: 0.95, opacity: 0, y: 40 },
+            { scale: 1, opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: 'power3.out', delay: 0.4 }
+          );
+        } else {
+          // Other sections fade in as you scroll
+          gsap.fromTo(
+            section,
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              }
             }
-          }
-        );
-      }
-    });
+          );
+        }
+      });
+      ScrollTrigger.refresh();
+    };
+
+    // Wait for images to load before initializing ScrollTrigger to prevent height miscalculations
+    const images = Array.from(containerRef.current.querySelectorAll('img'));
+    let loadedCount = 0;
+    
+    if (images.length === 0) {
+      initAnimations();
+    } else {
+      images.forEach(img => {
+        if (img.complete) {
+          loadedCount++;
+          if (loadedCount === images.length) initAnimations();
+        } else {
+          img.addEventListener('load', () => {
+            loadedCount++;
+            if (loadedCount === images.length) initAnimations();
+          });
+          img.addEventListener('error', () => {
+            loadedCount++;
+            if (loadedCount === images.length) initAnimations();
+          });
+        }
+      });
+    }
   }, { scope: containerRef });
 
   return (
-    <div 
-      ref={containerRef}
-      className="clario-landing-wrapper"
-      dangerouslySetInnerHTML={{ __html: landingHtml }} 
-    />
+    <div ref={containerRef} className="clario-landing-wrapper">
+      <div id="main" className="framer-K8Bhh" style={{ display: 'contents' }}>
+        <div className="framer-xvlLx framer-c5oytb" style={{ display: 'contents' }}>
+          <Navigation />
+          <div className="framer-iDUXM framer-VE8XF framer-R82EX framer-hFyMR framer-72rtr7" style={{ minHeight: '100vh', width: 'auto', display: 'contents' }}>
+            <HeroSection />
+            <HowitWorksSection />
+            <BentoSection />
+            <FeaturesSection />
+            <ComparisonSection />
+            <TestimonialsSection />
+            <PricingSection />
+            <FAQSection />
+            <BlogSection />
+            <CTASection />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
