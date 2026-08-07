@@ -23,7 +23,7 @@ export default function EditClub() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [visibility, setVisibility] = useState("Public");
-  const [clubType, setClubType] = useState("Biking / Cycling");
+  const [clubType, setClubType] = useState("Cycling");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [bannerFile, setBannerFile] = useState<string | null>(null);
@@ -39,11 +39,11 @@ export default function EditClub() {
       setPhone(activeClub.phone || "");
       setVisibility(activeClub.clubPrivacyId === 2 ? "Private" : "Public");
 
-      let typeStr = "Biking / Cycling";
+      let typeStr = "Cycling";
       if (activeClub.clubTypeId === 2) {
         typeStr = "Running";
       } else if (activeClub.clubTypeId === 3) {
-        typeStr = "Cycling & Running";
+        typeStr = "Triathlon";
       }
       setClubType(typeStr);
       setLocation(activeClub.location || "");
@@ -113,7 +113,7 @@ export default function EditClub() {
       let clubTypeId = 1;
       if (clubType === 'Running') {
         clubTypeId = 2;
-      } else if (clubType === 'Cycling & Running') {
+      } else if (clubType === 'Triathlon') {
         clubTypeId = 3;
       }
 
@@ -304,9 +304,9 @@ export default function EditClub() {
                     onChange={(e) => setClubType(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/10"
                   >
-                    <option>Biking / Cycling</option>
-                    <option>Running</option>
-                    <option>Cycling & Running</option>
+                    <option value="Cycling">Cycling</option>
+                    <option value="Running">Running</option>
+                    <option value="Triathlon">Triathlon</option>
                   </select>
                   <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none">
                     <svg

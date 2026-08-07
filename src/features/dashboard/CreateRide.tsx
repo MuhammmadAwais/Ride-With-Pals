@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
@@ -23,6 +23,9 @@ export const CreateRide: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const dateInputRef2 = useRef<HTMLInputElement>(null);
 
   const toastRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -68,6 +71,33 @@ export const CreateRide: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showSuccessToast, navigate, dispatch]);
+
+  // Close date picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
+        setShowDatePicker(false);
+      }
+    };
+    if (showDatePicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showDatePicker]);
+
+  // Close dropdown when clicking outside
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const handleDocumentClick = useCallback((e: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      setOpenDropdown(null);
+    }
+  }, []);
+  useEffect(() => {
+    if (openDropdown) {
+      document.addEventListener('mousedown', handleDocumentClick);
+    }
+    return () => document.removeEventListener('mousedown', handleDocumentClick);
+  }, [openDropdown, handleDocumentClick]);
 
   const toggleDropdown = (field: string | null) => {
     setOpenDropdown(openDropdown === field ? null : field);
@@ -224,17 +254,20 @@ export const CreateRide: React.FC = () => {
     }
   };
 
-  // Helper arrays for Step 1
+  // Activity types matching backend IDs
   const activityTypes = [
-    { id: 1, name: 'Road Cycling' },
-    { id: 2, name: 'Mountain Biking' },
-    { id: 3, name: 'Gravel Riding' },
+    { id: 1, name: 'Cycling' },
+    { id: 2, name: 'Running' },
+    { id: 3, name: 'Triathlon' },
+    { id: 4, name: 'Swimming' },
   ];
 
   const categoryTypes = [
     { id: 1, name: 'Social Roll' },
     { id: 2, name: 'Training Run' },
     { id: 3, name: 'Race Simulation' },
+    { id: 4, name: 'Charity Ride' },
+    { id: 5, name: 'Group Tour' },
   ];
 
   const sportSubTypes = [
@@ -242,10 +275,30 @@ export const CreateRide: React.FC = () => {
     { id: 2, name: 'Enduro' },
     { id: 3, name: 'Downhill' },
     { id: 4, name: 'Gran Fondo' },
+    { id: 5, name: 'Time Trial' },
+    { id: 6, name: 'Criterium' },
+    { id: 7, name: 'Track' },
+    { id: 8, name: 'Gravel' },
   ];
 
-  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const paceOptions = [
+    { value: 'Easy', label: 'Easy — Conversational pace' },
+    { value: 'Moderate', label: 'Moderate — Steady effort' },
+    { value: 'Fast', label: 'Fast — Challenging pace' },
+    { value: 'Race', label: 'Race — All out' },
+  ];
 
+  // Format date value for display
+  const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return 'Select date';
+    try {
+      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const slotsOptions = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
   return (
@@ -342,17 +395,33 @@ export const CreateRide: React.FC = () => {
                 </div>
 
                 {/* Date */}
-                <div className="space-y-2">
+                <div className="space-y-2" ref={datePickerRef}>
                   <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Date</label>
-                  <input 
-                    type="date" 
-                    value={formState.date}
-                    onChange={(e) => {
-                      dispatch(updateStepFields({ date: e.target.value }));
-                      e.target.blur();
-                    }}
-                    className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer`}
-                  />
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setShowDatePicker(prev => !prev); }}
+                    className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer`}
+                  >
+                    <span className={formState.date ? 'text-text-main' : 'text-text-muted'}>
+                      {formatDateDisplay(formState.date)}
+                    </span>
+                    <ChevronDown size={18} className="text-text-muted" />
+                  </button>
+                  {showDatePicker && (
+                    <div className="absolute z-50 mt-1 bg-main-bg border border-border rounded-2xl shadow-2xl p-3">
+                      <input
+                        ref={dateInputRef2}
+                        type="date"
+                        value={formState.date}
+                        onChange={(e) => {
+                          dispatch(updateStepFields({ date: e.target.value }));
+                          setShowDatePicker(false);
+                        }}
+                        className="w-full bg-transparent text-text-main outline-none cursor-pointer"
+                        autoFocus
+                      />
+                    </div>
+                  )}
                   {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
                 </div>
 

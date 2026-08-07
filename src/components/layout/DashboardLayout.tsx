@@ -4,6 +4,7 @@ import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { refreshUserInfo } from '@/features/auth/slices/authSlice';
 import { LayoutDashboard, Users, Calendar, MessageSquare, User, Loader2 } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 import { Helmet } from 'react-helmet-async';
 import { APP_NAME } from '@/Constants';
 
@@ -12,6 +13,7 @@ export const DashboardLayout: React.FC = () => {
   const location = useLocation();
   const user = useAppSelector((state) => state.auth.user);
   const [isLoadingInfo, setIsLoadingInfo] = useState(true);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     dispatch(refreshUserInfo())
@@ -44,9 +46,7 @@ export const DashboardLayout: React.FC = () => {
           <div className="space-y-8">
             {/* Brand Logo / Section Title */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#EB712B] flex items-center justify-center font-bold text-white text-sm">
-                RWP
-              </div>
+              <img src={isDark ? '/Images/Logo.png' : '/Images/official_logo.png'} alt="RWP Logo" className={isDark ? "h-8 object-contain" : "h-11 object-contain"} />
               <div>
                 <h1 className="font-extrabold text-sm tracking-wider uppercase text-text-main">Ride With Pals</h1>
                 <p className="text-xs text-text-muted">Dashboard Portal</p>

@@ -136,7 +136,7 @@ export const ClubService = {
     let clubTypeId = 1;
     if (payload.clubType === 'Running') {
       clubTypeId = 2;
-    } else if (payload.clubType === 'Cycling & Running') {
+    } else if (payload.clubType === 'Triathlon') {
       clubTypeId = 3;
     }
 

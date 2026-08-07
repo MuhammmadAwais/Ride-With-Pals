@@ -12,7 +12,7 @@ export default function ProfileSetup() {
   const container = useRef(null); 
   
   const [clubName, setClubName] = useState("");
-  const [clubType, setClubType] = useState("1"); // 1=Road Racing, 2=Running, 3=Cycling & Running
+  const [clubType, setClubType] = useState("1"); // 1=Cycling, 2=Running, 3=Triathlon
   const [privacy, setPrivacy] = useState("1"); // 1=Public, 2=Private
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -139,18 +139,18 @@ export default function ProfileSetup() {
         className="hidden md:flex w-[40%] bg-cover bg-center p-10 flex-col justify-end relative fade-in"
         style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/Images/CycleImage2.png')" }}
       >
-        <div className="absolute top-10 left-10 text-white/10 font-black text-7xl tracking-tighter transition-all duration-500 hover:text-[#EB712B] hover:opacity-100 cursor-pointer">
-          RWP
+        <div className="absolute top-10 left-10">
+          <img src="/Images/Logo.png" alt="RWP Logo" className="h-12 object-contain" />
         </div>
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-3">
             <Sparkles size={10} /> Onboarding Phase 01
           </div>
           <h1 className="text-4xl font-bold text-white mb-4 transition-colors duration-300 hover:text-[#EB712B] cursor-pointer">
-            Define Your Legacy
+            Connect with your club members.
           </h1>
           <p className="text-gray-300 text-sm leading-relaxed">
-            Welcome to Ride With Pals. Establish your club's presence in the premier digital ecosystem.
+            Handle everything in just one place.
           </p>
         </div>
       </div>
@@ -214,9 +214,9 @@ export default function ProfileSetup() {
                   onChange={(e) => setClubType(e.target.value)}
                   className="w-full bg-[#1a1a1a] border border-white/5 rounded-lg p-2.5 text-xs text-white appearance-none focus:border-[#EB712B] outline-none transition-colors"
                 >
-                  <option value="1">Road Racing / Biking</option>
+                  <option value="1">Cycling</option>
                   <option value="2">Running</option>
-                  <option value="3">Cycling & Running</option>
+                  <option value="3">Triathlon</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-3 text-gray-500" size={14} />
               </div>

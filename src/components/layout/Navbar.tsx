@@ -140,7 +140,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
       </div>
 
       {/* Notification list */}
-      <div className="max-h-80 overflow-y-auto">
+      <div className="max-h-80 overflow-y-auto custom-scrollbar">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <Loader2 size={20} className="animate-spin text-[#EB712B]" />
@@ -380,18 +380,16 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard', o
             className="relative flex items-center justify-center w-11 h-11 rounded-2xl transition-colors duration-300 group hover:opacity-80"
             style={{ color: 'var(--color-secondary-text)' }}
           >
-            <Bell size={22} className="group-hover:animate-notif-bounce" aria-hidden="true" />
+            <Bell
+              size={22}
+              className={unreadCount > 0 ? 'text-[#EB712B] group-hover:animate-notif-bounce' : 'group-hover:animate-notif-bounce'}
+              aria-hidden="true"
+            />
 
-            {/* Unread count badge */}
-            {unreadCount > 0 ? (
-              <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 bg-[#EB712B] text-white text-[8px] font-black rounded-full flex items-center justify-center">
+            {/* Unread count badge — only shown when there are unread notifications */}
+            {unreadCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 bg-[#EB712B] text-white text-[8px] font-black rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(235,113,43,0.6)]">
                 {unreadCount > 99 ? '99+' : unreadCount}
-              </span>
-            ) : (
-              /* Animated orange ping dot when no unread (static presence indicator) */
-              <span className="absolute top-2.5 right-2.5 w-2 h-2" aria-label="Notifications active">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
               </span>
             )}
           </button>

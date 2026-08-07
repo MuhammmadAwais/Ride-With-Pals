@@ -318,9 +318,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         {/* ── Logo Header ── */}
         <div className="sidebar-logo-header">
           <img
-            src={isDark ? '/Images/Logo.png' : '/Images/Logo.png'}
+            src={isDark ? '/Images/Logo.png' : '/Images/official_logo.png'}
             alt={APP_NAME}
-            style={{ height: '36px', objectFit: 'contain', cursor: 'pointer' }}
+            style={{ height: isDark ? '36px' : '46px', objectFit: 'contain', cursor: 'pointer' }}
             draggable={false}
             onClick={() => navigate(ROUTES.DASHBOARD)}
           />
