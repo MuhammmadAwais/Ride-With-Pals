@@ -20,6 +20,8 @@ import { DashboardCalendar } from '@/features/dashboard/DashboardCalendar';
 import { CreateRide } from '@/features/dashboard/CreateRide';
 
 // ── Auth & Public ──
+import React, { Suspense } from 'react';
+const LandingPage = React.lazy(() => import('@/features/landing/LandingPage'));
 import CreateAccount from '@/features/auth/CreateAccount';
 import Login from '@/features/auth/Login';
 import ForgotPassword from '@/features/auth/ForgotPassword';
@@ -97,7 +99,12 @@ export const router = createBrowserRouter(
     <>
       {/* ── Public Auth Routes ── */}
       <Route path="/">
-        <Route index element={<CreateAccount />} />
+        <Route index element={
+          <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#050505]"><div className="animate-spin h-8 w-8 border-4 border-[#EB712B] border-t-transparent rounded-full"></div></div>}>
+            <LandingPage />
+          </Suspense>
+        } />
+        <Route path="signup" element={<CreateAccount />} />
         <Route path="login" element={<Login />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="verify-email" element={<VerifyEmail />} />

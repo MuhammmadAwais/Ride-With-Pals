@@ -1,0 +1,2 @@
+import{t as e}from"./rolldown-runtime.CcuScYSb.mjs";function t(e,t){return{description:`A modern Framer template for managing personal finances. Sync bank accounts, track expenses, set budgets, and make smarter money decisions with ease.`,robots:`max-image-preview:large`,socialImage:`assets/images/image-bundle-16.png`,title:`Clario – Finance Dashboard Template for Framer`}}var n=e((()=>{}));export{t as n,n as t};
+//# sourceMappingURL=siteMetadata.DfuXOFMS.mjs.map
