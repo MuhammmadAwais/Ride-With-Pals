@@ -281,12 +281,6 @@ export const CreateRide: React.FC = () => {
     { id: 8, name: 'Gravel' },
   ];
 
-  const paceOptions = [
-    { value: 'Easy', label: 'Easy — Conversational pace' },
-    { value: 'Moderate', label: 'Moderate — Steady effort' },
-    { value: 'Fast', label: 'Fast — Challenging pace' },
-    { value: 'Race', label: 'Race — All out' },
-  ];
 
   // Format date value for display
   const formatDateDisplay = (dateStr: string) => {
