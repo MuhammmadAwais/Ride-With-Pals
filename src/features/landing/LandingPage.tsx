@@ -17,6 +17,7 @@ import { PricingSection } from './components/PricingSection';
 import { FAQSection } from './components/FAQSection';
 import { BlogSection } from './components/BlogSection';
 import { CTASection } from './components/CTASection';
+import { FooterSection } from './components/FooterSection';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,30 +28,24 @@ const LandingPage: React.FC = () => {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user = useAppSelector((s) => s.auth.user);
 
-  // 1. Auth Redirect
+  // CSS + Loading Screen: inject Framer CSS and dismiss the native loading screen
+  // ONLY after the stylesheet has fully loaded. This prevents avatar images flashing
+  // before Framer's positioning/opacity styles are applied.
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-      navigate(from ?? '/dashboard', { replace: true });
-    }
-  }, [isAuthenticated, user, navigate, location]);
+    const dismissLoadingScreen = () => {
+      const loadingScreen = document.getElementById('app-loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.transition = 'opacity 0.25s ease';
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => loadingScreen.remove(), 280);
+      }
+    };
 
-  // 2. Dynamic CSS & Hover Effects Injection
-  useEffect(() => {
-    const cssId = 'clario-landing-css';
-    if (!document.getElementById(cssId)) {
-      const link = document.createElement('link');
-      link.id = cssId;
-      link.rel = 'stylesheet';
-      link.href = '/landing/styles.css';
-      document.head.appendChild(link);
-    }
-
+    // Inject hover/base styles immediately (inline — no network request)
     const hoverCssId = 'clario-landing-hover-css';
     if (!document.getElementById(hoverCssId)) {
       const style = document.createElement('style');
       style.id = hoverCssId;
-      // Add custom hover and interaction styles to fix any missing behaviors
       style.innerHTML = `
         .clario-landing-wrapper {
           width: 100vw;
@@ -60,8 +55,6 @@ const LandingPage: React.FC = () => {
           min-height: 100vh;
           position: relative;
         }
-        
-        /* Hide Framer Badge elements */
         #__framer-badge-container, 
         .framer-badge,
         [href*="framer.com/badge"],
@@ -70,7 +63,6 @@ const LandingPage: React.FC = () => {
           opacity: 0 !important;
           pointer-events: none !important;
         }
-
         .clario-landing-wrapper a, .clario-landing-wrapper button {
           transition: transform 0.2s ease, opacity 0.2s ease !important;
         }
@@ -79,8 +71,6 @@ const LandingPage: React.FC = () => {
           opacity: 0.9;
           cursor: pointer;
         }
-        
-        /* Basic FAQ accordion styles */
         .faq-answer {
           max-height: 0;
           overflow: hidden;
@@ -96,6 +86,24 @@ const LandingPage: React.FC = () => {
       document.head.appendChild(style);
     }
 
+    // Inject Framer stylesheet — dismiss loading screen only AFTER it loads
+    const cssId = 'clario-landing-css';
+    const existingLink = document.getElementById(cssId) as HTMLLinkElement | null;
+    if (existingLink) {
+      // Already loaded on a previous visit (e.g. HMR), dismiss immediately
+      dismissLoadingScreen();
+    } else {
+      const link = document.createElement('link');
+      link.id = cssId;
+      link.rel = 'stylesheet';
+      link.href = '/landing/styles.css';
+      // Dismiss ONLY after CSS is applied — this is the key fix
+      link.onload = dismissLoadingScreen;
+      // Safety fallback: if CSS errors (404 etc.) don't hang forever
+      link.onerror = dismissLoadingScreen;
+      document.head.appendChild(link);
+    }
+
     return () => {
       const link = document.getElementById(cssId);
       if (link) link.remove();
@@ -103,6 +111,14 @@ const LandingPage: React.FC = () => {
       if (style) style.remove();
     };
   }, []);
+
+  // Auth Redirect
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+      navigate(from ?? '/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, location]);
 
   // 3. Attach Event Listeners to Buttons and FAQs
   useEffect(() => {
@@ -264,6 +280,7 @@ const LandingPage: React.FC = () => {
             <FAQSection />
             <BlogSection />
             <CTASection />
+            <FooterSection />
           </div>
         </div>
       </div>

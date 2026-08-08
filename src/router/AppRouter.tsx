@@ -100,7 +100,7 @@ export const router = createBrowserRouter(
       {/* ── Public Auth Routes ── */}
       <Route path="/">
         <Route index element={
-          <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#050505]"><div className="animate-spin h-8 w-8 border-4 border-[#EB712B] border-t-transparent rounded-full"></div></div>}>
+          <Suspense fallback={null}>
             <LandingPage />
           </Suspense>
         } />

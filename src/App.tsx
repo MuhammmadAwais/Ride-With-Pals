@@ -7,7 +7,7 @@
  *  - useSecureSession() for production browser hardening
  *  - useTheme() to theme-sync the Toaster
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { router } from '@/router/AppRouter';
@@ -22,6 +22,23 @@ const AppInner: React.FC = () => {
   const { isDark } = useTheme();
   // Production-only: blocks right-click & devtools shortcuts
   useSecureSession();
+
+  // Safety fallback: dismiss the loading screen if no route component does it
+  // (e.g. authenticated user redirected to /dashboard, or Login/Signup pages).
+  // LandingPage handles its own dismissal via CSS onload — this just ensures
+  // the overlay never gets stuck for non-landing routes.
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      const loadingScreen = document.getElementById('app-loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.transition = 'opacity 0.25s ease';
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => loadingScreen.remove(), 280);
+      }
+    }, 2000);
+    return () => clearTimeout(timerId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

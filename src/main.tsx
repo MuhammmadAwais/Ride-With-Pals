@@ -11,7 +11,9 @@ import { setupApiStore } from './api/backendApi';
 
 setupApiStore(store);
 
-createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')!;
+
+createRoot(root).render(
   <StrictMode>
     {/* Redux store + persistence */}
     <Provider store={store}>
@@ -27,3 +29,6 @@ createRoot(document.getElementById('root')!).render(
     </Provider>
   </StrictMode>,
 );
+
+// Loading screen is dismissed by LandingPage after first render
+// to prevent any flash of unstyled/unloaded content.

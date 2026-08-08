@@ -1,502 +1,293 @@
-// @ts-nocheck
-import React from "react";
+﻿// @ts-nocheck
+import React, { useState, useEffect } from "react";
 
 export const Navigation: React.FC = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
+  const navLinks = [
+    { label: "How it works", href: "/#how-it-works" },
+    { label: "Features", href: "/#features" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "Blog", href: "/blog#blog" },
+  ];
+
+  const css = `
+    .rwp-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 40px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(5,5,5,0.5);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .rwp-nav.scrolled {
+      background: rgba(5,5,5,0.85);
+      border-bottom-color: rgba(255,255,255,0.07);
+    }
+    .rwp-nav-logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .rwp-nav-logo img {
+      max-height: 56px;
+      max-width: 160px;
+      object-fit: contain;
+    }
+    .rwp-nav-center {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .rwp-nav-link {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .rwp-nav-link:hover { color: #fff; background: rgba(255,255,255,0.07); }
+    .rwp-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .rwp-btn-login {
+      color: #fff;
+      text-decoration: none;
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 9px 20px;
+      border-radius: 23px;
+      background: rgba(23,23,23,0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s, transform 0.15s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+    .rwp-btn-login:hover { background: rgba(40,40,40,0.95); transform: translateY(-1px); }
+    .rwp-btn-signup {
+      color: #0d0d0d;
+      text-decoration: none;
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 9px 20px;
+      border-radius: 23px;
+      background: linear-gradient(135deg,#EB712B,#f08c4a);
+      box-shadow: 0 4px 16px rgba(235,113,43,0.35);
+      transition: box-shadow 0.2s, transform 0.15s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+    .rwp-btn-signup:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(235,113,43,0.5); }
+    .rwp-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      cursor: pointer;
+      gap: 5px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      z-index: 1001;
+    }
+    .rwp-hamburger:hover { background: rgba(255,255,255,0.1); }
+    .rwp-hamburger-bar {
+      width: 20px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      transform-origin: center;
+    }
+    .rwp-hamburger.open .rwp-hamburger-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .rwp-hamburger.open .rwp-hamburger-bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .rwp-hamburger.open .rwp-hamburger-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .rwp-mobile-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      background: rgba(5,5,5,0.97);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .rwp-mobile-drawer.open { opacity: 1; pointer-events: all; }
+    .rwp-mobile-drawer-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 32px 24px;
+      gap: 0;
+      overflow-y: auto;
+    }
+    .rwp-mobile-link {
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: color 0.25s, padding-left 0.25s, opacity 0.4s ease, transform 0.4s ease;
+      letter-spacing: -0.02em;
+    }
+    .rwp-mobile-drawer.open .rwp-mobile-link { opacity: 1; transform: translateY(0); }
+    .rwp-mobile-link:nth-child(1) { transition-delay: 0.06s; }
+    .rwp-mobile-link:nth-child(2) { transition-delay: 0.12s; }
+    .rwp-mobile-link:nth-child(3) { transition-delay: 0.18s; }
+    .rwp-mobile-link:nth-child(4) { transition-delay: 0.24s; }
+    .rwp-mobile-link:hover { color: #fff; padding-left: 10px; }
+    .rwp-mobile-actions {
+      padding: 24px 32px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.4s ease 0.32s, transform 0.4s ease 0.32s;
+    }
+    .rwp-mobile-drawer.open .rwp-mobile-actions { opacity: 1; transform: translateY(0); }
+    .rwp-mobile-btn-login {
+      display: block;
+      text-align: center;
+      color: #fff;
+      text-decoration: none;
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s;
+    }
+    .rwp-mobile-btn-login:hover { background: rgba(255,255,255,0.1); }
+    .rwp-mobile-btn-signup {
+      display: block;
+      text-align: center;
+      color: #0d0d0d;
+      text-decoration: none;
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg,#EB712B,#f08c4a);
+      box-shadow: 0 4px 28px rgba(235,113,43,0.45);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .rwp-mobile-btn-signup:hover { opacity: 0.92; transform: scale(0.99); }
+    .rwp-mobile-orb {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle,rgba(235,113,43,0.1) 0%,transparent 70%);
+      border-radius: 50%;
+      bottom: 40px;
+      right: -120px;
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      .rwp-nav { padding: 0 20px; }
+      .rwp-nav-center { display: none; }
+      .rwp-nav-actions { display: none; }
+      .rwp-hamburger { display: flex; }
+    }
+  `;
+
   return (
-    <nav
-      name="Navigation"
-      className="framer-WznOS framer-1sjk8fm framer-v-1sjk8fm"
-      data-framer-name="Desktop"
-      style={{
-        "--101xnti": "0px 40px 0px 40px",
-        backdropFilter: "blur(15px)",
-        backgroundColor: "rgba(5, 5, 5, 0.5)",
-        width: "100%",
-        borderBottomLeftRadius: "0px",
-        borderBottomRightRadius: "0px",
-        opacity: "1",
-      } as any}
-    >
-      <div
-        className="framer-5d4a7x-container"
-        style={{ opacity: "1" } as any}
-       
-      >
-        <div
-          className="framer-lV11u framer-5zckej framer-v-5zckej"
-          data-framer-name="Default"
-          style={{
-            backdropFilter: "none",
-            backgroundColor: "rgba(255, 255, 255, 0)",
-            height: "100%",
-            width: "100%",
-            opacity: "1",
-          } as any}
-         
-        ></div>
-      </div>
-      <div
-        className="framer-1cmtxgd"
-        data-framer-name="Container"
-        style={{ opacity: "1" } as any}
-       
-      >
-        <div
-          className="framer-668mq4"
-          data-framer-name="Top"
-          style={{ opacity: "1" } as any}
-         
-        >
-          <a
-            className="framer-dga53y framer-1riwomp"
-            data-framer-name="Logo"
-            href="/"
-            id="landing-home-btn"
-            style={{ opacity: "1" } as any}
-          >
-            <img
-              src="/Images/Logo.png"
-              alt="Ride With Pals"
-              style={{ height: "48px", objectFit: "contain" } as any}
-              fetchpriority="high"
-              decoding="async"
-            />
-          </a>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      <nav className={"rwp-nav" + (scrolled ? " scrolled" : "")}>
+        <a className="rwp-nav-logo" href="/" id="landing-home-btn">
+          <img src="/Images/Logo.png" alt="Ride With Pals" fetchPriority="high" decoding="async" />
+        </a>
+        <div className="rwp-nav-center">
+          {navLinks.map((link) => (
+            <a key={link.label} className="rwp-nav-link" href={link.href}>{link.label}</a>
+          ))}
         </div>
-        <div
-          className="framer-11wgtm"
-          data-framer-name="Menu"
-          style={{ opacity: "1" } as any}
-         
-        >
-          <div
-            className="framer-ypgyrt"
-            data-framer-name="Links"
-            style={{ opacity: "1" } as any}
-           
-          >
-            <div
-              className="framer-7s1f6r-container"
-              data-framer-appear-id="7s1f6r"
-              style={{ opacity: "1", transform: "none" } as any}
-             
-            >
-              <a
-                className="framer-RbQMh framer-KnY8C framer-OTE18 framer-1cu6ruc framer-v-1cu6ruc framer-1vv1twk"
-                data-framer-name="Desktop"
-                data-highlight="true"
-                href="/#how-it-works"
-                tabIndex="0"
-                style={{ opacity: "1" } as any}
-              >
-                <div
-                  className="framer-lsk9zo"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-il2ul1"
-                    data-framer-name="About Us"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-paragraph-spacing": "0px",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-1u4uu62"
-                      data-styles-preset="taovA_1_T"
-                    >
-                      How it works
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div
-              className="framer-177gwxk-container"
-              data-framer-appear-id="177gwxk"
-              style={{ opacity: "1", transform: "none" } as any}
-             
-            >
-              <a
-                className="framer-RbQMh framer-KnY8C framer-OTE18 framer-1cu6ruc framer-v-1cu6ruc framer-1vv1twk"
-                data-highlight="true"
-                href="/#features"
-                tabIndex="0"
-                style={{ opacity: "1" } as any}
-                data-framer-name="Desktop"
-              >
-                <div
-                  className="framer-lsk9zo"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-il2ul1"
-                    data-framer-name="About Us"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-paragraph-spacing": "0px",
-                      transform: "none",
-                      opacity: "1",
-                      willChange: "auto",
-                      "--extracted-r6o4lv": "rgba(235, 113, 43, 0)",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-1u4uu62"
-                      data-styles-preset="taovA_1_T"
-                      style={{}}
-                    >
-                      Features
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div
-              className="framer-bk2w7e-container"
-              data-framer-appear-id="bk2w7e"
-              style={{ opacity: "1", transform: "none" } as any}
-             
-            >
-              <a
-                className="framer-RbQMh framer-KnY8C framer-OTE18 framer-1cu6ruc framer-v-1cu6ruc framer-1vv1twk"
-                data-highlight="true"
-                href="/#pricing"
-                tabIndex="0"
-                style={{ opacity: "1" } as any}
-                data-framer-name="Desktop"
-              >
-                <div
-                  className="framer-lsk9zo"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-il2ul1"
-                    data-framer-name="About Us"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-paragraph-spacing": "0px",
-                      transform: "none",
-                      opacity: "1",
-                      willChange: "auto",
-                      "--extracted-r6o4lv": "rgba(235, 113, 43, 0)",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-1u4uu62"
-                      data-styles-preset="taovA_1_T"
-                      style={{}}
-                    >
-                      Pricing
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <div
-              className="framer-1revpca-container"
-              data-framer-appear-id="1revpca"
-              style={{ opacity: "1", transform: "none" } as any}
-             
-            >
-              <a
-                className="framer-RbQMh framer-KnY8C framer-OTE18 framer-1cu6ruc framer-v-1cu6ruc framer-1vv1twk"
-                data-framer-name="Desktop"
-                data-highlight="true"
-                href="./blog#blog"
-                tabIndex="0"
-                style={{ opacity: "1" } as any}
-              >
-                <div
-                  className="framer-lsk9zo"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-il2ul1"
-                    data-framer-name="About Us"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-paragraph-spacing": "0px",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-1u4uu62"
-                      data-styles-preset="taovA_1_T"
-                    >
-                      Blog
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
+        <div className="rwp-nav-actions">
+          <a className="rwp-btn-login" href="/login" id="landing-login-btn">Login</a>
+          <a className="rwp-btn-signup" href="/signup" id="landing-signup-btn">Sign up</a>
         </div>
-        <div
-          className="framer-xva091"
-          data-framer-name="Bottom"
-          style={{ opacity: "1" } as any}
-         
+        <button
+          className={"rwp-hamburger" + (menuOpen ? " open" : "")}
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
         >
-          <div
-            className="framer-t14pul-container"
-            data-framer-appear-id="t14pul"
-            style={{ opacity: "1", transform: "none" } as any}
-           
-          >
-            <a
-              className="framer-nsIpD framer-8HnqA framer-GIZ5n framer-crnp9l framer-v-19w6ucu framer-dt5kwk"
-              href="/login"
-              id="landing-login-btn"
-              style={{
-                backgroundColor:
-                  "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                borderRadius: "23px",
-                boxShadow: "none",
-                opacity: "1",
-                willChange: "auto",
-              } as any}
-              data-framer-name="Second - Desktop"
-            >
-              <div
-                className="framer-wwtor"
-                data-framer-component-type="RichTextContainer"
-                style={{
-                  "--framer-link-text-color": "rgb(0, 153, 255)",
-                  "--framer-link-text-decoration": "underline",
-                  "--variable-reference-gCtuSASlb-AYxsxblIT":
-                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                  "--extracted-r6o4lv":
-                    "var(--token-267ef2d9-0982-4b94-a54c-1c19958cb68c, rgb(255, 255, 255))",
-                  transform: "none",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <p
-                  className="framer-text framer-styles-preset-1tpxd7h"
-                  data-styles-preset="XIZNBvjnr"
-                  style={{
-                    "--framer-text-color":
-                      "var(--extracted-r6o4lv, var(--token-267ef2d9-0982-4b94-a54c-1c19958cb68c, rgb(255, 255, 255)))",
-                  } as any}
-                >
-                  Login
-                </p>
-              </div>
-              <div
-                className="framer-jwdc62"
-                data-framer-name="Suffix"
-                style={{ opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-dsdkgo-container"
-                  data-framer-name="Icon Normal"
-                  name="Icon Normal"
-                  style={{
-                    transform: "rotate(-45deg)",
-                    transformOrigin: "50% 50% 0px",
-                  } as any}
-                 
-                >
-                  <div style={{ display: "contents" } as any}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 256 256"
-                      focusable="false"
-                      color="rgb(255, 255, 255)"
-                      style={{
-                        userSelect: "none",
-                        width: "100%",
-                        height: "100%",
-                        display: "inline-block",
-                        fill: "rgb(255, 255, 255)",
-                        color: "rgb(255, 255, 255)",
-                        flexShrink: "0",
-                      } as any}
-                    >
-                      <g color="rgb(255, 255, 255)" weight="regular">
-                        <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-                <div
-                  className="framer-180i2dq-container"
-                  data-framer-name="Icon Hover"
-                  name="Icon Hover"
-                  style={{
-                    transform: "rotate(-45deg)",
-                    transformOrigin: "50% 50% 0px",
-                  } as any}
-                 
-                >
-                  <div style={{ display: "contents" } as any}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 256 256"
-                      focusable="false"
-                      color="rgb(255, 255, 255)"
-                      style={{
-                        userSelect: "none",
-                        width: "100%",
-                        height: "100%",
-                        display: "inline-block",
-                        fill: "rgb(255, 255, 255)",
-                        color: "rgb(255, 255, 255)",
-                        flexShrink: "0",
-                      } as any}
-                    >
-                      <g color="rgb(255, 255, 255)" weight="regular">
-                        <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
+          <span className="rwp-hamburger-bar" />
+          <span className="rwp-hamburger-bar" />
+          <span className="rwp-hamburger-bar" />
+        </button>
+      </nav>
+      <div className={"rwp-mobile-drawer" + (menuOpen ? " open" : "")} role="dialog" aria-modal="true">
+        <div className="rwp-mobile-orb" />
+        <div className="rwp-mobile-drawer-inner">
+          {navLinks.map((link) => (
+            <a key={link.label} className="rwp-mobile-link" href={link.href} onClick={() => setMenuOpen(false)}>
+              {link.label}
             </a>
-          </div>
-          <div
-            className="framer-d2trik-container"
-            data-framer-appear-id="d2trik"
-            style={{ opacity: "1", transform: "none" } as any}
-           
-          >
-            <a
-              className="framer-nsIpD framer-8HnqA framer-GIZ5n framer-crnp9l framer-v-crnp9l framer-dt5kwk"
-              href="/signup"
-              id="landing-signup-btn"
-              style={{
-                backgroundColor:
-                  "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(30, 72, 65))",
-                borderRadius: "23px",
-                boxShadow: "rgba(235, 113, 43, 0.32) 0px 8px 20px 0px",
-                opacity: "1",
-                willChange: "auto",
-              } as any}
-              data-framer-name="Default - Desktop"
-            >
-              <div
-                className="framer-wwtor"
-                data-framer-component-type="RichTextContainer"
-                style={{
-                  "--framer-link-text-color": "rgb(0, 153, 255)",
-                  "--framer-link-text-decoration": "underline",
-                  "--variable-reference-gCtuSASlb-AYxsxblIT":
-                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                  transform: "none",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <p
-                  className="framer-text framer-styles-preset-1tpxd7h"
-                  data-styles-preset="XIZNBvjnr"
-                >
-                  Sign up
-                </p>
-              </div>
-              <div
-                className="framer-jwdc62"
-                data-framer-name="Suffix"
-                style={{ opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-dsdkgo-container"
-                  data-framer-name="Icon Normal"
-                  name="Icon Normal"
-                  style={{
-                    transform: "rotate(-45deg)",
-                    transformOrigin: "50% 50% 0px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div style={{ display: "contents" } as any}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 256 256"
-                      focusable="false"
-                      color="var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))"
-                      style={{
-                        userSelect: "none",
-                        width: "100%",
-                        height: "100%",
-                        display: "inline-block",
-                        fill: "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                        color:
-                          "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                        flexShrink: "0",
-                      } as any}
-                    >
-                      <g
-                        color="var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))"
-                        weight="regular"
-                      >
-                        <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-                <div
-                  className="framer-180i2dq-container"
-                  data-framer-name="Icon Hover"
-                  name="Icon Hover"
-                  style={{
-                    transform: "rotate(-45deg)",
-                    transformOrigin: "50% 50% 0px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div style={{ display: "contents" } as any}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 256 256"
-                      focusable="false"
-                      color="var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))"
-                      style={{
-                        userSelect: "none",
-                        width: "100%",
-                        height: "100%",
-                        display: "inline-block",
-                        fill: "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                        color:
-                          "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                        flexShrink: "0",
-                      } as any}
-                    >
-                      <g
-                        color="var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))"
-                        weight="regular"
-                      >
-                        <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </a>
-          </div>
+          ))}
+        </div>
+        <div className="rwp-mobile-actions">
+          <a className="rwp-mobile-btn-login" href="/login" onClick={() => setMenuOpen(false)}>Login</a>
+          <a className="rwp-mobile-btn-signup" href="/signup" onClick={() => setMenuOpen(false)}>Get started free</a>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
