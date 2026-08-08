@@ -1,1304 +1,423 @@
 // @ts-nocheck
-import React from "react";
+import React, { useState } from "react";
 
-export const FAQSection: React.FC = () => {
+const FAQItem = ({ faq, index, isOpen, toggleOpen }) => {
   return (
-    <section className="framer-1rdywpe" data-framer-name="FAQ Section">
-      <div
-        className="framer-qrdzfe"
-        data-framer-name="Container"
-       
-      >
-        <div
-          className="framer-38fczo"
-          data-framer-name="Headline"
-         
-        >
-          <div
-            className="framer-fodvjs"
-            data-framer-component-type="RichTextContainer"
-            style={{ willChange: "transform", opacity: "1", transform: "none" } as any}
-           
-          >
-            <h2
-              className="framer-text framer-styles-preset-1qep5fy"
-              data-styles-preset="Pd0MWMbDb"
-              style={{ "--framer-text-alignment": "left" } as any}
-            >
-              Got questions?
-              <br className="framer-text" />
-              We’ve got answers.
-            </h2>
-          </div>
-          <div
-            className="framer-2pp0v5"
-            data-framer-name="Subtitle + Button"
-            style={{ willChange: "transform", opacity: "1", transform: "none" } as any}
-           
-          >
-            <div
-              className="framer-1jy89um"
-              data-framer-component-type="RichTextContainer"
-              style={{ transform: "none" } as any}
-             
-            >
-              <p
-                className="framer-text framer-styles-preset-1kqs40m"
-                data-styles-preset="nqwdXorsW"
-                style={{ "--framer-text-alignment": "left" } as any}
-              >
-                Here’s everything you need to know before getting started.
-              </p>
-            </div>
-            <div
-              className="framer-w6jleq-container"
-              data-framer-name="Button"
-              name="Button"
-             
-            >
-              <a
-                name="Button"
-                className="framer-nsIpD framer-8HnqA framer-GIZ5n framer-crnp9l framer-v-yt5180 framer-dt5kwk"
-                data-framer-name="Only Text Green - Desktop"
-                href="/signup"
-                id="landing-signup-btn"
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0)",
-                  borderRadius: "23px",
-                  boxShadow: "none",
-                  opacity: "1",
-                } as any}
-              >
-                <div
-                  className="framer-wwtor"
-                  data-framer-component-type="RichTextContainer"
-                  style={{
-                    "--framer-link-text-color": "rgb(0, 153, 255)",
-                    "--framer-link-text-decoration": "underline",
-                    "--variable-reference-gCtuSASlb-AYxsxblIT":
-                      "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                    "--extracted-r6o4lv":
-                      "var(--variable-reference-gCtuSASlb-AYxsxblIT)",
-                    transform: "none",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <p
-                    className="framer-text framer-styles-preset-1tpxd7h"
-                    data-styles-preset="XIZNBvjnr"
-                    style={{
-                      "--framer-text-color":
-                        "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
-                    } as any}
-                  >
-                    Contact us
-                  </p>
-                </div>
-                <div
-                  className="framer-jwdc62"
-                  data-framer-name="Suffix"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-dsdkgo-container"
-                    data-framer-name="Icon Normal"
-                    name="Icon Normal"
-                    style={{ transform: "rotate(-45deg)", opacity: "1" } as any}
-                   
-                  >
-                    <div style={{ display: "contents" } as any}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 256 256"
-                        focusable="false"
-                        color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                        style={{
-                          userSelect: "none",
-                          width: "100%",
-                          height: "100%",
-                          display: "inline-block",
-                          fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                          color:
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                          flexShrink: "0",
-                        } as any}
-                      >
-                        <g
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                          weight="regular"
-                        >
-                          <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                        </g>
-                      </svg>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-180i2dq-container"
-                    data-framer-name="Icon Hover"
-                    name="Icon Hover"
-                    style={{ transform: "rotate(-45deg)", opacity: "1" } as any}
-                   
-                  >
-                    <div style={{ display: "contents" } as any}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 256 256"
-                        focusable="false"
-                        color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                        style={{
-                          userSelect: "none",
-                          width: "100%",
-                          height: "100%",
-                          display: "inline-block",
-                          fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                          color:
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                          flexShrink: "0",
-                        } as any}
-                      >
-                        <g
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                          weight="regular"
-                        >
-                          <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                        </g>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
+    <div 
+      className={`rwp-faq-item ${isOpen ? "is-open" : ""}`} 
+      onMouseEnter={() => {}}
+    >
+      {/* 1. Back Folder */}
+      <div className="faq-back">
+        <div className="faq-tab">
+          {faq.shortTitle || `0${index + 1}`}
         </div>
-        <div
-          className="framer-1trxqx0-container"
-          style={{ willChange: "transform", opacity: "1", transform: "none" } as any}
-         
-        >
-          <div
-            className="framer-33uQo framer-17idr98 framer-v-17idr98"
-            data-framer-name="FAQs"
-            style={{ width: "100%", opacity: "1" } as any}
-           
-          >
-            <div
-              className="framer-1xjrzzf-container"
-              style={{ opacity: "1", height: "144px" } as any}
-             
-            >
-              <div
-                className="framer-Zlq0G framer-tTxjR framer-shmgH framer-1vedywr framer-v-1vedywr"
-                data-border="true"
-                data-framer-name="Open"
-                data-highlight="true"
-                tabIndex="0"
-                style={{
-                  "--border-bottom-width": "3px",
-                  "--border-color":
-                    "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                  "--border-left-width": "3px",
-                  "--border-right-width": "3px",
-                  "--border-style": "solid",
-                  "--border-top-width": "3px",
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "20px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-nx0aqp"
-                  data-framer-name="Number"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-xgbusx-container"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-lohjoe"
-                      data-framer-name="Default"
-                      style={{
-                        backgroundColor:
-                          "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                        borderRadius: "10px",
-                        boxShadow:
-                          "rgba(235, 113, 43, 0.15) 0px 1px 0px 0px inset, rgba(235, 113, 43, 0.15) 0px -1px 0px 0px inset, rgba(235, 113, 43, 0.4) 0px 1px 2px 0px, rgba(235, 113, 43, 0.19) 0px 3px 8px 0px, rgba(235, 113, 43, 0.05) 0px 6px 4px 0px, rgba(235, 113, 43, 0.01) 0px 11px 4px 0px, rgba(235, 113, 43, 0) 0px 16px 5px 0px",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <div
-                        className="framer-1u3q6hy"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--extracted-r6o4lv":
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                          "--framer-link-text-color": "rgb(0, 153, 255)",
-                          "--framer-link-text-decoration": "underline",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-1jsfakf"
-                          data-styles-preset="VQGZB66Vz"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          } as any}
-                        >
-                          01
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-ce98c6"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-yrtzvp"
-                    data-framer-name="Question"
-                    data-highlight="true"
-                    tabIndex="0"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1bebe6g"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <h4
-                        className="framer-text framer-styles-preset-152re5y"
-                        data-styles-preset="dqR3BYv7J"
-                      >
-                        What kind of businesses is this template built for?
-                      </h4>
-                    </div>
-                    <div
-                      className="framer-1yk7oil"
-                      data-framer-name="Spacer"
-                      style={{ opacity: "1" } as any}
-                     
-                    ></div>
-                    <div
-                      className="framer-2u9vzk-container"
-                      style={{ transform: "none", opacity: "1" } as any}
-                     
-                    >
-                      <div style={{ display: "contents" } as any}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 256 256"
-                          focusable="false"
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                          style={{
-                            userSelect: "none",
-                            width: "100%",
-                            height: "100%",
-                            display: "inline-block",
-                            fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            color:
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            flexShrink: "0",
-                          } as any}
-                        >
-                          <g
-                            color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                            weight="regular"
-                          >
-                            <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z" />
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1jnp5xr"
-                    data-framer-name="Answer"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-7u3tuh"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Clario is designed for SaaS tools, dashboards, fintech
-                        platforms, or any digital product that needs a modern,
-                        conversion-focused landing page. It’s fully customizable
-                        to fit a wide range of web-based services.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-tbzvxl-container"
-                  style={{ transform: "translateX(-50%)", opacity: "1" } as any}
-                 
-                >
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="framer-1txbc5d-container"
-              style={{ opacity: "1", height: "72.4px" } as any}
-             
-            >
-              <div
-                className="framer-Zlq0G framer-tTxjR framer-shmgH framer-1vedywr framer-v-qp5wle"
-                data-border="true"
-                data-framer-name="Closed"
-                data-highlight="true"
-                tabIndex="0"
-                style={{
-                  "--border-bottom-width": "3px",
-                  "--border-color":
-                    "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                  "--border-left-width": "3px",
-                  "--border-right-width": "3px",
-                  "--border-style": "solid",
-                  "--border-top-width": "3px",
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "20px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-nx0aqp"
-                  data-framer-name="Number"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-xgbusx-container"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-1f2g3zi"
-                      data-framer-name="Dark Shadow"
-                      style={{
-                        backgroundColor:
-                          "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                        borderRadius: "10px",
-                        boxShadow:
-                          "rgba(32, 32, 32, 0.15) 0px 1px 0px 0px inset, rgba(32, 32, 32, 0.15) 0px -1px 0px 0px inset, rgba(32, 32, 32, 0.4) 0px 1px 2px 0px, rgba(32, 32, 32, 0.19) 0px 3px 8px 0px, rgba(32, 32, 32, 0.05) 0px 6px 4px 0px, rgba(32, 32, 32, 0.01) 0px 11px 4px 0px, rgba(32, 32, 32, 0) 0px 16px 5px 0px",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <div
-                        className="framer-1u3q6hy"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--extracted-r6o4lv":
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                          "--framer-link-text-color": "rgb(0, 153, 255)",
-                          "--framer-link-text-decoration": "underline",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-1jsfakf"
-                          data-styles-preset="VQGZB66Vz"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          } as any}
-                        >
-                          02
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-ce98c6"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-yrtzvp"
-                    data-framer-name="Question"
-                    data-highlight="true"
-                    tabIndex="0"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1bebe6g"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <h4
-                        className="framer-text framer-styles-preset-152re5y"
-                        data-styles-preset="dqR3BYv7J"
-                      >
-                        Is the template mobile-friendly and responsive?
-                      </h4>
-                    </div>
-                    <div
-                      className="framer-1yk7oil"
-                      data-framer-name="Spacer"
-                      style={{ opacity: "1" } as any}
-                     
-                    ></div>
-                    <div
-                      className="framer-2u9vzk-container"
-                      style={{ transform: "rotate(90deg)", opacity: "1" } as any}
-                     
-                    >
-                      <div style={{ display: "contents" } as any}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 256 256"
-                          focusable="false"
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                          style={{
-                            userSelect: "none",
-                            width: "100%",
-                            height: "100%",
-                            display: "inline-block",
-                            fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            color:
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            flexShrink: "0",
-                          } as any}
-                        >
-                          <g
-                            color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                            weight="regular"
-                          >
-                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z" />
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1jnp5xr"
-                    data-framer-name="Answer"
-                    style={{ opacity: "0" } as any}
-                   
-                  >
-                    <div
-                      className="framer-7u3tuh"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Absolutely. The layout adapts beautifully to all screen
-                        sizes, including desktops, tablets, and smartphones.
-                        Every section is designed to deliver a seamless
-                        experience across devices.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-tbzvxl-container"
-                  style={{ transform: "translateX(-50%)", opacity: "1" } as any}
-                 
-                >
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="framer-pty0cz-container"
-              style={{ opacity: "1", height: "72.4px" } as any}
-             
-            >
-              <div
-                className="framer-Zlq0G framer-tTxjR framer-shmgH framer-1vedywr framer-v-qp5wle"
-                data-border="true"
-                data-framer-name="Closed"
-                data-highlight="true"
-                tabIndex="0"
-                style={{
-                  "--border-bottom-width": "3px",
-                  "--border-color":
-                    "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                  "--border-left-width": "3px",
-                  "--border-right-width": "3px",
-                  "--border-style": "solid",
-                  "--border-top-width": "3px",
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "20px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-nx0aqp"
-                  data-framer-name="Number"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-xgbusx-container"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-1f2g3zi"
-                      data-framer-name="Dark Shadow"
-                      style={{
-                        backgroundColor:
-                          "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                        borderRadius: "10px",
-                        boxShadow:
-                          "rgba(32, 32, 32, 0.15) 0px 1px 0px 0px inset, rgba(32, 32, 32, 0.15) 0px -1px 0px 0px inset, rgba(32, 32, 32, 0.4) 0px 1px 2px 0px, rgba(32, 32, 32, 0.19) 0px 3px 8px 0px, rgba(32, 32, 32, 0.05) 0px 6px 4px 0px, rgba(32, 32, 32, 0.01) 0px 11px 4px 0px, rgba(32, 32, 32, 0) 0px 16px 5px 0px",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <div
-                        className="framer-1u3q6hy"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--extracted-r6o4lv":
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                          "--framer-link-text-color": "rgb(0, 153, 255)",
-                          "--framer-link-text-decoration": "underline",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-1jsfakf"
-                          data-styles-preset="VQGZB66Vz"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          } as any}
-                        >
-                          03
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-ce98c6"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-yrtzvp"
-                    data-framer-name="Question"
-                    data-highlight="true"
-                    tabIndex="0"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1bebe6g"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <h4
-                        className="framer-text framer-styles-preset-152re5y"
-                        data-styles-preset="dqR3BYv7J"
-                      >
-                        Can I use this template without coding skills?
-                      </h4>
-                    </div>
-                    <div
-                      className="framer-1yk7oil"
-                      data-framer-name="Spacer"
-                      style={{ opacity: "1" } as any}
-                     
-                    ></div>
-                    <div
-                      className="framer-2u9vzk-container"
-                      style={{ transform: "rotate(90deg)", opacity: "1" } as any}
-                     
-                    >
-                      <div style={{ display: "contents" } as any}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 256 256"
-                          focusable="false"
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                          style={{
-                            userSelect: "none",
-                            width: "100%",
-                            height: "100%",
-                            display: "inline-block",
-                            fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            color:
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            flexShrink: "0",
-                          } as any}
-                        >
-                          <g
-                            color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                            weight="regular"
-                          >
-                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z" />
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1jnp5xr"
-                    data-framer-name="Answer"
-                    style={{ opacity: "0" } as any}
-                   
-                  >
-                    <div
-                      className="framer-7u3tuh"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Yes — the template is fully editable in Framer with
-                        drag-and-drop tools. No coding knowledge is required to
-                        update text, swap images, or adjust layouts.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-tbzvxl-container"
-                  style={{ transform: "translateX(-50%)", opacity: "1" } as any}
-                 
-                >
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="framer-n5pzsf-container"
-              style={{ opacity: "1", height: "72.4px" } as any}
-             
-            >
-              <div
-                className="framer-Zlq0G framer-tTxjR framer-shmgH framer-1vedywr framer-v-qp5wle"
-                data-border="true"
-                data-framer-name="Closed"
-                data-highlight="true"
-                tabIndex="0"
-                style={{
-                  "--border-bottom-width": "3px",
-                  "--border-color":
-                    "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                  "--border-left-width": "3px",
-                  "--border-right-width": "3px",
-                  "--border-style": "solid",
-                  "--border-top-width": "3px",
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "20px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-nx0aqp"
-                  data-framer-name="Number"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-xgbusx-container"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-1f2g3zi"
-                      data-framer-name="Dark Shadow"
-                      style={{
-                        backgroundColor:
-                          "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                        borderRadius: "10px",
-                        boxShadow:
-                          "rgba(32, 32, 32, 0.15) 0px 1px 0px 0px inset, rgba(32, 32, 32, 0.15) 0px -1px 0px 0px inset, rgba(32, 32, 32, 0.4) 0px 1px 2px 0px, rgba(32, 32, 32, 0.19) 0px 3px 8px 0px, rgba(32, 32, 32, 0.05) 0px 6px 4px 0px, rgba(32, 32, 32, 0.01) 0px 11px 4px 0px, rgba(32, 32, 32, 0) 0px 16px 5px 0px",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <div
-                        className="framer-1u3q6hy"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--extracted-r6o4lv":
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                          "--framer-link-text-color": "rgb(0, 153, 255)",
-                          "--framer-link-text-decoration": "underline",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-1jsfakf"
-                          data-styles-preset="VQGZB66Vz"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          } as any}
-                        >
-                          04
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-ce98c6"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-yrtzvp"
-                    data-framer-name="Question"
-                    data-highlight="true"
-                    tabIndex="0"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1bebe6g"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <h4
-                        className="framer-text framer-styles-preset-152re5y"
-                        data-styles-preset="dqR3BYv7J"
-                      >
-                        Will I get access to future updates?
-                      </h4>
-                    </div>
-                    <div
-                      className="framer-1yk7oil"
-                      data-framer-name="Spacer"
-                      style={{ opacity: "1" } as any}
-                     
-                    ></div>
-                    <div
-                      className="framer-2u9vzk-container"
-                      style={{ transform: "rotate(90deg)", opacity: "1" } as any}
-                     
-                    >
-                      <div style={{ display: "contents" } as any}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 256 256"
-                          focusable="false"
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                          style={{
-                            userSelect: "none",
-                            width: "100%",
-                            height: "100%",
-                            display: "inline-block",
-                            fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            color:
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            flexShrink: "0",
-                          } as any}
-                        >
-                          <g
-                            color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                            weight="regular"
-                          >
-                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z" />
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1jnp5xr"
-                    data-framer-name="Answer"
-                    style={{ opacity: "0" } as any}
-                   
-                  >
-                    <div
-                      className="framer-7u3tuh"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Yes. Once purchased, you’ll automatically receive any
-                        future improvements or optimizations we make to the
-                        template. Your version stays up-to-date with best
-                        practices.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-tbzvxl-container"
-                  style={{ transform: "translateX(-50%)", opacity: "1" } as any}
-                 
-                >
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="framer-1t8ccbo-container"
-              style={{ opacity: "1", height: "72.4px" } as any}
-             
-            >
-              <div
-                className="framer-Zlq0G framer-tTxjR framer-shmgH framer-1vedywr framer-v-qp5wle"
-                data-border="true"
-                data-framer-name="Closed"
-                data-highlight="true"
-                tabIndex="0"
-                style={{
-                  "--border-bottom-width": "3px",
-                  "--border-color":
-                    "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                  "--border-left-width": "3px",
-                  "--border-right-width": "3px",
-                  "--border-style": "solid",
-                  "--border-top-width": "3px",
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "20px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-nx0aqp"
-                  data-framer-name="Number"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-xgbusx-container"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-1f2g3zi"
-                      data-framer-name="Dark Shadow"
-                      style={{
-                        backgroundColor:
-                          "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                        borderRadius: "10px",
-                        boxShadow:
-                          "rgba(32, 32, 32, 0.15) 0px 1px 0px 0px inset, rgba(32, 32, 32, 0.15) 0px -1px 0px 0px inset, rgba(32, 32, 32, 0.4) 0px 1px 2px 0px, rgba(32, 32, 32, 0.19) 0px 3px 8px 0px, rgba(32, 32, 32, 0.05) 0px 6px 4px 0px, rgba(32, 32, 32, 0.01) 0px 11px 4px 0px, rgba(32, 32, 32, 0) 0px 16px 5px 0px",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <div
-                        className="framer-1u3q6hy"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--extracted-r6o4lv":
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                          "--framer-link-text-color": "rgb(0, 153, 255)",
-                          "--framer-link-text-decoration": "underline",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-1jsfakf"
-                          data-styles-preset="VQGZB66Vz"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          } as any}
-                        >
-                          05
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-ce98c6"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-yrtzvp"
-                    data-framer-name="Question"
-                    data-highlight="true"
-                    tabIndex="0"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1bebe6g"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <h4
-                        className="framer-text framer-styles-preset-152re5y"
-                        data-styles-preset="dqR3BYv7J"
-                      >
-                        Can I use this template for commercial projects?
-                      </h4>
-                    </div>
-                    <div
-                      className="framer-1yk7oil"
-                      data-framer-name="Spacer"
-                      style={{ opacity: "1" } as any}
-                     
-                    ></div>
-                    <div
-                      className="framer-2u9vzk-container"
-                      style={{ transform: "rotate(90deg)", opacity: "1" } as any}
-                     
-                    >
-                      <div style={{ display: "contents" } as any}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 256 256"
-                          focusable="false"
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                          style={{
-                            userSelect: "none",
-                            width: "100%",
-                            height: "100%",
-                            display: "inline-block",
-                            fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            color:
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            flexShrink: "0",
-                          } as any}
-                        >
-                          <g
-                            color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                            weight="regular"
-                          >
-                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z" />
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1jnp5xr"
-                    data-framer-name="Answer"
-                    style={{ opacity: "0" } as any}
-                   
-                  >
-                    <div
-                      className="framer-7u3tuh"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Definitely. Clario is licensed for both personal and
-                        commercial use, so you can build client websites or
-                        launch your own product without any licensing issues.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-tbzvxl-container"
-                  style={{ transform: "translateX(-50%)", opacity: "1" } as any}
-                 
-                >
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="framer-1js9qsl-container"
-              style={{ opacity: "1", height: "72.4px" } as any}
-             
-            >
-              <div
-                className="framer-Zlq0G framer-tTxjR framer-shmgH framer-1vedywr framer-v-qp5wle"
-                data-border="true"
-                data-framer-name="Closed"
-                data-highlight="true"
-                tabIndex="0"
-                style={{
-                  "--border-bottom-width": "3px",
-                  "--border-color":
-                    "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                  "--border-left-width": "3px",
-                  "--border-right-width": "3px",
-                  "--border-style": "solid",
-                  "--border-top-width": "3px",
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "20px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-nx0aqp"
-                  data-framer-name="Number"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-xgbusx-container"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-1f2g3zi"
-                      data-framer-name="Dark Shadow"
-                      style={{
-                        backgroundColor:
-                          "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                        borderRadius: "10px",
-                        boxShadow:
-                          "rgba(32, 32, 32, 0.15) 0px 1px 0px 0px inset, rgba(32, 32, 32, 0.15) 0px -1px 0px 0px inset, rgba(32, 32, 32, 0.4) 0px 1px 2px 0px, rgba(32, 32, 32, 0.19) 0px 3px 8px 0px, rgba(32, 32, 32, 0.05) 0px 6px 4px 0px, rgba(32, 32, 32, 0.01) 0px 11px 4px 0px, rgba(32, 32, 32, 0) 0px 16px 5px 0px",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <div
-                        className="framer-1u3q6hy"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--extracted-r6o4lv":
-                            "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                          "--framer-link-text-color": "rgb(0, 153, 255)",
-                          "--framer-link-text-decoration": "underline",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-1jsfakf"
-                          data-styles-preset="VQGZB66Vz"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          } as any}
-                        >
-                          06
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-ce98c6"
-                  data-framer-name="Content"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-yrtzvp"
-                    data-framer-name="Question"
-                    data-highlight="true"
-                    tabIndex="0"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1bebe6g"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <h4
-                        className="framer-text framer-styles-preset-152re5y"
-                        data-styles-preset="dqR3BYv7J"
-                      >
-                        How can I get support if I run into issues?
-                      </h4>
-                    </div>
-                    <div
-                      className="framer-1yk7oil"
-                      data-framer-name="Spacer"
-                      style={{ opacity: "1" } as any}
-                     
-                    ></div>
-                    <div
-                      className="framer-2u9vzk-container"
-                      style={{ transform: "rotate(90deg)", opacity: "1" } as any}
-                     
-                    >
-                      <div style={{ display: "contents" } as any}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 256 256"
-                          focusable="false"
-                          color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                          style={{
-                            userSelect: "none",
-                            width: "100%",
-                            height: "100%",
-                            display: "inline-block",
-                            fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            color:
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                            flexShrink: "0",
-                          } as any}
-                        >
-                          <g
-                            color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))"
-                            weight="regular"
-                          >
-                            <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z" />
-                          </g>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1jnp5xr"
-                    data-framer-name="Answer"
-                    style={{ opacity: "0" } as any}
-                   
-                  >
-                    <div
-                      className="framer-7u3tuh"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-link-text-color": "rgb(0, 153, 255)",
-                        "--framer-link-text-decoration": "underline",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        We’re here to help. If you have questions, you can reach
-                        us directly at hello@kadirov.design. We usually respond
-                        within 24 hours.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-tbzvxl-container"
-                  style={{ transform: "translateX(-50%)", opacity: "1" } as any}
-                 
-                >
-                  <div></div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="faq-back-body"></div>
+      </div>
+      
+      {/* 2. Paper Document (Answer) */}
+      <div className="faq-paper-wrapper">
+        <div className="faq-paper">
+          <p className="faq-answer-text">{faq.answer}</p>
         </div>
       </div>
-    </section>
+      
+      {/* 3. Front Folder (Question) */}
+      <div className="faq-front" onClick={() => toggleOpen(index)}>
+        <h4 className="faq-question-text">{faq.question}</h4>
+        <div className="faq-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const FAQSection: React.FC = () => {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggleOpen = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const FAQS = [
+    {
+      shortTitle: "Platform",
+      question: "Is Ride With Pals only for professional cycling clubs?",
+      answer: "Not at all! Whether you are a casual weekend rider, a solo explorer, or a massive 500-member community club, our platform scales to fit your exact needs. Start for free on the Rider plan and upgrade as your club grows."
+    },
+    {
+      shortTitle: "Devices",
+      question: "Is the platform mobile-friendly and responsive?",
+      answer: "Absolutely. Our app and dashboard adapt beautifully to all screen sizes, including desktops, tablets, and smartphones. Every section is designed to deliver a seamless experience across devices while you're on the go."
+    },
+    {
+      shortTitle: "Billing",
+      question: "Are there any hidden fees or setup costs?",
+      answer: "No setup costs and no hidden fees. All of our paid plans come with a straightforward monthly or yearly subscription, and they all include a 14-day free trial so you can make sure it's the right fit for your club."
+    },
+    {
+      shortTitle: "Support",
+      question: "Do you offer priority support for Elite clubs?",
+      answer: "Yes, our Elite Club plan includes priority onboarding and 24/7 dedicated support to ensure your large-scale club operations, wallet management, and custom leaderboards run without a hitch."
+    },
+    {
+      shortTitle: "Customization",
+      question: "Can I change the colors and branding for my club?",
+      answer: "Absolutely! Elite and Pro clubs can upload their own logos, choose custom accent colors, and personalize the dashboard to ensure the app feels like a true extension of your community."
+    },
+    {
+      shortTitle: "Data Privacy",
+      question: "Who owns the data generated by my club's riders?",
+      answer: "You do. We believe in complete data sovereignty. Your club's ride data, member information, and analytics are 100% owned by you. We never sell your data to third-party advertisers."
+    }
+  ];
+
+  const css = `
+    .rwp-faq-section {
+      padding: 120px 40px;
+      background: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Full Width Container */
+    .rwp-faq-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Top: Header & Image Collage ─── */
+    .rwp-faq-header {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      margin-bottom: 100px;
+      width: 100%;
+    }
+    .rwp-faq-header-text {
+      text-align: left;
+    }
+    .rwp-faq-title {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -0.03em;
+    }
+    .rwp-faq-title span {
+      color: #EB712B;
+    }
+    .rwp-faq-subtitle {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+      margin-bottom: 0;
+      max-width: 480px;
+    }
+
+    /* Collage (Right side of header) */
+    .rwp-faq-collage {
+      position: relative;
+      height: 380px;
+      width: 100%;
+      max-width: 700px;
+    }
+    .rwp-faq-collage-img {
+      position: absolute;
+      border-radius: 16px;
+
+      object-fit: cover;
+    }
+
+    .img-book {
+      width: 65%;
+      height: 260px;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .img-thinking {
+      width: 55%;
+      height: 340px;
+      bottom: 10px;
+      right: 10px;
+      z-index: 3;
+
+    }
+    .img-question {
+      width: 110px;
+      height: 110px;
+      top: 200px;
+      left: 30px;
+      z-index: 2;
+      border-radius: 50%;
+      border: 4px solid #050505;
+      background: #111;
+      padding: 10px;
+    }
+
+    /* ─── Bottom: Folder Accordions ─── */
+    .rwp-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto; /* Centered */
+    }
+
+    /* ─── Intricate Folder Logic ─── */
+    
+    .rwp-faq-item {
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      /* GPU acceleration */
+      transform: translateZ(0); 
+    }
+
+    /* 1. Back Folder (Static) */
+    .faq-back {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .faq-tab {
+      align-self: flex-start;
+      background: #111;
+      padding: 12px 28px;
+      border-radius: 12px 12px 0 0;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-bottom: none;
+      /* The connecting curve */
+      position: relative;
+    }
+    .faq-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: -16px;
+      width: 16px;
+      height: 16px;
+      background: transparent;
+      border-bottom-left-radius: 12px;
+      box-shadow: -8px 8px 0 0 #111;
+    }
+    .faq-back-body {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0 16px 16px 16px;
+      height: 40px; /* Just tall enough to connect the tab */
+      width: 100%;
+      margin-top: -1px;
+    }
+
+    /* 2. Paper Document (Middle Layer) */
+    .faq-paper-wrapper {
+      position: relative;
+      z-index: 2;
+      width: calc(100% - 16px);
+      margin: 0 auto;
+      
+      /* Animation using grid */
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s;
+      
+      /* Base state (hidden behind front folder) */
+      margin-top: -24px; 
+    }
+    
+    .faq-paper {
+      overflow: hidden;
+      background: #fafafa;
+      border-radius: 8px 8px 0 0;
+      /* On hover, add a white border/shadow to act as the "peek" */
+      box-shadow: 0 -8px 0 #fafafa;
+      transform: translateY(20px); /* hide the shadow initially by tucking it under the tab */
+      transition: transform 0.3s;
+    }
+    .rwp-faq-item:hover .faq-paper {
+      transform: translateY(12px); /* peek out! */
+    }
+    .rwp-faq-item.is-open .faq-paper {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+    
+    .rwp-faq-item.is-open .faq-paper-wrapper {
+      grid-template-rows: 1fr;
+      margin-top: -16px; /* Space between tab and paper */
+    }
+    .faq-answer-text {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 16px;
+      color: #111; /* Dark text on light paper */
+      line-height: 1.6;
+      padding: 32px 32px 40px 32px;
+      margin: 0;
+    }
+
+    /* 3. Front Folder (Question Layer) */
+    .faq-front {
+      position: relative;
+      z-index: 3;
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 0 16px 16px 16px;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      cursor: pointer;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+      
+      margin-top: -16px; /* Overlap the back body */
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s, border-color 0.3s, border-radius 0.3s;
+    }
+    
+    /* Hover State: Front folder slides down */
+    .rwp-faq-item:hover .faq-front {
+      transform: translateY(8px);
+      background: #222;
+      border-color: rgba(235,113,43,0.3);
+    }
+    
+    /* Open State: Front folder slides down completely below the paper */
+    .rwp-faq-item.is-open .faq-front {
+      transform: translateY(0);
+      background: #EB712B;
+      border-color: #EB712B;
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 10px 30px rgba(235,113,43,0.2);
+    }
+
+    .faq-question-text {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+      line-height: 1.4;
+      transition: color 0.3s;
+    }
+
+    /* Icon */
+    .faq-icon {
+      color: rgba(255,255,255,0.4);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s;
+      flex-shrink: 0;
+    }
+    .rwp-faq-item:hover .faq-icon {
+      color: #EB712B;
+    }
+    .rwp-faq-item.is-open .faq-icon {
+      transform: rotate(135deg);
+      color: #fff;
+    }
+
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .rwp-faq-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 40px;
+      }
+      .rwp-faq-header-text {
+        text-align: center;
+      }
+      .rwp-faq-subtitle {
+        margin: 0 auto;
+      }
+      .rwp-faq-collage {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    }
+    @media (max-width: 600px) {
+      .faq-front { padding: 20px; }
+      .faq-answer-text { padding: 24px; font-size: 15px; }
+      .faq-question-text { font-size: 16px; }
+      .img-book { width: 75%; height: 200px; }
+      .img-thinking { width: 60%; height: 160px; right: 0; bottom: 40px; }
+      .img-question { width: 80px; height: 80px; top: 150px; left: 10px; }
+    }
+  `;
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      <section className="rwp-faq-section" id="faq">
+        <div className="rwp-faq-container">
+          
+          {/* Top Header Section */}
+          <div className="rwp-faq-header">
+            <div className="rwp-faq-header-text">
+              <h2 className="rwp-faq-title">
+                Got questions?<br />
+                <span>We’ve got answers.</span>
+              </h2>
+              <p className="rwp-faq-subtitle">
+                Here’s everything you need to know before getting started. If you have more questions, feel free to reach out to our team.
+              </p>
+            </div>
+
+            <div className="rwp-faq-collage">
+              <img 
+                src="/Images/FAQ-book.jpg" 
+                alt="Open notebook for FAQ" 
+                className="rwp-faq-collage-img img-book" 
+                loading="lazy"
+              />
+              <img 
+                src="/Images/person-thinking.png" 
+                alt="Person thinking about questions" 
+                className="rwp-faq-collage-img img-thinking" 
+                loading="lazy"
+              />
+              <img 
+                src="/Images/question-mark.png" 
+                alt="Question mark bubble" 
+                className="rwp-faq-collage-img img-question" 
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          {/* Bottom Accordion Section */}
+          <div className="rwp-faq-list">
+            {FAQS.map((faq, index) => (
+              <FAQItem 
+                key={index} 
+                faq={faq} 
+                index={index} 
+                isOpen={openIndex === index} 
+                toggleOpen={toggleOpen} 
+              />
+            ))}
+          </div>
+
+        </div>
+      </section>
+    </>
   );
 };

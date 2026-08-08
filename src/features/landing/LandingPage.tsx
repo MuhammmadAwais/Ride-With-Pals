@@ -54,6 +54,39 @@ const LandingPage: React.FC = () => {
           background: #050505;
           min-height: 100vh;
           position: relative;
+          z-index: 0;
+        }
+        .clario-landing-wrapper::before,
+        .clario-landing-wrapper::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          z-index: -1;
+        }
+        /* Base faint grid */
+        .clario-landing-wrapper::before {
+          background-size: 60px 60px;
+          background-image: 
+            linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+        /* Bright spotlight grid */
+        .clario-landing-wrapper::after {
+          background-size: 60px 60px;
+          background-image: 
+            linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+          
+          /* The fading spotlight radius effect tracking --mouse-x, --mouse-y */
+          mask-image: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black, transparent);
+          -webkit-mask-image: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black, transparent);
+          
+          opacity: 0;
+          transition: opacity 0.5s;
+        }
+        .clario-landing-wrapper:hover::after {
+          opacity: 1;
         }
         #__framer-badge-container, 
         .framer-badge,
@@ -145,46 +178,34 @@ const LandingPage: React.FC = () => {
     if (signupBtn) signupBtn.addEventListener('click', handleSignupClick);
     if (homeBtn) homeBtn.addEventListener('click', handleHomeClick);
 
-    // FAQ Toggles: We find all divs in the FAQ section and apply a toggle logic
-    // Since Framer uses nested divs, we find text that looks like a question, then toggle the sibling/child
-    const container = containerRef.current;
-    if (container) {
-      // Find the FAQ section container
-      const faqSection = container.querySelector('[data-framer-name="FAQ Section"]');
-      if (faqSection) {
-        // Find all clickable question headers. Usually they are the first child of a list item or a specific layout div
-        // We'll just look for elements that have an H3 or text ending in '?'
-        const elements = faqSection.querySelectorAll('div, h2, h3, p');
-        elements.forEach(el => {
-          if (el.textContent?.trim().endsWith('?')) {
-            // Find the closest wrapper
-            const wrapper = el.parentElement;
-            if (wrapper) {
-              wrapper.style.cursor = 'pointer';
-              // Assume the next sibling is the answer, or the next sibling of the wrapper is the answer
-              const answerDiv = wrapper.nextElementSibling as HTMLElement;
-              if (answerDiv) {
-                answerDiv.classList.add('faq-answer');
-                
-                // create a wrapper handler
-                const clickHandler = () => {
-                  answerDiv.classList.toggle('open');
-                };
-                
-                wrapper.addEventListener('click', clickHandler);
-                
-                // store it if we want to remove it, but it's not strictly necessary for this static DOM
-              }
-            }
-          }
-        });
-      }
+    // Track mouse for spotlight grid effect with 60fps requestAnimationFrame optimization
+    let rAF_ID: number | null = null;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (rAF_ID) return; // wait for next frame
+      
+      rAF_ID = requestAnimationFrame(() => {
+        const container = containerRef.current;
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          container.style.setProperty('--mouse-x', `${x}px`);
+          container.style.setProperty('--mouse-y', `${y}px`);
+        }
+        rAF_ID = null;
+      });
+    };
+    
+    const wrapper = containerRef.current;
+    if (wrapper) {
+      wrapper.addEventListener('mousemove', handleMouseMove);
     }
 
     return () => {
       if (loginBtn) loginBtn.removeEventListener('click', handleLoginClick);
       if (signupBtn) signupBtn.removeEventListener('click', handleSignupClick);
       if (homeBtn) homeBtn.removeEventListener('click', handleHomeClick);
+      if (wrapper) wrapper.removeEventListener('mousemove', handleMouseMove);
     };
   }, [navigate]);
 

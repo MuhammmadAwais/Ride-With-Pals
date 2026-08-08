@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 import React, { useRef, useEffect } from "react";
 
 // Avatar pool — 9 real images cycled across 12 cards
@@ -224,7 +224,7 @@ export const TestimonialsSection: React.FC = () => {
   const css = `
     .rwp-testimonials {
       padding: 100px 0 80px;
-      background: #050505;
+      background: transparent;
       overflow: hidden;
     }
     /* ── Header ── */
