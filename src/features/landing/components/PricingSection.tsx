@@ -1,3749 +1,488 @@
-// @ts-nocheck
-import React from "react";
+﻿// @ts-nocheck
+import React, { useState } from "react";
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="8" fill="rgba(235,113,43,0.12)"/>
+    <path d="M5 8L7 10L11 6" stroke="#EB712B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const CrossIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="8" fill="rgba(255,255,255,0.04)"/>
+    <path d="M6 6L10 10M10 6L6 10" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const BikeIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/>
+    <path d="M15 6h-5l-1.5 4.5 3.5 1L14 17h4.5"/>
+    <path d="M8 6h1.5l1 2.5"/>
+    <path d="M9.5 8.5l3 1L14 6"/>
+  </svg>
+);
+
+const ClubIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+
+const EliteIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+);
+
+const PLANS = [
+  {
+    id: "rider",
+    icon: BikeIcon,
+    name: "Rider",
+    description: "Perfect for solo cyclists who want to discover and join rides.",
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    cta: "Start free",
+    ctaHref: "/signup",
+    highlight: false,
+    badge: null,
+    features: [
+      { text: "Browse & join public rides", included: true },
+      { text: "View club calendars", included: true },
+      { text: "Basic activity feed", included: true },
+      { text: "Up to 2 club memberships", included: true },
+      { text: "In-app marketplace", included: false },
+      { text: "Saved rides & routes", included: false },
+      { text: "Performance analytics", included: false },
+      { text: "Priority support", included: false },
+    ],
+  },
+  {
+    id: "pro",
+    icon: ClubIcon,
+    name: "Pro",
+    description: "For dedicated riders and small club organisers who need more.",
+    monthlyPrice: 9,
+    yearlyPrice: 7,
+    cta: "Get Pro",
+    ctaHref: "/signup",
+    highlight: true,
+    badge: "Most Popular",
+    features: [
+      { text: "Everything in Rider", included: true },
+      { text: "Unlimited club memberships", included: true },
+      { text: "Marketplace buy & sell", included: true },
+      { text: "Saved rides & routes", included: true },
+      { text: "Performance analytics", included: true },
+      { text: "Manage up to 1 club (50 members)", included: true },
+      { text: "Club news & discount tools", included: false },
+      { text: "Priority support", included: false },
+    ],
+  },
+  {
+    id: "elite",
+    icon: EliteIcon,
+    name: "Elite Club",
+    description: "Full power for serious club owners running a professional operation.",
+    monthlyPrice: 29,
+    yearlyPrice: 22,
+    cta: "Go Elite",
+    ctaHref: "/signup",
+    highlight: false,
+    badge: "Best Value",
+    features: [
+      { text: "Everything in Pro", included: true },
+      { text: "Unlimited club members", included: true },
+      { text: "Club news & media tools", included: true },
+      { text: "Discount & promo engine", included: true },
+      { text: "Subscription & wallet management", included: true },
+      { text: "Advanced leaderboards", included: true },
+      { text: "Multi-admin permissions", included: true },
+      { text: "Priority support + onboarding", included: true },
+    ],
+  },
+];
 
 export const PricingSection: React.FC = () => {
+  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
+
+  const css = `
+    .rwp-pricing {
+      padding: 100px 40px;
+      background: #050505;
+    }
+    .rwp-pricing-header {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 60px;
+    }
+    .rwp-pricing-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(235,113,43,0.3);
+      border-radius: 100px;
+      padding: 6px 14px;
+      margin-bottom: 24px;
+    }
+    .rwp-pricing-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #EB712B;
+    }
+    .rwp-pricing-badge-text {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #EB712B;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .rwp-pricing-heading {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin: 0 0 16px;
+    }
+    .rwp-pricing-sub {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      margin: 0 0 36px;
+      line-height: 1.6;
+    }
+
+    /* Toggle */
+    .rwp-pricing-toggle {
+      display: inline-flex;
+      align-items: center;
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 4px;
+      gap: 2px;
+      position: relative;
+    }
+    .rwp-pricing-toggle-btn {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+    .rwp-pricing-toggle-btn.active {
+      background: #EB712B;
+      color: #fff;
+    }
+    .rwp-pricing-toggle-btn.inactive {
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+    }
+    .rwp-pricing-toggle-btn.inactive:hover {
+      color: rgba(255,255,255,0.8);
+    }
+    .rwp-pricing-save-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(235,113,43,0.1);
+      border: 1px solid rgba(235,113,43,0.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+      margin-left: 10px;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #EB712B;
+      letter-spacing: 0.03em;
+      vertical-align: middle;
+    }
+
+    /* Cards grid */
+    .rwp-pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .rwp-pc {
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: relative;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .rwp-pc:hover {
+      border-color: rgba(235,113,43,0.2);
+      transform: translateY(-2px);
+    }
+    .rwp-pc.highlight {
+      border-color: #EB712B;
+      background: #0d0d0d;
+    }
+    .rwp-pc.highlight:hover {
+      border-color: #EB712B;
+    }
+
+    /* Corner geometry accent on highlighted card */
+    .rwp-pc.highlight::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 80px;
+      height: 80px;
+      border-top: 2px solid #EB712B;
+      border-right: 2px solid #EB712B;
+      border-radius: 0 20px 0 0;
+      pointer-events: none;
+    }
+
+    .rwp-pc-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #EB712B;
+      color: #fff;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .rwp-pc-badge.alt {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.5);
+    }
+
+    .rwp-pc-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(235,113,43,0.08);
+      border: 1px solid rgba(235,113,43,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #EB712B;
+    }
+    .rwp-pc-name {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin: 12px 0 6px;
+    }
+    .rwp-pc-desc {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .rwp-pc-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .rwp-pc-price-amount {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 44px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .rwp-pc-price-amount.free { color: #EB712B; }
+    .rwp-pc-price-unit {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 500;
+    }
+    .rwp-pc-price-slash {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.2);
+      align-self: center;
+    }
+
+    .rwp-pc-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .rwp-pc-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+    }
+    .rwp-pc-feature.included { color: rgba(255,255,255,0.75); }
+    .rwp-pc-feature.excluded { color: rgba(255,255,255,0.25); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.1); }
+
+    .rwp-pc-cta {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 12px;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+    .rwp-pc-cta.primary {
+      background: #EB712B;
+      color: #fff;
+      border: 1px solid #EB712B;
+    }
+    .rwp-pc-cta.primary:hover { background: #d4631f; transform: translateY(-1px); }
+    .rwp-pc-cta.secondary {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .rwp-pc-cta.secondary:hover { border-color: rgba(255,255,255,0.25); color: #fff; transform: translateY(-1px); }
+
+    .rwp-pricing-footer {
+      text-align: center;
+      margin-top: 40px;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,0.25);
+    }
+    .rwp-pricing-footer a { color: rgba(235,113,43,0.7); text-decoration: none; }
+    .rwp-pricing-footer a:hover { color: #EB712B; }
+
+    @media (max-width: 900px) {
+      .rwp-pricing { padding: 60px 20px; }
+      .rwp-pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
+      .rwp-pc.highlight { order: -1; }
+    }
+  `;
+
   return (
-    <section
-      className="framer-i7twhp"
-      data-framer-name="Pricing Section"
-      id="pricing"
-    >
-      <div
-        className="framer-1vco404"
-        data-framer-name="Container"
-       
-      >
-        <div
-          className="framer-kscjmi"
-          data-framer-name="Headline"
-          style={{ willChange: "transform", opacity: "1", transform: "none" } as any}
-         
-        >
-          <div className="framer-138w323-container">
-            <div
-              className="framer-q36ud framer-K8Bhh framer-lohjoe framer-v-7qgiwz"
-              data-framer-name="Second"
-              style={{
-                backgroundColor: "rgba(0, 0, 0, 0)",
-                borderRadius: "10px",
-                boxShadow: "none",
-                opacity: "1",
-              } as any}
-             
-            >
-              <div
-                className="framer-8saufy"
-                data-framer-name="Dot"
-                style={{
-                  backgroundColor:
-                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                  borderRadius: "100%",
-                  boxShadow:
-                    "rgba(235, 113, 43, 0.08) 0px 0.722625px 0.361312px -0.666667px, rgba(235, 113, 43, 0.09) 0px 2.74624px 1.37312px -1.33333px, rgba(235, 113, 43, 0.12) 0px 12px 6px -2px",
-                  opacity: "1",
-                } as any}
-               
-              ></div>
-              <div
-                className="framer-1u3q6hy"
-                data-framer-component-type="RichTextContainer"
-                style={{
-                  "--extracted-r6o4lv":
-                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                  "--framer-link-text-color": "rgb(0, 153, 255)",
-                  "--framer-link-text-decoration": "underline",
-                  transform: "none",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <p
-                  className="framer-text framer-styles-preset-1jsfakf"
-                  data-styles-preset="VQGZB66Vz"
-                  style={{
-                    "--framer-text-color":
-                      "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                  } as any}
-                >
-                  Pricing
-                </p>
-              </div>
+    <>
+      <style dangerouslySetInnerHTML={{ __html: css }} />
+      <section className="rwp-pricing" id="pricing">
+        <div className="rwp-pricing-header">
+          <div className="rwp-pricing-badge">
+            <div className="rwp-pricing-badge-dot" />
+            <span className="rwp-pricing-badge-text">Pricing</span>
+          </div>
+          <h2 className="rwp-pricing-heading">Simple plans.<br/>No surprises.</h2>
+          <p className="rwp-pricing-sub">
+            Start free and upgrade as your club grows. Cancel anytime.
+          </p>
+
+          {/* Billing Toggle */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            <div className="rwp-pricing-toggle">
+              <button
+                className={`rwp-pricing-toggle-btn ${billing === "monthly" ? "active" : "inactive"}`}
+                onClick={() => setBilling("monthly")}
+              >Monthly</button>
+              <button
+                className={`rwp-pricing-toggle-btn ${billing === "yearly" ? "active" : "inactive"}`}
+                onClick={() => setBilling("yearly")}
+              >Yearly</button>
             </div>
-          </div>
-          <div
-            className="framer-1xyz7n7"
-            data-framer-component-type="RichTextContainer"
-            style={{ transform: "none" } as any}
-           
-          >
-            <h2
-              className="framer-text framer-styles-preset-1qep5fy"
-              data-styles-preset="Pd0MWMbDb"
-              style={{ "--framer-text-alignment": "center" } as any}
-            >
-              Simple plans.
-            </h2>
-          </div>
-          <div
-            className="framer-1ughrjm"
-            data-framer-component-type="RichTextContainer"
-            style={{ transform: "none" } as any}
-           
-          >
-            <p
-              className="framer-text framer-styles-preset-1kqs40m"
-              data-styles-preset="nqwdXorsW"
-              style={{ "--framer-text-alignment": "center" } as any}
-            >
-              Straightforward pricing with no hidden costs. Everything you need
-              to manage your money better.
-            </p>
+            {billing === "yearly" && (
+              <span className="rwp-pricing-save-tag">Save up to 25%</span>
+            )}
           </div>
         </div>
-        <div
-          className="framer-vqzelu-container"
-          data-framer-name="Pricing"
-          name="Pricing"
-         
-        >
-          <div
-            name="Pricing"
-            className="framer-t8lCE framer-shmgH framer-15p3v5b framer-v-15p3v5b"
-            data-framer-name="Desktop - Monthly"
-            style={{ maxWidth: "100%", width: "100%", opacity: "1" } as any}
-           
-          >
-            <div
-              className="framer-11a4fhf"
-              data-framer-name="Top"
-              style={{ opacity: "1" } as any}
-             
-            >
-              <div
-                className="framer-12jp4lx"
-                data-framer-name="Switch"
-                style={{ opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-1sat9r2"
-                  data-framer-name="Pricing/Switch subscription"
-                  data-highlight="true"
-                  tabIndex="0"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-qz7bkn"
-                    data-framer-name="Wrapper"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-1rj7h5v"
-                      data-framer-name="Monthly"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--extracted-r6o4lv":
-                          "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                        "--framer-paragraph-spacing": "0px",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                        style={{
-                          "--framer-text-color":
-                            "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                        } as any}
-                      >
-                        Monthly
-                      </p>
-                    </div>
-                    <div
-                      className="framer-12tv7d"
-                      data-framer-name="Monthly"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-paragraph-spacing": "0px",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Monthly
-                      </p>
-                    </div>
+
+        <div className="rwp-pricing-grid">
+          {PLANS.map((plan) => {
+            const Icon = plan.icon;
+            const price = billing === "monthly" ? plan.monthlyPrice : plan.yearlyPrice;
+            return (
+              <div key={plan.id} className={`rwp-pc${plan.highlight ? " highlight" : ""}`}>
+                {plan.badge && (
+                  <div className={`rwp-pc-badge${plan.id === "elite" ? " alt" : ""}`}>{plan.badge}</div>
+                )}
+
+                <div>
+                  <div className="rwp-pc-icon-wrap">
+                    <Icon />
                   </div>
-                  <div
-                    className="framer-1oodmmn"
-                    data-framer-name="Switch"
-                    style={{
-                      backgroundColor:
-                        "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                      borderRadius: "45px",
-                      boxShadow: "rgba(0, 0, 0, 0.14) 0px 2px 2px 0px inset",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      className="framer-zmz25i"
-                      data-framer-name="Circle"
-                      style={{
-                        backgroundColor:
-                          "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                        borderRadius: "100%",
-                        boxShadow:
-                          "rgba(235, 113, 43, 0.15) 0px 1px 0px 0px inset, rgba(235, 113, 43, 0.15) 0px -1px 0px 0px inset, rgba(235, 113, 43, 0.4) 0px 1px 2px 0px, rgba(235, 113, 43, 0.19) 0px 3px 8px 0px, rgba(235, 113, 43, 0.05) 0px 6px 4px 0px, rgba(235, 113, 43, 0.01) 0px 11px 4px 0px, rgba(235, 113, 43, 0) 0px 16px 5px 0px",
-                        transform: "translateY(-50%)",
-                        opacity: "1",
-                      } as any}
-                     
-                    ></div>
-                  </div>
-                  <div
-                    className="framer-1wes28k"
-                    data-framer-name="Wrapper"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-klalor"
-                      data-framer-name="Yearly"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-paragraph-spacing": "0px",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Yearly
-                      </p>
-                    </div>
-                    <div
-                      className="framer-1ml04rq"
-                      data-framer-name="Yearly"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--framer-paragraph-spacing": "0px",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text framer-styles-preset-38u9fz"
-                        data-styles-preset="f_lMCwHxq"
-                      >
-                        Yearly
-                      </p>
-                    </div>
-                  </div>
+                  <div className="rwp-pc-name">{plan.name}</div>
+                  <p className="rwp-pc-desc">{plan.description}</p>
                 </div>
-              </div>
-            </div>
-            <div
-              className="framer-zcxjp4"
-              data-framer-name="Center"
-              style={{ opacity: "1" } as any}
-             
-            >
-              <div
-                className="framer-juwg49-container"
-                style={{ opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-zaYI9 framer-OTE18 framer-hFyMR framer-A31tg framer-shmgH framer-119xgo0 framer-v-119xgo0"
-                  data-framer-name="Desktop - Monthly"
-                  style={{
-                    "--border-bottom-width": "0px",
-                    "--border-color": "rgba(0, 0, 0, 0)",
-                    "--border-left-width": "0px",
-                    "--border-right-width": "0px",
-                    "--border-style": "solid",
-                    "--border-top-width": "0px",
-                    backgroundColor:
-                      "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                    width: "100%",
-                    borderRadius: "20px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div
-                    className="framer-2wa0v7"
-                    data-framer-name="Heading"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-mdm41p"
-                      data-framer-name="Pricing name"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-pp4iyc"
-                        data-framer-name="Starter"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <h4
-                          className="framer-text framer-styles-preset-y5qli"
-                          data-styles-preset="y5FcLWj2c"
-                        >
-                          Starter
-                        </h4>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-k9xg8o"
-                      data-framer-name="Main info"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-v2ooe8"
-                        data-framer-name="Pricing"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          className="framer-1izlotp"
-                          data-framer-name="Price"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-ylrket"
-                            data-framer-name="Normal"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <h2
-                              className="framer-text framer-styles-preset-1qep5fy"
-                              data-styles-preset="Pd0MWMbDb"
-                            >
-                              \$29
-                            </h2>
-                          </div>
-                        </div>
-                        <div
-                          className="framer-1sw4u0n"
-                          data-framer-name="Month"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-cldkee"
-                            data-framer-name="/month"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <p
-                              className="framer-text framer-styles-preset-cb0nmb"
-                              data-styles-preset="Ro3LwE02r"
-                            >
-                              /month
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-1soizi1"
-                        data-framer-name="Unlimited design requests for companies that need ongoing support in multiple fields of design."
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Perfect for freelancers who want full control over
-                          their personal finances.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1t8eg4s"
-                    data-framer-name="Benefit"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-16zqhfb"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-1dkels7-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-56d2rl"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Track income &amp; expenses
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-hgblly"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-1ro25vf-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-1q26u9l"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Connect up to 2 accounts
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-5lc646"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-33t4be-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-18dk8il"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Monthly reports
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-1dzqn6z"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-fi7acg-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-1kzyi6h"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Smart alerts
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+
+                <div className="rwp-pc-price-row">
+                  {price === 0 ? (
+                    <div className="rwp-pc-price-amount free">Free</div>
+                  ) : (
+                    <>
+                      <div className="rwp-pc-price-slash">$</div>
+                      <div className="rwp-pc-price-amount">{price}</div>
+                      <div className="rwp-pc-price-unit">/ mo{billing === "yearly" ? ", billed yearly" : ""}</div>
+                    </>
+                  )}
                 </div>
-              </div>
-              <div
-                className="framer-1ki1kwr-container"
-                style={{ opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-zaYI9 framer-OTE18 framer-hFyMR framer-A31tg framer-shmgH framer-119xgo0 framer-v-3xw7tt"
-                  data-framer-name="Desktop - Monthly - Popular"
-                  data-border="true"
-                  style={{
-                    "--border-bottom-width": "4px",
-                    "--border-color":
-                      "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                    "--border-left-width": "4px",
-                    "--border-right-width": "4px",
-                    "--border-style": "solid",
-                    "--border-top-width": "4px",
-                    backgroundColor:
-                      "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                    width: "100%",
-                    borderRadius: "20px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div
-                    className="framer-2wa0v7"
-                    data-framer-name="Heading"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-mdm41p"
-                      data-framer-name="Pricing name"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-pp4iyc"
-                        data-framer-name="Starter"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <h4
-                          className="framer-text framer-styles-preset-y5qli"
-                          data-styles-preset="y5FcLWj2c"
-                        >
-                          Pro
-                        </h4>
-                      </div>
+
+                <div className="rwp-pc-features">
+                  {plan.features.map((f, i) => (
+                    <div key={i} className={`rwp-pc-feature ${f.included ? "included" : "excluded"}`}>
+                      {f.included ? <CheckIcon /> : <CrossIcon />}
+                      {f.text}
                     </div>
-                    <div
-                      className="framer-k9xg8o"
-                      data-framer-name="Main info"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-v2ooe8"
-                        data-framer-name="Pricing"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          className="framer-1izlotp"
-                          data-framer-name="Price"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-ylrket"
-                            data-framer-name="Normal"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <h2
-                              className="framer-text framer-styles-preset-1qep5fy"
-                              data-styles-preset="Pd0MWMbDb"
-                            >
-                              \$49
-                            </h2>
-                          </div>
-                        </div>
-                        <div
-                          className="framer-1sw4u0n"
-                          data-framer-name="Month"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-cldkee"
-                            data-framer-name="/month"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <p
-                              className="framer-text framer-styles-preset-cb0nmb"
-                              data-styles-preset="Ro3LwE02r"
-                            >
-                              /month
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-1soizi1"
-                        data-framer-name="Unlimited design requests for companies that need ongoing support in multiple fields of design."
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Advanced tools to manage your money smarter and unlock
-                          powerful insights.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1t8eg4s"
-                    data-framer-name="Benefit"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-16zqhfb"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-1dkels7-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-56d2rl"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Unlimited accounts
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-hgblly"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-1ro25vf-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-1q26u9l"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          AI spending insights
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-5lc646"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-33t4be-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-18dk8il"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Custom alerts
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-1dzqn6z"
-                      data-framer-name="List"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-fi7acg-container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          style={{ display: "contents" } as any}
-                         
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 256 256"
-                            focusable="false"
-                            color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                            style={{
-                              userSelect: "none",
-                              width: "100%",
-                              height: "100%",
-                              display: "inline-block",
-                              fill: "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              color:
-                                "var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))",
-                              flexShrink: "0",
-                            } as any}
-                          >
-                            <g
-                              color="var(--token-d2e3bc9a-15a4-4828-bd3c-44ef25339a7a, rgba(255, 255, 255, 0.65))"
-                              weight="fill"
-                            >
-                              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z" />
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                      <div
-                        className="framer-1kzyi6h"
-                        data-framer-name="1 active project at a time"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                        >
-                          Advanced reporting
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-1018pzf"
-                    data-framer-name="Popular"
-                    style={{
-                      backgroundColor:
-                        "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                      borderBottomLeftRadius: "16px",
-                      borderTopRightRadius: "16px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      className="framer-1h9cg2f"
-                      data-framer-name="POPULAR"
-                      data-framer-component-type="RichTextContainer"
-                      style={{
-                        "--extracted-r6o4lv":
-                          "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43))",
-                        "--framer-paragraph-spacing": "0px",
-                        transform: "none",
-                        opacity: "1",
-                      } as any}
-                     
-                    >
-                      <p
-                        className="framer-text"
-                        style={{
-                          "--font-selector": "RlM7TWFucm9wZS1tZWRpdW0=",
-                          "--framer-font-family": "&quot",
-                          "--framer-font-size": "10px",
-                          "--framer-font-weight": "500",
-                          "--framer-letter-spacing": "0.2em",
-                          "--framer-line-height": "100%",
-                          "--framer-text-color":
-                            "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
-                          "--framer-text-transform": "uppercase",
-                        } as any}
-                      >
-                        POPULAR
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
-            </div>
-            <div
-              className="framer-1oxflbe"
-              data-framer-name="Bottom"
-              style={{ opacity: "1" } as any}
-             
-            >
-              <div
-                className="framer-1cnn54k-container"
-                style={{ opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-zaYI9 framer-OTE18 framer-hFyMR framer-A31tg framer-shmgH framer-119xgo0 framer-v-8scgmr"
-                  data-framer-name="Desktop - Monthly - Logo"
-                  style={{
-                    "--border-bottom-width": "0px",
-                    "--border-color": "rgba(0, 0, 0, 0)",
-                    "--border-left-width": "0px",
-                    "--border-right-width": "0px",
-                    "--border-style": "solid",
-                    "--border-top-width": "0px",
-                    backgroundColor:
-                      "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                    width: "100%",
-                    borderRadius: "20px",
-                    opacity: "1",
-                  } as any}
-                 
+
+                <a
+                  href={plan.ctaHref}
+                  className={`rwp-pc-cta ${plan.highlight ? "primary" : "secondary"}`}
                 >
-                  <div
-                    className="framer-2wa0v7"
-                    data-framer-name="Heading"
-                    style={{ opacity: "1" } as any}
-                   
-                  >
-                    <div
-                      className="framer-mdm41p"
-                      data-framer-name="Pricing name"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-pp4iyc"
-                        data-framer-name="Starter"
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          "--extracted-1eung3n":
-                            "var(--token-3d383fe6-53ca-4a40-8d69-ce30729bd8b0, rgb(255, 255, 255))",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <h4
-                          className="framer-text framer-styles-preset-y5qli"
-                          data-styles-preset="y5FcLWj2c"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-1eung3n, var(--token-3d383fe6-53ca-4a40-8d69-ce30729bd8b0, rgb(255, 255, 255)))",
-                          } as any}
-                        >
-                          Trusted by teams worldwide
-                        </h4>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-k9xg8o"
-                      data-framer-name="Main info"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-1soizi1"
-                        data-framer-name="Unlimited design requests for companies that need ongoing support in multiple fields of design."
-                        data-framer-component-type="RichTextContainer"
-                        style={{
-                          "--framer-paragraph-spacing": "0px",
-                          "--extracted-r6o4lv":
-                            "var(--token-7ffc0dc3-487c-4e29-a556-bcfc29e72d7d, rgb(194, 194, 194))",
-                          transform: "none",
-                          opacity: "1",
-                        } as any}
-                       
-                      >
-                        <p
-                          className="framer-text framer-styles-preset-38u9fz"
-                          data-styles-preset="f_lMCwHxq"
-                          style={{
-                            "--framer-text-color":
-                              "var(--extracted-r6o4lv, var(--token-7ffc0dc3-487c-4e29-a556-bcfc29e72d7d, rgb(194, 194, 194)))",
-                          } as any}
-                        >
-                          Invite your team, sync accounts in real time, and
-                          track shared goals with ease.
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-1on397t-container"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <a
-                        className="framer-nsIpD framer-8HnqA framer-GIZ5n framer-crnp9l framer-v-yt5180 framer-dt5kwk"
-                        data-framer-name="Only Text Green - Desktop"
-                        href="/signup"
-                        id="landing-signup-btn"
-                        style={{
-                          backgroundColor: "rgba(0, 0, 0, 0)",
-                          width: "100%",
-                          borderRadius: "23px",
-                          boxShadow: "none",
-                          opacity: "1",
-                        } as any}
-                      >
-                        <div
-                          className="framer-wwtor"
-                          data-framer-component-type="RichTextContainer"
-                          style={{
-                            "--framer-link-text-color": "rgb(0, 153, 255)",
-                            "--framer-link-text-decoration": "underline",
-                            "--variable-reference-gCtuSASlb-AYxsxblIT":
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                            "--extracted-r6o4lv":
-                              "var(--variable-reference-gCtuSASlb-AYxsxblIT)",
-                            transform: "none",
-                            opacity: "1",
-                          } as any}
-                         
-                        >
-                          <p
-                            className="framer-text framer-styles-preset-1tpxd7h"
-                            data-styles-preset="XIZNBvjnr"
-                            style={{
-                              "--framer-text-color":
-                                "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
-                            } as any}
-                          >
-                            Talk to Sales
-                          </p>
-                        </div>
-                        <div
-                          className="framer-jwdc62"
-                          data-framer-name="Suffix"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-dsdkgo-container"
-                            data-framer-name="Icon Normal"
-                            name="Icon Normal"
-                            style={{
-                              transform: "rotate(-45deg)",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <div
-                              style={{ display: "contents" } as any}
-                             
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 256 256"
-                                focusable="false"
-                                color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                style={{
-                                  userSelect: "none",
-                                  width: "100%",
-                                  height: "100%",
-                                  display: "inline-block",
-                                  fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  color:
-                                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  flexShrink: "0",
-                                } as any}
-                              >
-                                <g
-                                  color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                  weight="regular"
-                                >
-                                  <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                                </g>
-                              </svg>
-                            </div>
-                          </div>
-                          <div
-                            className="framer-180i2dq-container"
-                            data-framer-name="Icon Hover"
-                            name="Icon Hover"
-                            style={{
-                              transform: "rotate(-45deg)",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <div
-                              style={{ display: "contents" } as any}
-                             
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 256 256"
-                                focusable="false"
-                                color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                style={{
-                                  userSelect: "none",
-                                  width: "100%",
-                                  height: "100%",
-                                  display: "inline-block",
-                                  fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  color:
-                                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  flexShrink: "0",
-                                } as any}
-                              >
-                                <g
-                                  color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                  weight="regular"
-                                >
-                                  <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                                </g>
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                  <div
-                    className="framer-5fann2"
-                    style={{
-                      mask: "linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 14.8649%, rgb(0, 0, 0) 84.8131%, rgba(0, 0, 0, 0) 100%)",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      className="framer-1nw0y5y-container"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-oM00t framer-15ho52h framer-v-15ho52h"
-                        data-framer-name="Tools"
-                        style={{ width: "100%", opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          className="framer-1umxc96-container"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <section
-                            style={{
-                              display: "flex",
-                              width: "100%",
-                              height: "100%",
-                              maxWidth: "100%",
-                              maxHeight: "100%",
-                              placeItems: "center",
-                              margin: "0px",
-                              padding: "10px",
-                              listStyleType: "none",
-                              opacity: "1",
-                              maskImage:
-                                "linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%, rgba(0, 0, 0, 0) 100%)",
-                              overflow: "hidden",
-                            } as any}
-                          >
-                            <ul
-                              style={{
-                                display: "flex",
-                                width: "100%",
-                                height: "100%",
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                placeItems: "center",
-                                margin: "0px",
-                                padding: "0px",
-                                listStyleType: "none",
-                                gap: "10px",
-                                position: "relative",
-                                flexDirection: "row",
-                                willChange: "auto",
-                                transform: "translateX(0px)",
-                                left: "-670px",
-                              } as any}
-                            >
-                              <li aria-hidden="true">
-                                <div
-                                  className="framer-14l9slj"
-                                  data-framer-name="Logo Group 1"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-1mmir6b"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Wise"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-vkwoqo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg8730607439"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-165lgbm"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Paypal"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-16k0m7y"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10690104924"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1dpz5hr"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Revolut"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1nydglo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10483188055"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-ro39ch"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Slack"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1n0czl2"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11482246979"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-htwx31"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Lemonsqueezy"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-48oepp"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12716118505"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-110jwj1"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Google"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1rcdtdw"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10581120082"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <li aria-hidden="true" style={{}}>
-                                <div
-                                  className="framer-14l9slj"
-                                  data-framer-name="Logo Group 1"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-1mmir6b"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Wise"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-vkwoqo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg8730607439"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-165lgbm"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Paypal"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-16k0m7y"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10690104924"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1dpz5hr"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Revolut"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1nydglo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10483188055"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-ro39ch"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Slack"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1n0czl2"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11482246979"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-htwx31"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Lemonsqueezy"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-48oepp"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12716118505"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-110jwj1"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Google"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1rcdtdw"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10581120082"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <li aria-hidden="true" style={{}}>
-                                <div
-                                  className="framer-14l9slj"
-                                  data-framer-name="Logo Group 1"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-1mmir6b"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Wise"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-vkwoqo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg8730607439"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-165lgbm"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Paypal"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-16k0m7y"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10690104924"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1dpz5hr"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Revolut"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1nydglo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10483188055"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-ro39ch"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Slack"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1n0czl2"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11482246979"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-htwx31"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Lemonsqueezy"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-48oepp"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12716118505"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-110jwj1"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Google"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1rcdtdw"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10581120082"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <li aria-hidden="true" style={{}}>
-                                <div
-                                  className="framer-14l9slj"
-                                  data-framer-name="Logo Group 1"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-1mmir6b"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Wise"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-vkwoqo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg8730607439"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-165lgbm"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Paypal"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-16k0m7y"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10690104924"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1dpz5hr"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Revolut"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1nydglo"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10483188055"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-ro39ch"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Slack"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1n0czl2"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11482246979"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-htwx31"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Lemonsqueezy"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-48oepp"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12716118505"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-110jwj1"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Google"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1rcdtdw"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10581120082"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                            </ul>
-                          </section>
-                        </div>
-                        <div
-                          className="framer-5l02at-container"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <section
-                            style={{
-                              display: "flex",
-                              width: "100%",
-                              height: "100%",
-                              maxWidth: "100%",
-                              maxHeight: "100%",
-                              placeItems: "center",
-                              margin: "0px",
-                              padding: "10px",
-                              listStyleType: "none",
-                              opacity: "1",
-                              overflow: "hidden",
-                            } as any}
-                          >
-                            <ul
-                              style={{
-                                display: "flex",
-                                width: "100%",
-                                height: "100%",
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                placeItems: "center",
-                                margin: "0px",
-                                padding: "0px",
-                                listStyleType: "none",
-                                gap: "10px",
-                                position: "relative",
-                                flexDirection: "row",
-                                willChange: "auto",
-                                transform: "translateX(0px)",
-                              } as any}
-                            >
-                              <li aria-hidden="true">
-                                <div
-                                  className="framer-rz5dze"
-                                  data-framer-name="Logo Group 2"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-ufb6is"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Quickbooks"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-egizj6"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11111794765"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1t8iy7n"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Stripe"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1d4n4hc"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10730021422"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-rl8vco"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Shopify"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-jhfx8d"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11586811063"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-gkaebg"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Apple"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1vla2la"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg9692543930"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-aqcuxj"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Zapier"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-kbr4p7"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11590974841"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-73afur"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Framer"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1se7sqg"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12760144286"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <li aria-hidden="true" style={{}}>
-                                <div
-                                  className="framer-rz5dze"
-                                  data-framer-name="Logo Group 2"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-ufb6is"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Quickbooks"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-egizj6"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11111794765"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1t8iy7n"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Stripe"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1d4n4hc"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10730021422"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-rl8vco"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Shopify"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-jhfx8d"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11586811063"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-gkaebg"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Apple"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1vla2la"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg9692543930"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-aqcuxj"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Zapier"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-kbr4p7"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11590974841"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-73afur"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Framer"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1se7sqg"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12760144286"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <li aria-hidden="true" style={{}}>
-                                <div
-                                  className="framer-rz5dze"
-                                  data-framer-name="Logo Group 2"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-ufb6is"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Quickbooks"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-egizj6"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11111794765"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1t8iy7n"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Stripe"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1d4n4hc"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10730021422"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-rl8vco"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Shopify"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-jhfx8d"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11586811063"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-gkaebg"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Apple"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1vla2la"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg9692543930"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-aqcuxj"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Zapier"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-kbr4p7"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11590974841"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-73afur"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Framer"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1se7sqg"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12760144286"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                              <li aria-hidden="true" style={{}}>
-                                <div
-                                  className="framer-rz5dze"
-                                  data-framer-name="Logo Group 2"
-                                  style={{ flexShrink: "0", opacity: "1" } as any}
-                                 
-                                >
-                                  <div
-                                    className="framer-ufb6is"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "10px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Quickbooks"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-egizj6"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11111794765"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-1t8iy7n"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Stripe"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1d4n4hc"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg10730021422"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-rl8vco"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Shopify"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-jhfx8d"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11586811063"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-gkaebg"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Apple"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1vla2la"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg9692543930"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-aqcuxj"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Zapier"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-kbr4p7"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg11590974841"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="framer-73afur"
-                                    data-framer-name="Logo Square"
-                                    style={{
-                                      backgroundColor:
-                                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                                      borderRadius: "12px",
-                                      opacity: "1",
-                                    } as any}
-                                   
-                                  >
-                                    <div
-                                      data-framer-component-type="SVG"
-                                      data-framer-name="Framer"
-                                     
-                                     
-                                     
-                                     
-                                      className="framer-1se7sqg"
-                                      aria-hidden="true"
-                                      style={{
-                                        imageRendering: "pixelated",
-                                        flexShrink: "0",
-                                        opacity: "1",
-                                      } as any}
-                                     
-                                    >
-                                      <div
-                                        className="svgContainer"
-                                        style={{
-                                          width: "100%",
-                                          height: "100%",
-                                          aspectRatio: "inherit",
-                                        } as any}
-                                       
-                                      >
-                                        <svg
-                                          style={{
-                                            width: "100%",
-                                            height: "100%",
-                                          } as any}
-                                        >
-                                          <use href="#svg12760144286"></use>
-                                        </svg>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </li>
-                            </ul>
-                          </section>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  {plan.cta} {plan.highlight && "→"}
+                </a>
               </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
-      </div>
-    </section>
+
+        <div className="rwp-pricing-footer">
+          All plans include a 14-day free trial. No credit card required. &nbsp;
+          <a href="/contact">Questions? Talk to us →</a>
+        </div>
+      </section>
+    </>
   );
 };
