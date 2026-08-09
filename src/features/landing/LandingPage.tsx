@@ -54,25 +54,32 @@ const LandingPage: React.FC = () => {
           background: #050505;
           min-height: 100vh;
           position: relative;
-          z-index: 0;
         }
-        .clario-landing-wrapper::before,
-        .clario-landing-wrapper::after {
-          content: '';
+        
+        /* Dedicated Grid Background layer */
+        .clario-grid-bg {
           position: absolute;
           inset: 0;
           pointer-events: none;
-          z-index: -1;
+          z-index: 0;
         }
+        
         /* Base faint grid */
-        .clario-landing-wrapper::before {
+        .clario-grid-bg::before {
+          content: '';
+          position: absolute;
+          inset: 0;
           background-size: 60px 60px;
           background-image: 
             linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
         }
+        
         /* Bright spotlight grid */
-        .clario-landing-wrapper::after {
+        .clario-grid-bg::after {
+          content: '';
+          position: absolute;
+          inset: 0;
           background-size: 60px 60px;
           background-image: 
             linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
@@ -85,7 +92,7 @@ const LandingPage: React.FC = () => {
           opacity: 0;
           transition: opacity 0.5s;
         }
-        .clario-landing-wrapper:hover::after {
+        .clario-landing-wrapper:hover .clario-grid-bg::after {
           opacity: 1;
         }
         #__framer-badge-container, 
@@ -287,6 +294,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <div ref={containerRef} className="clario-landing-wrapper">
+      <div className="clario-grid-bg" />
       <div id="main" className="framer-K8Bhh" style={{ display: 'contents' }}>
         <div className="framer-xvlLx framer-c5oytb" style={{ display: 'contents' }}>
           <Navigation />

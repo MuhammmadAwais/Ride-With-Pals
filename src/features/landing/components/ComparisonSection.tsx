@@ -61,7 +61,7 @@ export const ComparisonSection: React.FC = () => {
                       "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
                   } as any}
                 >
-                  Why Clario?
+                  Why Ride With Pals?
                 </p>
               </div>
             </div>
@@ -77,7 +77,7 @@ export const ComparisonSection: React.FC = () => {
               data-styles-preset="Pd0MWMbDb"
               style={{ "--framer-text-alignment": "center" } as any}
             >
-              There’s a smarter way to manage money
+              There’s a smarter way to manage your club
             </h2>
           </div>
         </div>
@@ -178,7 +178,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Messy spreadsheets, manual tracking
+                      Disorganized WhatsApp groups &amp; lost ride details
                     </p>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Complicated pricing, hidden fees
+                      Manual member tracking &amp; paper waivers
                     </p>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Limited automation, manual workflows
+                      No live leaderboards, badges, or Strava sync
                     </p>
                   </div>
                 </div>
@@ -334,7 +334,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      No team collaboration
+                      Fragmented member chats &amp; missing announcement hub
                     </p>
                   </div>
                 </div>
@@ -386,7 +386,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Generic support, slow replies
+                      No integrated marketplace, sub-accounts, or event wallet
                     </p>
                   </div>
                 </div>
@@ -460,7 +460,7 @@ export const ComparisonSection: React.FC = () => {
                         "var(--extracted-r6o4lv, var(--token-743cf692-1243-473f-93be-c36de257addf, rgb(255, 255, 255)))",
                     } as any}
                   >
-                    Clario
+                    Ride With Pals
                   </p>
                 </div>
               </div>
@@ -522,7 +522,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Smart dashboard, real-time updates
+                      All-in-one club dashboard with real-time ride tracking
                     </p>
                   </div>
                 </div>
@@ -578,7 +578,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Simple, transparent pricing
+                      Seamless ride creation with GPX routes &amp; leader controls
                     </p>
                   </div>
                 </div>
@@ -634,7 +634,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Automated reports &amp; smart alerts
+                      Automated monthly leaderboards, distance metrics &amp; badges
                     </p>
                   </div>
                 </div>
@@ -690,7 +690,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Team-friendly, sync accounts easily
+                      Built-in club chat, announcement board &amp; gear marketplace
                     </p>
                   </div>
                 </div>
@@ -746,7 +746,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Priority support, fast response
+                      Integrated wallet, automated member dues &amp; permissions
                     </p>
                   </div>
                 </div>

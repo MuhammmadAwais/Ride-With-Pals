@@ -57,7 +57,7 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-1of0zx5, rgb(255, 255, 255))",
                     } as any}
                   >
-                    Ready to manage your money smarter?
+                    Ready to elevate your club &amp; rides?
                   </h2>
                 </div>
                 <div
@@ -81,8 +81,7 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-r6o4lv, rgba(255, 255, 255, 0.55))",
                     } as any}
                   >
-                    Start your journey to smarter spending and better saving —
-                    it only takes 2 minutes.
+                    Join athletes and club leaders building the ultimate sports community.
                   </p>
                 </div>
               </div>
