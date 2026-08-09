@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./responsive.css";
 
 /* ─── Class-based dark mode variant (matches admin panel pattern) ────────── */
 @custom-variant dark (&:is(.dark, .dark *));

@@ -1,0 +1,674 @@
+/*
+ * Ride with Pals — Responsive CSS
+ * Breakpoints: 1200px / 1024px / 768px / 480px
+ */
+
+/* ── GRID VISIBILITY FIX ─────────────────────────────────────── */
+/* The #home section is transparent - the grid shows through properly.
+   The fix is in GSAP: we set heroScreen transform from the start so
+   there's no momentary flash. Do NOT add a background here. */
+
+/* ── NAV ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .framer-ypgyrt,
+  [data-framer-name="Links"],
+  .framer-11wgtm [class*="framer-7s1f6r"],
+  .framer-11wgtm [class*="framer-177gwxk"],
+  .framer-11wgtm [class*="framer-bk2w7e"],
+  .framer-11wgtm [class*="framer-1revpca"] {
+    display: none !important;
+  }
+
+  .framer-xva091 {
+    gap: 8px !important;
+  }
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .framer-tvpdyg {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 60px !important;
+    padding: 0 20px !important;
+  }
+
+  .framer-1feyz7p {
+    width: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .framer-1s7qg2k {
+    width: 100% !important;
+    max-width: 640px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .framer-1mln3qe {
+    padding-top: 100px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .framer-1s7qg2k {
+    transform: none !important;
+  }
+
+  .framer-styles-preset-1s297ft {
+    font-size: clamp(2rem, 8vw, 3.5rem) !important;
+    line-height: 1.15 !important;
+  }
+}
+
+/* ── HOW IT WORKS ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .framer-88c1hq {
+    padding: 80px 20px !important;
+  }
+
+  .framer-bx18va {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .framer-36tclk-container,
+  .framer-c254y9-container,
+  .framer-vbm2bz-container {
+    width: 100% !important;
+    flex: none !important;
+  }
+}
+
+/* ── BENTO ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .framer-1tw0adp,
+  .framer-1m0ow5x {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .framer-106ykja-container,
+  .framer-1uluv52-container,
+  .framer-blk3k2-container,
+  .framer-12nfnwg-container,
+  .framer-nhbi5w-container {
+    width: 100% !important;
+    flex: none !important;
+  }
+}
+
+/* ── WHY RIDE WITH PALS — FEATURES SECTION ────────────────────── */
+/* Mobile-first responsive for the editorial alternating blocks */
+@media (max-width: 1024px) {
+  .rwp-fs {
+    padding: 80px 0 60px !important;
+  }
+
+  .rwp-fs-inner {
+    padding: 0 24px !important;
+  }
+
+  .rwp-fs-sub-row {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .rwp-fs-stats {
+    justify-content: flex-start !important;
+  }
+
+  .rwp-fb {
+    grid-template-columns: 0 1fr !important;
+    gap: 0 0 !important;
+  }
+
+  .rwp-fb::before,
+  .rwp-fb::after {
+    display: none !important;
+  }
+
+  .rwp-fb-meta {
+    display: none !important;
+  }
+
+  .rwp-fb-screens {
+    height: 360px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Stack each feature block vertically: text first, then screens */
+  .rwp-fb {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+    padding-bottom: 60px !important;
+  }
+
+  /* Both normal and reversed: screens go below text on mobile */
+  .rwp-fb--rev .rwp-fb-text { order: 1 !important; }
+  .rwp-fb--rev .rwp-fb-screens { order: 2 !important; }
+  .rwp-fb .rwp-fb-text { order: 1 !important; }
+  .rwp-fb .rwp-fb-screens { order: 2 !important; }
+
+  .rwp-fs-h1 {
+    font-size: clamp(2.2rem, 9vw, 3.5rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  .rwp-fb-headline {
+    font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+  }
+
+  .rwp-fb-screens {
+    height: 300px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 340px !important;
+  }
+
+  /* Recenter the phone mockups for mobile */
+  .rwp-fb--rider .rwp-fb-screen-a {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-65%, -50%) rotate(-3deg) !important;
+    width: 160px !important;
+  }
+  .rwp-fb--rider .rwp-fb-screen-b {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(5%, -40%) rotate(5deg) !important;
+    width: 130px !important;
+  }
+  .rwp-fb--rev .rwp-fb-screen-a {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-35%, -50%) rotate(3deg) !important;
+    width: 160px !important;
+  }
+  .rwp-fb--rev .rwp-fb-screen-b {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-95%, -40%) rotate(-5deg) !important;
+    width: 130px !important;
+  }
+
+  /* Platform "Why Ride with Pals" split grid → stack */
+  .rwp-fp-inner {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .rwp-fp-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .rwp-fs-stats {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .rwp-fs-stat {
+    padding: 14px 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .rwp-fs-inner {
+    padding: 0 16px !important;
+  }
+
+  .rwp-fp-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rwp-fp-grid-cell:nth-child(1) { border-radius: 12px 12px 0 0 !important; }
+  .rwp-fp-grid-cell:nth-child(2) { border-radius: 0 !important; }
+  .rwp-fp-grid-cell:nth-child(3) { border-radius: 0 !important; }
+  .rwp-fp-grid-cell:nth-child(4) { border-radius: 0 0 12px 12px !important; }
+}
+
+/* ── PRICING ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rwp-pricing {
+    padding: 80px 20px !important;
+  }
+
+  .rwp-pricing-header {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rwp-pricing-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+    gap: 12px !important;
+  }
+
+  .rwp-pc:first-child,
+  .rwp-pc:last-child {
+    border-radius: 20px !important;
+    border-right: 1px solid rgba(255,255,255,0.07) !important;
+    border-left: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  .rwp-pc--highlight {
+    margin: 0 !important;
+    border-radius: 20px !important;
+  }
+}
+
+/* ── CTA SECTION — bottom card above footer — MOBILE ONLY ────── */
+@media (max-width: 768px) {
+  .framer-kqkzw6 {
+    flex-direction: column !important;
+    gap: 32px !important;
+  }
+
+  .framer-1k05i4t {
+    width: 100% !important;
+  }
+
+  .framer-1ibams {
+    width: 100% !important;
+    max-width: 260px !important;
+    margin: 0 auto !important;
+  }
+
+  .framer-1hw4g2n {
+    height: 280px !important;
+  }
+
+  .framer-18w1jh2 h2 {
+    font-size: clamp(1.5rem, 7vw, 2.5rem) !important;
+    line-height: 1.15 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .framer-18w1jh2 {
+    padding: 40px 16px !important;
+  }
+}
+
+/* ── TESTIMONIALS ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  [data-framer-name="Testimonials Grid"],
+  [data-framer-name="Cards"] {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rwp-footer {
+    padding: 80px 24px 40px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rwp-footer-title {
+    font-size: clamp(2.5rem, 12vw, 4.5rem) !important;
+    margin-bottom: 30px !important;
+  }
+
+  .rwp-footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 30px !important;
+  }
+
+  .rwp-footer-bottom {
+    flex-direction: column !important;
+    gap: 20px !important;
+    align-items: flex-start !important;
+  }
+
+  .rwp-footer-logo-img {
+    height: 28px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .rwp-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .rwp-footer-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .rwp-footer {
+    padding: 60px 16px 32px !important;
+  }
+}
+
+/* ── GLOBAL TOUCH ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  a, button {
+    min-height: 44px;
+  }
+
+  section {
+    overflow-x: hidden;
+  }
+}
+
+@media (hover: none) {
+  /* Disable 3D tilt/magnetic effects on touch devices */
+  .rwp-pc, .rwp-fc, .rwp-bento-card {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* ── NAV ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .framer-1lo4qlj,
+  [data-framer-name="Nav Links"],
+  [data-framer-name="Navigation Links"] {
+    display: none !important;
+  }
+
+  /* Hamburger icon placeholder — nav itself */
+  nav {
+    padding: 12px 20px !important;
+  }
+
+  [data-framer-name="CTA"],
+  [data-framer-name="Buttons"] {
+    gap: 8px !important;
+  }
+}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  /* Stack left + right panels */
+  .framer-tvpdyg {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 60px !important;
+    padding: 0 20px !important;
+  }
+
+  .framer-1feyz7p {
+    width: 100% !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .framer-1s7qg2k {
+    width: 100% !important;
+    max-width: 640px !important;
+    transform: perspective(1200px) scale(1) rotateX(10deg) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .framer-1mln3qe {
+    padding-top: 100px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .framer-1s7qg2k {
+    transform: none !important;
+  }
+
+  /* Hero title sizing */
+  .framer-styles-preset-1s297ft {
+    font-size: clamp(2rem, 8vw, 3.5rem) !important;
+    line-height: 1.15 !important;
+  }
+}
+
+/* ── HOW IT WORKS ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .rwp-hiw {
+    padding: 80px 20px !important;
+  }
+
+  .rwp-hiw-steps {
+    flex-direction: column !important;
+    gap: 40px !important;
+  }
+
+  .rwp-hiw-connector,
+  .rwp-hiw-arrow {
+    transform: rotate(90deg) !important;
+    margin: 0 auto !important;
+  }
+
+  .rwp-hiw-step {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .rwp-hiw-title {
+    font-size: clamp(2rem, 7vw, 3rem) !important;
+  }
+}
+
+/* ── BENTO ────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rwp-bento {
+    padding: 80px 20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Framer bento grid usually uses CSS grid — force single column */
+  [data-framer-name="Bento Grid"],
+  [data-framer-name="Grid"],
+  .framer-1tlaazd {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    gap: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* All bento cells full width */
+  [data-framer-name="Bento Grid"] > *,
+  [data-framer-name="Grid"] > * {
+    width: 100% !important;
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+  }
+}
+
+/* ── FEATURES SECTION ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rwp-fs {
+    padding: 80px 20px !important;
+  }
+
+  .rwp-fc-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .rwp-fc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rwp-fc {
+    min-height: unset !important;
+  }
+
+  .rwp-fs-head-title {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+  }
+}
+
+/* ── COMPARISON SECTION ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  [data-framer-name="Comparison"],
+  [data-framer-name="Table"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+/* ── TESTIMONIALS ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  [data-framer-name="Testimonials Grid"],
+  [data-framer-name="Cards Grid"] {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+}
+
+/* ── PRICING ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rwp-pricing {
+    padding: 80px 20px !important;
+  }
+
+  .rwp-pricing-header {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .rwp-pricing-header-right {
+    justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rwp-pricing-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+    gap: 16px !important;
+  }
+
+  .rwp-pc {
+    border-radius: 20px !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  .rwp-pc:first-child,
+  .rwp-pc:last-child {
+    border-radius: 20px !important;
+    border-right: 1px solid rgba(255,255,255,0.07) !important;
+    border-left: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  .rwp-pc--highlight {
+    margin: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  .rwp-pricing-preview {
+    max-width: 100% !important;
+  }
+}
+
+/* ── FAQ ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  [data-framer-name="FAQ"] {
+    padding: 60px 20px !important;
+  }
+}
+
+/* ── BLOG ─────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  [data-framer-name="Blog Section"] {
+    padding: 80px 20px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Force blog bento grid to 1 col */
+  .framer-8cloxj [class*="framer-"] {
+    width: 100% !important;
+  }
+}
+
+/* ── CTA SECTION ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  [data-framer-name="CTA Section"] {
+    padding: 60px 20px !important;
+  }
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rwp-footer {
+    padding: 80px 20px 40px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rwp-footer-title {
+    font-size: clamp(2.5rem, 12vw, 4.5rem) !important;
+    margin-bottom: 30px !important;
+  }
+
+  .rwp-footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 30px !important;
+    text-align: left !important;
+  }
+
+  .rwp-footer-bottom {
+    flex-direction: column !important;
+    gap: 20px !important;
+    text-align: center !important;
+  }
+
+  .rwp-footer-logo-img {
+    height: 28px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .rwp-footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .rwp-footer-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    margin-bottom: 60px !important;
+  }
+}
+
+/* ── GLOBAL TOUCH / MOBILE POLISH ────────────────────────────── */
+@media (max-width: 768px) {
+  /* Improve tap targets */
+  a, button {
+    min-height: 44px !important;
+  }
+
+  /* Prevent horizontal overflow */
+  section {
+    overflow-x: hidden !important;
+  }
+
+  /* Disable 3D transforms on mobile — performance */
+  [id="hero-screen"] {
+    transform: none !important;
+  }
+}
+
+@media (hover: none) {
+  /* Disable magnetic/tilt effects on touch devices */
+  .rwp-pc, .rwp-fc, .rwp-bento-card {
+    transform: none !important;
+    transition: none !important;
+  }
+}

@@ -1,6 +1,25 @@
 // @ts-nocheck
 import React from "react";
 
+/* Tiny SVG atoms outside component render */
+const ArrowRight = ({ size = 12, color = "#EB712B" }: { size?: number; color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 6h10M7 2l4 4-4 4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const CheckMark = ({ club = false }: { club?: boolean }) => (
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+    <path d="M1.5 5L4 7.5L8.5 2.5" stroke={club ? "rgba(255,255,255,0.45)" : "#EB712B"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+const SwirlArrow = () => (
+  <svg width="80" height="64" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 4 C20 4, 36 10, 44 28 C52 46, 68 52, 76 56" stroke="#EB712B" strokeWidth="1.5"
+          strokeLinecap="round" strokeDasharray="3 4" fill="none"/>
+    <path d="M72 50 L76 56 L68 56" stroke="#EB712B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+  </svg>
+);
+
 export const FeaturesSection: React.FC = () => {
   const css = `
     /* ════════════════════════════════════════════
@@ -556,27 +575,7 @@ export const FeaturesSection: React.FC = () => {
     }
   `;
 
-  /* Tiny inline SVG atoms */
-  const ArrowRight = ({ size = 12, color = "#EB712B" }) => (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 6h10M7 2l4 4-4 4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-  const CheckMark = ({ club = false }) => (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      <path d="M1.5 5L4 7.5L8.5 2.5" stroke={club ? "rgba(255,255,255,0.45)" : "#EB712B"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
 
-  /* Swirl arrow SVG for header decoration */
-  const SwirlArrow = () => (
-    <svg width="80" height="64" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* curved path going down-right then arrowhead */}
-      <path d="M4 4 C20 4, 36 10, 44 28 C52 46, 68 52, 76 56" stroke="#EB712B" strokeWidth="1.5"
-            strokeLinecap="round" strokeDasharray="3 4" fill="none"/>
-      <path d="M72 50 L76 56 L68 56" stroke="#EB712B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-    </svg>
-  );
 
   /* Browser dot colors */
   const browserDots = [
@@ -836,7 +835,7 @@ export const FeaturesSection: React.FC = () => {
                 <div className="rwp-fp-grid">
                   <div className="rwp-fp-grid-cell">
                     <div className="rwp-fp-grid-icon">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#D1D5DB" xmlns="http://www.w3.org/2000/svg">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.33c.66-.8 1.11-1.92.99-3.04-.96.04-2.13.64-2.82 1.44-.61.71-1.15 1.86-1.01 2.96 1.08.08 2.18-.55 2.84-1.36z"/>
                       </svg>
                     </div>

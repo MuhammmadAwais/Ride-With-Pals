@@ -6,8 +6,36 @@ export const BlogSection: React.FC = () => {
     <section
       className="framer-iti230"
       data-framer-name="Blog Section"
-      id="how-it-works-1"
-    >
+      id="how-it-works-1">
+<style>{`
+  .framer-iti230 {
+    background-color: transparent !important;
+  }
+  .framer-iti230 a:hover .framer-text {
+    color: #EB712B !important;
+    text-shadow: 0 0 12px rgba(235,113,43,0.3);
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+  .framer-iti230 a:hover svg {
+    fill: #EB712B !important;
+    color: #EB712B !important;
+    transform: translateX(4px);
+    transition: all 0.3s;
+  }
+  .framer-iti230 [data-framer-name="Category"] .framer-text,
+  .framer-iti230 [data-framer-name="POPULAR"] .framer-text {
+    color: #EB712B !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.15em !important;
+  }
+  .framer-iti230 img {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .framer-iti230 a:hover img {
+    transform: scale(1.05) !important;
+  }
+`}</style>
+
       <div
         className="framer-8cloxj"
         data-framer-name="Container"
@@ -37,7 +65,7 @@ export const BlogSection: React.FC = () => {
                   "var(--token-743cf692-1243-473f-93be-c36de257addf, rgb(255, 255, 255))",
               } as any}
             >
-              Explore the blog
+              Community & Updates
             </h2>
           </div>
           <div className="framer-62f8ab-container">
@@ -286,7 +314,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        Basics
+                        CLUB GROWTH
                       </p>
                     </div>
                     <div
@@ -304,7 +332,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-1iazjjy"
                         data-styles-preset="mFPkbr_6a"
                       >
-                        How to Launch Your SaaS Product With Confidence
+                        How to Launch Your Club and Attract More Riders
                       </h3>
                     </div>
                     <div
@@ -322,9 +350,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-38u9fz"
                         data-styles-preset="f_lMCwHxq"
                       >
-                        Learn how to go from idea to launch — fast. We cover
-                        positioning, landing pages, early user feedback, and
-                        building trust using the Clario template for Framer.
+                        Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff.
                       </p>
                     </div>
                     <div
@@ -584,7 +610,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        Pro Tips
+                        TIPS & TRICKS
                       </p>
                     </div>
                     <div
@@ -602,7 +628,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-y5qli"
                         data-styles-preset="y5FcLWj2c"
                       >
-                        Designing a Landing Page That Converts
+                        Maximising Ride Analytics to Boost Performance
                       </h4>
                     </div>
                     <div
@@ -868,7 +894,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        Updates
+                        COMMUNITY
                       </p>
                     </div>
                     <div
@@ -886,7 +912,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-y5qli"
                         data-styles-preset="y5FcLWj2c"
                       >
-                        Collecting Feedback From Your First Users
+                        Building Trust and Safety in Group Rides
                       </h4>
                     </div>
                     <div
@@ -1152,7 +1178,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        CMS
+                        SUCCESS STORY
                       </p>
                     </div>
                     <div
@@ -1170,7 +1196,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-y5qli"
                         data-styles-preset="y5FcLWj2c"
                       >
-                        Building Trust as an Early-Stage SaaS Brand
+                        How Metro CC Doubled Their Membership
                       </h4>
                     </div>
                     <div

@@ -69,7 +69,8 @@ const LandingPage: React.FC = () => {
           content: '';
           position: absolute;
           inset: 0;
-          background-size: 60px 60px;
+          background-size: 64px 64px;
+          background-position: center center;
           background-image: 
             linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
@@ -80,7 +81,8 @@ const LandingPage: React.FC = () => {
           content: '';
           position: absolute;
           inset: 0;
-          background-size: 60px 60px;
+          background-size: 64px 64px;
+          background-position: center center;
           background-image: 
             linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
@@ -94,6 +96,17 @@ const LandingPage: React.FC = () => {
         }
         .clario-landing-wrapper:hover .clario-grid-bg::after {
           opacity: 1;
+        }
+        /* All landing sections sit above the grid */
+        .clario-landing-wrapper > div:not(.clario-grid-bg),
+        .clario-landing-wrapper section {
+          position: relative;
+          z-index: 1;
+        }
+        /* Hero image specifically above grid */
+        #hero-screen {
+          position: relative;
+          z-index: 2;
         }
         #__framer-badge-container, 
         .framer-badge,
@@ -219,78 +232,267 @@ const LandingPage: React.FC = () => {
   // 4. GSAP ScrollTrigger Animations
   useGSAP(() => {
     if (!containerRef.current) return;
-    
+
     const initAnimations = () => {
-      // Animate the navigation
+      // ── NAV ──────────────────────────────────────────────────────────
       gsap.fromTo(
         'nav',
-        { y: -50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
+        { y: -60, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: 'power4.out' }
       );
 
-      // Animate all major sections on scroll
-      const sections = gsap.utils.toArray('section') as HTMLElement[];
-      sections.forEach((section, i) => {
-        section.style.willChange = 'transform, opacity';
-        
-        // If it's the first section (hero), animate immediately
-        if (i === 0) {
-          gsap.fromTo(
-            section.querySelectorAll('h1, h2, p, a, button'),
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out', delay: 0.2 }
-          );
-          gsap.fromTo(
-            section.querySelectorAll('img'),
-            { scale: 0.95, opacity: 0, y: 40 },
-            { scale: 1, opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: 'power3.out', delay: 0.4 }
-          );
-        } else {
-          // Other sections fade in as you scroll
-          gsap.fromTo(
-            section,
-            { y: 50, opacity: 0 },
+      // ── HERO TEXT ─────────────────────────────────────────────────────
+      const heroSection = document.querySelector('#home');
+      if (heroSection) {
+        gsap.fromTo(
+          heroSection.querySelectorAll('h1'),
+          { y: 80, opacity: 0, skewY: 3 },
+          { y: 0, opacity: 1, skewY: 0, duration: 1.1, stagger: 0.12, ease: 'expo.out', delay: 0.2 }
+        );
+        gsap.fromTo(
+          heroSection.querySelectorAll('p, a, button'),
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out', delay: 0.5 }
+        );
+      }
+
+      // ── HERO IMAGE — SCROLL STRAIGHTEN ────────────────────────────────
+      // Use gsap.set to give GSAP FULL ownership of transforms from frame 1.
+      // This prevents the grid from flashing through during any handoff state.
+      const heroScreen = document.getElementById('hero-screen');
+      if (heroScreen) {
+        // Remove inline style transform so GSAP owns it from the start
+        heroScreen.style.transform = '';
+        // Now tell GSAP what the starting state is
+        gsap.set(heroScreen, {
+          rotateX: 19.15,
+          scale: 1.12767,
+          transformPerspective: 1200,
+          transformOrigin: '50% 50%',
+          force3D: true,
+        });
+        // Scrub to flat as user scrolls past hero
+        gsap.to(heroScreen, {
+          scrollTrigger: {
+            trigger: '#home',
+            start: 'top top',
+            end: '+=600',
+            scrub: 2,
+          },
+          rotateX: 0,
+          scale: 1,
+          ease: 'none',
+          force3D: true,
+        });
+      }
+
+
+      // ── SECTION LABELS (orange pill badges) ──────────────────────────
+      gsap.utils.toArray<HTMLElement>('.rwp-hiw-label, .rwp-fs-label, .rwp-pricing-badge, .rwp-footer-btn').forEach((el) => {
+        gsap.fromTo(el,
+          { x: -30, opacity: 0 },
+          {
+            x: 0, opacity: 1, duration: 0.7, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' }
+          }
+        );
+      });
+
+      // ── SECTION TITLES (h2) — split words fall from void ─────────────
+      gsap.utils.toArray<HTMLElement>('h2').forEach((h2) => {
+        gsap.fromTo(h2,
+          { y: 80, opacity: 0, skewY: 4 },
+          {
+            y: 0, opacity: 1, skewY: 0, duration: 1, ease: 'expo.out',
+            scrollTrigger: { trigger: h2, start: 'top 88%', toggleActions: 'play none none none' }
+          }
+        );
+      });
+
+      // ── HOW IT WORKS — sequential step reveal ─────────────────────────
+      gsap.utils.toArray<HTMLElement>('.rwp-hiw-step, .rwp-hiw-card').forEach((el, i) => {
+        gsap.fromTo(el,
+          { y: 60, opacity: 0, scale: 0.95 },
+          {
+            y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.4)',
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+            delay: i * 0.12,
+          }
+        );
+      });
+
+      // ── BENTO CARDS — stagger from bottom ────────────────────────────
+      const bentoSection = document.querySelector('#bento-features');
+      if (bentoSection) {
+        // Target only immediate Framer children, not every nested div
+        const cards = Array.from(bentoSection.children).filter(
+          el => el.tagName !== 'STYLE'
+        );
+        if (cards.length > 0) {
+          gsap.fromTo(cards,
+            { y: 80, opacity: 0 },
             {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: section,
-                start: 'top 85%',
-                toggleActions: 'play none none none',
-              }
+              y: 0, opacity: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out',
+              scrollTrigger: { trigger: bentoSection, start: 'top 80%', toggleActions: 'play none none none' }
             }
           );
         }
+      }
+
+      // ── FEATURES CARDS ────────────────────────────────────────────────
+      gsap.utils.toArray<HTMLElement>('.rwp-fc, .rwp-features-card').forEach((card, i) => {
+        gsap.fromTo(card,
+          { y: 60, opacity: 0, rotateY: 5 },
+          {
+            y: 0, opacity: 1, rotateY: 0, duration: 0.9, ease: 'power3.out',
+            scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' },
+            delay: (i % 3) * 0.1,
+          }
+        );
       });
+
+      // ── PRICING CARDS — stagger in ────────────────────────────────────
+      gsap.utils.toArray<HTMLElement>('.rwp-pc').forEach((card, i) => {
+        gsap.fromTo(card,
+          { y: 100, opacity: 0 },
+          {
+            y: 0, opacity: 1, duration: 1, ease: 'expo.out',
+            scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none none' },
+            delay: i * 0.15,
+          }
+        );
+      });
+
+      // ── TESTIMONIAL CARDS ─────────────────────────────────────────────
+      gsap.utils.toArray<HTMLElement>('[class*="framer-"][data-framer-name*="Card"], [class*="framer-"][data-framer-name*="Testimonial"]').forEach((card, i) => {
+        gsap.fromTo(card,
+          { y: 50, opacity: 0 },
+          {
+            y: 0, opacity: 1, duration: 0.7, ease: 'power3.out',
+            scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' },
+            delay: i * 0.1,
+          }
+        );
+      });
+
+      // ── CTA SECTION ───────────────────────────────────────────────────
+      const ctaSection = document.querySelector('#cta');
+      if (ctaSection) {
+        gsap.fromTo(ctaSection,
+          { scale: 0.94, opacity: 0 },
+          {
+            scale: 1, opacity: 1, duration: 1.1, ease: 'expo.out',
+            scrollTrigger: { trigger: ctaSection, start: 'top 80%', toggleActions: 'play none none none' }
+          }
+        );
+      }
+
+      // ── FOOTER TITLE — big word split from void ───────────────────────
+      const footerTitle = document.getElementById('footer-main-title');
+      if (footerTitle) {
+        const wordSpans = footerTitle.querySelectorAll('.footer-word');
+        gsap.fromTo(wordSpans,
+          { y: 60, opacity: 0, skewY: 4 },
+          {
+            y: 0, opacity: 1, skewY: 0, duration: 1.1, stagger: 0.18, ease: 'expo.out',
+            scrollTrigger: { trigger: footerTitle, start: 'top 92%', toggleActions: 'play none none none' }
+          }
+        );
+      }
+
+      // ── FOOTER GRID LINKS ─────────────────────────────────────────────
+      const footerGrid = document.querySelector('.rwp-footer-grid');
+      if (footerGrid) {
+        gsap.fromTo(footerGrid.querySelectorAll('.rwp-footer-col'),
+          { y: 40, opacity: 0 },
+          {
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out',
+            scrollTrigger: { trigger: footerGrid, start: 'top 90%', toggleActions: 'play none none none' }
+          }
+        );
+      }
+
+      // ── ORANGE ACCENT LINES — slide in from left ──────────────────────
+      gsap.utils.toArray<HTMLElement>('.rwp-fs-label-line, .rwp-hiw-label-line').forEach((line) => {
+        gsap.fromTo(line,
+          { scaleX: 0, transformOrigin: 'left center' },
+          {
+            scaleX: 1, duration: 0.6, ease: 'power2.out',
+            scrollTrigger: { trigger: line, start: 'top 90%', toggleActions: 'play none none none' }
+          }
+        );
+      });
+
+      // ── IMAGES — subtle parallax ──────────────────────────────────────
+      gsap.utils.toArray<HTMLElement>('img:not(#hero-screen img)').forEach((img) => {
+        gsap.to(img, {
+          yPercent: -8,
+          ease: 'none',
+          scrollTrigger: { trigger: img, start: 'top bottom', end: 'bottom top', scrub: 1 }
+        });
+      });
+
       ScrollTrigger.refresh();
     };
 
-    // Wait for images to load before initializing ScrollTrigger to prevent height miscalculations
-    const images = Array.from(containerRef.current.querySelectorAll('img'));
-    let loadedCount = 0;
-    
-    if (images.length === 0) {
-      initAnimations();
-    } else {
-      images.forEach(img => {
-        if (img.complete) {
-          loadedCount++;
-          if (loadedCount === images.length) initAnimations();
-        } else {
-          img.addEventListener('load', () => {
-            loadedCount++;
-            if (loadedCount === images.length) initAnimations();
-          });
-          img.addEventListener('error', () => {
-            loadedCount++;
-            if (loadedCount === images.length) initAnimations();
-          });
-        }
+    // ── MICRO-INTERACTIONS: 3D tilt on cards ──────────────────────────
+    const setupCardTilt = () => {
+      const cards = document.querySelectorAll<HTMLElement>('.rwp-pc, .rwp-fc, .rwp-bento-card');
+      cards.forEach((card) => {
+        const handleMove = (e: MouseEvent) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cx = rect.width / 2;
+          const cy = rect.height / 2;
+          const rotX = ((y - cy) / cy) * -6;
+          const rotY = ((x - cx) / cx) * 6;
+          card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
+          card.style.transition = 'transform 0.1s linear';
+        };
+        const handleLeave = () => {
+          card.style.transform = '';
+          card.style.transition = 'transform 0.5s ease';
+        };
+        card.addEventListener('mousemove', handleMove);
+        card.addEventListener('mouseleave', handleLeave);
       });
-    }
+    };
+
+    // ── MICRO-INTERACTIONS: magnetic buttons ──────────────────────────
+    const setupMagneticButtons = () => {
+      const btns = document.querySelectorAll<HTMLElement>('.rwp-footer-btn, .rwp-pricing-cta, #landing-signup-btn');
+      btns.forEach((btn) => {
+        const handleMove = (e: MouseEvent) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3, ease: 'power2.out' });
+        };
+        const handleLeave = () => {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+        };
+        btn.addEventListener('mousemove', handleMove);
+        btn.addEventListener('mouseleave', handleLeave);
+      });
+    };
+
+    // ── Kick off animations ──────────────────────────────────────────
+    // Don't gate on images — Framer CSS loads them lazily anyway.
+    // Just give the DOM one frame to paint before measuring positions.
+    const raf = requestAnimationFrame(() => {
+      try {
+        initAnimations();
+      } catch (e) {
+        console.warn('[GSAP] initAnimations error:', e);
+      }
+      setTimeout(setupCardTilt, 600);
+      setTimeout(setupMagneticButtons, 600);
+    });
+
+    return () => cancelAnimationFrame(raf);
   }, { scope: containerRef });
+
 
   return (
     <div ref={containerRef} className="clario-landing-wrapper">

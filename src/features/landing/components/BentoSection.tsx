@@ -1,1074 +1,480 @@
-// @ts-nocheck
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export const BentoSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="framer-z1txfs" data-framer-name="Bento Section">
-      <div
-        className="framer-1u7pr5f"
-        data-framer-name="Container"
-       
-      >
-        <div
-          className="framer-1gb24e5"
-          data-framer-name="Headline"
-         
-        >
-          <div
-            className="framer-14d1g7g"
-            data-framer-component-type="RichTextContainer"
-            style={{ willChange: "transform", opacity: "1", transform: "none" } as any}
-           
-          >
-            <h2
-              className="framer-text framer-styles-preset-1qep5fy"
-              data-styles-preset="Pd0MWMbDb"
-              style={{ "--framer-text-alignment": "left" } as any}
-            >
-              See your money in real time, clearly.
-            </h2>
-          </div>
-          <div
-            className="framer-xigpw3"
-            data-framer-component-type="RichTextContainer"
-            style={{ willChange: "transform", opacity: "1", transform: "none" } as any}
-           
-          >
-            <p
-              className="framer-text framer-styles-preset-1kqs40m"
-              data-styles-preset="nqwdXorsW"
-              style={{ "--framer-text-alignment": "left" } as any}
-            >
-              Clario shows your income, spending, and goals in simple visuals
-              you can act on — right away.
-            </p>
-          </div>
+    <section ref={sectionRef} id="bento-features" className={`rwp-bento ${isVisible ? "visible" : ""}`}>
+      <style>{`
+        .rwp-bento {
+          padding: 120px 20px;
+          background-color: transparent;
+          color: #fff;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Radial ambient glows */
+        .rwp-bento-glow-1 {
+          position: absolute;
+          top: 10%;
+          left: -5%;
+          width: 700px;
+          height: 700px;
+          background: radial-gradient(circle, rgba(235,113,43,0.09) 0%, transparent 65%);
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .rwp-bento-glow-2 {
+          position: absolute;
+          bottom: 5%;
+          right: -5%;
+          width: 800px;
+          height: 800px;
+          background: radial-gradient(circle, rgba(235,113,43,0.07) 0%, transparent 65%);
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .rwp-bento-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          position: relative;
+          z-index: 2;
+        }
+
+        .rwp-bento-header {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-bottom: 70px;
+          position: relative;
+        }
+
+        @media (min-width: 900px) {
+          .rwp-bento-header {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+        }
+
+        .rwp-bento-title {
+          font-family: Manrope, Inter, sans-serif;
+          font-size: clamp(38px, 4.5vw, 60px);
+          font-weight: 900;
+          letter-spacing: -0.03em;
+          line-height: 1.08;
+          max-width: 600px;
+        }
+
+        .rwp-bento-subtitle {
+          font-family: Manrope, Inter, sans-serif;
+          font-size: 17px;
+          color: rgba(255,255,255,0.45);
+          max-width: 420px;
+          line-height: 1.6;
+        }
+
+        /* Glassmorphism Card Styling */
+        .rwp-bento-card {
+          position: relative;
+          z-index: auto;
+          border-radius: 28px;
+          display: flex;
+          flex-direction: column;
+          cursor: pointer;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          background: transparent;
+        }
+
+        .rwp-bento-card::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          background: rgba(14, 14, 14, 0.65);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: 28px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 
+            0 20px 50px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12),
+            inset 0 0 20px rgba(255, 255, 255, 0.02);
+          transition: border-color 0.4s, background 0.4s, box-shadow 0.4s;
+        }
+
+        .rwp-bento-card:hover::before {
+          background: rgba(22, 22, 22, 0.78);
+          border-color: rgba(235, 113, 43, 0.4);
+          box-shadow: 
+            0 30px 60px rgba(0, 0, 0, 0.8),
+            0 0 35px rgba(235, 113, 43, 0.1) inset,
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .rwp-bento-card:hover {
+          transform: translateY(-8px);
+        }
+
+        /* SVG Connecting Arrows overlay - placed above glass bg (z:5), behind content (z:10) */
+        .rwp-bento-connections {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          z-index: 5;
+        }
+        
+        .rwp-arrow-line {
+          fill: none;
+          stroke: #EB712B;
+          stroke-width: 2.2;
+          stroke-dasharray: 6 6;
+          animation: arrowDash 25s linear infinite;
+        }
+
+        @keyframes arrowDash {
+          to { stroke-dashoffset: -300; }
+        }
+
+        @media (max-width: 900px) {
+          .rwp-bento-connections { display: none; }
+        }
+
+        /* Bento Grid Layout */
+        .rwp-bento-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 24px;
+          position: relative;
+          z-index: 2;
+        }
+
+        @media (min-width: 900px) {
+          .rwp-bento-grid {
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: minmax(460px, auto) minmax(460px, auto);
+          }
+          .rwp-bento-card-1 { grid-column: span 7; }
+          .rwp-bento-card-2 { grid-column: span 5; }
+          .rwp-bento-card-3 { grid-column: span 5; }
+          .rwp-bento-card-4 { grid-column: span 7; }
+        }
+
+        /* Text Content - Layer 10 (above arrows at z:5) */
+        .rwp-bento-content {
+          padding: 36px 36px 20px 36px;
+          z-index: 10;
+          position: relative;
+        }
+
+        .rwp-bento-card-title {
+          font-family: Manrope, Inter, sans-serif;
+          font-size: 24px;
+          font-weight: 800;
+          margin-bottom: 10px;
+          color: #fff;
+          letter-spacing: -0.02em;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .rwp-bento-accent-dot {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #EB712B;
+          box-shadow: 0 0 10px rgba(235,113,43,0.9);
+        }
+
+        .rwp-bento-card-desc {
+          font-family: Manrope, Inter, sans-serif;
+          font-size: 15px;
+          color: rgba(255,255,255,0.45);
+          line-height: 1.6;
+        }
+
+        /* Image Mockup Containers - Layer 10 (above arrows at z:5) */
+        .rwp-bento-image-area {
+          flex-grow: 1;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          width: 100%;
+          z-index: 10;
+        }
+
+        /* Phone frame component */
+        .rwp-phone-mockup {
+          width: 220px;
+          height: 380px;
+          background: #161616;
+          border-radius: 36px;
+          border: 4px solid #222;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1);
+          overflow: hidden;
+          position: relative;
+          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          flex-shrink: 0;
+        }
+
+        .rwp-phone-mockup img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: top;
+          display: block;
+        }
+
+        .rwp-bento-card:hover .rwp-phone-mockup {
+          transform: translateY(-8px) scale(1.03);
+        }
+
+        /* Browser frame component */
+        .rwp-browser-mockup {
+          width: 90%;
+          height: 280px;
+          background: #161616;
+          border-radius: 16px 16px 0 0;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-bottom: none;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+          overflow: hidden;
+          position: relative;
+          transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .rwp-browser-bar {
+          height: 28px;
+          background: #111;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+          display: flex;
+          align-items: center;
+          padding: 0 12px;
+          gap: 6px;
+        }
+
+        .rwp-browser-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+        }
+
+        .rwp-browser-mockup img {
+          width: 100%;
+          height: calc(100% - 28px);
+          object-fit: cover;
+          object-position: top;
+          display: block;
+        }
+
+        .rwp-bento-card:hover .rwp-browser-mockup {
+          transform: translateY(-6px) scale(1.02);
+        }
+
+        /* Card 1 Specifics (Dashboard Browser) */
+        .rwp-bento-card-1 .rwp-bento-image-area {
+          align-items: flex-end;
+          padding-top: 10px;
+        }
+
+        /* Card 2 Specifics (Analytics Mobile) */
+        .rwp-bento-card-2 .rwp-bento-image-area {
+          align-items: flex-end;
+          padding-bottom: 0;
+        }
+        .rwp-bento-card-2 .rwp-phone-mockup {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+          height: 320px;
+        }
+
+        /* Card 3 Specifics (Club Management Mobile) */
+        .rwp-bento-card-3 .rwp-bento-image-area {
+          align-items: flex-end;
+        }
+        .rwp-bento-card-3 .rwp-phone-mockup {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+          height: 320px;
+        }
+
+        /* Card 4 Specifics (Shop Mobile - HORIZONTAL SPLIT) */
+        .rwp-bento-card-4 {
+          flex-direction: row;
+          align-items: center;
+        }
+
+        .rwp-bento-card-4 .rwp-bento-content {
+          width: 55%;
+          padding: 40px;
+        }
+
+        .rwp-bento-card-4 .rwp-bento-image-area {
+          width: 45%;
+          height: 100%;
+          justify-content: center;
+          align-items: center;
+          padding: 20px;
+        }
+
+        .rwp-bento-card-4 .rwp-phone-mockup {
+          height: 360px;
+          border-radius: 28px;
+          transform: rotate(3deg);
+        }
+        .rwp-bento-card-4:hover .rwp-phone-mockup {
+          transform: rotate(0deg) scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+          .rwp-bento-card-4 {
+            flex-direction: column;
+          }
+          .rwp-bento-card-4 .rwp-bento-content {
+            width: 100%;
+          }
+          .rwp-bento-card-4 .rwp-bento-image-area {
+            width: 100%;
+            height: 320px;
+          }
+        }
+      `}</style>
+
+      <div className="rwp-bento-glow-1" />
+      <div className="rwp-bento-glow-2" />
+
+      <div className="rwp-bento-container">
+        <div className="rwp-bento-header">
+          <h2 className="rwp-bento-title">
+            See your rides in real time, <span style={{ color: "#EB712B" }}>clearly.</span>
+          </h2>
+          <p className="rwp-bento-subtitle">
+            Ride with Pals shows your events, members, and club progress in simple visuals you can act on — right away.
+          </p>
         </div>
-        <div
-          className="framer-1kv10ua"
-          data-framer-name="Content"
-         
-        >
-          <div
-            className="framer-1tw0adp"
-            data-framer-name="Bento - Top"
-           
-          >
-            <div
-              className="framer-106ykja-container"
-              data-framer-name="Bento Card 1"
-              name="Bento Card 1"
-             
-            >
-              <div
-                name="Bento Card 1"
-                className="framer-dsCGH framer-OTE18 framer-shmgH framer-1ntmpr1 framer-v-1ntmpr1"
-                data-framer-name="Desktop"
-                style={{
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "30px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-6r0euj"
-                  data-framer-name="Visual"
-                  style={{
-                    backgroundColor:
-                      "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                    borderRadius: "25px 25px 40px 40px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div
-                    className="framer-1p3krqc"
-                    data-framer-name="Image"
-                    style={{
-                      mask: "linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%)",
-                      borderRadius: "20px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      data-framer-background-image-wrapper="true"
-                      style={{
-                        position: "absolute",
-                        borderRadius: "inherit",
-                        cornerShape: "inherit",
-                        inset: "0px",
-                      } as any}
-                     
-                    >
-                      <img
-                        decoding="auto"
-                        loading="lazy"
-                        width="1920"
-                        height="1440"
-                        sizes="max(max((min(max(100vw - 80px, 1px), 1000px) - 20px) * 0.6, 1px) - 20px, 1px)"
-                        srcset="/landing/assets/images/image-15.png 512w, /landing/assets/images/image-14.png 1024w, /landing/assets/images/image-16.png 1920w"
-                        src="/landing/assets/images/image-14.png"
-                        alt=""
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "inherit",
-                          cornerShape: "inherit",
-                          objectPosition: "47.8% 0%",
-                          objectFit: "cover",
-                        } as any}
-                        data-ai-detector-processed="true"
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "4px",
-                          right: "4px",
-                          zIndex: "10000",
-                        } as any}
-                       
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-597hod"
-                  data-framer-name="Title + Sub"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-14br7q8"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <h4
-                      className="framer-text framer-styles-preset-y5qli"
-                      data-styles-preset="y5FcLWj2c"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      Smart Dashboard
-                    </h4>
-                  </div>
-                  <div
-                    className="framer-13gi2bi"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-38u9fz"
-                      data-styles-preset="f_lMCwHxq"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      See all your accounts in one view — balances, spending,
-                      and goals.
-                    </p>
-                  </div>
-                </div>
-              </div>
+
+        <div className="rwp-bento-grid">
+          
+          {/* SVG Animated Connections & Arrows */}
+          <div className="rwp-bento-connections">
+            <svg width="100%" height="100%" viewBox="0 0 1200 950" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0 }}>
+              <defs>
+                <marker id="arrowhead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#EB712B" />
+                </marker>
+              </defs>
+
+              {/* Arrow from Card 1 to Card 2 */}
+              <path className="rwp-arrow-line" d="M 620,240 Q 680,240 700,240" markerEnd="url(#arrowhead)" />
+
+              {/* Curved Arrow from Card 2 to Card 4 */}
+              <path className="rwp-arrow-line" d="M 950,440 Q 1100,550 850,700" markerEnd="url(#arrowhead)" style={{ animationDelay: '-4s' }} />
+
+              {/* Curved Arrow from Card 1 down to Card 3 */}
+              <path className="rwp-arrow-line" d="M 350,440 Q 200,550 350,680" markerEnd="url(#arrowhead)" style={{ animationDelay: '-8s' }} />
+
+              {/* Connecting line between Card 3 and Card 4 */}
+              <path className="rwp-arrow-line" d="M 480,720 Q 520,720 540,720" markerEnd="url(#arrowhead)" style={{ animationDelay: '-12s' }} />
+            </svg>
+          </div>
+
+          {/* Card 1: Dashboard */}
+          <div className="rwp-bento-card rwp-bento-card-1">
+            <div className="rwp-bento-content">
+              <h3 className="rwp-bento-card-title">
+                <span className="rwp-bento-accent-dot"></span> Smart Dashboard
+              </h3>
+              <p className="rwp-bento-card-desc">
+                See all your active events, clubs, and tasks in one unified view — no more toggling between apps.
+              </p>
             </div>
-            <div
-              className="framer-1uluv52-container"
-              data-framer-name="Bento Card 2"
-              name="Bento Card 2"
-             
-            >
-              <div
-                name="Bento Card 2"
-                className="framer-dsCGH framer-OTE18 framer-shmgH framer-1ntmpr1 framer-v-1ntmpr1"
-                data-framer-name="Desktop"
-                style={{
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  height: "100%",
-                  width: "100%",
-                  borderRadius: "30px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-6r0euj"
-                  data-framer-name="Visual"
-                  style={{
-                    backgroundColor:
-                      "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                    borderRadius: "25px 25px 40px 40px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div
-                    className="framer-1p3krqc"
-                    data-framer-name="Image"
-                    style={{
-                      mask: "linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%)",
-                      borderRadius: "20px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      data-framer-background-image-wrapper="true"
-                      style={{
-                        position: "absolute",
-                        borderRadius: "inherit",
-                        cornerShape: "inherit",
-                        inset: "0px",
-                      } as any}
-                     
-                    >
-                      <img
-                        decoding="auto"
-                        loading="lazy"
-                        width="1920"
-                        height="1920"
-                        sizes="max(max((min(max(100vw - 80px, 1px), 1000px) - 20px) * 0.4, 1px) - 20px, 1px)"
-                        srcset="/landing/assets/images/clario-cashflow-overview-card-displaying-income-an-1.png 512w, /landing/assets/images/clario-cashflow-overview-card-displaying-income-an-2.png 1024w, /landing/assets/images/clario-cashflow-overview-card-displaying-income-an-3.png 1920w"
-                        src="/landing/assets/images/clario-cashflow-overview-card-displaying-income-an-3.png"
-                        alt="Clario cashflow overview card displaying income and expense trends over the past 7 days with a line chart."
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "inherit",
-                          cornerShape: "inherit",
-                          objectPosition: "47.4% 22.4%",
-                          objectFit: "cover",
-                        } as any}
-                        data-ai-detector-processed="true"
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "4px",
-                          right: "4px",
-                          zIndex: "10000",
-                        } as any}
-                       
-                      ></div>
-                    </div>
-                  </div>
+            <div className="rwp-bento-image-area">
+              <div className="rwp-browser-mockup">
+                <div className="rwp-browser-bar">
+                  <div className="rwp-browser-dot" style={{ background: '#FF5F56' }} />
+                  <div className="rwp-browser-dot" style={{ background: '#FFBD2E' }} />
+                  <div className="rwp-browser-dot" style={{ background: '#27C93F' }} />
                 </div>
-                <div
-                  className="framer-597hod"
-                  data-framer-name="Title + Sub"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-14br7q8"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <h4
-                      className="framer-text framer-styles-preset-y5qli"
-                      data-styles-preset="y5FcLWj2c"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      Cashflow Overview
-                    </h4>
-                  </div>
-                  <div
-                    className="framer-13gi2bi"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-38u9fz"
-                      data-styles-preset="f_lMCwHxq"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      Track your daily income and expenses to understand your
-                      financial flow.
-                    </p>
-                  </div>
-                </div>
+                <img src="/Images/feature-screens/feat-web-dashboard.png" alt="Smart Dashboard" />
               </div>
             </div>
           </div>
-          <div
-            className="framer-1m0ow5x"
-            data-framer-name="Bento - Bottom"
-           
-          >
-            <div
-              className="framer-blk3k2-container"
-              data-framer-name="Bento Card 3"
-              name="Bento Card 3"
-             
-            >
-              <div
-                name="Bento Card 3"
-                className="framer-dsCGH framer-OTE18 framer-shmgH framer-1ntmpr1 framer-v-1ntmpr1"
-                data-framer-name="Desktop"
-                style={{
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "30px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-6r0euj"
-                  data-framer-name="Visual"
-                  style={{
-                    backgroundColor:
-                      "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                    borderRadius: "25px 25px 40px 40px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div
-                    className="framer-1p3krqc"
-                    data-framer-name="Image"
-                    style={{
-                      mask: "linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%)",
-                      borderRadius: "20px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      data-framer-background-image-wrapper="true"
-                      style={{
-                        position: "absolute",
-                        borderRadius: "inherit",
-                        cornerShape: "inherit",
-                        inset: "0px",
-                      } as any}
-                     
-                    >
-                      <img
-                        decoding="auto"
-                        loading="lazy"
-                        width="1920"
-                        height="1920"
-                        sizes="max(max((min(max(100vw - 80px, 1px), 1000px) - 40px) / 3, 1px) - 20px, 1px)"
-                        srcset="/landing/assets/images/expense-breakdown-donut-chart-showing-3-500-in-tot-1.png 512w, /landing/assets/images/expense-breakdown-donut-chart-showing-3-500-in-tot-2.png 1024w, /landing/assets/images/expense-breakdown-donut-chart-showing-3-500-in-tot-3.png 1920w"
-                        src="/landing/assets/images/expense-breakdown-donut-chart-showing-3-500-in-tot-3.png"
-                        alt="Expense breakdown donut chart showing \$3,500 in total, categorized by rent, investment, and education"
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "inherit",
-                          cornerShape: "inherit",
-                          objectPosition: "50% 0%",
-                          objectFit: "cover",
-                        } as any}
-                        data-ai-detector-processed="true"
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "4px",
-                          right: "4px",
-                          zIndex: "10000",
-                        } as any}
-                       
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-597hod"
-                  data-framer-name="Title + Sub"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-14br7q8"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <h4
-                      className="framer-text framer-styles-preset-y5qli"
-                      data-styles-preset="y5FcLWj2c"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      Spending Breakdown
-                    </h4>
-                  </div>
-                  <div
-                    className="framer-13gi2bi"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-38u9fz"
-                      data-styles-preset="f_lMCwHxq"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      See exactly how your money is split across categories.
-                    </p>
-                  </div>
-                </div>
-              </div>
+
+          {/* Card 2: Analytics */}
+          <div className="rwp-bento-card rwp-bento-card-2">
+            <div className="rwp-bento-content">
+              <h3 className="rwp-bento-card-title">
+                <span className="rwp-bento-accent-dot"></span> Ride Analytics
+              </h3>
+              <p className="rwp-bento-card-desc">
+                Track your personal bests and club statistics to understand your performance flow over time.
+              </p>
             </div>
-            <div
-              className="framer-12nfnwg-container"
-              data-framer-name="Bento Card 4"
-              name="Bento Card 4"
-             
-            >
-              <div
-                name="Bento Card 4"
-                className="framer-dsCGH framer-OTE18 framer-shmgH framer-1ntmpr1 framer-v-1ntmpr1"
-                data-framer-name="Desktop"
-                style={{
-                  backgroundColor:
-                    "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                  width: "100%",
-                  borderRadius: "30px",
-                  opacity: "1",
-                } as any}
-               
-              >
-                <div
-                  className="framer-6r0euj"
-                  data-framer-name="Visual"
-                  style={{
-                    backgroundColor:
-                      "var(--token-0bd9300c-1d9c-48e3-b47c-3d641fa8f8ff, rgb(5, 5, 5))",
-                    borderRadius: "25px 25px 40px 40px",
-                    opacity: "1",
-                  } as any}
-                 
-                >
-                  <div
-                    className="framer-1p3krqc"
-                    data-framer-name="Image"
-                    style={{
-                      mask: "linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0) 100%)",
-                      borderRadius: "20px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      data-framer-background-image-wrapper="true"
-                      style={{
-                        position: "absolute",
-                        borderRadius: "inherit",
-                        cornerShape: "inherit",
-                        inset: "0px",
-                      } as any}
-                     
-                    >
-                      <img
-                        decoding="auto"
-                        loading="lazy"
-                        width="1920"
-                        height="1920"
-                        sizes="max(max((min(max(100vw - 80px, 1px), 1000px) - 40px) / 3, 1px) - 20px, 1px)"
-                        srcset="/landing/assets/images/vacation-fund-card-showing-3-000-saved-out-of-5-00-1.png 512w, /landing/assets/images/vacation-fund-card-showing-3-000-saved-out-of-5-00-2.png 1024w, /landing/assets/images/vacation-fund-card-showing-3-000-saved-out-of-5-00-3.png 1920w"
-                        src="/landing/assets/images/vacation-fund-card-showing-3-000-saved-out-of-5-00-3.png"
-                        alt="Vacation fund card showing \$3,000 saved out of \$5,000, with team members and due date"
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "inherit",
-                          cornerShape: "inherit",
-                          objectPosition: "48.2% 0%",
-                          objectFit: "cover",
-                        } as any}
-                        data-ai-detector-processed="true"
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "4px",
-                          right: "4px",
-                          zIndex: "10000",
-                        } as any}
-                       
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-597hod"
-                  data-framer-name="Title + Sub"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-14br7q8"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <h4
-                      className="framer-text framer-styles-preset-y5qli"
-                      data-styles-preset="y5FcLWj2c"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      Savings Goal
-                    </h4>
-                  </div>
-                  <div
-                    className="framer-13gi2bi"
-                    data-framer-component-type="RichTextContainer"
-                    style={{
-                      "--framer-link-text-color": "rgb(0, 153, 255)",
-                      "--framer-link-text-decoration": "underline",
-                      transform: "none",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <p
-                      className="framer-text framer-styles-preset-38u9fz"
-                      data-styles-preset="f_lMCwHxq"
-                      style={{ "--framer-text-alignment": "left" } as any}
-                    >
-                      Stay focused on your savings targets and follow your
-                      progress.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="framer-nhbi5w-container"
-              data-framer-name="Bento Card 5"
-              name="Bento Card 5"
-             
-            >
-              <div
-                name="Bento Card 5"
-                className="framer-rcoSH framer-i7l5c7 framer-v-i7l5c7"
-                data-framer-name="Desktop"
-                style={{ height: "100%", width: "100%", opacity: "1" } as any}
-               
-              >
-                <div
-                  className="framer-xwbcd2-container"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-wHBmq framer-OTE18 framer-1uc4ig8 framer-v-1uc4ig8"
-                    data-framer-name="First Card"
-                    style={{
-                      backgroundColor:
-                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                      height: "100%",
-                      width: "100%",
-                      borderRadius: "30px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      className="framer-1f74o9r"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-swjhx1"
-                        data-framer-name="Text Container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          className="framer-18c7u1s"
-                          data-framer-name="Social Proof"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-10thuf1"
-                            data-framer-name="Avatar Group"
-                            style={{ opacity: "1" } as any}
-                           
-                          >
-                            <div
-                              className="framer-1qmq9r7"
-                              data-framer-name="Avatar 1"
-                              style={{ opacity: "1" } as any}
-                             
-                            >
-                              <div
-                                className="framer-sw2e8p-container"
-                                style={{ opacity: "1" } as any}
-                               
-                              >
-                                <div
-                                  className="framer-Uhq9Y framer-1dbmf7n framer-v-1dbmf7n"
-                                  data-border="true"
-                                  data-framer-name="Avatar"
-                                  style={{
-                                    "--border-bottom-width": "3px",
-                                    "--border-color":
-                                      "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                                    "--border-left-width": "3px",
-                                    "--border-right-width": "3px",
-                                    "--border-style": "solid",
-                                    "--border-top-width": "3px",
-                                    height: "100%",
-                                    width: "100%",
-                                    borderRadius: "60px",
-                                    opacity: "1",
-                                  } as any}
-                                 
-                                >
-                                  <div
-                                    data-framer-background-image-wrapper="true"
-                                    style={{
-                                      position: "absolute",
-                                      borderRadius: "inherit",
-                                      cornerShape: "inherit",
-                                      inset: "0px",
-                                    } as any}
-                                   
-                                  >
-                                    <img
-                                      decoding="auto"
-                                      loading="lazy"
-                                      width="1200"
-                                      height="1200"
-                                      sizes="60px"
-                                      srcset="/landing/assets/images/avatar-26.png 512w, /landing/assets/images/avatar-27.png 1024w, /landing/assets/images/avatar-28.png 1200w"
-                                      src="/landing/assets/images/avatar-26.png"
-                                      alt=""
-                                      style={{
-                                        display: "block",
-                                        width: "100%",
-                                        height: "100%",
-                                        borderRadius: "inherit",
-                                        cornerShape: "inherit",
-                                        objectPosition: "center center",
-                                        objectFit: "cover",
-                                      } as any}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              className="framer-1aqc4sy"
-                              data-framer-name="Avatar 2"
-                              style={{ opacity: "1" } as any}
-                             
-                            >
-                              <div
-                                className="framer-xdhd24-container"
-                                style={{ opacity: "1" } as any}
-                               
-                              >
-                                <div
-                                  className="framer-Uhq9Y framer-1dbmf7n framer-v-1dbmf7n"
-                                  data-border="true"
-                                  data-framer-name="Avatar"
-                                  style={{
-                                    "--border-bottom-width": "3px",
-                                    "--border-color":
-                                      "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                                    "--border-left-width": "3px",
-                                    "--border-right-width": "3px",
-                                    "--border-style": "solid",
-                                    "--border-top-width": "3px",
-                                    height: "100%",
-                                    width: "100%",
-                                    borderRadius: "60px",
-                                    opacity: "1",
-                                  } as any}
-                                 
-                                >
-                                  <div
-                                    data-framer-background-image-wrapper="true"
-                                    style={{
-                                      position: "absolute",
-                                      borderRadius: "inherit",
-                                      cornerShape: "inherit",
-                                      inset: "0px",
-                                    } as any}
-                                   
-                                  >
-                                    <img
-                                      decoding="auto"
-                                      loading="lazy"
-                                      width="1200"
-                                      height="1200"
-                                      sizes="60px"
-                                      srcset="/landing/assets/images/avatar-29.png 512w, /landing/assets/images/avatar-30.png 1024w, /landing/assets/images/avatar-31.png 1200w"
-                                      src="/landing/assets/images/avatar-31.png"
-                                      alt=""
-                                      style={{
-                                        display: "block",
-                                        width: "100%",
-                                        height: "100%",
-                                        borderRadius: "inherit",
-                                        cornerShape: "inherit",
-                                        objectPosition: "center center",
-                                        objectFit: "cover",
-                                      } as any}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              className="framer-vsmnah"
-                              data-framer-name="Avatar 3"
-                              style={{ opacity: "1" } as any}
-                             
-                            >
-                              <div
-                                className="framer-1y64dl3-container"
-                                style={{ opacity: "1" } as any}
-                               
-                              >
-                                <div
-                                  className="framer-Uhq9Y framer-1dbmf7n framer-v-1dbmf7n"
-                                  data-border="true"
-                                  data-framer-name="Avatar"
-                                  style={{
-                                    "--border-bottom-width": "3px",
-                                    "--border-color":
-                                      "var(--token-b0e81180-dc84-49c8-98af-9bb3ddda4fb3, rgb(23, 23, 23))",
-                                    "--border-left-width": "3px",
-                                    "--border-right-width": "3px",
-                                    "--border-style": "solid",
-                                    "--border-top-width": "3px",
-                                    height: "100%",
-                                    width: "100%",
-                                    borderRadius: "60px",
-                                    opacity: "1",
-                                  } as any}
-                                 
-                                >
-                                  <div
-                                    data-framer-background-image-wrapper="true"
-                                    style={{
-                                      position: "absolute",
-                                      borderRadius: "inherit",
-                                      cornerShape: "inherit",
-                                      inset: "0px",
-                                    } as any}
-                                   
-                                  >
-                                    <img
-                                      decoding="auto"
-                                      loading="lazy"
-                                      width="1200"
-                                      height="1200"
-                                      sizes="60px"
-                                      srcset="/landing/assets/images/avatar-32.png 512w, /landing/assets/images/avatar-33.png 1024w, /landing/assets/images/avatar-34.png 1200w"
-                                      src="/landing/assets/images/avatar-34.png"
-                                      alt=""
-                                      style={{
-                                        display: "block",
-                                        width: "100%",
-                                        height: "100%",
-                                        borderRadius: "inherit",
-                                        cornerShape: "inherit",
-                                        objectPosition: "center center",
-                                        objectFit: "cover",
-                                      } as any}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className="framer-ixir66"
-                          data-framer-name="Title + Sub"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-8ogv08"
-                            data-framer-name="Number"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <h4
-                              className="framer-text framer-styles-preset-y5qli"
-                              data-styles-preset="y5FcLWj2c"
-                              style={{ "--framer-text-alignment": "left" } as any}
-                            >
-                              Trusted by 3k+ Freelancers{" "}
-                            </h4>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="framer-1acjw1o-container"
-                  style={{ opacity: "1" } as any}
-                 
-                >
-                  <div
-                    className="framer-vQw44 framer-URR8y framer-shmgH framer-tck1u6 framer-v-tck1u6"
-                    data-framer-name="Variant 1"
-                    style={{
-                      backgroundColor:
-                        "var(--token-142de566-1cef-4aec-a905-86f484066d50, rgb(13, 13, 13))",
-                      height: "100%",
-                      width: "100%",
-                      borderRadius: "30px",
-                      opacity: "1",
-                    } as any}
-                   
-                  >
-                    <div
-                      className="framer-1365ewi"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <div
-                        className="framer-or1v2s"
-                        data-framer-name="Text Container"
-                        style={{ opacity: "1" } as any}
-                       
-                      >
-                        <div
-                          className="framer-1rxvlj8"
-                          data-framer-name="Title + Sub"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-150pqad"
-                            data-framer-name="Number"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <h3
-                              className="framer-text framer-styles-preset-1opq1u6"
-                              data-styles-preset="dXQV3iIs6"
-                              style={{ "--framer-text-alignment": "left" } as any}
-                            >
-                              \$1.2M+ Saved
-                            </h3>
-                          </div>
-                          <div
-                            className="framer-jgrkju"
-                            data-framer-name="Number"
-                            data-framer-component-type="RichTextContainer"
-                            style={{
-                              "--framer-paragraph-spacing": "0px",
-                              transform: "none",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <p
-                              className="framer-text framer-styles-preset-38u9fz"
-                              data-styles-preset="f_lMCwHxq"
-                              style={{ "--framer-text-alignment": "left" } as any}
-                            >
-                              Clario helps users save more — and spend smarter.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      className="framer-y7ek9f-container"
-                      data-framer-name="Button"
-                      name="Button"
-                      style={{ opacity: "1" } as any}
-                     
-                    >
-                      <a
-                        name="Button"
-                        className="framer-nsIpD framer-8HnqA framer-GIZ5n framer-crnp9l framer-v-yt5180 framer-dt5kwk"
-                        data-framer-name="Only Text Green - Desktop"
-                        href="/signup"
-                        id="landing-signup-btn"
-                        style={{
-                          backgroundColor: "rgba(0, 0, 0, 0)",
-                          borderRadius: "23px",
-                          boxShadow: "none",
-                          opacity: "1",
-                        } as any}
-                      >
-                        <div
-                          className="framer-wwtor"
-                          data-framer-component-type="RichTextContainer"
-                          style={{
-                            "--framer-link-text-color": "rgb(0, 153, 255)",
-                            "--framer-link-text-decoration": "underline",
-                            "--variable-reference-gCtuSASlb-AYxsxblIT":
-                              "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                            "--extracted-r6o4lv":
-                              "var(--variable-reference-gCtuSASlb-AYxsxblIT)",
-                            transform: "none",
-                            opacity: "1",
-                          } as any}
-                         
-                        >
-                          <p
-                            className="framer-text framer-styles-preset-1tpxd7h"
-                            data-styles-preset="XIZNBvjnr"
-                            style={{
-                              "--framer-text-color":
-                                "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
-                            } as any}
-                          >
-                            Get Started
-                          </p>
-                        </div>
-                        <div
-                          className="framer-jwdc62"
-                          data-framer-name="Suffix"
-                          style={{ opacity: "1" } as any}
-                         
-                        >
-                          <div
-                            className="framer-dsdkgo-container"
-                            data-framer-name="Icon Normal"
-                            name="Icon Normal"
-                            style={{
-                              transform: "rotate(-45deg)",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <div
-                              style={{ display: "contents" } as any}
-                             
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 256 256"
-                                focusable="false"
-                                color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                style={{
-                                  userSelect: "none",
-                                  width: "100%",
-                                  height: "100%",
-                                  display: "inline-block",
-                                  fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  color:
-                                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  flexShrink: "0",
-                                } as any}
-                              >
-                                <g
-                                  color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                  weight="regular"
-                                >
-                                  <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                                </g>
-                              </svg>
-                            </div>
-                          </div>
-                          <div
-                            className="framer-180i2dq-container"
-                            data-framer-name="Icon Hover"
-                            name="Icon Hover"
-                            style={{
-                              transform: "rotate(-45deg)",
-                              opacity: "1",
-                            } as any}
-                           
-                          >
-                            <div
-                              style={{ display: "contents" } as any}
-                             
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 256 256"
-                                focusable="false"
-                                color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                style={{
-                                  userSelect: "none",
-                                  width: "100%",
-                                  height: "100%",
-                                  display: "inline-block",
-                                  fill: "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  color:
-                                    "var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))",
-                                  flexShrink: "0",
-                                } as any}
-                              >
-                                <g
-                                  color="var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(0, 48, 135))"
-                                  weight="regular"
-                                >
-                                  <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
-                                </g>
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+            <div className="rwp-bento-image-area">
+              <div className="rwp-phone-mockup">
+                <img src="/Images/feature-screens/feat-analytics.png" alt="Ride Analytics" />
               </div>
             </div>
           </div>
+
+          {/* Card 3: Club Management */}
+          <div className="rwp-bento-card rwp-bento-card-3">
+            <div className="rwp-bento-content">
+              <h3 className="rwp-bento-card-title">
+                <span className="rwp-bento-accent-dot"></span> Club Management
+              </h3>
+              <p className="rwp-bento-card-desc">
+                Approve members, handle roles, and keep your community engaged and organised effortlessly.
+              </p>
+            </div>
+            <div className="rwp-bento-image-area">
+              <div className="rwp-phone-mockup">
+                <img src="/Images/feature-screens/feat-manage-club.png" alt="Club Management" />
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: Shop / Marketplace */}
+          <div className="rwp-bento-card rwp-bento-card-4">
+            <div className="rwp-bento-content">
+              <h3 className="rwp-bento-card-title">
+                <span className="rwp-bento-accent-dot"></span> Integrated Shop
+              </h3>
+              <p className="rwp-bento-card-desc">
+                Offer club merch, event tickets, and gear directly to your members without external tools.
+              </p>
+            </div>
+            <div className="rwp-bento-image-area">
+              <div className="rwp-phone-mockup">
+                <img src="/Images/feature-screens/feat-shop.png" alt="Integrated Shop" />
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

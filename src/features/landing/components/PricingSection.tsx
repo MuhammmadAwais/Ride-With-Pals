@@ -195,17 +195,7 @@ export const PricingSection: React.FC = () => {
       overflow: hidden;
     }
 
-    /* Subtle grid texture */
-    .rwp-pricing::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-    }
+
 
     /* ── Header area ── */
     .rwp-pricing-header {

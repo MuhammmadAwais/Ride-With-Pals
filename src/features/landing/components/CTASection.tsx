@@ -14,7 +14,8 @@ export const CTASection: React.FC = () => {
             maxWidth: "100%",
             width: "100%",
             borderRadius: "30px",
-            boxShadow: "rgba(99, 106, 125, 0.04) 0px 140px 120px -80px",
+            border: "1px solid rgba(235, 113, 43, 0.4)",
+            position: "relative",
             opacity: "1",
           } as any}
          
@@ -57,7 +58,7 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-1of0zx5, rgb(255, 255, 255))",
                     } as any}
                   >
-                    Ready to elevate your club &amp; rides?
+                    Ready to elevate your <span style={{ color: "#EB712B" }}>club &amp; rides?</span>
                   </h2>
                 </div>
                 <div

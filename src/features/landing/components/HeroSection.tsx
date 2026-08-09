@@ -231,6 +231,7 @@ export const HeroSection: React.FC = () => {
         </div>
         <div
           className="framer-1s7qg2k"
+          id="hero-screen"
           data-framer-appear-id="1s7qg2k"
           data-framer-name="Right"
           style={
