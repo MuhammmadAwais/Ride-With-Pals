@@ -10,6 +10,7 @@
  * - clubId always from useActiveClub
  */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CreditCard,
   ShieldAlert,
@@ -20,6 +21,7 @@ import {
   Shield,
   Zap,
   Globe,
+  ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useActiveClub } from '@/hooks/useActiveClub';
@@ -30,6 +32,7 @@ import {
 } from '@/features/club/api/stripeApiSlice';
 
 const StripeConnect: React.FC = () => {
+  const navigate = useNavigate();
   const { clubId } = useActiveClub();
   const permissions = useClubPermissions(clubId || undefined);
 
@@ -154,25 +157,41 @@ const StripeConnect: React.FC = () => {
             </div>
 
             {/* Action button */}
-            <div className="shrink-0">
+            <div className="shrink-0 flex flex-col sm:flex-row items-center gap-2">
               {isConnected ? (
-                <button
-                  onClick={handleConnect}
-                  disabled={isConnecting}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/30 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  {isConnecting ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
-                  Manage
-                </button>
+                <>
+                  <button
+                    onClick={handleConnect}
+                    disabled={isConnecting}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/30 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {isConnecting ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
+                    Manage
+                  </button>
+                  <button
+                    onClick={() => navigate("/view/clubside/dashboard")}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-[#EB712B] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#d05c19] transition-colors cursor-pointer border-0"
+                  >
+                    Dashboard <ArrowRight size={14} />
+                  </button>
+                </>
               ) : (
-                <button
-                  onClick={handleConnect}
-                  disabled={isConnecting || !clubId}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border-0 disabled:opacity-50"
-                >
-                  {isConnecting ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
-                  {isConnecting ? 'Connecting...' : 'Connect Stripe'}
-                </button>
+                <>
+                  <button
+                    onClick={handleConnect}
+                    disabled={isConnecting || !clubId}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border-0 disabled:opacity-50"
+                  >
+                    {isConnecting ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
+                    {isConnecting ? 'Connecting...' : 'Connect Stripe'}
+                  </button>
+                  <button
+                    onClick={() => navigate("/view/clubside/dashboard")}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/30 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                  >
+                    Connect Later <ArrowRight size={14} />
+                  </button>
+                </>
               )}
             </div>
           </div>

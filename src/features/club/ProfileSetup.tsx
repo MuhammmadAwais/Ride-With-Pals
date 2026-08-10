@@ -1,23 +1,30 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom"; 
-import { Upload, ChevronDown, Sparkles, ArrowRight, Mail } from "lucide-react";
+import { Upload, ChevronDown, Sparkles, ArrowRight, Mail, MapPin } from "lucide-react";
 import gsap from "gsap"; 
 import { useGSAP } from "@gsap/react";
 import { toast } from "sonner";
 import { useClub } from "./hooks/useClub";
 import { RideService } from "@/api/backendApi";
+import { usePlacesWidget } from "react-google-autocomplete";
+import { useActiveClub } from "@/hooks/useActiveClub";
+import { LocationPickerModal } from "@/components/LocationPickerModal";
 
 export default function ProfileSetup() {
   const navigate = useNavigate(); 
   const container = useRef(null); 
+  const { setActiveClub } = useActiveClub();
   
   const [clubName, setClubName] = useState("");
   const [clubType, setClubType] = useState("1"); // 1=Cycling, 2=Running, 3=Triathlon
   const [privacy, setPrivacy] = useState("1"); // 1=Public, 2=Private
+  const [currency, setCurrency] = useState("USD"); // USD, GBP, EUR
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
   const [mission, setMission] = useState("");
+
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -29,6 +36,20 @@ export default function ProfileSetup() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { handleCreateClub, isCreating } = useClub();
+
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+
+  const { ref: placesRef } = usePlacesWidget({
+    apiKey: apiKey,
+    onPlaceSelected: (place: any) => {
+      const formatted = place.formatted_address || place.name || "";
+      setLocation(formatted);
+      setErrors(p => ({ ...p, location: '' }));
+    },
+    options: {
+      types: ["(cities)"],
+    },
+  });
 
   // GSAP animation
   useGSAP(() => {
@@ -94,6 +115,7 @@ export default function ProfileSetup() {
         clubName,
         clubPrivacyId: Number(privacy),
         clubTypeId: Number(clubType),
+        currency,
         email,
         location,
         description: mission,
@@ -104,10 +126,13 @@ export default function ProfileSetup() {
         restrictJoinActivities: false
       };
 
-      const success = await handleCreateClub(payload);
+      const result = await handleCreateClub(payload);
       
-      if (success) {
-        navigate("/view/clubside/dashboard"); 
+      if (result) {
+        if (typeof result === 'object' && result.id) {
+          setActiveClub(result);
+        }
+        navigate("/club-subscriptions"); 
       }
     } catch (err: any) {
       toast.error(err?.response?.data?.message || err.message || "Failed to upload files");
@@ -238,17 +263,54 @@ export default function ProfileSetup() {
                 <ChevronDown className="absolute right-3 top-3 text-gray-500" size={14} />
               </div>
             </div>
-            
+
             <div className="space-y-1">
+              <label className="text-[10px] text-gray-500 uppercase">Club Currency</label>
+              <div className="relative">
+                <select 
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-full bg-[#1a1a1a] border border-white/5 rounded-lg p-2.5 text-xs text-white appearance-none focus:border-[#EB712B] outline-none transition-colors"
+                >
+                  <option value="USD">USD ($)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="EUR">EUR (€)</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-3 text-gray-500" size={14} />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
               <label className="text-[10px] text-gray-500 uppercase">Primary Location</label>
+              <button
+                type="button"
+                onClick={() => setIsMapModalOpen(true)}
+                className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#EB712B] hover:underline cursor-pointer border-0 bg-transparent"
+              >
+                <MapPin size={12} /> Open Map Picker
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
               <input 
+                ref={apiKey ? (placesRef as any) : undefined}
                 value={location}
                 onChange={(e) => { setLocation(e.target.value); setErrors(p => ({...p, location: ''})); }}
                 className={`w-full bg-[#1a1a1a] border ${errors.location ? 'border-red-500' : 'border-white/5'} rounded-lg p-2.5 text-xs text-white focus:border-[#EB712B] outline-none transition-colors`} 
-                placeholder="City or Region" 
+                placeholder={apiKey ? "Search city or location via Google Maps..." : "City or Region"} 
               />
-              {errors.location && <p className="text-[10px] text-red-500">{errors.location}</p>}
+              <button
+                type="button"
+                onClick={() => setIsMapModalOpen(true)}
+                className="px-3.5 py-2.5 bg-[#EB712B]/10 border border-[#EB712B]/30 hover:bg-[#EB712B]/20 text-[#EB712B] rounded-lg text-xs font-semibold flex items-center gap-1.5 shrink-0 transition-colors cursor-pointer"
+                title="Open Interactive Google Map Picker"
+              >
+                <MapPin size={14} />
+                <span className="hidden sm:inline">Pick on Map</span>
+              </button>
             </div>
+            {errors.location && <p className="text-[10px] text-red-500">{errors.location}</p>}
           </div>
 
           {/* Email Section */}
@@ -288,8 +350,6 @@ export default function ProfileSetup() {
             {errors.phone && <p className="text-[10px] text-red-500">{errors.phone}</p>}
           </div>
 
-
-
           <div className="space-y-1">
             <label className="text-[10px] text-gray-500 uppercase">Club Mission & Description</label>
             <textarea 
@@ -309,9 +369,9 @@ export default function ProfileSetup() {
               type="button" 
               onClick={handleSave}
               disabled={isCreating || isUploading}
-              className="group bg-[#EB712B] text-white px-6 py-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 hover:bg-[#d16226] active:scale-[0.98] transition-all shadow-lg shadow-orange-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group bg-[#EB712B] text-white px-6 py-2.5 rounded-lg text-xs font-semibold flex items-center gap-2 hover:bg-[#d16226] active:scale-[0.98] transition-all shadow-lg shadow-orange-500/10 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              <span>{isUploading ? "Uploading..." : isCreating ? "Saving..." : "Complete Profile"}</span>
+              <span>{isUploading ? "Uploading..." : isCreating ? "Saving..." : "Continue to Subscriptions"}</span>
               {!(isCreating || isUploading) && (
                 <ArrowRight 
                   size={14} 
@@ -322,6 +382,17 @@ export default function ProfileSetup() {
           </div>
         </form>
       </div>
+
+      {/* Interactive Google Map Location Picker Modal */}
+      <LocationPickerModal
+        isOpen={isMapModalOpen}
+        onClose={() => setIsMapModalOpen(false)}
+        onSelectLocation={(addr) => {
+          setLocation(addr);
+          setErrors((p) => ({ ...p, location: "" }));
+        }}
+        initialLocation={location}
+      />
     </div>
   );
-}
+}

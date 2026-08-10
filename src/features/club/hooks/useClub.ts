@@ -14,13 +14,13 @@ export function useClub() {
   const handleCreateClub = async (payload: CreateClubPayload) => {
     setIsCreating(true);
     try {
-      await ClubService.createClubProfile(payload);
+      const res = await ClubService.createClubProfile(payload);
       toast.success("Club created successfully!");
       dispatch(fetchMyClubs()); // Refresh the clubs list
-      return true;
+      return res?.response || res?.data || res || true;
     } catch (err: any) {
       toast.error(err.response?.data?.message || err.message || "Failed to create club");
-      return false;
+      return null;
     } finally {
       setIsCreating(false);
     }

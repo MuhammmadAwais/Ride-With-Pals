@@ -6,6 +6,7 @@ export interface Club {
   email: string;
   phone?: string;
   location: string;
+  currency?: string;
   description: string;
   logo: string;
   coverImage: string;
@@ -36,6 +37,7 @@ export interface CreateClubPayload {
   clubTypeId: number;
   email: string;
   location: string;
+  currency: string;
   description: string;
   logo: string;
   coverImage: string;
