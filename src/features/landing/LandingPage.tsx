@@ -35,7 +35,12 @@ const LandingPage: React.FC = () => {
       if (loadingScreen) {
         loadingScreen.style.transition = 'opacity 0.25s ease';
         loadingScreen.style.opacity = '0';
-        setTimeout(() => loadingScreen.remove(), 280);
+        setTimeout(() => {
+          loadingScreen.remove();
+          window.dispatchEvent(new Event('landingReady'));
+        }, 300);
+      } else {
+        window.dispatchEvent(new Event('landingReady'));
       }
     };
 
@@ -494,20 +499,28 @@ const LandingPage: React.FC = () => {
       });
     };
 
-    // ── Kick off animations ──────────────────────────────────────────
-    // Don't gate on images — Framer CSS loads them lazily anyway.
-    // Just give the DOM one frame to paint before measuring positions.
-    const raf = requestAnimationFrame(() => {
-      try {
-        initAnimations();
-      } catch (e) {
-        console.warn('[GSAP] initAnimations error:', e);
-      }
-      setTimeout(setupCardTilt, 600);
-      setTimeout(setupMagneticButtons, 600);
-    });
+    // ── Kick off animations exactly when loading screen is gone ──────────
+    const startAnimations = () => {
+      requestAnimationFrame(() => {
+        try {
+          initAnimations();
+        } catch (e) {
+          console.warn('[GSAP] initAnimations error:', e);
+        }
+        setTimeout(setupCardTilt, 600);
+        setTimeout(setupMagneticButtons, 600);
+      });
+    };
 
-    return () => cancelAnimationFrame(raf);
+    if (document.getElementById('app-loading-screen')) {
+      window.addEventListener('landingReady', startAnimations, { once: true });
+    } else {
+      startAnimations();
+    }
+
+    return () => {
+      window.removeEventListener('landingReady', startAnimations);
+    };
   }, { scope: containerRef });
 
 
