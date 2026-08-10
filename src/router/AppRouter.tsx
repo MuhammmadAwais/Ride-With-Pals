@@ -21,7 +21,7 @@ import { DashboardCalendar } from '@/features/dashboard/DashboardCalendar';
 import { CreateRide } from '@/features/dashboard/CreateRide';
 
 // ── Auth & Public ──
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import LandingPage from '@/features/landing/LandingPage';
 import CreateAccount from '@/features/auth/CreateAccount';
 import Login from '@/features/auth/Login';
