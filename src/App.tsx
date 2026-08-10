@@ -14,12 +14,16 @@ import { router } from '@/router/AppRouter';
 import { useTheme } from '@/hooks/useTheme';
 import { useSecureSession } from '@/hooks/useSecureSession';
 
+import { useAppSelector } from '@/hooks/useAppSelector';
+
 /**
  * Inner component — must live inside ThemeProvider + Redux Provider
  * (already wrapped in main.tsx) to access hooks.
  */
 const AppInner: React.FC = () => {
   const { isDark } = useTheme();
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  
   // Production-only: blocks right-click & devtools shortcuts
   useSecureSession();
 
@@ -28,6 +32,9 @@ const AppInner: React.FC = () => {
   // LandingPage handles its own dismissal via CSS onload — this just ensures
   // the overlay never gets stuck for non-landing routes.
   useEffect(() => {
+    const isLandingPage = window.location.pathname === '/';
+    const delay = (isLandingPage && !isAuthenticated) ? 2000 : 0;
+    
     const timerId = setTimeout(() => {
       const loadingScreen = document.getElementById('app-loading-screen');
       if (loadingScreen) {
@@ -35,10 +42,9 @@ const AppInner: React.FC = () => {
         loadingScreen.style.opacity = '0';
         setTimeout(() => loadingScreen.remove(), 280);
       }
-    }, 2000);
+    }, delay);
     return () => clearTimeout(timerId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <>

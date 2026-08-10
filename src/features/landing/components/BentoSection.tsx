@@ -419,7 +419,7 @@ export const BentoSection: React.FC = () => {
                   <div className="rwp-browser-dot" style={{ background: '#FFBD2E' }} />
                   <div className="rwp-browser-dot" style={{ background: '#27C93F' }} />
                 </div>
-                <img src="/Images/feature-screens/feat-web-dashboard.png" alt="Smart Dashboard" />
+                <img loading="lazy" src="/Images/feature-screens/feat-web-dashboard.png" alt="Smart Dashboard" />
               </div>
             </div>
           </div>
@@ -436,7 +436,7 @@ export const BentoSection: React.FC = () => {
             </div>
             <div className="rwp-bento-image-area">
               <div className="rwp-phone-mockup">
-                <img src="/Images/feature-screens/feat-analytics.png" alt="Ride Analytics" />
+                <img loading="lazy" src="/Images/feature-screens/feat-analytics.png" alt="Ride Analytics" />
               </div>
             </div>
           </div>
@@ -453,7 +453,7 @@ export const BentoSection: React.FC = () => {
             </div>
             <div className="rwp-bento-image-area">
               <div className="rwp-phone-mockup">
-                <img src="/Images/feature-screens/feat-manage-club.png" alt="Club Management" />
+                <img loading="lazy" src="/Images/feature-screens/feat-manage-club.png" alt="Club Management" />
               </div>
             </div>
           </div>
@@ -470,7 +470,7 @@ export const BentoSection: React.FC = () => {
             </div>
             <div className="rwp-bento-image-area">
               <div className="rwp-phone-mockup">
-                <img src="/Images/feature-screens/feat-shop.png" alt="Integrated Shop" />
+                <img loading="lazy" src="/Images/feature-screens/feat-shop.png" alt="Integrated Shop" />
               </div>
             </div>
           </div>

@@ -678,10 +678,10 @@ export const FeaturesSection: React.FC = () => {
             <div className="rwp-fb-screens">
               <div className="rwp-fb-glow"/>
               <div className="rwp-fb-screen-a">
-                <img src="/Images/feature-screens/feat-rides.png" alt="Rides listing" />
+                <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Rides listing" />
               </div>
               <div className="rwp-fb-screen-b">
-                <img src="/Images/feature-screens/feat-leaderboard-1.png" alt="Leaderboard" />
+                <img loading="lazy" src="/Images/feature-screens/feat-leaderboard-1.png" alt="Leaderboard" />
               </div>
             </div>
           </div>
@@ -699,10 +699,10 @@ export const FeaturesSection: React.FC = () => {
             <div className="rwp-fb-screens">
               <div className="rwp-fb-glow"/>
               <div className="rwp-fb-screen-a">
-                <img src="/Images/feature-screens/feat-chat.png" alt="Chat" />
+                <img loading="lazy" src="/Images/feature-screens/feat-chat.png" alt="Chat" />
               </div>
               <div className="rwp-fb-screen-b">
-                <img src="/Images/feature-screens/feat-shop.png" alt="Marketplace" />
+                <img loading="lazy" src="/Images/feature-screens/feat-shop.png" alt="Marketplace" />
               </div>
             </div>
 
@@ -762,10 +762,10 @@ export const FeaturesSection: React.FC = () => {
             <div className="rwp-fb-screens">
               <div className="rwp-fb-glow"/>
               <div className="rwp-fb-screen-a">
-                <img src="/Images/feature-screens/feat-members-9.png" alt="Club Members" />
+                <img loading="lazy" src="/Images/feature-screens/feat-members-9.png" alt="Club Members" />
               </div>
               <div className="rwp-fb-screen-b">
-                <img src="/Images/feature-screens/feat-manage-club.png" alt="Manage Club" />
+                <img loading="lazy" src="/Images/feature-screens/feat-manage-club.png" alt="Manage Club" />
               </div>
             </div>
           </div>
@@ -783,10 +783,10 @@ export const FeaturesSection: React.FC = () => {
             <div className="rwp-fb-screens">
               <div className="rwp-fb-glow"/>
               <div className="rwp-fb-screen-a">
-                <img src="/Images/feature-screens/feat-analytics.png" alt="Performance Analytics" />
+                <img loading="lazy" src="/Images/feature-screens/feat-analytics.png" alt="Performance Analytics" />
               </div>
               <div className="rwp-fb-screen-b">
-                <img src="/Images/feature-screens/feat-club-overview.png" alt="Club Overview" />
+                <img loading="lazy" src="/Images/feature-screens/feat-club-overview.png" alt="Club Overview" />
               </div>
             </div>
 
@@ -894,12 +894,12 @@ export const FeaturesSection: React.FC = () => {
                     </div>
                   </div>
                   <div className="rwp-fp-browser-content">
-                    <img src="/landing/assets/images/hero-dashboard.png" alt="Ride With Pals web dashboard" />
+                    <img loading="lazy" src="/landing/assets/images/hero-dashboard.png" alt="Ride With Pals web dashboard" />
                   </div>
                 </div>
                 {/* Phone overlapping */}
                 <div className="rwp-fp-phone">
-                  <img src="/Images/feature-screens/feat-rides.png" alt="Mobile app view" />
+                  <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Mobile app view" />
                 </div>
               </div>
 

@@ -221,6 +221,7 @@ export const FooterSection: React.FC = () => {
         <div className="rwp-footer-bottom">
           <div className="rwp-footer-logo">
             <img 
+              loading="lazy"
               src="/Images/official_logo.png" 
               alt="Ride with Pals" 
               className="rwp-footer-logo-img"

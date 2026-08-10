@@ -297,7 +297,7 @@ export const HowitWorksSection: React.FC = () => {
           {/* Step 1 */}
           <div className="rwp-hiw-card">
             <div className="rwp-hiw-image">
-              <img src="/Images/feature-screens/feat-rides.png" alt="Rider Profile and Setup" />
+              <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Rider Profile and Setup" />
             </div>
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
@@ -314,7 +314,7 @@ export const HowitWorksSection: React.FC = () => {
           {/* Step 2 */}
           <div className="rwp-hiw-card">
             <div className="rwp-hiw-image">
-              <img src="/Images/feature-screens/feat-clubs.png" alt="Organise Rides and Events" />
+              <img loading="lazy" src="/Images/feature-screens/feat-clubs.png" alt="Organise Rides and Events" />
             </div>
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
@@ -331,7 +331,7 @@ export const HowitWorksSection: React.FC = () => {
           {/* Step 3 */}
           <div className="rwp-hiw-card">
             <div className="rwp-hiw-image">
-              <img src="/Images/feature-screens/feat-rides-list.png" alt="Ride and Connect" />
+              <img loading="lazy" src="/Images/feature-screens/feat-rides-list.png" alt="Ride and Connect" />
             </div>
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">

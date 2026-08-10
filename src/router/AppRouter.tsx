@@ -7,6 +7,7 @@
  * - Shell routes (Dashboard, Activities, etc.) are nested inside <AppLayout>.
  */
 import { createBrowserRouter, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
 // ── Layouts & Guards ──
 import Members from '@/features/ClubSide/Members';
@@ -94,16 +95,25 @@ const LegacyRideRedirect = () => {
   return <Navigate to={`/view/userside/dashboard/ride/${id}`} replace />;
 };
 
+const LandingOrDashboard = () => {
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const user = useAppSelector((s) => s.auth.user);
+  if (isAuthenticated && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return (
+    <Suspense fallback={null}>
+      <LandingPage />
+    </Suspense>
+  );
+};
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* ── Public Auth Routes ── */}
       <Route path="/">
-        <Route index element={
-          <Suspense fallback={null}>
-            <LandingPage />
-          </Suspense>
-        } />
+        <Route index element={<LandingOrDashboard />} />
         <Route path="signup" element={<CreateAccount />} />
         <Route path="login" element={<Login />} />
         <Route path="forgot-password" element={<ForgotPassword />} />

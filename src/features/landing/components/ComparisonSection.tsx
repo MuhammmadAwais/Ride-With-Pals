@@ -4,6 +4,43 @@ import React from "react";
 export const ComparisonSection: React.FC = () => {
   return (
     <section className="framer-1gbj1e" data-framer-name="Comparison Section">
+      <style>{`
+        @media (max-width: 768px) {
+          .framer-WFg1Q {
+            padding: 20px 10px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          .framer-1sl2whp {
+            width: 100% !important;
+            overflow-wrap: break-word !important;
+          }
+          .framer-1sl2whp p, .framer-1ncuk4v h5 {
+            font-size: 24px !important;
+            white-space: normal !important;
+          }
+          .framer-1u4kadb {
+            width: auto !important;
+            max-width: 100% !important;
+          }
+          /* Fix list items going out of bounds */
+          .framer-j0qfqq, .framer-1wux7li {
+            width: 100% !important;
+            padding-right: 10px !important;
+            box-sizing: border-box !important;
+          }
+          .framer-1i01z5b p, .framer-kjxpxs p, .framer-1i57lx4 p, .framer-2o7b57 p {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+          }
+          .hide-on-mobile {
+            display: none !important;
+          }
+          .show-on-mobile {
+            display: inline !important;
+          }
+        }
+      `}</style>
       <div
         className="framer-4kd2qg"
         data-framer-name="Container"
@@ -460,7 +497,8 @@ export const ComparisonSection: React.FC = () => {
                         "var(--extracted-r6o4lv, var(--token-743cf692-1243-473f-93be-c36de257addf, rgb(255, 255, 255)))",
                     } as any}
                   >
-                    Ride With Pals
+                    <span className="hide-on-mobile">Ride With Pals</span>
+                    <span className="show-on-mobile" style={{ display: 'none' }}>RWP</span>
                   </p>
                 </div>
               </div>

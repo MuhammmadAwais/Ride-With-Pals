@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { useAppSelector } from '@/hooks/useAppSelector';
+
 
 // Import newly converted native React sections
 import { Navigation } from './components/Navigation';
 import { HeroSection } from './components/HeroSection';
+
 import { HowitWorksSection } from './components/HowitWorksSection';
 import { BentoSection } from './components/BentoSection';
 import { FeaturesSection } from './components/FeaturesSection';
@@ -23,10 +24,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
-  const user = useAppSelector((s) => s.auth.user);
 
   // CSS + Loading Screen: inject Framer CSS and dismiss the native loading screen
   // ONLY after the stylesheet has fully loaded. This prevents avatar images flashing
@@ -165,13 +163,7 @@ const LandingPage: React.FC = () => {
     };
   }, []);
 
-  // Auth Redirect
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
-      navigate(from ?? '/dashboard', { replace: true });
-    }
-  }, [isAuthenticated, user, navigate, location]);
+  // Auth Redirect removed since it's handled at router level
 
   // 3. Attach Event Listeners to Buttons and FAQs
   useEffect(() => {
@@ -432,6 +424,31 @@ const LandingPage: React.FC = () => {
         });
       });
 
+      // ── SUBTLE STAGGERED SECTION CONTENTS FADES ──────────────────────────────
+      gsap.utils.toArray<HTMLElement>('section:not(#home)').forEach((section) => {
+        // Animates the section container itself slightly
+        gsap.fromTo(section,
+          { opacity: 0 },
+          {
+            opacity: 1, duration: 1, ease: 'power2.out',
+            scrollTrigger: { trigger: section, start: 'top 85%', toggleActions: 'play none none none' }
+          }
+        );
+
+        // Finds typical text blocks and lists inside to stagger smoothly
+        const staggerElements = section.querySelectorAll('p:not(.rwp-bento-card-desc, .rwp-hiw-step-desc, .rwp-fc-desc), .rwp-faq-item, .framer-j0qfqq, .framer-1wux7li, .rwp-footer-col, ul > li');
+        
+        if (staggerElements.length > 0) {
+          gsap.fromTo(staggerElements,
+            { opacity: 0, y: 25 },
+            {
+              opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1,
+              scrollTrigger: { trigger: section, start: 'top 80%', toggleActions: 'play none none none' }
+            }
+          );
+        }
+      });
+
       ScrollTrigger.refresh();
     };
 
@@ -502,16 +519,16 @@ const LandingPage: React.FC = () => {
           <Navigation />
           <div className="framer-iDUXM framer-VE8XF framer-R82EX framer-hFyMR framer-72rtr7" style={{ minHeight: '100vh', width: 'auto', display: 'contents' }}>
             <HeroSection />
-            <HowitWorksSection />
-            <BentoSection />
-            <FeaturesSection />
-            <ComparisonSection />
-            <TestimonialsSection />
-            <PricingSection />
-            <FAQSection />
-            <BlogSection />
-            <CTASection />
-            <FooterSection />
+              <HowitWorksSection />
+              <BentoSection />
+              <FeaturesSection />
+              <ComparisonSection />
+              <TestimonialsSection />
+              <PricingSection />
+              <FAQSection />
+              <BlogSection />
+              <CTASection />
+              <FooterSection />
           </div>
         </div>
       </div>

@@ -102,6 +102,11 @@ html {
   overflow-x: hidden;
 }
 
+::selection {
+  background-color: var(--color-accent);
+  color: #FFFFFF;
+}
+
 body {
   margin: 0;
   padding: 0;
