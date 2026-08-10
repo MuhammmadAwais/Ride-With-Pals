@@ -1,16 +1,7 @@
 @import "tailwindcss";
 @import "./responsive.css";
 
-.rwp-lazy-loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  font-family: 'Roboto', sans-serif;
-  color: #ff6600;
-  font-weight: 500;
-}
+
 
 /* ─── Class-based dark mode variant (matches admin panel pattern) ────────── */
 @custom-variant dark (&:is(.dark, .dark *));
