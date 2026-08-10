@@ -47,7 +47,7 @@ const AppInner: React.FC = () => {
   }, [isAuthenticated]);
 
   return (
-    <>
+    <React.Suspense fallback={<div className="rwp-lazy-loader">Loading...</div>}>
       <RouterProvider router={router} />
       {/* Top-right toast notifications for all success/error feedback */}
       <Toaster
@@ -58,7 +58,7 @@ const AppInner: React.FC = () => {
           style: { fontFamily: 'Roboto, sans-serif' },
         }}
       />
-    </>
+    </React.Suspense>
   );
 };
 

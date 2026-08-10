@@ -10,77 +10,77 @@ import { createBrowserRouter, createRoutesFromElements, Route, Navigate } from '
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 // ── Layouts & Guards ──
-import Members from '@/features/ClubSide/Members';
-import TermsConditions from '@/features/ClubSide/TermsConditions';
-import PrivacyPolicy from '@/features/ClubSide/PrivacyPolicy';
-import MyPurchases from '@/features/public-club/pages/MyPurchases';
+const Members = React.lazy(() => import('@/features/ClubSide/Members'));
+const TermsConditions = React.lazy(() => import('@/features/ClubSide/TermsConditions'));
+const PrivacyPolicy = React.lazy(() => import('@/features/ClubSide/PrivacyPolicy'));
+const MyPurchases = React.lazy(() => import('@/features/public-club/pages/MyPurchases'));
 import AppLayout from '@/components/layout/AppLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { DashboardCalendar } from '@/features/dashboard/DashboardCalendar';
-import { CreateRide } from '@/features/dashboard/CreateRide';
+const DashboardCalendar = React.lazy(() => import('@/features/dashboard/DashboardCalendar').then(m => ({ default: m.DashboardCalendar })));
+const CreateRide = React.lazy(() => import('@/features/dashboard/CreateRide').then(m => ({ default: m.CreateRide })));
 
 // ── Auth & Public ──
 import React, { Suspense } from 'react';
 const LandingPage = React.lazy(() => import('@/features/landing/LandingPage'));
-import CreateAccount from '@/features/auth/CreateAccount';
-import Login from '@/features/auth/Login';
-import ForgotPassword from '@/features/auth/ForgotPassword';
-import VerifyEmail from '@/features/auth/VerifyEmail';
-import AuthSubscription from '@/features/auth/AuthSubscription';
+const CreateAccount = React.lazy(() => import('@/features/auth/CreateAccount'));
+const Login = React.lazy(() => import('@/features/auth/Login'));
+const ForgotPassword = React.lazy(() => import('@/features/auth/ForgotPassword'));
+const VerifyEmail = React.lazy(() => import('@/features/auth/VerifyEmail'));
+const AuthSubscription = React.lazy(() => import('@/features/auth/AuthSubscription'));
 
 // ── Onboarding & Profiles (Standalone) ──
-import CreateProfile from '@/features/profile/CreateProfile';
-import AthleteProfileForm from '@/features/profile/AthleteProfileForm';
-import SelectRole from '@/features/profile/SelectRole';
-import ProfileSetup from '@/features/club/ProfileSetup';
-import Subscriptions from '@/features/club/Subscriptions';
-import SelectRoleClub from '@/features/club/SelectRoleClub';
+const CreateProfile = React.lazy(() => import('@/features/profile/CreateProfile'));
+const AthleteProfileForm = React.lazy(() => import('@/features/profile/AthleteProfileForm'));
+const SelectRole = React.lazy(() => import('@/features/profile/SelectRole'));
+const ProfileSetup = React.lazy(() => import('@/features/club/ProfileSetup'));
+const Subscriptions = React.lazy(() => import('@/features/club/Subscriptions'));
+const SelectRoleClub = React.lazy(() => import('@/features/club/SelectRoleClub'));
 
 // ── App Pages (Protected Shell) ──
-import { DashboardOverview } from '@/features/ClubSide/DashBoard';
-import ProfileAccount from '@/features/ClubSide/ProfileAccount';
-import Activities from '@/features/ClubSide/Activities';
-import Product from '@/features/ClubSide/Product';
-import AddProduct from '@/features/ClubSide/AddProduct';
-import Order from '@/features/ClubSide/Order';
-import OrderDetail from '@/features/ClubSide/OrderDetail';
-import Wallet from '@/features/ClubSide/Wallet';
-import Subscription from '@/features/ClubSide/Subscription';
-import SubPaymentDet from '@/features/ClubSide/SubPaymentDet';
-import Leaderboard from '@/features/ClubSide/Leaderboard';
-import { ClubJoiningReq } from '@/features/ClubSide/ClubJoiningReq';
-import News from '@/features/ClubSide/News';
-import { NewsAdded } from '@/features/ClubSide/NewsAdded';
-import Discount from '@/features/ClubSide/Discount';
-import AddDiscount from '@/features/ClubSide/AddDiscount';
-import Clubs from '@/features/public-club/pages/UserClub';
-import Ride from '@/features/public-club/pages/Ride';
-import RideJoining from '@/features/public-club/pages/RideJoining';
-import UserCalendar from '@/features/public-club/pages/UserCalendar';
+const DashboardOverview = React.lazy(() => import('@/features/ClubSide/DashBoard').then(m => ({ default: m.DashboardOverview })));
+const ProfileAccount = React.lazy(() => import('@/features/ClubSide/ProfileAccount'));
+const Activities = React.lazy(() => import('@/features/ClubSide/Activities'));
+const Product = React.lazy(() => import('@/features/ClubSide/Product'));
+const AddProduct = React.lazy(() => import('@/features/ClubSide/AddProduct'));
+const Order = React.lazy(() => import('@/features/ClubSide/Order'));
+const OrderDetail = React.lazy(() => import('@/features/ClubSide/OrderDetail'));
+const Wallet = React.lazy(() => import('@/features/ClubSide/Wallet'));
+const Subscription = React.lazy(() => import('@/features/ClubSide/Subscription'));
+const SubPaymentDet = React.lazy(() => import('@/features/ClubSide/SubPaymentDet'));
+const Leaderboard = React.lazy(() => import('@/features/ClubSide/Leaderboard'));
+const ClubJoiningReq = React.lazy(() => import('@/features/ClubSide/ClubJoiningReq').then(m => ({ default: m.ClubJoiningReq })));
+const News = React.lazy(() => import('@/features/ClubSide/News'));
+const NewsAdded = React.lazy(() => import('@/features/ClubSide/NewsAdded').then(m => ({ default: m.NewsAdded })));
+const Discount = React.lazy(() => import('@/features/ClubSide/Discount'));
+const AddDiscount = React.lazy(() => import('@/features/ClubSide/AddDiscount'));
+const Clubs = React.lazy(() => import('@/features/public-club/pages/UserClub'));
+const Ride = React.lazy(() => import('@/features/public-club/pages/Ride'));
+const RideJoining = React.lazy(() => import('@/features/public-club/pages/RideJoining'));
+const UserCalendar = React.lazy(() => import('@/features/public-club/pages/UserCalendar'));
 
 
 // ── New Architecture Audit Fixes ──
-import SavedRides from '@/features/public-club/pages/SavedRides';
-import ClubPermissions from '@/features/ClubSide/ClubPermissions';
-import ClubMembership from '@/features/ClubSide/ClubMembership';
-import StripeConnect from '@/features/ClubSide/StripeConnect';
-import ClubDetails from '@/features/public-club/pages/ClubDetails';
-import Shop from '@/features/public-club/pages/Shop';
-import Marketplace from '@/features/public-club/pages/Marketplace';
-import UserSubscription from '@/features/public-club/pages/UserSubscription';
-import UserWallet from '@/features/public-club/pages/UserWallet';
+const SavedRides = React.lazy(() => import('@/features/public-club/pages/SavedRides'));
+const ClubPermissions = React.lazy(() => import('@/features/ClubSide/ClubPermissions'));
+const ClubMembership = React.lazy(() => import('@/features/ClubSide/ClubMembership'));
+const StripeConnect = React.lazy(() => import('@/features/ClubSide/StripeConnect'));
+const ClubDetails = React.lazy(() => import('@/features/public-club/pages/ClubDetails'));
+const Shop = React.lazy(() => import('@/features/public-club/pages/Shop'));
+const Marketplace = React.lazy(() => import('@/features/public-club/pages/Marketplace'));
+const UserSubscription = React.lazy(() => import('@/features/public-club/pages/UserSubscription'));
+const UserWallet = React.lazy(() => import('@/features/public-club/pages/UserWallet'));
 /* eslint-disable react-refresh/only-export-components */
 
 // ── New Polished Support Page ──
-import Support from '@/features/support/Support';
+const Support = React.lazy(() => import('@/features/support/Support'));
 
-import Notifications from '@/features/notifications/Notifications';
+const Notifications = React.lazy(() => import('@/features/notifications/Notifications'));
 
 // ── Standalone App Pages ──
-import AboutApp from '@/features/ClubSide/AboutApp';
-import ManageClubHome from '@/features/ClubSide/ManageClubHome';
-import EditClub from '@/features/ClubSide/EditClub';
+const AboutApp = React.lazy(() => import('@/features/ClubSide/AboutApp'));
+const ManageClubHome = React.lazy(() => import('@/features/ClubSide/ManageClubHome'));
+const EditClub = React.lazy(() => import('@/features/ClubSide/EditClub'));
 
 // ── Params-aware Legacy Redirect Helpers ──
 import { useParams } from 'react-router-dom';
