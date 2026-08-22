@@ -1,19 +1,14 @@
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import {
   Users,
   Lock,
   ShieldCheck,
-  Shield,
-
   CreditCard,
   HelpCircle,
-
   Info,
   AlertTriangle,
-
-  ArrowRight,
   Moon,
   Sun,
   Globe,
@@ -21,12 +16,8 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  ChevronLeft,
-  Search,
-  Bike,
   Activity,
   Loader2,
-  Check,
   Calendar,
   MapPin,
   Phone,
@@ -34,12 +25,28 @@ import {
   FileText,
   User as UserIcon,
   Bell,
+  Edit3,
+  MessageSquare,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useUpdatePasswordMutation, useUpdateScaleUnitSettingsMutation, useUserInfoQuery } from "@/features/auth/api/authApiSlice";
-import { useCheckStravaStatusQuery, useConnectStravaAccountMutation, useDisconnectStravaAccountMutation } from "@/features/club/api/stravaApiSlice";
-import { useGetEmailNotificationSettingsQuery, useUpdateEmailNotificationSettingsMutation, type EmailNotificationSettings } from "@/features/notifications/api/notificationApiSlice";
-
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { logout } from "@/features/auth/slices/authSlice";
+import { 
+  useUpdatePasswordMutation, 
+  useUpdateScaleUnitSettingsMutation, 
+  useUpsertAthleteProfileMutation,
+  useUserInfoQuery 
+} from "@/features/auth/api/authApiSlice";
+import { 
+  useCheckStravaStatusQuery, 
+  useConnectStravaAccountMutation, 
+  useDisconnectStravaAccountMutation 
+} from "@/features/club/api/stravaApiSlice";
+import { 
+  useGetEmailNotificationSettingsQuery, 
+  useUpdateEmailNotificationSettingsMutation, 
+  type EmailNotificationSettings 
+} from "@/features/notifications/api/notificationApiSlice";
 
 interface ProfileAccountProps {
   role?: 'organizer' | 'athlete';
@@ -47,13 +54,13 @@ interface ProfileAccountProps {
 
 const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Modals & States
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
-  const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordData, setPasswordData] = useState({
     current: "",
@@ -61,41 +68,63 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     confirm: "",
   });
   const [errors, setErrors] = useState({ current: "", new: "", confirm: "" });
-  const [selectedRole, setSelectedRole] = useState<"admin" | "user" | null>(
-    null,
-  );
 
   // API Hooks
   const { data: userProfileData, refetch: refetchUserInfo } = useUserInfoQuery();
-  const [updatePassword] = useUpdatePasswordMutation();
+  const [updatePassword, { isLoading: isUpdatingPassword }] = useUpdatePasswordMutation();
   const [updateScaleUnit, { isLoading: isUpdatingScale }] = useUpdateScaleUnitSettingsMutation();
+  const [upsertProfile, { isLoading: isUpdatingTimeFormat }] = useUpsertAthleteProfileMutation();
   const [selectedScale, setSelectedScale] = useState<string>("kilometer");
+  const [selectedTimeFormat, setSelectedTimeFormat] = useState<string>("12h");
 
   // Strava Hooks
-  const { data: stravaStatus, refetch: refetchStravaStatus } = useCheckStravaStatusQuery();
-  {stravaStatus}
-  
+  const { refetch: refetchStravaStatus } = useCheckStravaStatusQuery();
   const [connectStrava, { isLoading: isConnectingStrava }] = useConnectStravaAccountMutation();
   const [disconnectStrava, { isLoading: isDisconnectingStrava }] = useDisconnectStravaAccountMutation();
 
   // Email Notification Hooks
   const { data: emailSettingsRes, isLoading: isEmailSettingsLoading, refetch: refetchEmailSettings } = useGetEmailNotificationSettingsQuery();
   const [updateEmailSettings, { isLoading: isUpdatingEmailSettings }] = useUpdateEmailNotificationSettingsMutation();
-  const emailSettings = emailSettingsRes?.response;
+  
+  const [localEmailSettings, setLocalEmailSettings] = useState<EmailNotificationSettings>({
+    feePaymentRequests: true,
+    newRide: true,
+    clubJoinResponse: true,
+    rideUpdates: true,
+    orderStatus: true,
+    subscriptionStatus: true,
+    clubJoinRequest: true,
+  });
 
-  const handleToggleEmailSetting = async (key: keyof EmailNotificationSettings) => {
-    if (!emailSettings) return;
-    const nextSettings: EmailNotificationSettings = {
-      ...emailSettings,
-      [key]: !emailSettings[key],
-    };
-    try {
-      await updateEmailSettings(nextSettings).unwrap();
-      toast.success("Notification settings updated successfully!");
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to update notification settings.");
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (userProfileData?.scale) {
+      setSelectedScale(userProfileData.scale);
     }
-  };
+    if (userProfileData?.timeFormat) {
+      setSelectedTimeFormat(userProfileData.timeFormat);
+    }
+  }, [userProfileData]);
+
+  useEffect(() => {
+    if (emailSettingsRes) {
+      const raw = (emailSettingsRes as any)?.response || (emailSettingsRes as any)?.data || emailSettingsRes;
+      if (raw && typeof raw === 'object') {
+        setLocalEmailSettings((prev) => ({
+          feePaymentRequests: raw.feePaymentRequests !== undefined ? Boolean(raw.feePaymentRequests) : prev.feePaymentRequests,
+          newRide: raw.newRide !== undefined ? Boolean(raw.newRide) : prev.newRide,
+          clubJoinResponse: raw.clubJoinResponse !== undefined ? Boolean(raw.clubJoinResponse) : prev.clubJoinResponse,
+          rideUpdates: raw.rideUpdates !== undefined ? Boolean(raw.rideUpdates) : prev.rideUpdates,
+          orderStatus: raw.orderStatus !== undefined ? Boolean(raw.orderStatus) : prev.orderStatus,
+          subscriptionStatus: raw.subscriptionStatus !== undefined ? Boolean(raw.subscriptionStatus) : prev.subscriptionStatus,
+          clubJoinRequest: raw.clubJoinRequest !== undefined ? Boolean(raw.clubJoinRequest) : prev.clubJoinRequest,
+        }));
+      }
+    }
+  }, [emailSettingsRes]);
 
   // Refetch user & Strava info whenever user returns focus to this tab
   useEffect(() => {
@@ -107,6 +136,25 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
   }, [refetchUserInfo, refetchStravaStatus, refetchEmailSettings]);
+
+  const handleToggleEmailSetting = async (key: keyof EmailNotificationSettings) => {
+    const previousState = { ...localEmailSettings };
+    const nextSettings: EmailNotificationSettings = {
+      ...localEmailSettings,
+      [key]: !localEmailSettings[key],
+    };
+    // Immediate optimistic update
+    setLocalEmailSettings(nextSettings);
+
+    try {
+      await updateEmailSettings(nextSettings).unwrap();
+      toast.success("Notification settings updated successfully!");
+    } catch (err: any) {
+      // Revert on error
+      setLocalEmailSettings(previousState);
+      toast.error(err?.data?.message || err?.message || "Failed to update notification settings.");
+    }
+  };
 
   const handleConnectStrava = async () => {
     try {
@@ -152,74 +200,21 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     try {
       await disconnectStrava().unwrap();
       toast.success("Disconnected from Strava.");
+      refetchUserInfo();
+      refetchStravaStatus();
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to disconnect Strava.");
     }
   };
   
   const handleLogout = () => {
-    // 1. Clear authentication tokens or session storage (adjust according to your auth setup)
-    localStorage.removeItem("token"); // Example: if you store a JWT token
-    localStorage.removeItem("user");  // Example: if you store user data
-
-    // Alternatively, if you are using an AuthContext:
-    // logout(); 
-
-    // 2. Redirect the user to the login page
+    dispatch(logout());
+    toast.success("Logged out successfully.");
     navigate("/login");
-  };
-  const [fullAccess] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
-  const [userPermissions, setUserPermissions] = useState({
-    publishRides: false,
-    publishNews: false,
-    publishDiscount: false,
-  });
-  
-  const [tempUserPermissions, setTempUserPermissions] =
-    useState(userPermissions);
-  const [isMemberPickerOpen, setIsMemberPickerOpen] = useState(false);
-  const [memberSelectionType, setMemberSelectionType] = useState<
-    "all" | "select"
-  >("select");
-  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
-
-  // Admin Granular Permissions
-  const [adminPermissions, setAdminPermissions] = useState({
-    publishRides: true,
-    publishNews: true,
-    publishDiscount: false,
-    banUsers: false,
-  });
-
-  // Temporary state for the modal
-  const [tempPermissions, setTempPermissions] = useState(adminPermissions);
-
-  const handleOpenAdminModal = () => {
-    setTempPermissions(adminPermissions); // Sync before opening
-    setIsAdminSettingsOpen(true);
-  };
-
-  const [members, setMembers] = useState([
-    { id: 1, name: "Esther Howard", selected: true, isAdmin: true },
-    { id: 2, name: "Arlene McCoy", selected: true, isAdmin: true },
-    { id: 3, name: "Jane Cooper", selected: false, isAdmin: false },
-    { id: 4, name: "Annette Black", selected: true, isAdmin: false },
-  ]);
-
-  const handleSaveAdminPermissions = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setAdminPermissions(tempPermissions);
-      setIsSaving(false);
-      setIsAdminSettingsOpen(false);
-    }, 500);
   };
 
   const handleSavePassword = async () => {
-    let newErrors = { current: "", new: "", confirm: "" };
+    const newErrors = { current: "", new: "", confirm: "" };
     let isValid = true;
     if (!passwordData.current) {
       newErrors.current = "Current password is required";
@@ -227,6 +222,9 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     }
     if (!passwordData.new) {
       newErrors.new = "New password is required";
+      isValid = false;
+    } else if (passwordData.new.length < 6) {
+      newErrors.new = "Password must be at least 6 characters";
       isValid = false;
     }
     if (passwordData.new !== passwordData.confirm) {
@@ -249,28 +247,20 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     }
   };
 
-  const handleOpenUserModal = () => {
-    setTempUserPermissions(userPermissions);
-    setIsUserModalOpen(true);
+  const handleTimeFormatChange = async (newFormat: string) => {
+    setSelectedTimeFormat(newFormat);
+    try {
+      await upsertProfile({
+        timeFormat: newFormat,
+      }).unwrap();
+      toast.success(`Time format set to ${newFormat === '12h' ? '12-hour' : '24-hour'}.`);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update time format.");
+    }
   };
 
-  const handleSaveUserPermissions = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setUserPermissions(tempUserPermissions);
-      setIsSaving(false);
-      setIsUserModalOpen(false);
-    }, 500);
-  };
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
   if (!mounted) return null;
 
-  
-
- 
   return (
     <div className="min-h-screen bg-main-bg text-text-main p-4 md:p-8 lg:p-12 font-sans transition-colors duration-300">
       <div className="max-w-7xl mx-auto w-full">
@@ -302,7 +292,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           
           {/* CARD 1: User Profile Summary (Spans 2 columns) */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-[#EB712B]/20 transition-all duration-700"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-[#EB712B]/20 transition-all duration-700 pointer-events-none"></div>
             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-center gap-6">
                 <div className="w-24 h-24 rounded-3xl bg-main-bg flex items-center justify-center border-2 border-border overflow-hidden shadow-xl shrink-0">
@@ -313,19 +303,27 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   )}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black tracking-tight text-text-main">{userProfileData?.fullName || "Alexander"}</h2>
+                  <h2 className="text-3xl font-black tracking-tight text-text-main">{userProfileData?.fullName || "User Profile"}</h2>
                   <p className="text-[#EB712B] font-bold text-sm tracking-wide mt-1">{userProfileData?.email}</p>
                   <p className="text-xs text-text-muted font-medium mt-3 flex items-center gap-2">
                     <Calendar size={14} /> Joined {userProfileData?.createdAt ? new Date(userProfileData.createdAt).toLocaleDateString() : "Recently"}
                   </p>
                 </div>
               </div>
-              <button 
-                onClick={handleLogout}
-                className="bg-red-500/10 hover:bg-red-500 border border-red-500/20 hover:border-red-500 px-8 py-3 rounded-2xl text-sm font-bold text-red-500 hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
-              >
-                Logout
-              </button>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <Link
+                  to="/athlete-profile"
+                  className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#EB712B]/10 hover:bg-[#EB712B] border border-[#EB712B]/30 hover:border-[#EB712B] px-5 py-3 rounded-2xl text-sm font-bold text-[#EB712B] hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
+                >
+                  <Edit3 size={15} /> Edit
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="flex-1 sm:flex-initial bg-red-500/10 hover:bg-red-500 border border-red-500/20 hover:border-red-500 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
             {userProfileData?.description && (
               <div className="mt-8 pt-6 border-t border-border relative z-10">
@@ -369,9 +367,9 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             </div>
           </div>
 
-          {/* CARD 3: Strava Integration (Spans 1 col, high visibility) */}
+          {/* CARD 3: Strava Integration */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl relative overflow-hidden flex flex-col">
-            <div className="absolute -bottom-10 -right-10 opacity-5">
+            <div className="absolute -bottom-10 -right-10 opacity-5 pointer-events-none">
               <Activity size={150} />
             </div>
             <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
@@ -445,7 +443,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                     setSelectedScale(val);
                     try {
                       await updateScaleUnit({ scale: val }).unwrap();
-                      toast.success("Scale unit updated.");
+                      toast.success(`Distance unit updated to ${val === 'mile' ? 'Miles' : 'Kilometers'}.`);
                     } catch (err: any) {
                       toast.error(err?.data?.message || "Failed to update scale unit.");
                     }
@@ -463,10 +461,15 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <Clock size={16} className="text-[#EB712B]" />
                   <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Time Format</p>
                 </div>
-                <div className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main flex justify-between items-center cursor-not-allowed opacity-75">
-                  {userProfileData?.timeFormat || "12h (AM/PM)"}
-                  <Lock size={14} className="text-text-muted" />
-                </div>
+                <select
+                  value={userProfileData?.timeFormat || selectedTimeFormat}
+                  onChange={(e) => handleTimeFormatChange(e.target.value)}
+                  disabled={isUpdatingTimeFormat}
+                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
+                >
+                  <option value="12h">12-hour (1:30 PM)</option>
+                  <option value="24h">24-hour (13:30)</option>
+                </select>
               </div>
             </div>
           </div>
@@ -526,12 +529,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   { key: "subscriptionStatus" as const, title: "Subscription Status", desc: "Billing & plan renewal alerts" },
                   { key: "clubJoinRequest" as const, title: "Club Join Requests", desc: "New member join applications" },
                 ].map((item) => {
-                  const isChecked = Boolean(emailSettings?.[item.key]);
+                  const isChecked = Boolean(localEmailSettings[item.key]);
                   return (
                     <div
                       key={item.key}
                       onClick={() => handleToggleEmailSetting(item.key)}
-                      className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all flex items-center justify-between gap-4 shadow-sm"
+                      role="button"
+                      tabIndex={0}
+                      className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all flex items-center justify-between gap-4 shadow-sm select-none"
                     >
                       <div>
                         <h4 className="font-bold text-sm text-text-main">{item.title}</h4>
@@ -566,20 +571,28 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
                     <div className="p-3 bg-[#EB712B]/10 rounded-xl mb-3 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-colors"><Users size={20} /></div>
                     <h4 className="font-bold text-sm text-text-main">Manage Club</h4>
+                    <p className="text-[10px] text-text-muted mt-1">Club overview & settings</p>
                   </div>
                 </Link>
-                <div onClick={handleOpenAdminModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
-                  <div className="p-3 bg-purple-500/10 rounded-xl mb-3 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors"><ShieldCheck size={20} /></div>
-                  <h4 className="font-bold text-sm text-text-main">Admin Modules</h4>
-                </div>
-                <div onClick={handleOpenUserModal} className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
-                  <div className="p-3 bg-emerald-500/10 rounded-xl mb-3 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><Bike size={20} /></div>
-                  <h4 className="font-bold text-sm text-text-main">User Modules</h4>
-                </div>
-                <Link to="/subscription" className="block">
+                <Link to="/view/clubside/permissions" className="block">
+                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                    <div className="p-3 bg-purple-500/10 rounded-xl mb-3 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors"><ShieldCheck size={20} /></div>
+                    <h4 className="font-bold text-sm text-text-main">Club Permissions</h4>
+                    <p className="text-[10px] text-text-muted mt-1">Delegate roles & rights</p>
+                  </div>
+                </Link>
+                <Link to="/view/clubside/members" className="block">
+                  <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
+                    <div className="p-3 bg-emerald-500/10 rounded-xl mb-3 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><Users size={20} /></div>
+                    <h4 className="font-bold text-sm text-text-main">Club Members</h4>
+                    <p className="text-[10px] text-text-muted mt-1">Manage active members</p>
+                  </div>
+                </Link>
+                <Link to="/view/clubside/subscription" className="block">
                   <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
                     <div className="p-3 bg-blue-500/10 rounded-xl mb-3 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors"><CreditCard size={20} /></div>
                     <h4 className="font-bold text-sm text-text-main">Subscription</h4>
+                    <p className="text-[10px] text-text-muted mt-1">Plans & billing</p>
                   </div>
                 </Link>
               </div>
@@ -594,7 +607,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               </h3>
               <p className="text-xs text-red-500/70 font-medium">Permanently delete your account and all associated data. This action cannot be undone.</p>
             </div>
-            <button className="bg-transparent border-2 border-red-500/50 hover:bg-red-500/10 text-red-500 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg whitespace-nowrap cursor-pointer">
+            <button 
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="bg-transparent border-2 border-red-500/50 hover:bg-red-500/10 text-red-500 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg whitespace-nowrap cursor-pointer"
+            >
               Delete Account
             </button>
           </div>
@@ -602,10 +618,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
         </div>
       </div>
 
-      {/* Password Handler */}
+      {/* Password Modal */}
       {isPasswordModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-surface border border-border p-8 rounded-2xl w-full max-w-lg shadow-2xl">
+          <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-lg shadow-2xl">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-xl font-bold text-text-main">
@@ -617,7 +633,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               </div>
               <button
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="text-text-muted hover:text-text-main"
+                className="text-text-muted hover:text-text-main cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -631,25 +647,26 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Current Password"
-                    className={`w-full bg-surface p-3 rounded-lg border ${errors.current ? "border-[#EB712B]" : "border-border"} text-text-main outline-none focus:border-[#EB712B]`}
+                    value={passwordData.current}
+                    className={`w-full bg-surface p-3.5 rounded-xl border ${errors.current ? "border-red-500" : "border-border"} text-text-main outline-none focus:border-[#EB712B] transition-all`}
                     onChange={(e) => {
                       setPasswordData({
                         ...passwordData,
                         current: e.target.value,
                       });
-                      if (errors.current) setErrors({ ...errors, current: "" }); // Clear error on change
+                      if (errors.current) setErrors({ ...errors, current: "" });
                     }}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-text-muted hover:text-text-main"
+                    className="absolute right-3.5 top-4 text-text-muted hover:text-text-main cursor-pointer"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.current && (
-                  <p className="text-orange-500 text-xs mt-2 font-bold">
+                  <p className="text-red-500 text-xs mt-2 font-bold">
                     {errors.current}
                   </p>
                 )}
@@ -660,8 +677,9 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="New Password"
-                    className={`w-full bg-surface p-3 rounded-lg border ${errors.new ? "border-[#EB712B]" : "border-border"} text-text-main outline-none focus:border-[#EB712B]`}
+                    placeholder="New Password (min. 6 characters)"
+                    value={passwordData.new}
+                    className={`w-full bg-surface p-3.5 rounded-xl border ${errors.new ? "border-red-500" : "border-border"} text-text-main outline-none focus:border-[#EB712B] transition-all`}
                     onChange={(e) => {
                       setPasswordData({ ...passwordData, new: e.target.value });
                       if (errors.new) setErrors({ ...errors, new: "" });
@@ -670,13 +688,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-text-muted hover:text-text-main"
+                    className="absolute right-3.5 top-4 text-text-muted hover:text-text-main cursor-pointer"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.new && (
-                  <p className="text-[#EB712B] text-xs mt-2 font-bold">
+                  <p className="text-red-500 text-xs mt-2 font-bold">
                     {errors.new}
                   </p>
                 )}
@@ -688,7 +706,8 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="Confirm New Password"
-                    className={`w-full bg-surface p-3 rounded-lg border ${errors.confirm ? "border-[#EB712B]" : "border-border"} text-text-main outline-none focus:border-[#EB712B]`}
+                    value={passwordData.confirm}
+                    className={`w-full bg-surface p-3.5 rounded-xl border ${errors.confirm ? "border-red-500" : "border-border"} text-text-main outline-none focus:border-[#EB712B] transition-all`}
                     onChange={(e) => {
                       setPasswordData({
                         ...passwordData,
@@ -700,13 +719,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-text-muted hover:text-text-main"
+                    className="absolute right-3.5 top-4 text-text-muted hover:text-text-main cursor-pointer"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 {errors.confirm && (
-                  <p className="text-[#EB712B] text-xs mt-2 font-bold">
+                  <p className="text-red-500 text-xs mt-2 font-bold">
                     {errors.confirm}
                   </p>
                 )}
@@ -714,12 +733,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             </div>
 
             {/* Info Box */}
-            <div className="flex gap-3 bg-main-bg p-4 rounded-lg mt-6 border border-border text-text-muted text-xs">
-              <AlertCircle size={32} className="text-[#EB712B] shrink-0" />
+            <div className="flex gap-3 bg-main-bg p-4 rounded-xl mt-6 border border-border text-text-muted text-xs">
+              <AlertCircle size={20} className="text-[#EB712B] shrink-0" />
               <p>
-                Use at least 8 characters, including a mix of letters, numbers,
-                and symbols. Avoid using common words or names associated with
-                your profile.
+                Use at least 6 characters, including a mix of letters, numbers, and symbols.
               </p>
             </div>
 
@@ -727,520 +744,81 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="flex justify-end gap-4 mt-8">
               <button
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="text-text-muted font-bold hover:text-text-main"
+                className="px-5 py-2.5 rounded-xl border border-border text-text-muted font-bold hover:text-text-main hover:border-text-muted transition-all cursor-pointer text-xs uppercase"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSavePassword}
-                className="px-6 py-2 bg-[#EB712B] rounded-lg font-bold text-white hover:bg-[#d66525] transition-all"
+                disabled={isUpdatingPassword}
+                className="px-6 py-2.5 bg-[#EB712B] rounded-xl font-bold text-white hover:bg-[#d66525] transition-all cursor-pointer flex items-center gap-2 text-xs uppercase shadow-lg disabled:opacity-50"
               >
-                Save Changes
+                {isUpdatingPassword ? <Loader2 size={16} className="animate-spin" /> : "Save Changes"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Permissions Model */}
-      {isPermissionsModalOpen && (
+      {/* Delete Account / Danger Zone Modal */}
+      {isDeleteModalOpen && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-md shadow-2xl">
-            <div className="flex justify-between items-start mb-8">
-              <div>
-                <h2 className="text-xl font-bold text-text-main">Permissions</h2>
-                <p className="text-text-muted text-sm mt-1">
-                  Manage access levels for your club
-                </p>
+          <div className="bg-surface border border-red-500/30 p-8 rounded-3xl w-full max-w-lg shadow-2xl">
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-red-500/10 text-red-500 rounded-2xl">
+                  <AlertTriangle size={24} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-text-main">
+                    Delete Account
+                  </h2>
+                  <p className="text-red-500 text-xs font-semibold mt-0.5">
+                    Irreversible Action
+                  </p>
+                </div>
               </div>
               <button
-                onClick={() => setIsPermissionsModalOpen(false)}
-                className="text-text-muted hover:text-text-main"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="text-text-muted hover:text-text-main cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {[
-                {
-                  id: "admin",
-                  label: "Administrator",
-                  desc: "Full system control and user management.",
-                  icon: Shield,
-                },
-                {
-                  id: "user",
-                  label: "User",
-                  desc: "Standard access to club features.",
-                  icon: Users,
-                },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setSelectedRole(item.id as any);
-                    if (item.id === "admin") {
-                      handleOpenAdminModal();
-                    } else if (item.id === "user") {
-                      handleOpenUserModal();
-                    }
-                  }}
-                  className={`p-4 rounded-2xl border transition-all text-left ${selectedRole === item.id ? "bg-main-bg border-[#EB712B]" : "bg-main-bg border-border"}`}
-                >
-                  <item.icon className="text-[#EB712B] mb-3" size={24} />
-                  <h3 className="text-sm font-bold text-text-main mb-1">
-                    {item.label}
-                  </h3>
-                  <p className="text-[10px] text-text-muted leading-tight">
-                    {item.desc}
-                  </p>
-                </button>
-              ))}
-            </div>
-
-            {/* Restored Section */}
-            <button
-              onClick={() => setIsMemberPickerOpen(true)}
-              className={`w-full p-4 rounded-2xl border flex items-center justify-between mb-8 transition-all ${fullAccess ? "bg-hover border-[#EB712B]" : "bg-hover border-white/5"}`}
-            >
-              <div className="flex items-center gap-4">
-                <div
-                  className={`p-2 rounded-lg ${fullAccess ? "bg-[#EB712B]" : "bg-hover"}`}
-                >
-                  <Shield
-                    size={20}
-                    className={fullAccess ? "text-white" : "text-[#EB712B]"}
-                  />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-sm font-bold text-white">
-                    Grant Full Club Access
-                  </h3>
-                  <p className="text-[10px] text-gray-500">
-                    Unlock all restricted sections
-                  </p>
-                </div>
-              </div>
-              <ArrowRight size={20} className="text-gray-500" />
-            </button>
-
-            <button
-              onClick={() => setIsPermissionsModalOpen(false)}
-              className="w-full bg-[#EB712B] py-3 rounded-xl text-sm font-bold text-white"
-            >
-              Save Changes
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Professional Admin*/}
-      {isAdminSettingsOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[70] p-4 animate-in fade-in duration-300">
-          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
-            {/* Decorative Gradient Line */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#EB712B] to-transparent" />
-
-            {/* Header with Close Button */}
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
-                  Admin Access
-                </h2>
-                <p className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mt-1">
-                  Granular Control
-                </p>
-              </div>
-              <button
-                onClick={() => setIsAdminSettingsOpen(false)}
-                className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Permissions List */}
-            <div className="space-y-4 mb-8">
-              {[
-                {
-                  key: "publishRides",
-                  label: "Publish Rides",
-                  sub: "CONTENT",
-                  icon: Bike,
-                },
-                {
-                  key: "publishNews",
-                  label: "Publish News",
-                  sub: "COMMUNICATIONS",
-                  icon: Info,
-                },
-                {
-                  key: "publishDiscount",
-                  label: "Publish Discount",
-                  sub: "MARKETING",
-                  icon: CreditCard,
-                },
-                {
-                  key: "banUsers",
-                  label: "User Moderation",
-                  sub: "SECURITY",
-                  icon: Shield,
-                },
-              ].map((item) => (
-                <div
-                  key={item.key}
-                  className="group bg-surface p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-white/10 transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-xl bg-white/5 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-all">
-                      <item.icon size={18} />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white">
-                        {item.label}
-                      </p>
-                      <p className="text-[9px] text-gray-500 font-bold uppercase">
-                        {item.sub}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() =>
-                      setAdminPermissions({
-                        ...adminPermissions,
-                        [item.key]:
-                          !adminPermissions[
-                            item.key as keyof typeof adminPermissions
-                          ],
-                      })
-                    }
-                    className={`w-11 h-6 rounded-full transition-all duration-300 relative ${adminPermissions[item.key as keyof typeof adminPermissions] ? "bg-[#EB712B]" : "bg-[#222]"}`}
-                  >
-                    <div
-                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 shadow-sm ${adminPermissions[item.key as keyof typeof adminPermissions] ? "left-6" : "left-1"}`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => setIsAdminSettingsOpen(false)}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-gray-400 hover:text-white border border-white/5 hover:border-white/10 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveAdminPermissions}
-                disabled={isSaving}
-                className={`flex-1 bg-[#EB712B] py-3 rounded-xl text-sm font-bold text-white transition-all 
-                ${isSaving ? "opacity-70 cursor-not-allowed" : "hover:bg-[#ff7e36]"}`}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </button>
-            </div>
-
-            <p className="text-[9px] text-gray-700 text-center mt-6 flex items-center justify-center gap-2">
-              <Shield size={10} /> SYSTEM AUDIT ENABLED
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* userModel */}
-      {isUserModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[70] p-4 animate-in fade-in duration-300">
-          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
-            {/* Decorative Gradient Line */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-500 to-transparent" />
-
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
-                  User Access
-                </h2>
-                <p className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mt-1">
-                  Standard Controls
-                </p>
-              </div>
-              <button
-                onClick={() => setIsUserModalOpen(false)}
-                className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="space-y-4 mb-8">
-              {[
-                { key: "publishRides", label: "Publish Rides", icon: Bike },
-                { key: "publishNews", label: "Publish News", icon: Info },
-                {
-                  key: "publishDiscount",
-                  label: "Publish Discount",
-                  icon: CreditCard,
-                },
-              ].map((item) => (
-                <div
-                  key={item.key}
-                  className="group bg-surface p-4 rounded-2xl flex items-center justify-between border border-white/5 hover:border-white/10 transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    {/* Icon container with hover animation */}
-                    <div className="p-2 rounded-xl bg-white/5 text-gray-400 group-hover:bg-[#EB712B] group-hover:text-white transition-all">
-                      <item.icon size={18} />
-                    </div>
-                    <p className="text-sm font-bold text-white">{item.label}</p>
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      setTempUserPermissions({
-                        ...tempUserPermissions,
-                        [item.key]:
-                          !tempUserPermissions[
-                            item.key as keyof typeof tempUserPermissions
-                          ],
-                      })
-                    }
-                    className={`w-11 h-6 rounded-full transition-all duration-300 relative ${tempUserPermissions[item.key as keyof typeof tempUserPermissions] ? "bg-[#EB712B]" : "bg-[#222]"}`}
-                  >
-                    <div
-                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 shadow-sm ${tempUserPermissions[item.key as keyof typeof tempUserPermissions] ? "left-6" : "left-1"}`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setIsUserModalOpen(false)}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-gray-400 border border-white/5 hover:text-white hover:border-white/10 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveUserPermissions}
-                disabled={isSaving}
-                className={`flex-1 py-3 rounded-xl text-sm font-bold text-black transition-all ${isSaving ? "bg-[#EB712B" : "bg-[#EB712B] hover:bg-[#EB712B] text-white"}`}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isMemberPickerOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[80] p-4 animate-in fade-in duration-300">
-          <div className="bg-surface border border-white/10 p-6 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.3)]">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-8">
-              <button
-                onClick={() => setIsMemberPickerOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <ChevronLeft size={22} />
-              </button>
-              <h2 className="text-lg font-bold text-white tracking-wide">
-                Permissions
-              </h2>
-              <button
-                onClick={() => setIsMemberPickerOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <X size={22} />
-              </button>
-            </div>
-
-            {/* Selection Type - Styled like image_06e4c7.png */}
-            <div className="space-y-3 mb-6">
-              {[
-                { id: "all", label: "All Member" },
-                { id: "select", label: "Select Members" },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setMemberSelectionType(item.id as any)}
-                  className={`w-full p-4 rounded-2xl border transition-all flex items-center gap-3 
-              ${
-                memberSelectionType === item.id
-                  ? "border-[#EB712B] bg-hover"
-                  : "border-white/5 bg-hover hover:border-white/10"
-              }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${memberSelectionType === item.id ? "border-[#EB712B]" : "border-gray-600"}`}
-                  >
-                    {memberSelectionType === item.id && (
-                      <div className="w-2.5 h-2.5 bg-[#EB712B] rounded-full" />
-                    )}
-                  </div>
-                  <span
-                    className={`text-sm font-bold ${memberSelectionType === item.id ? "text-white" : "text-gray-400"}`}
-                  >
-                    {item.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            {/* Search & List */}
-            {memberSelectionType === "select" && (
-              <div className="mb-6 space-y-4">
-                <div className="relative">
-                  <Search
-                    size={16}
-                    className="absolute left-4 top-3.5 text-gray-500"
-                  />
-                  <input
-                    placeholder="Search members..."
-                    className="w-full bg-hover p-3 pl-11 rounded-xl border border-white/5 text-sm text-white placeholder:text-gray-600 focus:border-[#EB712B] outline-none transition-colors"
-                  />
-                </div>
-
-                <div className="space-y-4 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
-                  {members.map((m) => (
-                    <div
-                      key={m.id}
-                      className="flex items-center justify-between group"
-                    >
-                      <div className="flex items-center gap-3">
-                        {(m as any).avatar ? (
-                          <img 
-                            src={(m as any).avatar} 
-                            alt={m.name} 
-                            className="w-9 h-9 rounded-full object-cover border border-[#EB712B]/30 shrink-0" 
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                          />
-                        ) : (
-                          <div className="w-9 h-9 rounded-full bg-[#EB712B]/15 border border-[#EB712B]/30 flex items-center justify-center font-bold text-xs text-[#EB712B] uppercase shrink-0 shadow-sm">
-                            {m.name.split(' ').map((n) => n[0]).join('').substring(0, 2)}
-                          </div>
-                        )}
-                        <span className="text-sm font-semibold text-text-main">
-                          {m.name}
-                        </span>
-                        {m.isAdmin && (
-                          <Shield size={13} className="text-[#EB712B]" />
-                        )}
-                      </div>
-                      <button
-                        onClick={() =>
-                          setMembers(
-                            members.map((mem) =>
-                              mem.id === m.id
-                                ? { ...mem, selected: !mem.selected }
-                                : mem,
-                            ),
-                          )
-                        }
-                        className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${m.selected ? "bg-[#EB712B] border-[#EB712B]" : "border-gray-600"}`}
-                      >
-                        {m.selected && (
-                          <Check size={14} className="text-white" />
-                        )}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Save Button */}
-            <button
-              onClick={() => {
-                // Functional Save Action
-                console.log("Permissions saved:", members);
-                setIsMemberPickerOpen(false);
-              }}
-              className="w-full bg-[#EB712B] hover:bg-[#d66525] py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-[0_4px_15px_rgba(235,113,43,0.3)]"
-            >
-              <Shield size={18} /> Save Permissions
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Language Modal */}
-      {isLanguageModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
-          <div className="bg-surface border border-white/10 p-8 rounded-3xl w-full max-w-sm shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
-            {/* Decorative Gradient Line */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gray-500 to-transparent" />
-
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
-                  System Localization
-                </h2>
-                <p className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mt-1">
-                  Operational Settings
-                </p>
-              </div>
-              <button
-                onClick={() => setIsLanguageModalOpen(false)}
-                className="p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-white"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {[
-                { name: "English", tag: "Standard" },
-                { name: "Español", tag: "Regional" },
-              ].map((lang) => (
-                <div
-                  key={lang.name}
-                  onClick={() => setSelectedLanguage(lang.name)}
-                  className={`cursor-pointer transition-all p-6 rounded-2xl flex flex-col items-center ${
-                    selectedLanguage === lang.name
-                      ? "bg-surface border-2 border-[#EB712B]"
-                      : "bg-surface border border-white/5 opacity-50 hover:opacity-100"
-                  }`}
-                >
-                  <Globe
-                    className={`mb-3 ${selectedLanguage === lang.name ? "text-[#EB712B]" : "text-gray-500"}`}
-                    size={24}
-                  />
-                  <span className="text-sm font-bold text-white uppercase">
-                    {lang.name}
-                  </span>
-                  <span
-                    className={`text-[9px] uppercase tracking-widest font-bold ${selectedLanguage === lang.name ? "text-[#EB712B]" : "text-gray-500"}`}
-                  >
-                    {lang.tag}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-surface p-4 rounded-xl border border-white/5 flex gap-3 mb-8">
-              <AlertCircle className="text-[#EB712B] shrink-0" size={16} />
-              <p className="text-[10px] text-gray-400">
-                System re-initialization is required to apply localization
-                assets.
+            <div className="space-y-4 text-sm text-text-muted">
+              <p>
+                To permanently delete your account, remove your club memberships, and clear all personal data, please contact our support team.
               </p>
+              <div className="bg-red-500/5 p-4 rounded-xl border border-red-500/20 text-xs text-red-400 space-y-1">
+                <p className="font-bold">⚠️ Notice:</p>
+                <p>
+                  Account deletion requests are processed manually to verify account ownership and prevent unauthorized removals.
+                </p>
+              </div>
             </div>
 
-            <button
-              onClick={() => {
-                console.log("Applying language:", selectedLanguage);
-
-                setIsLanguageModalOpen(false);
-              }}
-              className="w-full bg-[#EB712B] py-3 rounded-xl text-sm font-bold text-white hover:bg-[#ff7e36] transition-all"
-            >
-              Apply Configuration
-            </button>
+            <div className="flex justify-end gap-3 mt-8">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl border border-border text-text-muted font-bold hover:text-text-main transition-all cursor-pointer text-xs uppercase"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setIsDeleteModalOpen(false);
+                  navigate(role === 'athlete' ? "/view/userside/support" : "/view/clubside/support");
+                }}
+                className="px-6 py-2.5 bg-red-500 hover:bg-red-600 rounded-xl font-bold text-white transition-all cursor-pointer flex items-center gap-2 text-xs uppercase shadow-lg shadow-red-500/20"
+              >
+                <MessageSquare size={14} /> Contact Support
+              </button>
+            </div>
           </div>
         </div>
       )}
+
     </div>
   );
 };
