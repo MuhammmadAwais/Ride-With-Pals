@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 import gsap from 'gsap';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
@@ -23,9 +23,6 @@ export const CreateRide: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const datePickerRef = useRef<HTMLDivElement>(null);
-  const dateInputRef2 = useRef<HTMLInputElement>(null);
 
   const toastRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,19 +68,6 @@ export const CreateRide: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [showSuccessToast, navigate, dispatch]);
-
-  // Close date picker when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
-        setShowDatePicker(false);
-      }
-    };
-    if (showDatePicker) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showDatePicker]);
 
   // Close dropdown when clicking outside
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -158,6 +142,9 @@ export const CreateRide: React.FC = () => {
       if (formState.rideLeaders.length === 0) {
         newErrors.rideLeaders = "Please assign at least one ride leader";
       }
+      if (formState.isPaymentRequired && (!formState.price || Number(formState.price) <= 0)) {
+        newErrors.price = "Price is required and must be greater than 0 when payment is required";
+      }
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -216,6 +203,10 @@ export const CreateRide: React.FC = () => {
         isPublic: Boolean(formState.isPublic),
         isPaymentRequired: Boolean(formState.isPaymentRequired),
       };
+
+      if (formState.isPaymentRequired) {
+        payload.price = Number(formState.price || 0);
+      }
 
       if (formState.sportSubTypeId) {
         payload.sportSubTypeId = Number(formState.sportSubTypeId);
@@ -281,16 +272,6 @@ export const CreateRide: React.FC = () => {
     { id: 8, name: 'Gravel' },
   ];
 
-
-  // Format date value for display
-  const formatDateDisplay = (dateStr: string) => {
-    if (!dateStr) return 'Select date';
-    try {
-      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-    } catch {
-      return dateStr;
-    }
-  };
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const slotsOptions = ['Morning', 'Afternoon', 'Evening', 'Night'];
@@ -389,33 +370,24 @@ export const CreateRide: React.FC = () => {
                 </div>
 
                 {/* Date */}
-                <div className="space-y-2" ref={datePickerRef}>
+                <div className="space-y-2">
                   <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Date</label>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setShowDatePicker(prev => !prev); }}
-                    className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer`}
-                  >
-                    <span className={formState.date ? 'text-text-main' : 'text-text-muted'}>
-                      {formatDateDisplay(formState.date)}
-                    </span>
-                    <ChevronDown size={18} className="text-text-muted" />
-                  </button>
-                  {showDatePicker && (
-                    <div className="absolute z-50 mt-1 bg-main-bg border border-border rounded-2xl shadow-2xl p-3">
-                      <input
-                        ref={dateInputRef2}
-                        type="date"
-                        value={formState.date}
-                        onChange={(e) => {
-                          dispatch(updateStepFields({ date: e.target.value }));
-                          setShowDatePicker(false);
-                        }}
-                        className="w-full bg-transparent text-text-main outline-none cursor-pointer"
-                        autoFocus
-                      />
-                    </div>
-                  )}
+                  <div className="relative">
+                    <input 
+                      type="date" 
+                      min={new Date().toISOString().split('T')[0]}
+                      value={formState.date || ''}
+                      onChange={(e) => {
+                        dispatch(updateStepFields({ date: e.target.value }));
+                        setErrors((prev) => ({ ...prev, date: '' }));
+                      }}
+                      className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer appearance-none`}
+                    />
+                    <Calendar 
+                      className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" 
+                      size={18} 
+                    />
+                  </div>
                   {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
                 </div>
 
@@ -673,11 +645,14 @@ export const CreateRide: React.FC = () => {
                                   ? formState.recurringActivities.filter(d => d !== day)
                                   : [...formState.recurringActivities, day];
                                 dispatch(updateStepFields({ recurringActivities: newDays }));
+                                if (newDays.length > 0) {
+                                  setErrors((prev) => ({ ...prev, recurringActivities: '' }));
+                                }
                               }}
-                              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all border outline-none cursor-pointer
+                              className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all border outline-none cursor-pointer select-none
                                 ${isSelected 
-                                  ? 'bg-[#EB712B] text-white border-[#EB712B]' 
-                                  : 'bg-surface text-text-muted border-border hover:text-text-main'
+                                  ? 'bg-[#EB712B] text-white border-[#EB712B] shadow-md shadow-[#EB712B]/20' 
+                                  : 'bg-surface text-text-muted border-border hover:border-[#EB712B]/40 hover:text-text-main'
                                 }
                               `}
                             >
@@ -687,18 +662,24 @@ export const CreateRide: React.FC = () => {
                         })}
                       </div>
                       {errors.recurringActivities && <p className="text-red-500 text-xs">{errors.recurringActivities}</p>}
-                      <div className="pt-2">
-                        <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block mb-2">Expiry Date</label>
-                        <input 
-                          type="date"
-                          min={formState.date || new Date().toISOString().split('T')[0]}
-                          value={formState.expiryDate || ''}
-                          onChange={(e) => {
-                            dispatch(updateStepFields({ expiryDate: e.target.value }));
-                            e.target.blur();
-                          }}
-                          className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer"
-                        />
+                      <div className="pt-2 space-y-2">
+                        <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Expiry Date</label>
+                        <div className="relative">
+                          <input 
+                            type="date"
+                            min={formState.date || new Date().toISOString().split('T')[0]}
+                            value={formState.expiryDate || ''}
+                            onChange={(e) => {
+                              dispatch(updateStepFields({ expiryDate: e.target.value }));
+                              setErrors((prev) => ({ ...prev, expiryDate: '' }));
+                            }}
+                            className={`w-full h-14 bg-main-bg border ${errors.expiryDate ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer appearance-none`}
+                          />
+                          <Calendar 
+                            className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" 
+                            size={18} 
+                          />
+                        </div>
                         {errors.expiryDate && <p className="text-red-500 text-xs mt-1">{errors.expiryDate}</p>}
                       </div>
                     </div>
@@ -856,21 +837,53 @@ export const CreateRide: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Payment Required Toggle */}
-                <div className="flex items-center justify-between bg-main-bg p-6 rounded-2xl border border-border md:col-span-2">
-                  <div>
-                    <h4 className="text-sm font-bold text-white">Registration Payment Required</h4>
-                    <p className="text-xs text-text-muted">Enable if participants must complete payments to RSVP to this ride.</p>
+                {/* Payment Required Toggle & Price */}
+                <div className="space-y-4 bg-main-bg p-6 rounded-2xl border border-border md:col-span-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-sm font-bold text-white">Registration Payment Required</h4>
+                      <p className="text-xs text-text-muted">Enable if participants must complete payments to RSVP to this ride.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextVal = !formState.isPaymentRequired;
+                        dispatch(updateStepFields({ isPaymentRequired: nextVal }));
+                        if (!nextVal) {
+                          setErrors((prev) => ({ ...prev, price: '' }));
+                        }
+                      }}
+                      className={`w-14 h-8 rounded-full transition-colors flex items-center p-1 border border-border cursor-pointer
+                        ${formState.isPaymentRequired ? 'bg-[#EB712B]' : 'bg-[#222]'}
+                      `}
+                    >
+                      <div className={`w-6 h-6 rounded-full bg-white transition-transform ${formState.isPaymentRequired ? 'translate-x-6' : 'translate-x-0'}`} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => dispatch(updateStepFields({ isPaymentRequired: !formState.isPaymentRequired }))}
-                    className={`w-14 h-8 rounded-full transition-colors flex items-center p-1 border border-border cursor-pointer
-                      ${formState.isPaymentRequired ? 'bg-[#EB712B]' : 'bg-[#222]'}
-                    `}
-                  >
-                    <div className={`w-6 h-6 rounded-full bg-white transition-transform ${formState.isPaymentRequired ? 'translate-x-6' : 'translate-x-0'}`} />
-                  </button>
+
+                  {formState.isPaymentRequired && (
+                    <div className="pt-4 border-t border-border space-y-2">
+                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                        Registration Fee / Price ($ or local currency)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        placeholder="e.g. 15.00"
+                        value={formState.price || ''}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Number(e.target.value);
+                          dispatch(updateStepFields({ price: val }));
+                          if (val > 0) {
+                            setErrors((prev) => ({ ...prev, price: '' }));
+                          }
+                        }}
+                        className={`w-full h-14 bg-surface border ${errors.price ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`}
+                      />
+                      {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
+                    </div>
+                  )}
                 </div>
 
                 {/* Support Car Driver Dropdown */}

@@ -28,6 +28,7 @@ export interface AddRideState {
   isPublic: boolean;
   isWomenAndNonBinary: boolean;
   isPaymentRequired: boolean;
+  price?: number;
   rideLeaders: { userId: number; name: string }[];
   supportCarDriver: { userId?: number; name: string } | null;
 
@@ -58,6 +59,7 @@ const initialState: AddRideState = {
   isPublic: true,
   isWomenAndNonBinary: false,
   isPaymentRequired: false,
+  price: 0,
   rideLeaders: [],
   supportCarDriver: null,
   currentStep: 1,

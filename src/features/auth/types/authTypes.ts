@@ -5,7 +5,7 @@ export interface AppUser {
   id: string | number;
   email: string;
   name?: string;
-  token: string;
+  token?: string;
   isAthleteProfile?: boolean | number;
   role?: 'organizer' | 'athlete' | 'owner'; // Computed or fallback
   avatar?: string;
@@ -15,6 +15,8 @@ export interface AppUser {
   dob?: string;
   country?: string;
   phone?: string;
+  scale?: string;
+  timeFormat?: string;
 }
 
 /** Redux auth slice shape. */

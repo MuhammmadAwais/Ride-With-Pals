@@ -166,6 +166,29 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
       }),
       providesTags: ['User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled, getState }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data) {
+            const existingUser = (getState() as any)?.auth?.user;
+            const user: AppUser = {
+              id: data.id,
+              email: data.email,
+              token: existingUser?.token || localStorage.getItem('rwp_auth_token') || '',
+              isAthleteProfile: !!data.isAthleteProfile,
+              role: data.isAthleteProfile ? 'athlete' : 'organizer',
+              fullName: data.fullName,
+              profileImage: data.profileImage || undefined,
+              dob: data.dob || undefined,
+              country: data.country || undefined,
+              phone: data.phone || undefined,
+              scale: data.scale,
+              timeFormat: data.timeFormat,
+            };
+            dispatch(setUser(user));
+          }
+        } catch (e) {}
+      },
     }),
 
     uploadFile: builder.mutation<AuthTypes.UploadFileResponseResponse, FormData>({

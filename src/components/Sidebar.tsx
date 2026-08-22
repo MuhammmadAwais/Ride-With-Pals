@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import { APP_NAME, ROUTES } from '@/Constants';
 import { useTheme } from '@/hooks/useTheme';
 import { Lock as LockIcon } from 'lucide-react';
+import { useUserInfoQuery } from '@/features/auth/api/authApiSlice';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -196,6 +197,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user     = useAppSelector((s) => s.auth.user);
+  const { data: userInfo } = useUserInfoQuery();
+  const activeUser = userInfo || user;
   const myClubs  = useAppSelector((s) => s.club.myClubs);
   const { isDark } = useTheme();
 
@@ -529,35 +532,45 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             style={{ border: '1px solid var(--color-border)', cursor: 'pointer', textAlign: 'left' }}
           >
             {/* Avatar */}
-            <div style={{
-              width: '40px', height: '40px', borderRadius: '10px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-              background: '#EB712B',
-              overflow: 'hidden'
-            }}>
-              {user?.profileImage ? (
-                <img
-                  src={user.profileImage.startsWith('http') || user.profileImage.startsWith('data:') ? user.profileImage : `https://api.ridewithpals.com/uploads/${user.profileImage}`}
-                  alt="Avatar"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                    const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-              ) : null}
-              <div
-                style={{
-                  width: '100%', height: '100%',
-                  display: user?.profileImage ? 'none' : 'flex',
-                  alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <User size={20} color="#fff" />
-              </div>
-            </div>
+            {(() => {
+              const rawImg = activeUser?.profileImage;
+              const hasValidImg = rawImg && rawImg !== 'saqi.png' && rawImg !== 'null' && rawImg !== 'undefined' && rawImg.trim() !== '';
+              const resolvedSrc = hasValidImg 
+                ? (rawImg.startsWith('http') || rawImg.startsWith('data:') || rawImg.startsWith('/') ? rawImg : `https://api.ridewithpals.com/uploads/${rawImg}`)
+                : null;
+
+              return (
+                <div style={{
+                  width: '40px', height: '40px', borderRadius: '10px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                  background: '#EB712B',
+                  overflow: 'hidden'
+                }}>
+                  {resolvedSrc ? (
+                    <img
+                      src={resolvedSrc}
+                      alt="Avatar"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                        const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    style={{
+                      width: '100%', height: '100%',
+                      display: resolvedSrc ? 'none' : 'flex',
+                      alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <User size={20} color="#fff" />
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Name + Role */}
             <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -567,7 +580,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                 lineHeight: 1.3, marginBottom: '2px',
               }}>
-                {user?.fullName || user?.name || user?.email || 'Rider'}
+                {activeUser?.fullName || user?.name || activeUser?.email || 'Rider'}
               </p>
               <p style={{
                 fontFamily: 'var(--font-poppins)', fontSize: '12px',
@@ -575,7 +588,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                 textTransform: 'capitalize', letterSpacing: '0.02em',
               }}>
-                {user?.role ?? 'Member'}
+                {user?.role ?? (userInfo?.isAthleteProfile ? 'athlete' : 'organizer')}
               </p>
             </div>
 
