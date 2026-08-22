@@ -70,7 +70,7 @@ const SavedRides: React.FC = () => {
       const rideData = item.ride || item;
       return {
         id: item.rideId || rideData.id,
-        title: rideData.ridename || rideData.title || rideData.name || 'Unnamed Ride',
+        title: rideData.rideName || rideData.ridename || rideData.title || rideData.name || rideData.activityName || 'Unnamed Ride',
         clubName: rideData.club?.clubName || 'Independent',
         date: rideData.date || rideData.startDate || 'TBD',
         location: rideData.meetingPoint || rideData.location || 'TBD',

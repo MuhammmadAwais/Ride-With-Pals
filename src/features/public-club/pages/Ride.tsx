@@ -170,7 +170,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
       }
       return {
         id: item.id || item.rideId,
-        title: item.ridename || item.title || item.name || "Ride Event",
+        title: item.rideName || item.ridename || item.title || item.name || item.activityName || "Ride Event",
         clubName: item.club?.clubName || item.clubName || "Independent",
         date: item.date || item.startDate || "TBD",
         location: item.meetingPoint || item.location || "TBD",

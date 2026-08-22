@@ -32,7 +32,7 @@ export const DashboardCalendar: React.FC = () => {
     const rows = ridesData?.rows || [];
     return rows.map((r: any) => ({
       id: r.id,
-      title: r.title || 'Group Ride',
+      title: r.rideName || r.ridename || r.title || r.name || 'Group Ride',
       date: r.rideDate ? new Date(r.rideDate) : new Date(),
       time: r.rideTime || '08:00 AM',
       location: r.startingPoint || r.location || 'Club Headquarters',

@@ -139,7 +139,7 @@ const RideJoining = () => {
       id: data.id || id,
       clubId: data.clubId || data.club?.id,
       isPublic: data.isPublic !== undefined ? data.isPublic : true,
-      title: data.rideName || "test ride",
+      title: data.rideName || (data as any).title || (data as any).name || "Ride Event",
       host: dataAny.user?.fullName || "Organizer",
       date: data.date ? new Date(data.date).toLocaleDateString() : "TBD",
       type: sportType,
