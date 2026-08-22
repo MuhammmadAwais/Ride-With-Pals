@@ -56,14 +56,15 @@ const AthleteProfileForm = () => {
       }
       if (userInfo.phone) setPhone(userInfo.phone);
       if (userInfo.description) setDescription(userInfo.description);
-      if (userInfo.timeFormat) setTimeFormat(userInfo.timeFormat);
-      if (userInfo.profileImage) {
+      if (userInfo.profileImage && userInfo.profileImage !== "saqi.png" && userInfo.profileImage !== "null" && userInfo.profileImage !== "undefined" && userInfo.profileImage.trim() !== "") {
         setProfileImage(userInfo.profileImage);
         const imgPath = userInfo.profileImage;
         const fullImgUrl = (imgPath.startsWith("http://") || imgPath.startsWith("https://") || imgPath.startsWith("data:") || imgPath.startsWith("/"))
           ? imgPath
           : `https://api.ridewithpals.com/uploads/${imgPath}`;
         setImagePreviewUrl(fullImgUrl);
+      } else {
+        setImagePreviewUrl("/Images/ProfileImage.png");
       }
     }
   }, [userInfo]);

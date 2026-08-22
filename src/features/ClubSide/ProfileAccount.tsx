@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/hooks/useTheme";
 import {
   Users,
   Lock,
@@ -52,11 +52,22 @@ interface ProfileAccountProps {
   role?: 'organizer' | 'athlete';
 }
 
+const resolveProfileImageUrl = (path?: string | null): string | null => {
+  if (!path || path === "null" || path === "undefined" || path.trim() === "" || path === "saqi.png") {
+    return null;
+  }
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:") || path.startsWith("/")) {
+    return path;
+  }
+  return `https://api.ridewithpals.com/uploads/${path}`;
+};
+
 const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { theme, setTheme } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   // Modals & States
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
@@ -107,6 +118,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     if (userProfileData?.timeFormat) {
       setSelectedTimeFormat(userProfileData.timeFormat);
     }
+    setImageError(false);
   }, [userProfileData]);
 
   useEffect(() => {
@@ -248,14 +260,25 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
   };
 
   const handleTimeFormatChange = async (newFormat: string) => {
+    const previousFormat = selectedTimeFormat;
     setSelectedTimeFormat(newFormat);
     try {
       await upsertProfile({
+        fullName: userProfileData?.fullName || "Athlete",
+        dob: userProfileData?.dob ? (userProfileData.dob.includes('T') ? userProfileData.dob.split('T')[0] : userProfileData.dob) : "2000-01-01",
+        genderId: userProfileData?.genderId ? Number(userProfileData.genderId) : 1,
+        country: userProfileData?.country || "Germany",
+        unit: userProfileData?.unit || (userProfileData?.scale === "mile" ? "miles" : "km"),
+        phone: userProfileData?.phone || "0000000000",
+        description: userProfileData?.description || "Athlete",
+        profileImage: userProfileData?.profileImage || "saqi.png",
         timeFormat: newFormat,
       }).unwrap();
+      refetchUserInfo();
       toast.success(`Time format set to ${newFormat === '12h' ? '12-hour' : '24-hour'}.`);
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to update time format.");
+      setSelectedTimeFormat(previousFormat);
+      toast.error(err?.data?.message || err?.message || "Failed to update time format.");
     }
   };
 
@@ -275,15 +298,15 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             </p>
           </div>
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={toggleTheme}
             className="flex items-center gap-2 bg-surface border border-border px-4 py-2.5 rounded-xl text-xs font-bold text-text-main hover:border-[#EB712B]/40 transition-all shadow-lg active:scale-95 cursor-pointer"
           >
-            {theme === "dark" ? (
+            {isDark ? (
               <Sun size={16} className="text-yellow-500" />
             ) : (
               <Moon size={16} className="text-[#EB712B]" />
             )}
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            {isDark ? "Light Mode" : "Dark Mode"}
           </button>
         </div>
 
@@ -295,11 +318,28 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-[#EB712B]/20 transition-all duration-700 pointer-events-none"></div>
             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <div className="w-24 h-24 rounded-3xl bg-main-bg flex items-center justify-center border-2 border-border overflow-hidden shadow-xl shrink-0">
-                  {userProfileData?.profileImage ? (
-                    <img src={userProfileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                <div className="w-24 h-24 rounded-3xl bg-surface border-2 border-border overflow-hidden shadow-xl shrink-0 flex items-center justify-center relative">
+                  {!imageError && resolveProfileImageUrl(userProfileData?.profileImage) ? (
+                    <img
+                      src={resolveProfileImageUrl(userProfileData?.profileImage)!}
+                      alt={userProfileData?.fullName || "Profile"}
+                      className="w-full h-full object-cover"
+                      onError={() => setImageError(true)}
+                    />
                   ) : (
-                    <UserIcon size={40} className="text-text-muted" />
+                    <div className="w-full h-full flex items-center justify-center bg-[#EB712B]/10 text-[#EB712B] font-black text-2xl uppercase tracking-wider select-none">
+                      {userProfileData?.fullName ? (
+                        userProfileData.fullName
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n: string) => n[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()
+                      ) : (
+                        <UserIcon size={36} className="text-[#EB712B]" />
+                      )}
+                    </div>
                   )}
                 </div>
                 <div>
