@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Lock, Crown, Car, Sparkles, Loader2 } from "lucide-react";
-import { useAppSelector } from "@/hooks/useAppSelector";
+import { Check, Lock, Crown, Car, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   useSubscriptionPlanListQuery,
@@ -59,7 +58,6 @@ const getPlanFeatures = (plan: any): string[] => {
 
 const AuthSubscription = () => {
   const navigate = useNavigate();
-  const user = useAppSelector((s) => s.auth.user);
   const [selectedPlan, setSelectedPlan] = useState<string>("yearly");
   const [subscribingId, setSubscribingId] = useState<number | null>(null);
 
@@ -79,11 +77,7 @@ const AuthSubscription = () => {
       e.stopPropagation();
     }
     sessionStorage.setItem('selected_subscription_plan', 'free');
-    if (user?.role === 'owner' || user?.role === 'organizer') {
-      navigate("/club-profile-setup");
-    } else {
-      navigate("/select-role");
-    }
+    navigate("/select-role");
   };
 
   const handleStripeCheckout = async (e: React.MouseEvent, plan: any) => {
@@ -97,7 +91,13 @@ const AuthSubscription = () => {
 
     setSubscribingId(plan.id);
     try {
-      const res = await subscribeToAnyPlan({ planId: plan.id }).unwrap();
+      sessionStorage.setItem('selected_subscription_plan', String(plan.id || 'paid'));
+      const origin = window.location.origin;
+      const res = await subscribeToAnyPlan({ 
+        planId: plan.id,
+        successUrl: `${origin}/select-role`,
+        cancelUrl: window.location.href,
+      }).unwrap();
       if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
         window.location.href = res.checkoutUrl; // Redirect to Stripe
       } else {
@@ -120,10 +120,7 @@ const AuthSubscription = () => {
         
         {/* Top Header */}
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-1.5 bg-[#141414] border border-[#262626] text-gray-300 text-[11px] font-bold px-5 py-2 rounded-full uppercase tracking-widest shadow-inner">
-            <Sparkles className="w-3.5 h-3.5 text-[#EB712B]" /> Subscription Portal
-          </span>
-          <h1 className="text-5xl font-extrabold mt-8 mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
+          <h1 className="text-5xl font-extrabold mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
             Subscription Plans
           </h1>
           <p className="text-gray-400 max-w-xl mx-auto text-sm leading-relaxed font-medium">

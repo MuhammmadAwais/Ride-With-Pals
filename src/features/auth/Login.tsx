@@ -20,7 +20,7 @@ import { toast } from 'sonner';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { cn } from '@/lib/utils';
 import { ROUTES, LOGIN_COPY, APP_NAME } from '@/Constants';
-import { useLoginMutation } from '@/features/auth/api/authApiSlice';
+import { useFirebaseAuth } from '@/features/auth/hooks/useFirebaseAuth';
 
 interface FormErrors {
   email?: string;
@@ -35,6 +35,15 @@ const Login = () => {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user            = useAppSelector((s) => s.auth.user);
 
+  const {
+    loginWithEmail,
+    loginWithGoogle,
+    loginWithApple,
+    isLoading,
+    isGoogleLoading,
+    isAppleLoading,
+  } = useFirebaseAuth();
+  const isAnyLoading = isLoading || isGoogleLoading || isAppleLoading;
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -47,7 +56,6 @@ const Login = () => {
   const [email,        setEmail]        = useState('');
   const [password,     setPassword]     = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [login, { isLoading }] = useLoginMutation();
   const [errors,       setErrors]       = useState<FormErrors>({});
 
   /* ── GSAP stagger entry ── */
@@ -75,16 +83,42 @@ const Login = () => {
     if (!validate()) return;
 
     try {
-      await login({ email: email.trim().toLowerCase(), password }).unwrap();
+      await loginWithEmail(email.trim().toLowerCase(), password);
       toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
       
       // Navigate to root, where the RootGuard will sort out where they should go based on state.
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
       navigate(from ?? '/dashboard', { replace: true });
     } catch (err: any) {
-      const errorMsg = err?.data?.message || err?.message || LOGIN_COPY.INVALID_CREDENTIALS;
+      const errorMsg = err?.message || LOGIN_COPY.INVALID_CREDENTIALS;
       toast.error(errorMsg);
       setErrors({ password: errorMsg });
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const res = await loginWithGoogle();
+      if (res) {
+        toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
+        const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+        navigate(from ?? '/dashboard', { replace: true });
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'Google sign-in failed.');
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    try {
+      const res = await loginWithApple();
+      if (res) {
+        toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
+        const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
+        navigate(from ?? '/dashboard', { replace: true });
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'Apple sign-in failed.');
     }
   };
 
@@ -231,7 +265,7 @@ const Login = () => {
             {/* Submit */}
             <button
               onClick={handleLogin}
-              disabled={isLoading}
+              disabled={isAnyLoading}
               className="animate-item btn-primary"
               style={{ marginTop: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
@@ -242,6 +276,152 @@ const Login = () => {
                 </>
               ) : LOGIN_COPY.SUBMIT_LABEL}
             </button>
+
+            {/* Divider */}
+            <div
+              className="animate-item"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px',
+                margin: '6px 0',
+              }}
+            >
+              <div
+                style={{
+                  flex: 1,
+                  height: '1px',
+                  background: 'rgba(255,255,255,0.08)',
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: 'var(--font-roboto)',
+                  fontSize: '12px',
+                  color: 'rgba(255,255,255,0.35)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Or sign in with
+              </span>
+              <div
+                style={{
+                  flex: 1,
+                  height: '1px',
+                  background: 'rgba(255,255,255,0.08)',
+                }}
+              />
+            </div>
+
+            {/* Social buttons */}
+            <div
+              className="animate-item"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px',
+              }}
+            >
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={isAnyLoading}
+                style={{
+                  height: '48px',
+                  borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  fontFamily: 'var(--font-roboto)',
+                  fontSize: '14px',
+                  color: 'rgba(255,255,255,0.8)',
+                  transition: 'all 0.2s',
+                  cursor: isAnyLoading ? 'not-allowed' : 'pointer',
+                  opacity: isAnyLoading ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isAnyLoading) {
+                    e.currentTarget.style.borderColor = 'rgba(235,113,43,0.45)';
+                    e.currentTarget.style.background = 'rgba(235,113,43,0.06)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                }}
+              >
+                {isGoogleLoading ? (
+                  <Loader2 size={18} className="animate-spin text-[#EB712B]" />
+                ) : (
+                  <>
+                    <img
+                      src="/Images/google-logo.png"
+                      alt="Google"
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        objectFit: 'contain',
+                      }}
+                    />
+                    Google
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleAppleLogin}
+                disabled={isAnyLoading}
+                style={{
+                  height: '48px',
+                  borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  fontFamily: 'var(--font-roboto)',
+                  fontSize: '14px',
+                  color: 'rgba(255,255,255,0.8)',
+                  transition: 'all 0.2s',
+                  cursor: isAnyLoading ? 'not-allowed' : 'pointer',
+                  opacity: isAnyLoading ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isAnyLoading) {
+                    e.currentTarget.style.borderColor = 'rgba(235,113,43,0.45)';
+                    e.currentTarget.style.background = 'rgba(235,113,43,0.06)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                }}
+              >
+                {isAppleLoading ? (
+                  <Loader2 size={18} className="animate-spin text-[#EB712B]" />
+                ) : (
+                  <>
+                    <img
+                      src="/Images/apple-logo.png"
+                      alt="Apple"
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        objectFit: 'contain',
+                      }}
+                    />
+                    Apple
+                  </>
+                )}
+              </button>
+            </div>
 
             {/* Sign up link */}
             <p className="animate-item" style={{ textAlign: 'center', fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.40)', marginTop: '4px' }}>

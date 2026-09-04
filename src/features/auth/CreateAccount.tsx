@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { ROUTES, SIGNUP_COPY, APP_NAME } from '@/Constants';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { useSignupMutation } from '@/features/auth/api/authApiSlice';
+import { useFirebaseAuth } from '@/features/auth/hooks/useFirebaseAuth';
 import { Loader2 } from 'lucide-react';
 
 /* ── Validation helpers ──────────────────────────────────────────────────── */
@@ -54,7 +54,15 @@ const CreateAccount = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user = useAppSelector((s) => s.auth.user);
-  const [signup, { isLoading }] = useSignupMutation();
+  const {
+    registerWithEmail,
+    loginWithGoogle,
+    loginWithApple,
+    isLoading,
+    isGoogleLoading,
+    isAppleLoading,
+  } = useFirebaseAuth();
+  const isAnyLoading = isLoading || isGoogleLoading || isAppleLoading;
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -110,13 +118,38 @@ const CreateAccount = () => {
   const handleSignUp = async () => {
     if (validate()) {
       try {
-        await signup({ email: email.trim().toLowerCase(), password }).unwrap();
+        await registerWithEmail(email.trim().toLowerCase(), password);
         toast.success('Registration successful. Welcome!');
+        navigate('/dashboard');
       } catch (err: any) {
-        const errorMsg = err?.data?.message || err?.message || 'An error occurred during registration.';
+        const errorMsg = err?.message || 'An error occurred during registration.';
         toast.error(errorMsg);
         setErrors((prev) => ({ ...prev, email: errorMsg }));
       }
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      const res = await loginWithGoogle();
+      if (res) {
+        toast.success('Signed up with Google successfully! Welcome!');
+        navigate('/dashboard');
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'Google sign-up failed.');
+    }
+  };
+
+  const handleAppleSignUp = async () => {
+    try {
+      const res = await loginWithApple();
+      if (res) {
+        toast.success('Signed up with Apple successfully! Welcome!');
+        navigate('/dashboard');
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'Apple sign-up failed.');
     }
   };
 
@@ -513,7 +546,7 @@ const CreateAccount = () => {
             {/* Submit */}
             <button
               onClick={handleSignUp}
-              disabled={isLoading}
+              disabled={isAnyLoading}
               className="animate-item btn-primary"
               style={{ marginTop: "4px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
             >
@@ -568,49 +601,103 @@ const CreateAccount = () => {
                 gap: "12px",
               }}
             >
-              {[
-                { src: "/Images/google-logo.png", label: "Google" },
-                { src: "/Images/apple-logo.png", label: "Apple" },
-              ].map(({ src, label }) => (
-                <button
-                  key={label}
-                  type="button"
-                  style={{
-                    height: "48px",
-                    borderRadius: "14px",
-                    background: "rgba(255,255,255,0.04)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "10px",
-                    fontFamily: "var(--font-roboto)",
-                    fontSize: "14px",
-                    color: "rgba(255,255,255,0.8)",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
+              <button
+                type="button"
+                onClick={handleGoogleSignUp}
+                disabled={isAnyLoading}
+                style={{
+                  height: "48px",
+                  borderRadius: "14px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  fontFamily: "var(--font-roboto)",
+                  fontSize: "14px",
+                  color: "rgba(255,255,255,0.8)",
+                  transition: "all 0.2s",
+                  cursor: isAnyLoading ? "not-allowed" : "pointer",
+                  opacity: isAnyLoading ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isAnyLoading) {
                     e.currentTarget.style.borderColor = "rgba(235,113,43,0.45)";
                     e.currentTarget.style.background = "rgba(235,113,43,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor =
-                      "rgba(255,255,255,0.08)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-                  }}
-                >
-                  <img
-                    src={src}
-                    alt={label}
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      objectFit: "contain",
-                    }}
-                  />
-                  {label}
-                </button>
-              ))}
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                }}
+              >
+                {isGoogleLoading ? (
+                  <Loader2 size={18} className="animate-spin text-[#EB712B]" />
+                ) : (
+                  <>
+                    <img
+                      src="/Images/google-logo.png"
+                      alt="Google"
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    Google
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleAppleSignUp}
+                disabled={isAnyLoading}
+                style={{
+                  height: "48px",
+                  borderRadius: "14px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  fontFamily: "var(--font-roboto)",
+                  fontSize: "14px",
+                  color: "rgba(255,255,255,0.8)",
+                  transition: "all 0.2s",
+                  cursor: isAnyLoading ? "not-allowed" : "pointer",
+                  opacity: isAnyLoading ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isAnyLoading) {
+                    e.currentTarget.style.borderColor = "rgba(235,113,43,0.45)";
+                    e.currentTarget.style.background = "rgba(235,113,43,0.06)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                }}
+              >
+                {isAppleLoading ? (
+                  <Loader2 size={18} className="animate-spin text-[#EB712B]" />
+                ) : (
+                  <>
+                    <img
+                      src="/Images/apple-logo.png"
+                      alt="Apple"
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        objectFit: "contain",
+                      }}
+                    />
+                    Apple
+                  </>
+                )}
+              </button>
             </div>
 
             {/* Login link */}
