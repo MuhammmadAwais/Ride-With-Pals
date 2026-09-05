@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { toast } from "sonner";
 import { useFirebaseLoginMutation, useLoginMutation } from "@/features/auth/api/authApiSlice";
 import {
   firebaseSignUp,

@@ -15,6 +15,7 @@ import { useAddNewsMutation, useUpdateNewsMutation, useGetNewsByIdQuery } from "
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
+import { resolveImageUrl } from "@/features/public-club/services/clubGeocoding";
 
 export const NewsAdded = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const NewsAdded = () => {
       setTitle(existingNews.title || '');
       setDescription(existingNews.description || '');
       if (existingNews.image) {
-        setPreviewUrl(existingNews.image);
+        setPreviewUrl(resolveImageUrl(existingNews.image));
       }
     }
   }, [existingNews]);

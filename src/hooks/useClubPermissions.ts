@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
@@ -16,17 +17,38 @@ export interface ClubPermissions {
 
 export const useClubPermissions = (clubId: number | string | undefined): ClubPermissions => {
   const currentUserId = useAppSelector((state) => state.auth.user?.id);
+  const currentUserRole = useAppSelector((state) => state.auth.user?.role);
+  const myClubs = useAppSelector((state) => state.club.myClubs);
+
+  const effectiveClubId = clubId ? Number(clubId) : 0;
   
-  const { data: members, isLoading, error } = useGetClubMembersListQuery(
-    { clubId: clubId ? Number(clubId) : 0 },
-    { skip: !clubId || !currentUserId }
+  const { data: membersData, isLoading, error } = useGetClubMembersListQuery(
+    { clubId: effectiveClubId },
+    { skip: !effectiveClubId || !currentUserId }
   );
 
-  const currentUserMember = members?.find(
-    (m: any) => String(m.userId) === String(currentUserId)
-  );
+  const memberList: any[] = useMemo(() => {
+    if (!membersData) return [];
+    if (Array.isArray(membersData)) return membersData;
+    return (membersData as any)?.rows || (membersData as any)?.data || (membersData as any)?.members || (membersData as any)?.response || [];
+  }, [membersData]);
 
-  if (!clubId || !currentUserId || !currentUserMember) {
+  // Check if current user is an owner/manager in myClubs
+  const isClubOwnedByMe = useMemo(() => {
+    if (!effectiveClubId) return false;
+    return myClubs.some(
+      (c: any) => Number(c.id || c.clubId) === effectiveClubId && (c.isOwner === true || c.owned === true || c.isManaged === true)
+    );
+  }, [effectiveClubId, myClubs]);
+
+  const currentUserMember = useMemo(() => {
+    if (!currentUserId || memberList.length === 0) return null;
+    return memberList.find(
+      (m: any) => String(m.userId || m.user_id || m.user?.id || m.id) === String(currentUserId)
+    );
+  }, [memberList, currentUserId]);
+
+  if (!effectiveClubId || !currentUserId) {
     return {
       canPublishRides: false,
       canPublishNews: false,
@@ -36,23 +58,24 @@ export const useClubPermissions = (clubId: number | string | undefined): ClubPer
       isOwner: false,
       isAdmin: false,
       role: null,
-      isLoading: isLoading,
+      isLoading,
       error: error || null,
     };
   }
 
-  const role = currentUserMember.role || 'User';
-  const normalizedRole = role.toLowerCase();
-  const isOwner = normalizedRole === 'owner';
+  const role = currentUserMember?.role || (isClubOwnedByMe ? 'Owner' : (currentUserRole === 'owner' ? 'Owner' : 'Member'));
+  const normalizedRole = (role || '').toLowerCase();
+  const isOwner = isClubOwnedByMe || normalizedRole === 'owner';
   const isAdmin = isOwner || normalizedRole === 'admin' || normalizedRole === 'organizer';
 
-  // Owners have full access to all actions
-  const permissions = currentUserMember.permissions || {};
-  const canPublishRides = isOwner || !!permissions.publishRides;
-  const canPublishNews = isOwner || !!permissions.publishNews;
-  const canPublishDiscount = isOwner || !!permissions.publishDiscount;
-  const canAcceptUsers = isOwner || !!permissions.acceptOrBanUsers;
-  const canManageMembershipFee = isOwner || !!permissions.manageMembershipFee;
+  const permissions = currentUserMember?.permissions || {};
+  const isFullAccess = Boolean(currentUserMember?.isFullAccess || permissions.fullAccess);
+
+  const canPublishRides = isOwner || isAdmin || isFullAccess || Boolean(permissions.publishRides || permissions.canPublishRides);
+  const canPublishNews = isOwner || isAdmin || isFullAccess || Boolean(permissions.publishNews || permissions.canPublishNews);
+  const canPublishDiscount = isOwner || isAdmin || isFullAccess || Boolean(permissions.publishDiscount || permissions.canPublishDiscount);
+  const canAcceptUsers = isOwner || isAdmin || isFullAccess || Boolean(permissions.acceptOrBanUsers || permissions.canAcceptUsers);
+  const canManageMembershipFee = isOwner || isAdmin || isFullAccess || Boolean(permissions.manageMembershipFee || permissions.canManageMembershipFee);
 
   return {
     canPublishRides,

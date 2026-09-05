@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare, Crown } from 'lucide-react';
+import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare, Crown, Globe, Lock, Bike, Trophy } from 'lucide-react';
 import { toast } from 'sonner';
 import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation, useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useGetMyMembershipInfoQuery } from '@/features/club/api/membershipApiSlice';
 import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { ClubMembershipModal } from '../components/ClubMembershipModal';
+import { resolveImageUrl } from '../services/clubGeocoding';
+
 
 // Import refactored tab components
 import Ride from './Ride';
@@ -60,7 +62,60 @@ const getMemberCount = (club: any) => {
   return 0;
 };
 
+export const extractMembersList = (data: any): any[] => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.response)) return data.response;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data?.rows)) return data.rows;
+  if (Array.isArray(data?.members)) return data.members;
+  if (Array.isArray(data?.clubMembers)) return data.clubMembers;
+  return [];
+};
+
+const getClubTypeName = (typeId?: any, rawName?: string) => {
+  if (rawName && typeof rawName === "string" && rawName.trim() !== "") {
+    const lower = rawName.toLowerCase();
+    if (lower.includes("run")) return "Running";
+    if (lower.includes("triathlon")) return "Triathlon";
+    if (lower.includes("cycl") || lower.includes("bike")) return "Cycling";
+  }
+  if (typeId === 2 || typeId === "2" || String(typeId).toLowerCase() === "running") return "Running";
+  if (
+    typeId === 3 ||
+    typeId === "3" ||
+    String(typeId).toLowerCase() === "triathlon" ||
+    String(typeId).toLowerCase() === "cycling & running"
+  )
+    return "Triathlon";
+  return "Cycling";
+};
+
+const renderSportBadge = (typeId?: any, rawName?: string) => {
+  const sport = getClubTypeName(typeId, rawName);
+  if (sport === "Running") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+        <Activity size={12} className="shrink-0 text-amber-500" /> RUNNING
+      </span>
+    );
+  }
+  if (sport === "Triathlon") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+        <Trophy size={12} className="shrink-0 text-purple-400" /> TRIATHLON
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/25 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+      <Bike size={12} className="shrink-0 text-[#EB712B]" /> CYCLING
+    </span>
+  );
+};
+
 export default function ClubDetails() {
+
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('Overview');
@@ -105,6 +160,22 @@ export default function ClubDetails() {
   
   const hasActiveMembership = myMembershipInfo?.status === 'active';
 
+  // Fallback to empty object if response is structured differently
+  const club: any = (clubData as any)?.response || (clubData as any)?.data || clubData || {};
+
+  const resolvedMembersList = useMemo(() => {
+    const list = extractMembersList(membersData);
+    if (list.length > 0) return list;
+    const fromClub = extractMembersList(club?.clubMembers || club?.members || club?.user_clubs || club?.participants);
+    if (fromClub.length > 0) return fromClub;
+    return [];
+  }, [membersData, club]);
+
+  const dynamicMemberCount = useMemo(() => {
+    if (resolvedMembersList.length > 0) return resolvedMembersList.length;
+    return getMemberCount(club);
+  }, [resolvedMembersList, club]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-main-bg">
@@ -129,16 +200,17 @@ export default function ClubDetails() {
     );
   }
 
-  // Fallback to empty object if response is structured differently
-  const club: any = (clubData as any)?.response || (clubData as any)?.data || clubData || {};
+  const coverImage =
+    resolveImageUrl(club.coverImage) ||
+    resolveImageUrl(club.bannerImage) ||
+    resolveImageUrl(club.logo) ||
+    '/Images/CycleImage2.png';
 
-  const coverImage = club.coverImage 
-    ? (club.coverImage.startsWith('http') ? club.coverImage : `https://api.ridewithpals.com/uploads/${club.coverImage}`) 
-    : '/Images/CycleImage2.png';
-
-  const logoImage = club.logo 
-    ? (club.logo.startsWith('http') ? club.logo : `https://api.ridewithpals.com/uploads/${club.logo}`)
-    : '/Images/CycleImage.png';
+  const logoImage =
+    resolveImageUrl(club.logo) ||
+    resolveImageUrl(club.avatar) ||
+    resolveImageUrl(club.coverImage) ||
+    '/Images/CycleImage2.png';
 
   const isOwner = club.userId === currentUser?.id;
 
@@ -236,13 +308,13 @@ export default function ClubDetails() {
       case 'Overview':
         return (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <Overviews clubId={clubId} club={club} />
+            <Overviews clubId={clubId} club={club} membersCount={dynamicMemberCount} />
           </div>
         );
       case 'Rides':
         return <Ride clubId={clubId} />;
       case 'News':
-        return <NewsFeed clubId={clubId} />;
+        return <NewsFeed clubId={clubId} club={club} />;
       case 'Leaderboard':
         return <Leaderboard clubId={clubId} />;
       case 'Marketplace':
@@ -262,83 +334,133 @@ export default function ClubDetails() {
     <div className="min-h-screen bg-main-bg text-text-main font-sans overflow-x-hidden select-none pb-20">
       
       {/* ── Dynamic Hero Header ── */}
-      <div className="relative h-64 md:h-80 lg:h-96 w-full">
+      <div className="relative h-60 sm:h-72 md:h-80 lg:h-[340px] w-full overflow-hidden bg-black select-none">
         <img 
           src={coverImage} 
-          alt="Club Cover" 
+          alt={club.clubName || "Club Cover"} 
           className="w-full h-full object-cover"
           onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage2.png'; }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-main-bg/50 to-transparent" />
+        {/* Layered Gradient Scrim */}
+        <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-main-bg/60 to-black/35" />
         
-        {/* Back Button */}
-        <button 
-          onClick={() => navigate(-1)}
-          className="absolute top-6 left-6 w-10 h-10 bg-surface/80 backdrop-blur-md border border-border rounded-xl flex items-center justify-center hover:bg-hover transition-colors shadow-lg z-10"
-        >
-          <ChevronLeft size={20} className="text-text-main" />
-        </button>
+        {/* Top Floating Bar: Back Button + Sport Tag */}
+        <div className="absolute top-6 left-4 sm:left-6 right-4 sm:right-6 flex justify-between items-center z-20">
+          <button 
+            onClick={() => navigate('/view/userside/clubs')}
+            className="px-3.5 py-2 bg-black/60 hover:bg-black/85 backdrop-blur-xl border border-white/15 rounded-2xl flex items-center gap-2 text-white text-xs font-bold transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer group"
+            title="Back to clubs"
+          >
+            <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
+            <span className="hidden sm:inline">Back to Clubs</span>
+          </button>
+
+          {/* Top-Right Sport Pill on Banner */}
+          {renderSportBadge(club.clubTypeId, club.sport || club.sportType || club.category)}
+        </div>
       </div>
 
       {/* ── Club Identity Section ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-20 z-10">
-        <div className="flex flex-col md:flex-row gap-6 items-start md:items-end mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 sm:-mt-20 md:-mt-24 z-10">
+        <div className="flex flex-col xl:flex-row gap-6 items-start xl:items-end justify-between mb-8">
           
-          <div className="relative shrink-0">
-            <img 
-              src={logoImage} 
-              alt="Club Logo" 
-              className="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover border-4 border-main-bg shadow-2xl bg-surface"
-              onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage.png'; }}
-            />
-            {club.isVerified && (
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-full border-2 border-main-bg flex items-center justify-center shadow-lg">
-                <ShieldCheck size={16} className="text-white" />
+          {/* Left Block: Avatar + Name & Info */}
+          <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-start sm:items-end min-w-0 flex-1 w-full">
+            
+            {/* Club Logo Avatar */}
+            <div className="relative shrink-0 group">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-3xl overflow-hidden border-4 border-main-bg bg-surface flex items-center justify-center">
+                <img 
+                  src={logoImage} 
+                  alt={club.clubName || "Club Logo"} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage.png'; }}
+                />
               </div>
-            )}
-          </div>
+              {club.isVerified && (
+                <div 
+                  className="absolute -bottom-1 -right-1 sm:bottom-0 sm:right-0 w-8 h-8 bg-emerald-500 rounded-2xl border-2 border-main-bg flex items-center justify-center"
+                  title="Verified Club"
+                >
+                  <ShieldCheck size={16} className="text-white" />
+                </div>
+              )}
+            </div>
 
-          <div className="flex-1 space-y-2">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-text-main">
-              {club.clubName || "Unnamed Club"}
-            </h1>
-            <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-text-muted uppercase tracking-wider">
-              <span className="flex items-center gap-1"><MapPin size={14} className="text-[#EB712B]"/> {club.location || "Global"}</span>
-              <span>•</span>
-              <span className="flex items-center gap-1"><Users size={14} className="text-[#EB712B]"/> {membersData?.length || getMemberCount(club)} Members</span>
-              <span>•</span>
-              <span className="text-emerald-400">{club.clubPrivacyId === 1 ? "Public Club" : "Private Club"}</span>
+            {/* Middle Info Column: Title & Metadata Chips */}
+            <div className="space-y-2.5 min-w-0 flex-1 w-full">
+              {/* Title in ONE single line */}
+              <h1 
+                className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-black tracking-tight text-text-main uppercase leading-tight whitespace-nowrap truncate"
+                title={club.clubName || "Unnamed Club"}
+              >
+                {club.clubName || "Unnamed Club"}
+              </h1>
+
+              {/* Badges / Chips Row */}
+              <div className="flex flex-wrap items-center gap-2 pt-0.5 text-xs font-bold">
+                {/* Truncated Address Chip with hover tooltip */}
+                <div 
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface/90 border border-border rounded-xl text-xs font-semibold text-text-muted hover:text-text-main transition-colors max-w-full min-w-0"
+                  title={club.location || "Global"}
+                >
+                  <MapPin size={13} className="text-[#EB712B] shrink-0" />
+                  <span className="truncate max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px]">
+                    {club.location || "Global"}
+                  </span>
+                </div>
+
+                {/* Members Chip */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface/90 border border-border rounded-xl text-xs font-bold text-text-muted whitespace-nowrap">
+                  <Users size={13} className="text-[#EB712B] shrink-0" />
+                  <span>{dynamicMemberCount} {dynamicMemberCount === 1 ? 'Member' : 'Members'}</span>
+                </div>
+
+                {/* Privacy Chip */}
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border whitespace-nowrap ${
+                  club.clubPrivacyId === 1 
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                    : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                }`}>
+                  {club.clubPrivacyId === 1 ? <Globe size={12} /> : <Lock size={12} />}
+                  <span>{club.clubPrivacyId === 1 ? "Public Club" : "Private Club"}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="shrink-0 w-full md:w-auto flex gap-3">
+          {/* Right Block: Action Buttons (Responsive flex-wrap) */}
+          <div className="shrink-0 flex flex-wrap items-center gap-2.5 sm:gap-3 w-full xl:w-auto pt-2 xl:pt-0">
+            {/* Membership Button */}
             <button
               type="button"
               onClick={() => setShowMembershipModal(true)}
               title="View & Subscribe to Club Membership Plans"
-              className={`flex items-center justify-center gap-2 px-5 py-3.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer ${
+              className={`inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer border ${
                 hasActiveMembership
-                  ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400'
-                  : 'bg-[#EB712B]/10 hover:bg-[#EB712B]/20 border border-[#EB712B]/30 text-[#EB712B]'
+                  ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
+                  : 'bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-400'
               }`}
             >
-              <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-[#EB712B]"} />
+              <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-amber-400"} />
               <span>{hasActiveMembership ? ((myMembershipInfo as any)?.feeName || myMembershipInfo?.plan?.name || 'Active Member') : 'Membership'}</span>
             </button>
+
+            {/* Request / Join / Leave Club Buttons */}
             {!isMember && !showCodeScreen && !showDepositScreen && (
               club.clubPrivacyId === 2 ? (
                 <>
                   <button 
                     onClick={handleRequestMembership}
                     disabled={isJoining}
-                    className="flex-1 md:flex-none px-8 py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(235,113,43,0.3)] active:scale-95 disabled:opacity-50 cursor-pointer"
+                    className="inline-flex items-center justify-center px-6 sm:px-7 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                   >
                     {isJoining ? "Requesting..." : "Request Membership"}
                   </button>
                   <button 
                     onClick={handleJoinClubClick}
                     disabled={isJoining}
-                    className="flex-1 md:flex-none px-6 py-3.5 bg-surface border border-border hover:bg-hover text-text-main text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer"
+                    className="inline-flex items-center justify-center px-5 py-3 bg-surface border border-border hover:bg-hover text-text-main text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer hover:border-white/20"
                   >
                     Join with Code
                   </button>
@@ -347,33 +469,38 @@ export default function ClubDetails() {
                 <button 
                   onClick={handleJoinClubClick}
                   disabled={isJoining}
-                  className="flex-1 md:flex-none px-8 py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(235,113,43,0.3)] active:scale-95 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center justify-center px-7 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                 >
                   {isJoining ? "Joining..." : "Join Club"}
                 </button>
               )
             )}
+
+            {/* Joined Status / Leave Club */}
             {isMember && (
               <button 
                 onClick={handleLeaveClub}
                 disabled={isLeaving}
-                className="flex-1 md:flex-none px-8 py-3.5 bg-hover hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors text-xs font-black uppercase tracking-widest rounded-xl flex items-center justify-center cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center justify-center px-6 py-3 bg-hover hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors text-xs font-black uppercase tracking-wider rounded-2xl cursor-pointer disabled:opacity-50"
                 title="Click to leave club"
               >
                 {isLeaving ? "Leaving..." : "✓ Joined (Leave)"}
               </button>
             )}
+
+            {/* Message Club Owner */}
             {!isOwner && (
               <button 
                 onClick={handleMessageOwner}
-                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-surface border border-border hover:bg-hover text-text-main text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-surface border border-border hover:bg-hover text-text-main hover:text-[#EB712B] hover:border-[#EB712B]/30 text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer"
               >
-                <MessageSquare size={16} />
-                Message
+                <MessageSquare size={15} />
+                <span>Message</span>
               </button>
             )}
           </div>
         </div>
+
 
         {/* ── Navigation Tabs ── */}
         <div className="border-b border-border/50 mb-8 overflow-x-auto custom-scrollbar">

@@ -2,12 +2,15 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users, ShieldCheck, Bike, Activity, Trophy, Filter, X } from "lucide-react";
+import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users, ShieldCheck, Bike, Activity, Trophy, Filter, X, Map as MapIcon } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
 import { fetchMyClubs, fetchExploreClubs, fetchJoinedClubs } from "@/features/club/slices/clubSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
+import { ClubMapView } from "../components/ClubMapView";
+import { useGetClubMembersListQuery } from "@/features/club/api/clubApiSlice";
+import { extractMembersList } from "./ClubDetails";
 
 const getClubTypeName = (typeId?: number | string) => {
   if (typeId === 2 || typeId === "2" || String(typeId).toLowerCase() === "running") return "Running";
@@ -57,38 +60,75 @@ const getClubImage = (logo?: string | null, coverImage?: string | null): string 
 
 const getMemberCount = (club: any) => {
   if (!club) return 0;
+
+  // Prioritize live approved members array if present
+  const list =
+    club.clubMembers ||
+    club.ClubMembers ||
+    club.club_members ||
+    club.members ||
+    club.Members ||
+    club.user_clubs ||
+    club.userClubs ||
+    club.UserClubs ||
+    club.participants ||
+    club.Participants;
+
+  if (Array.isArray(list) && list.length > 0) {
+    return list.length;
+  }
+
   const val =
-    club.participantCount ??
-    club.participant_count ??
-    club.memberCount ??
-    club.member_count ??
-    club.totalMembers ??
-    club.total_members ??
+    club._count?.user_clubs ??
+    club._count?.members ??
+    club._count?.users ??
     club.membersCount ??
     club.members_count ??
+    club.memberCount ??
+    club.member_count ??
+    club.participantCount ??
+    club.participant_count ??
+    club.totalMembers ??
+    club.total_members ??
     club.userCount ??
     club.user_count ??
     club.count ??
-    club.total ??
-    club.clubMembers?.length ??
-    club.ClubMembers?.length ??
-    club.club_members?.length ??
-    club.user_clubs?.length ??
-    club.userClubs?.length ??
-    club.UserClubs?.length ??
-    club.members?.length ??
-    club.Members?.length ??
-    club.users?.length ??
-    club.Users?.length ??
-    club.participants?.length ??
-    club.Participants?.length ??
-    club._count?.user_clubs ??
-    club._count?.members ??
-    club._count?.users;
+    club.total;
 
   const count = Number(val);
   if (!isNaN(count) && count > 0) return count;
   return 0;
+};
+
+const ClubMemberCountText: React.FC<{ club: any; className?: string; as?: "span" | "p" }> = ({ 
+  club, 
+  className,
+  as = "span" 
+}) => {
+  const clubId = club?.id || club?.clubId;
+  const { data: membersData } = useGetClubMembersListQuery(
+    { clubId: Number(clubId) },
+    { skip: !clubId }
+  );
+
+  const count = React.useMemo(() => {
+    if (membersData !== undefined && membersData !== null) {
+      const list = extractMembersList(membersData);
+      return list.length;
+    }
+    const fromClub = extractMembersList(
+      club?.clubMembers || club?.members || club?.user_clubs || club?.participants
+    );
+    if (fromClub.length > 0) return fromClub.length;
+    return getMemberCount(club);
+  }, [membersData, club]);
+
+  const text = `${count} Pals joined`;
+
+  if (as === "p") {
+    return <p className={className}>{text}</p>;
+  }
+  return <span className={className}>{text}</span>;
 };
 
 const isClubOwned = (club: any, user: any, myClubs: any[]) => {
@@ -107,7 +147,9 @@ export default function UserClub() {
   const { setActiveClub } = useActiveClub();
   
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [viewMode, setViewMode] = useState<"list" | "grid" | "map">("grid");
+  const [myClubsViewMode, setMyClubsViewMode] = useState<"list" | "grid" | "map">("grid");
+  const [mapFilterType, setMapFilterType] = useState<"all" | "my">("all");
 
   // Mobile-matched Filter State
   const [clubTypeFilter, setClubTypeFilter] = useState<"ALL" | "PUBLIC" | "PRIVATE">("ALL");
@@ -172,6 +214,39 @@ export default function UserClub() {
   const handleSelectDiscoverClub = (comm: any) => {
     navigate(`/view/userside/club/${comm.id}`);
   };
+
+  // --- MAP VIEW: TAKES PAGE AREA WITH OVERFLOW HIDDEN ---
+  if (viewMode === "map") {
+    const clubsForMap =
+      mapFilterType === "my"
+        ? filteredMyClubs
+        : Array.from(
+            new Map(
+              [...filteredMyClubs, ...filteredDiscoverClubs].map((c) => [c.id, c])
+            ).values()
+          );
+
+    return (
+      <div className="w-full h-[calc(100vh-80px)] overflow-hidden relative">
+        <ClubMapView
+          clubs={clubsForMap}
+          user={user}
+          currentFilterType={mapFilterType}
+          onFilterTypeChange={(type) => setMapFilterType(type)}
+          onViewModeChange={(mode) => {
+            setViewMode(mode);
+            setMyClubsViewMode(mode);
+          }}
+          onSelectClub={(club) => {
+            if (club.isManaged) {
+              setActiveClub(club);
+            }
+            navigate(`/view/userside/club/${club.id}`);
+          }}
+        />
+      </div>
+    );
+  }
 
   // --- DEFAULT VIEW: HUB & SEARCH ---
   return (
@@ -387,21 +462,70 @@ export default function UserClub() {
           )}
 
         {/* --- MY CLUBS SECTION --- */}
-        <section>
-          <div className="mb-6">
-            <h2 className="text-xl font-black tracking-wide uppercase">
-              My Clubs
-            </h2>
-            <p className="text-text-muted text-[10px] font-bold tracking-widest uppercase mt-0.5">
-              Communities you manage
-            </p>
+        <section className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-xl font-black tracking-wide uppercase">
+                My Clubs
+              </h2>
+              <p className="text-text-muted text-[10px] font-bold tracking-widest uppercase mt-0.5">
+                Communities you manage
+              </p>
+            </div>
+
+            {/* List / Grid / Map Toggle View for My Clubs */}
+            <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 w-fit">
+              <button
+                type="button"
+                onClick={() => setMyClubsViewMode("grid")}
+                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                  myClubsViewMode === "grid"
+                    ? "bg-white/10 text-text-main shadow-inner"
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
+                }`}
+                aria-label="Grid View"
+                title="Grid View"
+              >
+                <LayoutGrid size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setMyClubsViewMode("list")}
+                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                  myClubsViewMode === "list"
+                    ? "bg-white/10 text-text-main shadow-inner"
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
+                }`}
+                aria-label="List View"
+                title="List View"
+              >
+                <List size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMyClubsViewMode("map");
+                  setViewMode("map");
+                  setMapFilterType("my");
+                }}
+                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                  myClubsViewMode === "map"
+                    ? "bg-white/10 text-text-main shadow-inner"
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
+                }`}
+                aria-label="Map View"
+                title="Map View"
+              >
+                <MapIcon size={18} />
+              </button>
+            </div>
           </div>
 
           {filteredMyClubs.length === 0 ? (
             <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
               No matching clubs found in your inventory.
             </div>
-          ) : (
+          ) : myClubsViewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredMyClubs.map((club) => (
                 <div
@@ -459,7 +583,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{getMemberCount(club)} Pals joined</span>
+                        <ClubMemberCountText club={club} />
                       </div>
                       <span 
                         onClick={() => handleSelectMyClub(club)} 
@@ -469,6 +593,60 @@ export default function UserClub() {
                       </span>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {filteredMyClubs.map((club) => (
+                <div
+                  key={club.id}
+                  className="bg-surface border border-border rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
+                >
+                  <div className="flex items-center gap-6 w-full min-w-0">
+                    <img
+                      src={getClubImage(club.logo, club.coverImage)}
+                      alt={club.clubName}
+                      className="w-20 h-20 rounded-2xl object-cover shrink-0"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                      }}
+                    />
+                    <div className="space-y-1.5 w-full min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {renderSportBadge(club.clubTypeId)}
+                        {isClubOwned(club, user, myClubs) && (
+                          <span
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
+                            title="You own this club"
+                          >
+                            <ShieldCheck size={10} className="shrink-0" /> OWNED
+                          </span>
+                        )}
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider border whitespace-nowrap shrink-0 ${
+                          club.clubPrivacyId === 1 
+                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
+                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10"
+                        }`}>
+                          {club.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
+                        {club.clubName}
+                      </h3>
+                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted shrink-0" />
+                        <span className="truncate">{club.location || "N/A"}</span>
+                      </div>
+                      <ClubMemberCountText club={club} as="p" className="text-[10px] text-text-muted font-bold tracking-wider uppercase" />
+                    </div>
+                  </div>
+                  <span 
+                    onClick={() => handleSelectMyClub(club)} 
+                    className="text-[#EB712B] font-black text-xs tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer shrink-0"
+                  >
+                    {club.isManaged ? "Manage Hub →" : "View Hub →"}
+                  </span>
                 </div>
               ))}
             </div>
@@ -487,9 +665,10 @@ export default function UserClub() {
               </p>
             </div>
 
-            {/* List / Grid Toggle View */}
+            {/* List / Grid / Map Toggle View for Discover Clubs */}
             <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 w-fit">
               <button
+                type="button"
                 onClick={() => setViewMode("grid")}
                 className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
                   viewMode === "grid"
@@ -497,10 +676,12 @@ export default function UserClub() {
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="Grid View"
+                title="Grid View"
               >
                 <LayoutGrid size={18} />
               </button>
               <button
+                type="button"
                 onClick={() => setViewMode("list")}
                 className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
                   viewMode === "list"
@@ -508,8 +689,25 @@ export default function UserClub() {
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="List View"
+                title="List View"
               >
                 <List size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setViewMode("map");
+                  setMapFilterType("all");
+                }}
+                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                  (viewMode as any) === "map"
+                    ? "bg-white/10 text-text-main shadow-inner"
+                    : "text-text-muted hover:text-text-main hover:bg-hover"
+                }`}
+                aria-label="Map View"
+                title="Map View"
+              >
+                <MapIcon size={18} />
               </button>
             </div>
           </div>
@@ -576,7 +774,7 @@ export default function UserClub() {
                     <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
                         <Users size={13} className="text-text-muted" />
-                        <span>{getMemberCount(comm)} Pals joined</span>
+                        <ClubMemberCountText club={comm} />
                       </div>
                       <span 
                         onClick={() => handleSelectDiscoverClub(comm)} 
@@ -631,9 +829,7 @@ export default function UserClub() {
                         <MapPin size={12} className="text-text-muted shrink-0" />
                         <span className="truncate">{comm.location || "N/A"}</span>
                       </div>
-                      <p className="text-[10px] text-text-muted font-bold tracking-wider uppercase">
-                        {getMemberCount(comm)} Pals joined
-                      </p>
+                      <ClubMemberCountText club={comm} as="p" className="text-[10px] text-text-muted font-bold tracking-wider uppercase" />
                     </div>
                   </div>
                   <span 
