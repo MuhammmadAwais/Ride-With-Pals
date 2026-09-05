@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import {
-  Wallet as WalletIcon,
   ArrowUpRight,
   ArrowDownLeft,
   DollarSign,
@@ -12,7 +11,10 @@ import {
   CreditCard,
   RefreshCw,
   TrendingUp,
-  Filter
+  Filter,
+  Layers,
+  Receipt,
+  X,
 } from 'lucide-react';
 import { useGetUserWalletQuery, type WalletTransaction } from '@/features/wallet/api/walletApiSlice';
 import DataTable, { type Column } from '@/components/ui/DataTable';
@@ -120,15 +122,15 @@ const UserWallet: React.FC = () => {
       sortable: true,
       render: (t) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-surface border border-border flex items-center justify-center text-[#EB712B]">
-            <Building2 size={18} />
+          <div className="w-9 h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted shrink-0">
+            <Building2 size={16} />
           </div>
-          <div>
-            <div className="font-bold text-sm text-text-main">{t.title || 'Untitled Transaction'}</div>
+          <div className="min-w-0">
+            <div className="font-bold text-sm text-text-main truncate">{t.title || 'Untitled Transaction'}</div>
             <div className="text-[11px] text-text-muted flex items-center gap-1.5 mt-0.5">
-              <span>{t.clubName || 'Club Payment'}</span>
+              <span className="truncate max-w-[140px]">{t.clubName || 'Club Payment'}</span>
               <span>•</span>
-              <span className="font-mono text-[10px]">#{t.id}</span>
+              <span className="font-mono text-[10px] text-text-muted/70">#{t.id}</span>
             </div>
           </div>
         </div>
@@ -139,7 +141,7 @@ const UserWallet: React.FC = () => {
       label: 'Category',
       sortable: true,
       render: (t) => (
-        <span className="px-3 py-1 rounded-full text-xs font-bold bg-hover border border-border text-text-main">
+        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold bg-hover border border-border/70 text-text-main">
           {t.category || 'General'}
         </span>
       ),
@@ -152,13 +154,13 @@ const UserWallet: React.FC = () => {
         const isCredit = (t.type || '').toLowerCase() === 'credit';
         return (
           <span
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
               isCredit
-                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                : 'bg-hover text-text-muted border-border/70'
             }`}
           >
-            {isCredit ? <ArrowDownLeft size={13} /> : <ArrowUpRight size={13} />}
+            {isCredit ? <ArrowDownLeft size={12} /> : <ArrowUpRight size={12} />}
             {(t.type || 'Debit').toUpperCase()}
           </span>
         );
@@ -171,7 +173,7 @@ const UserWallet: React.FC = () => {
       render: (t) => {
         const isCredit = (t.type || '').toLowerCase() === 'credit';
         return (
-          <span className={`text-sm font-extrabold ${isCredit ? 'text-emerald-500' : 'text-text-main'}`}>
+          <span className={`text-sm font-black tracking-tight ${isCredit ? 'text-emerald-400' : 'text-text-main'}`}>
             {isCredit ? '+' : '-'}{currencySymbol}{Number(t.amount || 0).toFixed(2)}
           </span>
         );
@@ -185,21 +187,21 @@ const UserWallet: React.FC = () => {
         const status = (t.status || '').toLowerCase();
         if (status === 'completed') {
           return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <CheckCircle2 size={13} /> Completed
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 size={12} /> Completed
             </span>
           );
         }
         if (status === 'pending') {
           return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
-              <Clock size={13} /> Pending
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <Clock size={12} /> Pending
             </span>
           );
         }
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-500/10 text-red-500 border border-red-500/20">
-            <XCircle size={13} /> {t.status || 'Unknown'}
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20">
+            <XCircle size={12} /> {t.status || 'Unknown'}
           </span>
         );
       },
@@ -209,7 +211,7 @@ const UserWallet: React.FC = () => {
       label: 'Date',
       sortable: true,
       render: (t) => (
-        <span className="text-xs font-medium text-text-muted">
+        <span className="text-xs font-semibold text-text-muted">
           {t.date ? new Date(t.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
         </span>
       ),
@@ -218,179 +220,218 @@ const UserWallet: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10 space-y-8">
-      {/* HEADER SECTION */}
+      
+      {/* ── HEADER SECTION ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#EB712B] mb-1">
-            <WalletIcon size={16} /> User Wallet & Finance
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-text-main">
+          <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-text-main">
             My Financial Overview
           </h1>
-          <p className="text-sm text-text-muted mt-1">
-            Track your memberships, shop purchases, activity fees, and spending history across clubs.
+          <p className="text-xs text-text-muted font-medium mt-1">
+            Track your memberships, gear acquisitions, activity fees, and complete multi-club transaction history.
           </p>
         </div>
 
         <button
           onClick={() => refetch()}
-          className="px-4 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-colors cursor-pointer"
+          className="px-4 py-2.5 rounded-xl bg-surface/50 hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-all cursor-pointer shadow-sm hover:border-text-muted/40"
         >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          Refresh Data
+          <RefreshCw size={13} className={isLoading ? 'animate-spin text-[#EB712B]' : 'text-text-muted'} />
+          <span>Refresh Data</span>
         </button>
       </div>
 
-      {/* METRICS STATS CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Total Spent</span>
-            <div className="w-10 h-10 rounded-2xl bg-[#EB712B]/10 text-[#EB712B] flex items-center justify-center">
-              <DollarSign size={20} />
+      {/* ── 1. ARCHITECTURAL FINANCIAL LEDGER STRIP (Blended Divided Telemetry Bar) ── */}
+      <section className="-mx-6 md:-mx-10 px-6 md:px-10 border-y border-border bg-surface/25 backdrop-blur-sm">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x-0 sm:divide-x divide-border">
+          
+          {/* Spec 01: Total Spent */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                Total Spent
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-text-main block truncate">
+                {currencySymbol}{Number(walletData.totalSpent || 0).toFixed(2)}
+              </span>
+              <span className="text-[10px] font-bold text-emerald-400/90 flex items-center gap-1 truncate">
+                <TrendingUp size={11} className="shrink-0" /> Net Expenditures
+              </span>
+            </div>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-text-main group-hover:border-text-muted/40 transition-all shrink-0 shadow-sm">
+              <DollarSign size={18} />
             </div>
           </div>
-          <div>
-            <div className="text-3xl font-extrabold text-text-main">
-              {currencySymbol}{Number(walletData.totalSpent || 0).toFixed(2)}
+
+          {/* Spec 02: Total Transactions */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                Total Transactions
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-text-main block truncate">
+                {transactions.length}
+              </span>
+              <span className="text-[10px] font-semibold text-text-muted block truncate">
+                Recorded Ledger Events
+              </span>
             </div>
-            <div className="text-xs text-emerald-500 font-bold mt-1 flex items-center gap-1">
-              <TrendingUp size={14} /> Total expenditures across all clubs
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-text-main group-hover:border-text-muted/40 transition-all shrink-0 shadow-sm">
+              <CreditCard size={18} />
             </div>
           </div>
+
+          {/* Spec 03: Completed */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                Completed
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-400 block truncate">
+                {completedTx.length}
+              </span>
+              <span className="text-[10px] font-semibold text-text-muted block truncate">
+                {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}% Settlement Rate
+              </span>
+            </div>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-all shrink-0 shadow-sm">
+              <CheckCircle2 size={18} />
+            </div>
+          </div>
+
+          {/* Spec 04: Pending */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                Pending
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-amber-400 block truncate">
+                {pendingTx.length}
+              </span>
+              <span className="text-[10px] font-semibold text-text-muted block truncate">
+                Awaiting Clearance
+              </span>
+            </div>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-amber-400 group-hover:border-amber-500/30 transition-all shrink-0 shadow-sm">
+              <Clock size={18} />
+            </div>
+          </div>
+
         </div>
+      </section>
 
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Total Transactions</span>
-            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <CreditCard size={20} />
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl font-extrabold text-text-main">{transactions.length}</div>
-            <div className="text-xs text-text-muted mt-1">Recorded ledger activities</div>
-          </div>
-        </div>
-
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Completed</span>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <CheckCircle2 size={20} />
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl font-extrabold text-emerald-500">{completedTx.length}</div>
-            <div className="text-xs text-text-muted mt-1">
-              {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}% success rate
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Pending</span>
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <Clock size={20} />
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl font-extrabold text-amber-500">{pendingTx.length}</div>
-            <div className="text-xs text-text-muted mt-1">Awaiting clearing or confirmation</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ANALYTICS / GRAPHS & BREAKDOWNS SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* SPENDING BY CATEGORY */}
-        <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-text-main">Category Breakdown</h3>
-              <p className="text-xs text-text-muted">Where your wallet spending goes</p>
-            </div>
-            <span className="text-xs font-bold text-[#EB712B] bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20">
-              {categoryBreakdown.length} Categories
-            </span>
-          </div>
-
-          {categoryBreakdown.length === 0 ? (
-            <div className="py-12 text-center text-sm text-text-muted">
-              No category spending recorded yet.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {categoryBreakdown.map((cat, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-text-main">{cat.name}</span>
-                    <span className="text-text-muted">
-                      {currencySymbol}{cat.amount.toFixed(2)} ({cat.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 bg-hover rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-[#EB712B] to-amber-500 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.max(cat.percentage, 4)}%` }}
-                    />
-                  </div>
+      {/* ── 2. DUAL TELEMETRY ANALYTICS (Streamlined, No Clunky Isolated Cards) ── */}
+      <section className="w-full border border-border/80 bg-surface/30 rounded-2xl overflow-hidden backdrop-blur-sm shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border/80">
+          
+          {/* SPENDING BY CATEGORY */}
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-text-main">
+                    Category Breakdown
+                  </h3>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#EB712B] bg-[#EB712B]/10 px-2.5 py-0.5 rounded-full border border-[#EB712B]/20">
+                    {categoryBreakdown.length} Categories
+                  </span>
                 </div>
-              ))}
+                <p className="text-xs text-text-muted mt-0.5">Where your wallet expenditures are allocated</p>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* SPENDING BY CLUB */}
-        <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-text-main">Club Spending Distribution</h3>
-              <p className="text-xs text-text-muted">Top clubs you interact and spend with</p>
-            </div>
-            <span className="text-xs font-bold text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
-              {clubSpending.length} Clubs
-            </span>
+            {categoryBreakdown.length === 0 ? (
+              <div className="py-10 flex flex-col items-center justify-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted">
+                  <Layers size={18} />
+                </div>
+                <p className="text-xs font-semibold text-text-muted">No category spending recorded yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {categoryBreakdown.map((cat, idx) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-text-main">{cat.name}</span>
+                      <span className="text-text-muted font-mono">
+                        {currencySymbol}{cat.amount.toFixed(2)} ({cat.percentage}%)
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-hover rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#EB712B] rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(cat.percentage, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {clubSpending.length === 0 ? (
-            <div className="py-12 text-center text-sm text-text-muted">
-              No club spending recorded yet.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {clubSpending.map((club, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-text-main truncate max-w-[200px]">{club.name}</span>
-                    <span className="text-text-muted">
-                      {currencySymbol}{club.amount.toFixed(2)} ({club.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 bg-hover rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.max(club.percentage, 4)}%` }}
-                    />
-                  </div>
+          {/* SPENDING BY CLUB */}
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-text-main">
+                    Club Spending Distribution
+                  </h3>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-text-muted bg-hover px-2.5 py-0.5 rounded-full border border-border/80">
+                    {clubSpending.length} Clubs
+                  </span>
                 </div>
-              ))}
+                <p className="text-xs text-text-muted mt-0.5">Communities you interact and transact with</p>
+              </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* TRANSACTIONS TABLE SECTION */}
-      <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
+            {clubSpending.length === 0 ? (
+              <div className="py-10 flex flex-col items-center justify-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted">
+                  <Building2 size={18} />
+                </div>
+                <p className="text-xs font-semibold text-text-muted">No club spending recorded yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {clubSpending.map((club, idx) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-text-main truncate max-w-[200px]">{club.name}</span>
+                      <span className="text-text-muted font-mono">
+                        {currencySymbol}{club.amount.toFixed(2)} ({club.percentage}%)
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-hover rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(club.percentage, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── 3. TRANSACTION LEDGER (Modern Unified Container) ── */}
+      <section className="w-full border border-border/80 bg-surface/30 rounded-2xl p-5 sm:p-7 space-y-6 backdrop-blur-sm shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-bold text-text-main">Transaction Ledger</h3>
-            <p className="text-xs text-text-muted">Complete historical list of wallet transactions</p>
+            <div className="flex items-center gap-2">
+              <Receipt size={17} className="text-[#EB712B]" />
+              <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-text-main">
+                Transaction Ledger
+              </h3>
+            </div>
+            <p className="text-xs text-text-muted mt-0.5">Complete historical record of all verified activities</p>
           </div>
 
           {/* FILTER AND SEARCH CONTROLS */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Search Input */}
             <div className="relative">
               <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
@@ -399,8 +440,17 @@ const UserWallet: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search transactions..."
-                className="pl-9 pr-4 py-2 rounded-xl bg-main-bg border border-border text-xs font-medium text-text-main focus:outline-none focus:border-[#EB712B] transition-colors w-48 sm:w-64"
+                className="pl-9 pr-7 py-2 rounded-xl bg-main-bg border border-border text-xs font-medium text-text-main focus:outline-none focus:border-[#EB712B]/60 transition-colors w-44 sm:w-60"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer p-0.5 border-0 bg-transparent"
+                  title="Clear search"
+                >
+                  <X size={12} />
+                </button>
+              )}
             </div>
 
             {/* Status Filter Tabs */}
@@ -409,10 +459,10 @@ const UserWallet: React.FC = () => {
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 outline-none ${
                     statusFilter === status
                       ? 'bg-[#EB712B] text-white shadow-sm'
-                      : 'text-text-muted hover:text-text-main'
+                      : 'text-text-muted hover:text-text-main bg-transparent'
                   }`}
                 >
                   {status}
@@ -422,12 +472,12 @@ const UserWallet: React.FC = () => {
 
             {/* Category Filter Dropdown */}
             {categories.length > 0 && (
-              <div className="flex items-center gap-1.5 bg-main-bg px-3 py-2 rounded-xl border border-border">
-                <Filter size={13} className="text-text-muted" />
+              <div className="flex items-center gap-1.5 bg-main-bg px-3 py-1.5 rounded-xl border border-border">
+                <Filter size={12} className="text-text-muted" />
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-transparent text-xs font-bold text-text-main focus:outline-none cursor-pointer"
+                  className="bg-transparent text-xs font-bold text-text-main focus:outline-none cursor-pointer border-0"
                 >
                   <option value="All">All Categories</option>
                   {categories.map(cat => (
@@ -443,7 +493,7 @@ const UserWallet: React.FC = () => {
         {isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center gap-3">
             <RefreshCw size={24} className="animate-spin text-[#EB712B]" />
-            <p className="text-xs font-bold text-text-muted">Loading wallet ledger...</p>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Loading wallet ledger...</p>
           </div>
         ) : (
           <DataTable
@@ -452,7 +502,8 @@ const UserWallet: React.FC = () => {
             emptyMessage="No wallet transactions found matching your filters."
           />
         )}
-      </div>
+      </section>
+
     </div>
   );
 };
