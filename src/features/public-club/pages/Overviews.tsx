@@ -310,7 +310,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
               <Activity size={18} />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
-              {club.restrictUnpaidMembers ? "Member Dues" : "Free Access"}
+              {club.hasMembershipFee || club.restrictUnpaidMembers ? "Member Dues" : "Free Access"}
             </span>
           </div>
 

@@ -431,20 +431,22 @@ export default function ClubDetails() {
 
           {/* Right Block: Action Buttons (Responsive flex-wrap) */}
           <div className="shrink-0 flex flex-wrap items-center gap-2.5 sm:gap-3 w-full xl:w-auto pt-2 xl:pt-0">
-            {/* Membership Button */}
-            <button
-              type="button"
-              onClick={() => setShowMembershipModal(true)}
-              title="View & Subscribe to Club Membership Plans"
-              className={`inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer border ${
-                hasActiveMembership
-                  ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
-                  : 'bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-400'
-              }`}
-            >
-              <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-amber-400"} />
-              <span>{hasActiveMembership ? ((myMembershipInfo as any)?.feeName || myMembershipInfo?.plan?.name || 'Active Member') : 'Membership'}</span>
-            </button>
+            {/* Membership Button (Only shown when club hasMembershipFee is true or active membership exists) */}
+            {Boolean(club?.hasMembershipFee || hasActiveMembership) && (
+              <button
+                type="button"
+                onClick={() => setShowMembershipModal(true)}
+                title="View & Subscribe to Club Membership Plans"
+                className={`inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all active:scale-95 cursor-pointer border ${
+                  hasActiveMembership
+                    ? 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
+                    : 'bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-400'
+                }`}
+              >
+                <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-amber-400"} />
+                <span>{hasActiveMembership ? ((myMembershipInfo as any)?.feeName || myMembershipInfo?.plan?.name || 'Active Member') : 'Membership'}</span>
+              </button>
+            )}
 
             {/* Request / Join / Leave Club Buttons */}
             {!isMember && !showCodeScreen && !showDepositScreen && (
