@@ -12,7 +12,9 @@ import {
   X,
   Compass,
   CheckCircle2,
-  Bookmark
+  Bookmark,
+  Grid3X3,
+  List
 } from "lucide-react";
 
 import { useGetPublicRidesQuery, useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
@@ -89,10 +91,34 @@ const RideCardSkeleton = () => (
   </div>
 );
 
+const RideListSkeleton = () => (
+  <div className="divide-y divide-border border-y border-border">
+    {[1, 2, 3].map(i => (
+      <div key={i} className="py-5 sm:py-6 px-2 sm:px-4 flex flex-col md:flex-row gap-5 items-center animate-pulse">
+        <div className="w-full md:w-52 lg:w-60 h-36 bg-[#222] rounded-xl shrink-0" />
+        <div className="flex-1 space-y-3 w-full">
+          <div className="w-1/2 h-5 bg-[#222] rounded" />
+          <div className="w-1/3 h-3 bg-[#222] rounded" />
+          <div className="w-2/3 h-3 bg-[#222] rounded" />
+          <div className="flex gap-2 pt-2">
+            <div className="w-24 h-7 bg-[#222] rounded-lg" />
+            <div className="w-24 h-7 bg-[#222] rounded-lg" />
+            <div className="w-24 h-7 bg-[#222] rounded-lg" />
+          </div>
+        </div>
+        <div className="w-full md:w-[170px] shrink-0 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-border md:pl-6 self-stretch flex items-center justify-center">
+          <div className="w-full h-11 bg-[#222] rounded-xl" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 const Ride: React.FC<RideProps> = ({ clubId }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [savedRideIds, setSavedRideIds] = useState<Set<number>>(new Set());
 
   const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
@@ -231,15 +257,15 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
         </div>
 
         {/* Functional Search & Filters Toolbar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-main-bg border border-border p-4 rounded-2xl">
-          <div className="relative w-full md:w-[450px]">
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-main-bg border border-border p-4 rounded-2xl">
+          <div className="relative w-full lg:w-[420px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input 
               type="text"
               placeholder="Search by activity title, club, or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface border border-border pl-12 pr-4 py-3.5 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
+              className="w-full bg-surface border border-border pl-12 pr-4 py-3 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
             />
             {searchQuery && (
               <button 
@@ -251,65 +277,91 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
             )}
           </div>
 
-          {/* Ride Type Filters */}
-          <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-            <Filter size={16} className="text-text-muted shrink-0 hidden md:block" />
-            {activityTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedType(type)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
-                  selectedType === type 
-                    ? "bg-[#EB712B] border-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)]" 
-                    : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
+          {/* Right Controls: Filters & View Mode Toggle */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
+            {/* Ride Type Filters */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+              <Filter size={16} className="text-text-muted shrink-0 hidden md:block" />
+              {activityTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
+                    selectedType === type 
+                      ? "bg-[#EB712B] border-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)]" 
+                      : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+
+            {/* View Mode Toggle */}
+            <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 shrink-0">
+              <button 
+                onClick={() => setViewMode("grid")}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
+                  viewMode === "grid" ? "bg-hover text-text-main shadow-sm" : "text-text-muted hover:text-text-main bg-transparent"
                 }`}
+                title="Grid View"
               >
-                {type}
+                <Grid3X3 size={16} />
               </button>
-            ))}
+              <button 
+                onClick={() => setViewMode("list")}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
+                  viewMode === "list" ? "bg-hover text-text-main shadow-sm" : "text-text-muted hover:text-text-main bg-transparent"
+                }`}
+                title="List View"
+              >
+                <List size={16} />
+              </button>
+            </div>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <RideCardSkeleton />
-            <RideCardSkeleton />
-            <RideCardSkeleton />
-          </div>
+          viewMode === "list" ? (
+            <RideListSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <RideCardSkeleton />
+              <RideCardSkeleton />
+              <RideCardSkeleton />
+            </div>
+          )
         ) : filteredRides.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRides.map((ride) => (
-              <div 
-                key={ride.id} 
-                className="bg-main-bg border border-border rounded-2xl flex flex-col justify-between hover:border-[#EB712B]/40 transition-all group relative overflow-hidden shadow-2xl"
-              >
-                {/* Background accent glow on hover */}
-                <div className="absolute top-48 right-0 w-40 h-40 bg-[#EB712B]/5 rounded-full blur-3xl group-hover:bg-[#EB712B]/10 transition-all duration-500 pointer-events-none" />
-
-                {/* Banner Image */}
-                <div className="relative h-44 w-full overflow-hidden border-b border-border shrink-0">
-                  <img 
-                    src={ride.image } 
-                    alt={ride.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent opacity-65" />
-                  <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2.5 py-1 rounded-lg shrink-0">
-                    <Flame size={12} className="text-[#EB712B]" />
-                    <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
+          viewMode === "list" ? (
+            /* MODERN BLENDED LIST VIEW (Divided by horizontal line, zero card borders) */
+            <div className="divide-y divide-border border-y border-border">
+              {filteredRides.map((ride) => (
+                <div 
+                  key={ride.id}
+                  className="py-5 sm:py-6 flex flex-col md:flex-row gap-5 items-stretch md:items-center justify-between transition-colors hover:bg-surface/20 px-2 sm:px-4 group"
+                >
+                  {/* Left: Thumbnail & Banner */}
+                  <div className="relative w-full md:w-52 lg:w-60 h-40 md:h-32 rounded-xl overflow-hidden shrink-0 border border-border/70">
+                    <img 
+                      src={ride.image} 
+                      alt={ride.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-main-bg/80 via-transparent to-transparent" />
+                    <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2 py-0.5 rounded-lg shrink-0">
+                      <Flame size={11} className="text-[#EB712B]" />
+                      <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Card content with padding */}
-                <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
-                  {/* Card Header */}
-                  <div className="space-y-4 z-10">
-                    <div className="flex justify-between items-start gap-2">
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1 mb-1">
+                  {/* Center: Details & Metadata */}
+                  <div className="flex-1 min-w-0 space-y-2.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-base sm:text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors truncate">
                           {ride.title}
                         </h3>
                         <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">
@@ -321,56 +373,97 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           e.stopPropagation();
                           handleToggleSave(ride.id);
                         }}
-                        className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                        className={`p-2 rounded-xl border transition-all cursor-pointer shrink-0 md:hidden ${
                           ride.isSaved
                             ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
                             : "bg-surface border-border text-text-muted hover:text-text-main"
                         }`}
+                        title={ride.isSaved ? "Saved" : "Save activity"}
                       >
                         <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
                       </button>
                     </div>
 
-                    {/* Info Rows */}
-                    <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
-                      <div className="flex items-center gap-3 text-xs text-text-muted">
-                        <Calendar size={15} className="text-text-muted shrink-0" />
-                        <span className="font-medium truncate text-xs text-text-main">{ride.date}</span>
+                    {/* Info Chips */}
+                    <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs text-text-muted">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar size={13} className="text-text-muted shrink-0" />
+                        <span className="font-medium text-text-main">{ride.date}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-text-muted">
-                        <MapPin size={15} className="text-text-muted shrink-0" />
-                        <span className="font-medium truncate text-[11px] leading-relaxed text-text-main">{ride.location}</span>
+                      <div className="flex items-center gap-1.5 max-w-[280px]">
+                        <MapPin size={13} className="text-text-muted shrink-0" />
+                        <span className="font-medium text-text-main truncate" title={ride.location}>{ride.location}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-text-muted">
-                        <Bike size={15} className="text-text-muted shrink-0" />
-                        <span className="font-medium text-xs text-text-main">
-                          Sport Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
+                      <div className="flex items-center gap-1.5">
+                        <Bike size={13} className="text-text-muted shrink-0" />
+                        <span className="font-medium text-text-main">
+                          Sport: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
                         </span>
                       </div>
                     </div>
+
+                    {/* Telemetry Metrics Row */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <div className="bg-surface/60 px-3 py-1.5 rounded-lg border border-border/70 flex items-center gap-2">
+                        <span className="text-[9px] uppercase font-bold text-text-muted">Speed</span>
+                        <span className="text-xs font-black text-text-main">{ride.speed}</span>
+                      </div>
+                      <div className="bg-surface/60 px-3 py-1.5 rounded-lg border border-border/70 flex items-center gap-2">
+                        <span className="text-[9px] uppercase font-bold text-text-muted">Distance</span>
+                        <span className="text-xs font-black text-text-main">{ride.distance}</span>
+                      </div>
+                      <div className="bg-surface/60 px-3 py-1.5 rounded-lg border border-border/70 flex items-center gap-2">
+                        <span className="text-[9px] uppercase font-bold text-text-muted">Participants</span>
+                        <span className="text-xs font-black text-text-main">{ride.participants}</span>
+                      </div>
+                      
+                      {/* Organizer */}
+                      <div className="flex items-center gap-2 bg-surface/60 pl-1 pr-3 py-1 rounded-lg border border-border/70 ml-auto">
+                        {ride.organizerAvatar ? (
+                          <img 
+                            src={ride.organizerAvatar} 
+                            alt={ride.organizer} 
+                            className="w-6 h-6 rounded-full object-cover shrink-0 border border-border"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              const fallbackNode = (e.target as HTMLImageElement).nextSibling as HTMLElement;
+                              if (fallbackNode) fallbackNode.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div 
+                          className="w-6 h-6 rounded-full bg-main-bg border border-border flex items-center justify-center font-bold text-[8px] text-text-muted shrink-0 uppercase"
+                          style={{ display: ride.organizerAvatar ? 'none' : 'flex' }}
+                        >
+                          {(ride.organizer || "Organizer").split(" ").map((n: string) => n[0] || "").join("").substring(0, 2)}
+                        </div>
+                        <div className="flex flex-col overflow-hidden max-w-[100px]">
+                          <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
+                          <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Metrics Grid */}
-                  <div className="grid grid-cols-3 gap-2 py-2 z-10">
-                    <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
-                      <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.speed}</span>
-                      <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Speed</span>
-                    </div>
-                    <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
-                      <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.distance}</span>
-                      <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Distance</span>
-                    </div>
-                    <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
-                      <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.participants}</span>
-                      <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Participants</span>
-                    </div>
-                  </div>
-
-                  {/* Action/Footer Panel */}
-                  <div className="flex items-center justify-between gap-2 border-t border-border pt-4 z-10">
+                  {/* Right: Join Button & Save (Vertical divider line before action column) */}
+                  <div className="flex items-center md:flex-col justify-between md:justify-center gap-3 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-border md:pl-6 min-w-[170px] self-stretch">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleSave(ride.id);
+                      }}
+                      className={`hidden md:flex items-center justify-center p-2 rounded-xl border transition-all cursor-pointer self-end ${
+                        ride.isSaved
+                          ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                          : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
+                      }`}
+                      title={ride.isSaved ? "Saved" : "Save activity"}
+                    >
+                      <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
+                    </button>
                     <button 
                       onClick={() => handleJoinRide(ride.id)}
-                      className={`flex-1 py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer text-white ${
+                      className={`w-full py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer text-white border-0 outline-none ${
                         ride.isRideJoined 
                           ? "bg-emerald-600 hover:bg-emerald-700 shadow-[0_4px_15px_rgba(16,185,129,0.2)]" 
                           : "bg-[#EB712B] hover:bg-[#d66525] shadow-[0_4px_15px_rgba(235,113,43,0.2)]"
@@ -382,39 +475,155 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         </>
                       ) : (
                         <>
-                          Click to Join Activity <ArrowRight size={14} />
+                          Join Activity <ArrowRight size={14} />
                         </>
                       )}
                     </button>
-                    <div className="flex items-center gap-2 bg-surface pl-1 pr-3 py-1 rounded-xl border border-border shrink-0 max-w-[120px]">
-                      {ride.organizerAvatar ? (
-                        <img 
-                          src={ride.organizerAvatar} 
-                          alt={ride.organizer} 
-                          className="w-7 h-7 rounded-full object-cover shrink-0 border border-border"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            const fallbackNode = (e.target as HTMLImageElement).nextSibling as HTMLElement;
-                            if (fallbackNode) fallbackNode.style.display = 'flex';
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* MODERN GRID VIEW */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredRides.map((ride) => (
+                <div 
+                  key={ride.id} 
+                  className="bg-main-bg border border-border rounded-2xl flex flex-col justify-between hover:border-[#EB712B]/40 transition-all group relative overflow-hidden shadow-2xl"
+                >
+                  {/* Background accent glow on hover */}
+                  <div className="absolute top-48 right-0 w-40 h-40 bg-[#EB712B]/5 rounded-full blur-3xl group-hover:bg-[#EB712B]/10 transition-all duration-500 pointer-events-none" />
+
+                  {/* Banner Image */}
+                  <div className="relative h-44 w-full overflow-hidden border-b border-border shrink-0">
+                    <img 
+                      src={ride.image } 
+                      alt={ride.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent opacity-65" />
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2.5 py-1 rounded-lg shrink-0">
+                      <Flame size={12} className="text-[#EB712B]" />
+                      <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
+                    </div>
+                  </div>
+
+                  {/* Card content with padding */}
+                  <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
+                    {/* Card Header */}
+                    <div className="space-y-4 z-10">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1 mb-1">
+                            {ride.title}
+                          </h3>
+                          <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">
+                            Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
+                          </p>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleSave(ride.id);
                           }}
-                        />
-                      ) : null}
-                      <div 
-                        className="w-7 h-7 rounded-full bg-main-bg border border-border flex items-center justify-center font-bold text-[9px] text-text-muted shrink-0 uppercase"
-                        style={{ display: ride.organizerAvatar ? 'none' : 'flex' }}
-                      >
-                        {(ride.organizer || "Organizer").split(" ").map((n: string) => n[0] || "").join("").substring(0, 2)}
+                          className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                            ride.isSaved
+                              ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                              : "bg-surface border-border text-text-muted hover:text-text-main"
+                          }`}
+                        >
+                          <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
+                        </button>
                       </div>
-                      <div className="flex flex-col overflow-hidden">
-                        <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
-                        <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
+
+                      {/* Info Rows */}
+                      <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
+                        <div className="flex items-center gap-3 text-xs text-text-muted">
+                          <Calendar size={15} className="text-text-muted shrink-0" />
+                          <span className="font-medium truncate text-xs text-text-main">{ride.date}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-text-muted">
+                          <MapPin size={15} className="text-text-muted shrink-0" />
+                          <span className="font-medium truncate text-[11px] leading-relaxed text-text-main">{ride.location}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-text-muted">
+                          <Bike size={15} className="text-text-muted shrink-0" />
+                          <span className="font-medium text-xs text-text-main">
+                            Sport Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-3 gap-2 py-2 z-10">
+                      <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
+                        <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.speed}</span>
+                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Speed</span>
+                      </div>
+                      <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
+                        <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.distance}</span>
+                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Distance</span>
+                      </div>
+                      <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
+                        <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.participants}</span>
+                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Participants</span>
+                      </div>
+                    </div>
+
+                    {/* Action/Footer Panel */}
+                    <div className="flex items-center justify-between gap-2 border-t border-border pt-4 z-10">
+                      <button 
+                        onClick={() => handleJoinRide(ride.id)}
+                        className={`flex-1 py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer text-white ${
+                          ride.isRideJoined 
+                            ? "bg-emerald-600 hover:bg-emerald-700 shadow-[0_4px_15px_rgba(16,185,129,0.2)]" 
+                            : "bg-[#EB712B] hover:bg-[#d66525] shadow-[0_4px_15px_rgba(235,113,43,0.2)]"
+                        }`}
+                      >
+                        {ride.isRideJoined ? (
+                          <>
+                            Joined <CheckCircle2 size={14} />
+                          </>
+                        ) : (
+                          <>
+                            Click to Join Activity <ArrowRight size={14} />
+                          </>
+                        )}
+                      </button>
+                      <div className="flex items-center gap-2 bg-surface pl-1 pr-3 py-1 rounded-xl border border-border shrink-0 max-w-[120px]">
+                        {ride.organizerAvatar ? (
+                          <img 
+                            src={ride.organizerAvatar} 
+                            alt={ride.organizer} 
+                            className="w-7 h-7 rounded-full object-cover shrink-0 border border-border"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              const fallbackNode = (e.target as HTMLImageElement).nextSibling as HTMLElement;
+                              if (fallbackNode) fallbackNode.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div 
+                          className="w-7 h-7 rounded-full bg-main-bg border border-border flex items-center justify-center font-bold text-[9px] text-text-muted shrink-0 uppercase"
+                          style={{ display: ride.organizerAvatar ? 'none' : 'flex' }}
+                        >
+                          {(ride.organizer || "Organizer").split(" ").map((n: string) => n[0] || "").join("").substring(0, 2)}
+                        </div>
+                        <div className="flex flex-col overflow-hidden">
+                          <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
+                          <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )
         ) : (
           /* Empty State Display */
           <div className="flex flex-col items-center justify-center bg-main-bg border border-border rounded-3xl p-16 text-center shadow-2xl">
