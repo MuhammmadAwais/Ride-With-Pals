@@ -13,7 +13,7 @@ import {
   Plus,
   Compass,
   ArrowRight,
-  Sparkles
+  Check
 } from 'lucide-react';
 import {
   useGetPublicRidesQuery,
@@ -33,6 +33,43 @@ const MONTH_NAMES = [
 ];
 
 const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Helper to format time into human-friendly 12-hour AM/PM format
+const formatHumanTime = (timeStr?: string): string => {
+  if (!timeStr) return '';
+  const clean = String(timeStr).trim();
+  const match = clean.match(/^(\d{1,2}):(\d{2})/);
+  if (!match) return clean;
+  let hours = parseInt(match[1], 10);
+  const minutes = match[2];
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${hours}:${minutes} ${ampm}`;
+};
+
+// Helper to resolve ride cover image with reliable fallback
+const getRideCoverImage = (ride: any): string => {
+  const raw =
+    ride.coverImage ||
+    ride.image ||
+    ride.bannerImage ||
+    ride.routeImage ||
+    ride.media ||
+    ride.club?.coverImage ||
+    ride.club?.bannerImage ||
+    ride.club?.logo;
+  return resolveImageUrl(raw) || '/Images/CyclingPicture.jpg';
+};
+
+// Helper for sport badge label
+const getRideSport = (ride: any): string => {
+  const t = ride.sportType || ride.rideType || ride.type || ride.club?.clubType || '';
+  const str = String(t).toLowerCase();
+  if (str.includes('run')) return 'Running';
+  if (str.includes('triathlon')) return 'Triathlon';
+  return 'Cycling';
+};
 
 // Robust Organizer Avatar Component with graceful fallback
 const OrganizerAvatar = ({ src, name }: { src?: string | null; name: string }) => {
@@ -58,7 +95,7 @@ const OrganizerAvatar = ({ src, name }: { src?: string | null; name: string }) =
 
   if (!resolved || hasError) {
     return (
-      <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#1a1a1a] to-[#252525] border border-border flex items-center justify-center font-bold text-[#EB712B] text-[9px] uppercase shrink-0 shadow-sm">
+      <div className="w-6 h-6 rounded-full bg-hover border border-border flex items-center justify-center font-bold text-[#EB712B] text-[9px] uppercase shrink-0">
         {initials}
       </div>
     );
@@ -106,15 +143,16 @@ export default function UserCalendar() {
   // Fetch all public rides to render calendar dots
   const { data: publicRidesData, isLoading: isLoadingAll } = useGetPublicRidesQuery();
   const allRides = useMemo(() => {
-    const res = (publicRidesData as any)?.response?.data ||
-                (publicRidesData as any)?.response?.rows ||
-                (publicRidesData as any)?.response ||
-                (publicRidesData as any)?.data?.data ||
-                (publicRidesData as any)?.data?.rows ||
-                (publicRidesData as any)?.data ||
-                (publicRidesData as any)?.rows ||
-                publicRidesData ||
-                [];
+    const res =
+      (publicRidesData as any)?.response?.data ||
+      (publicRidesData as any)?.response?.rows ||
+      (publicRidesData as any)?.response ||
+      (publicRidesData as any)?.data?.data ||
+      (publicRidesData as any)?.data?.rows ||
+      (publicRidesData as any)?.data ||
+      (publicRidesData as any)?.rows ||
+      publicRidesData ||
+      [];
     return Array.isArray(res) ? res : [];
   }, [publicRidesData]);
 
@@ -140,21 +178,26 @@ export default function UserCalendar() {
   }, [allRides, currentYear, currentMonth]);
 
   // Fetch rides specifically for the selected date
-  const { data: byDateData, isLoading: isLoadingByDate, isFetching: isFetchingByDate } = useGetPublicRidesByDateQuery(
+  const {
+    data: byDateData,
+    isLoading: isLoadingByDate,
+    isFetching: isFetchingByDate
+  } = useGetPublicRidesByDateQuery(
     { date: selectedDate },
     { skip: !selectedDate }
   );
 
   const selectedDateRides = useMemo(() => {
-    const fromApi = (byDateData as any)?.response?.data ||
-                    (byDateData as any)?.response?.rows ||
-                    (byDateData as any)?.response ||
-                    (byDateData as any)?.data?.data ||
-                    (byDateData as any)?.data?.rows ||
-                    (byDateData as any)?.data ||
-                    (byDateData as any)?.rows ||
-                    byDateData ||
-                    [];
+    const fromApi =
+      (byDateData as any)?.response?.data ||
+      (byDateData as any)?.response?.rows ||
+      (byDateData as any)?.response ||
+      (byDateData as any)?.data?.data ||
+      (byDateData as any)?.data?.rows ||
+      (byDateData as any)?.data ||
+      (byDateData as any)?.rows ||
+      byDateData ||
+      [];
     const apiList = Array.isArray(fromApi) ? fromApi : [];
     if (apiList.length > 0) return apiList;
 
@@ -167,7 +210,11 @@ export default function UserCalendar() {
   // Saved rides hooks
   const { data: savedData } = useGetSavedRidesListQuery();
   const savedList = useMemo(() => {
-    const list = (savedData as any)?.response?.rows || (savedData as any)?.response || savedData || [];
+    const list =
+      (savedData as any)?.response?.rows ||
+      (savedData as any)?.response ||
+      savedData ||
+      [];
     return Array.isArray(list) ? list : [];
   }, [savedData]);
   const [saveRide] = useSaveRideMutation();
@@ -310,36 +357,40 @@ export default function UserCalendar() {
     });
   }, [selectedDate]);
 
-  return (
-    <div className="flex min-h-screen text-text-main font-sans w-full justify-center p-4 sm:p-8">
-      <div className="flex-1 transition-all max-w-7xl w-full mx-auto space-y-8">
+  const isSelectedDateToday = selectedDate === todayStr;
 
-        {/* ── TOP TITLE BANNER ── */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-border/80 pb-6">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-full text-[10px] font-black uppercase tracking-[0.18em] text-[#EB712B]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] animate-pulse" />
-              Ride Calendar
+  return (
+    <div className="min-h-screen bg-main-bg text-text-main font-sans w-full p-4 sm:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+
+        {/* ── TOP BANNER ── */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border pb-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
+              <span className="text-[11px] font-mono tracking-widest uppercase text-[#EB712B] font-bold">
+                RIDE SCHEDULE & AGENDA
+              </span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight uppercase text-text-main">
-              SCHEDULE & AGENDA
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight uppercase text-text-main">
+              Calendar
             </h1>
-            <p className="text-text-muted text-xs tracking-wide font-medium max-w-xl leading-relaxed">
-              Explore scheduled rides across clubs. Select any calendar date to view the daily briefing, meeting points, and export to Google Calendar.
+            <p className="text-text-muted text-xs font-medium max-w-xl leading-relaxed">
+              Explore scheduled rides across clubs. Select any calendar date to view the daily briefing, meeting points, and export directly to Google Calendar.
             </p>
           </div>
 
           <div className="flex items-center gap-3 w-full md:w-auto">
             <button
               onClick={() => navigate('/view/userside/rides')}
-              className="flex items-center justify-center gap-2 px-5 py-3 bg-surface border border-border hover:bg-hover text-text-main rounded-2xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all active:scale-95 shadow-sm"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-surface border border-border hover:bg-hover text-text-main rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
             >
-              <Compass size={15} className="text-[#EB712B]" />
+              <Compass size={14} className="text-[#EB712B]" />
               Explore All Rides
             </button>
             <button
               onClick={() => navigate('/view/userside/rides?create=true')}
-              className="flex items-center justify-center gap-2 px-5 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all active:scale-95 border-0 outline-none"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-colors shadow-sm"
             >
               <Plus size={15} />
               Create Ride
@@ -347,23 +398,21 @@ export default function UserCalendar() {
           </div>
         </div>
 
-        {/* ── MAIN 2-COLUMN GRID (Sleek Compact Calendar + Spacious Agenda) ── */}
+        {/* ── MAIN 2-COLUMN LAYOUT: Balanced Calendar & Rich Agenda ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-          {/* ── LEFT: COMPACT MODERN CALENDAR (Golden Ratio Proportion) ── */}
-          <div className="lg:col-span-5 xl:col-span-5 bg-surface border border-border rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+          {/* ── LEFT: COMPACT MODERN CALENDAR ── */}
+          <div className="lg:col-span-5 xl:col-span-5 bg-surface border border-border rounded-3xl p-5 sm:p-6 space-y-4">
             
-            {/* Calendar Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-border/80 mb-4">
+            {/* Header: Month & Navigation */}
+            <div className="flex items-center justify-between pb-3.5 border-b border-border">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-[#EB712B]/10 border border-[#EB712B]/20 text-[#EB712B]">
-                  <CalendarIcon size={18} />
+                <div className="w-8 h-8 rounded-xl bg-hover border border-border flex items-center justify-center text-[#EB712B]">
+                  <CalendarIcon size={16} />
                 </div>
-                <div>
-                  <h2 className="text-base sm:text-lg font-black uppercase tracking-wide text-text-main">
-                    {MONTH_NAMES[currentMonth]} <span className="text-[#EB712B]">{currentYear}</span>
-                  </h2>
-                </div>
+                <h2 className="text-base font-black uppercase tracking-wider text-text-main">
+                  {MONTH_NAMES[currentMonth]} {currentYear}
+                </h2>
               </div>
 
               {/* Navigation Controls */}
@@ -371,7 +420,7 @@ export default function UserCalendar() {
                 <button
                   onClick={handlePrevMonth}
                   aria-label="Previous Month"
-                  className="w-8 h-8 flex items-center justify-center bg-hover hover:bg-white/10 border border-border rounded-xl transition-colors cursor-pointer text-text-main hover:text-[#EB712B]"
+                  className="w-8 h-8 flex items-center justify-center bg-hover hover:bg-surface border border-border rounded-xl transition-colors cursor-pointer text-text-main hover:text-[#EB712B]"
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -381,30 +430,30 @@ export default function UserCalendar() {
                     setCurrentMonth(today.getMonth());
                     setSelectedDate(todayStr);
                   }}
-                  className="px-2.5 py-1.5 bg-hover hover:bg-[#EB712B] hover:text-white border border-border rounded-xl transition-all cursor-pointer text-[10px] font-black uppercase tracking-wider text-text-muted"
+                  className="px-2.5 py-1.5 bg-hover hover:bg-[#EB712B] hover:text-white border border-border rounded-xl transition-colors cursor-pointer text-[10px] font-bold uppercase tracking-wider text-text-muted"
                 >
                   Today
                 </button>
                 <button
                   onClick={handleNextMonth}
                   aria-label="Next Month"
-                  className="w-8 h-8 flex items-center justify-center bg-hover hover:bg-white/10 border border-border rounded-xl transition-colors cursor-pointer text-text-main hover:text-[#EB712B]"
+                  className="w-8 h-8 flex items-center justify-center bg-hover hover:bg-surface border border-border rounded-xl transition-colors cursor-pointer text-text-main hover:text-[#EB712B]"
                 >
                   <ChevronRight size={16} />
                 </button>
               </div>
             </div>
 
-            {/* Days of week */}
-            <div className="grid grid-cols-7 gap-1 text-center py-2 border-y border-border/40 mb-2">
+            {/* Days of Week Header */}
+            <div className="grid grid-cols-7 gap-1 text-center py-1.5">
               {DAYS_OF_WEEK.map((d) => (
-                <div key={d} className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-text-muted/60">
+                <div key={d} className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                   {d}
                 </div>
               ))}
             </div>
 
-            {/* Calendar Days Grid */}
+            {/* Date Cells Grid */}
             <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
               {calendarDays.map((item, idx) => {
                 const isSelected = item.dateStr === selectedDate;
@@ -413,39 +462,37 @@ export default function UserCalendar() {
 
                 let stateClasses = '';
                 if (isSelected) {
-                  stateClasses = 'bg-[#EB712B] text-white font-black shadow-md shadow-[#EB712B]/30 border border-[#EB712B] scale-[1.03] z-10';
+                  stateClasses = 'bg-[#EB712B] text-white font-black border-[#EB712B]';
                 } else if (isToday) {
-                  stateClasses = 'border border-[#EB712B]/60 bg-[#EB712B]/10 text-[#EB712B] font-bold hover:bg-[#EB712B]/20';
+                  stateClasses = 'border border-[#EB712B] text-[#EB712B] bg-transparent font-bold hover:bg-hover';
                 } else if (item.isCurrentMonth) {
-                  stateClasses = 'text-text-main hover:bg-hover hover:text-white border border-transparent hover:border-border font-medium';
+                  stateClasses = 'text-text-main hover:bg-hover font-semibold border-transparent';
                 } else {
-                  stateClasses = 'text-text-muted/30 hover:text-text-muted/60 border border-transparent';
+                  stateClasses = 'text-text-muted/40 hover:text-text-muted font-normal border-transparent';
                 }
 
                 return (
                   <button
                     key={idx}
                     onClick={() => setSelectedDate(item.dateStr)}
-                    className={`h-10 sm:h-11 w-full max-w-[44px] mx-auto rounded-xl sm:rounded-2xl flex flex-col items-center justify-center p-1 relative transition-all duration-200 cursor-pointer ${stateClasses}`}
+                    className={`h-10 sm:h-11 w-full max-w-[44px] mx-auto rounded-xl flex flex-col items-center justify-center p-1 border transition-colors cursor-pointer ${stateClasses}`}
                   >
-                    <span className={`text-xs sm:text-sm leading-none ${isSelected || isToday ? 'font-black' : 'font-semibold'}`}>
+                    <span className="text-xs sm:text-sm leading-none">
                       {item.day}
                     </span>
 
-                    {/* Clean glowing dot indicator for rides */}
+                    {/* Crisp solid indicator dot */}
                     <div className="flex items-center justify-center gap-0.5 mt-1 h-1.5">
                       {rideCount > 0 && (
                         <span
-                          className={`w-1.5 h-1.5 rounded-full transition-all ${
-                            isSelected
-                              ? 'bg-white shadow-sm'
-                              : 'bg-[#EB712B] shadow-[0_0_6px_rgba(235,113,43,0.9)]'
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            isSelected ? 'bg-white' : 'bg-[#EB712B]'
                           }`}
                         />
                       )}
                       {rideCount > 1 && (
                         <span
-                          className={`w-1 h-1 rounded-full transition-all ${
+                          className={`w-1 h-1 rounded-full ${
                             isSelected ? 'bg-white/70' : 'bg-[#EB712B]/70'
                           }`}
                         />
@@ -456,172 +503,227 @@ export default function UserCalendar() {
               })}
             </div>
 
-            {/* Calendar Footer / Legend */}
-            <div className="pt-4 mt-4 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+            {/* Clean Legend & Stats */}
+            <div className="pt-3.5 border-t border-border flex items-center justify-between text-[10px] font-bold text-text-muted uppercase tracking-wider">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#EB712B] shadow-[0_0_6px_rgba(235,113,43,0.8)]" />
+                  <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
                   <span>Scheduled Ride</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full border border-[#EB712B] bg-[#EB712B]/20" />
+                  <span className="w-2 h-2 rounded-full border border-[#EB712B]" />
                   <span>Today</span>
                 </div>
               </div>
 
-              <div className="text-[#EB712B] font-black flex items-center gap-1">
-                <Sparkles size={11} />
-                <span>{currentMonthRideCount} {currentMonthRideCount === 1 ? 'ride' : 'rides'} in {MONTH_NAMES[currentMonth].slice(0, 3)}</span>
-              </div>
+              <span className="text-text-muted font-bold">
+                {currentMonthRideCount} {currentMonthRideCount === 1 ? 'ride' : 'rides'} in {MONTH_NAMES[currentMonth].slice(0, 3)}
+              </span>
             </div>
 
           </div>
 
-          {/* ── RIGHT: SELECTED DATE AGENDA (Spacious & Rich) ── */}
+          {/* ── RIGHT: HUMAN-FRIENDLY SELECTED DAY AGENDA WITH RIDE IMAGES ── */}
           <div className="lg:col-span-7 xl:col-span-7 space-y-4">
             
-            {/* Header for Selected Date */}
-            <div className="bg-surface border border-border rounded-3xl p-5 sm:p-6 shadow-xl flex items-center justify-between gap-4">
+            {/* Header: Human Language Title & Status */}
+            <div className="bg-surface border border-border rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B]">
-                  Selected Day Briefing
-                </span>
-                <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight text-text-main mt-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#EB712B] font-bold">
+                    {isSelectedDateToday ? 'TODAY’S SCHEDULE' : 'SELECTED DATE'}
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-text-main uppercase tracking-tight mt-0.5">
                   {formattedSelectedDateLabel}
                 </h3>
               </div>
-              <span className="px-3 py-1.5 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20 rounded-xl text-xs font-black uppercase shrink-0">
+              <span className="px-3.5 py-1.5 bg-hover border border-border text-text-main rounded-xl text-xs font-bold uppercase tracking-wider self-start sm:self-auto shrink-0">
                 {selectedDateRides.length} {selectedDateRides.length === 1 ? 'Ride Scheduled' : 'Rides Scheduled'}
               </span>
             </div>
 
-            {/* Rides List for Selected Date */}
+            {/* Rides List or Empty State */}
             {isLoadingAll || (isLoadingByDate && isFetchingByDate) ? (
               <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted space-y-3">
-                <div className="w-8 h-8 border-2 border-[#EB712B] border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs font-bold uppercase tracking-wider">Syncing rides for selected date...</p>
+                <div className="w-7 h-7 border-2 border-[#EB712B] border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs font-bold uppercase tracking-wider">Syncing schedule...</p>
               </div>
             ) : selectedDateRides.length === 0 ? (
               <div className="bg-surface border border-border rounded-3xl p-10 sm:p-14 text-center text-text-muted space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-hover flex items-center justify-center mx-auto border border-border">
-                  <Bike size={24} className="text-text-muted" />
+                <div className="w-12 h-12 rounded-2xl bg-hover border border-border flex items-center justify-center mx-auto text-text-muted">
+                  <Bike size={22} />
                 </div>
                 <div className="space-y-1">
                   <h4 className="text-base font-black uppercase text-text-main">No Rides on this Date</h4>
                   <p className="text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
-                    No club rides are scheduled for this date yet. Check other marked days or create a new group ride.
+                    There are no club rides scheduled for {formattedSelectedDateLabel}. You can choose another marked day on the calendar or create a new ride for the club.
                   </p>
                 </div>
-                <button
-                  onClick={() => navigate('/view/userside/rides')}
-                  className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-md inline-flex items-center gap-2 cursor-pointer border-0 outline-none"
-                >
-                  Explore All Rides <ArrowRight size={14} />
-                </button>
+                <div className="flex items-center justify-center gap-3 pt-2">
+                  <button
+                    onClick={() => navigate('/view/userside/rides?create=true')}
+                    className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+                  >
+                    Create Ride
+                  </button>
+                  <button
+                    onClick={() => navigate('/view/userside/rides')}
+                    className="px-5 py-2.5 bg-surface border border-border hover:bg-hover text-text-main text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+                  >
+                    Browse All Rides
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="space-y-4 max-h-[680px] overflow-y-auto custom-scrollbar pr-1">
+              <div className="space-y-4 max-h-[720px] overflow-y-auto pr-1">
                 {selectedDateRides.map((ride: any) => {
                   const isSaved = isRideSaved(ride.id);
-                  const organizerName = ride.user?.fullName || ride.user?.firstName || ride.club?.clubName || 'Club Admin';
-                  const organizerPhoto = ride.user?.profileImage || ride.user?.profilePhoto || ride.club?.logo;
+                  const rideImage = getRideCoverImage(ride);
+                  const organizerName =
+                    ride.user?.fullName ||
+                    ride.user?.firstName ||
+                    ride.club?.clubName ||
+                    'Club Admin';
+                  const organizerPhoto =
+                    ride.user?.profileImage ||
+                    ride.user?.profilePhoto ||
+                    ride.club?.logo;
+                  const rideSport = getRideSport(ride);
+                  const rideTitle = ride.rideName || ride.title || 'Club Ride';
+                  const rideLocation = ride.meetingPoint || ride.location || 'Meeting point specified upon joining';
+                  const formattedTime = formatHumanTime(ride.time);
+                  const rideDistance = ride.distance ? `${ride.distance} km` : 'Open Distance';
+                  const ridePace = ride.pace ? `${ride.pace} min/km` : (ride.speed ? `${ride.speed} km/h` : 'Moderate');
+                  const rideParticipants =
+                    ride.participantCount ||
+                    ride.joinedParticipantsCount ||
+                    (Array.isArray(ride.joinedParticipants) ? ride.joinedParticipants.length : null) ||
+                    ride.membersCount ||
+                    1;
 
                   return (
                     <div
                       key={ride.id}
                       onClick={() => navigate(`/view/userside/dashboard/ride/${ride.id}`)}
-                      className="bg-surface border border-border rounded-3xl p-5 hover:border-[#EB712B]/40 transition-all duration-300 hover:shadow-xl cursor-pointer group flex flex-col gap-4 relative overflow-hidden"
+                      className="bg-surface border border-border hover:border-[#EB712B]/40 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer group flex flex-col"
                     >
-                      {/* Top Bar: Title & Action Buttons */}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="space-y-1 min-w-0">
-                          <h4 className="text-base sm:text-lg font-black uppercase text-text-main group-hover:text-[#EB712B] transition-colors truncate">
-                            {ride.rideName || ride.title || 'Club Ride'}
+                      {/* ── RIDE COVER IMAGE WITH SCRIM & QUICK ACTIONS ── */}
+                      <div className="relative h-40 sm:h-48 w-full overflow-hidden bg-black/50">
+                        <img
+                          src={rideImage}
+                          alt={rideTitle}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/Images/CycleImage2.png';
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/30 to-black/50" />
+
+                        {/* Top Badges & Actions */}
+                        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/70 border border-white/10 text-[10px] font-black uppercase tracking-wider text-[#EB712B]">
+                              <Bike size={12} />
+                              {rideSport}
+                            </span>
+                            {ride.club?.clubName && (
+                              <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-lg bg-black/70 border border-white/10 text-[10px] font-bold text-white/90 truncate max-w-[140px]">
+                                {ride.club.clubName}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Top-Right Quick Action Icons */}
+                          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              onClick={(e) => handleAddToGoogleCalendar(ride, e)}
+                              title="Add to Google Calendar"
+                              className="px-2.5 py-1.5 rounded-lg bg-black/70 hover:bg-[#EB712B] text-white border border-white/15 hover:border-transparent transition-colors flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+                            >
+                              <CalendarIcon size={12} />
+                              <span>Google Cal</span>
+                            </button>
+
+                            <button
+                              onClick={(e) => handleToggleSave(ride.id, e)}
+                              title={isSaved ? 'Unsave Ride' : 'Save Ride'}
+                              className={`p-1.5 rounded-lg bg-black/70 border transition-colors cursor-pointer ${
+                                isSaved
+                                  ? 'border-[#EB712B]/50 text-[#EB712B]'
+                                  : 'border-white/15 text-white/80 hover:text-white'
+                              }`}
+                            >
+                              <Bookmark size={13} className={isSaved ? 'fill-current' : ''} />
+                            </button>
+
+                            <button
+                              onClick={(e) => handleShareRide(ride, e)}
+                              title="Share Ride"
+                              className="p-1.5 rounded-lg bg-black/70 hover:bg-white/20 text-white/80 hover:text-white border border-white/15 transition-colors cursor-pointer"
+                            >
+                              <Share2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Bottom Image Overlay: Time pill */}
+                        {formattedTime && (
+                          <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-white font-bold text-xs bg-black/70 px-2.5 py-1 rounded-lg border border-white/15">
+                            <Clock size={12} className="text-[#EB712B]" />
+                            <span>{formattedTime}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ── RIDE DETAILS BODY ── */}
+                      <div className="p-5 space-y-4">
+                        <div>
+                          <h4 className="text-lg font-black uppercase text-text-main group-hover:text-[#EB712B] transition-colors leading-snug">
+                            {rideTitle}
                           </h4>
-                          <div className="flex items-center gap-2 text-xs font-bold text-text-muted">
-                            <Clock size={13} className="text-[#EB712B] shrink-0" />
-                            <span>
-                              {ride.date ? String(ride.date).slice(0, 10) : selectedDate}
-                              {ride.time ? ` • ${ride.time}` : ''}
+                          <div className="flex items-center gap-1.5 text-xs text-text-muted mt-1.5 font-medium">
+                            <MapPin size={14} className="text-[#EB712B] shrink-0" />
+                            <span className="truncate">{rideLocation}</span>
+                          </div>
+                        </div>
+
+                        {/* Telemetry Pills */}
+                        <div className="grid grid-cols-3 gap-2 py-1">
+                          <div className="bg-main-bg border border-border rounded-xl p-2.5 text-center">
+                            <span className="block text-[9px] font-bold uppercase tracking-wider text-text-muted">Distance</span>
+                            <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
+                              {rideDistance}
+                            </span>
+                          </div>
+                          <div className="bg-main-bg border border-border rounded-xl p-2.5 text-center">
+                            <span className="block text-[9px] font-bold uppercase tracking-wider text-text-muted">Pace</span>
+                            <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
+                              {ridePace}
+                            </span>
+                          </div>
+                          <div className="bg-main-bg border border-border rounded-xl p-2.5 text-center">
+                            <span className="block text-[9px] font-bold uppercase tracking-wider text-text-muted">Riders</span>
+                            <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
+                              {rideParticipants}
                             </span>
                           </div>
                         </div>
 
-                        {/* Top Right Actions */}
-                        <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
-                          <button
-                            onClick={(e) => handleAddToGoogleCalendar(ride, e)}
-                            title="Add to Google Calendar"
-                            className="px-2.5 py-1.5 rounded-xl bg-hover hover:bg-[#EB712B] text-text-main hover:text-white border border-border hover:border-transparent transition-all flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
-                          >
-                            <CalendarIcon size={12} />
-                            <span className="hidden sm:inline">Google Cal</span>
-                          </button>
-
-                          <button
-                            onClick={(e) => handleToggleSave(ride.id, e)}
-                            title={isSaved ? 'Unsave Ride' : 'Save Ride'}
-                            className={`p-2 rounded-xl border transition-all cursor-pointer ${
-                              isSaved
-                                ? 'bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]'
-                                : 'bg-hover hover:bg-white/10 border-border text-text-muted hover:text-text-main'
-                            }`}
-                          >
-                            <Bookmark size={14} className={isSaved ? 'fill-current' : ''} />
-                          </button>
-
-                          <button
-                            onClick={(e) => handleShareRide(ride, e)}
-                            title="Share Ride"
-                            className="p-2 rounded-xl bg-hover hover:bg-white/10 border border-border text-text-muted hover:text-text-main transition-all cursor-pointer"
-                          >
-                            <Share2 size={14} />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Location / Meeting Point */}
-                      <div className="flex items-center gap-2 text-xs font-medium text-text-muted min-w-0 bg-main-bg/50 px-3.5 py-2.5 rounded-2xl border border-border/50">
-                        <MapPin size={14} className="text-[#EB712B] shrink-0" />
-                        <span className="truncate">
-                          {ride.meetingPoint || ride.location || 'Meeting point TBD'}
-                        </span>
-                      </div>
-
-                      {/* Stats Pills */}
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="bg-main-bg/60 border border-border/60 rounded-2xl p-2 text-center">
-                          <span className="block text-[8px] sm:text-[9px] font-bold text-text-muted uppercase tracking-wider">Pace</span>
-                          <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
-                            {ride.pace || 'Moderate'}
-                          </span>
-                        </div>
-                        <div className="bg-main-bg/60 border border-border/60 rounded-2xl p-2 text-center">
-                          <span className="block text-[8px] sm:text-[9px] font-bold text-text-muted uppercase tracking-wider">Distance</span>
-                          <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
-                            {ride.distance ? `${ride.distance} km` : 'N/A'}
-                          </span>
-                        </div>
-                        <div className="bg-main-bg/60 border border-border/60 rounded-2xl p-2 text-center">
-                          <span className="block text-[8px] sm:text-[9px] font-bold text-text-muted uppercase tracking-wider">Riders</span>
-                          <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
-                            {ride.participantCount || ride.joinedParticipants?.length || ride.membersCount || 1}
+                        {/* Footer: Organizer & View Details Arrow */}
+                        <div className="flex items-center justify-between pt-3 border-t border-border text-xs font-semibold text-text-muted">
+                          <div className="flex items-center gap-2">
+                            <OrganizerAvatar src={organizerPhoto} name={organizerName} />
+                            <span className="text-xs text-text-main font-bold truncate max-w-[170px]">
+                              {organizerName}
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-black uppercase tracking-wider text-[#EB712B] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                            View Details <ArrowRight size={13} />
                           </span>
                         </div>
                       </div>
 
-                      {/* Footer: Organizer & CTA */}
-                      <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs font-bold text-text-muted">
-                        <div className="flex items-center gap-2">
-                          <OrganizerAvatar src={organizerPhoto} name={organizerName} />
-                          <span className="text-[11px] text-text-muted font-bold truncate">
-                            {organizerName}
-                          </span>
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-[#EB712B] group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                          View Ride &rarr;
-                        </span>
-                      </div>
                     </div>
                   );
                 })}
