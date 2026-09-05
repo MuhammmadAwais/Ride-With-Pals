@@ -13,7 +13,9 @@ import {
   Plus,
   Compass,
   ArrowRight,
-  Check
+  Navigation,
+  Users,
+  Activity
 } from 'lucide-react';
 import {
   useGetPublicRidesQuery,
@@ -398,7 +400,7 @@ export default function UserCalendar() {
           </div>
         </div>
 
-        {/* ── MAIN 2-COLUMN LAYOUT: Balanced Calendar & Rich Agenda ── */}
+        {/* ── MAIN 2-COLUMN LAYOUT: Balanced Calendar & Floating Agenda ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
           {/* ── LEFT: COMPACT MODERN CALENDAR ── */}
@@ -523,41 +525,45 @@ export default function UserCalendar() {
 
           </div>
 
-          {/* ── RIGHT: HUMAN-FRIENDLY SELECTED DAY AGENDA WITH RIDE IMAGES ── */}
-          <div className="lg:col-span-7 xl:col-span-7 space-y-4">
+          {/* ── RIGHT: FLOATING AGENDA WITH TYPOGRAPHY ABOVE VISUAL CARD & MODERN DIVIDERS ── */}
+          <div className="lg:col-span-7 xl:col-span-7 space-y-6">
             
-            {/* Header: Human Language Title & Status */}
-            <div className="bg-surface border border-border rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
+            {/* 1. Floating Header (Not a Card, cleanly divided by modern border line) */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-4 border-b border-border">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#EB712B] font-bold">
+                  <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
+                  <span className="text-[11px] font-mono tracking-widest uppercase text-[#EB712B] font-bold">
                     {isSelectedDateToday ? 'TODAY’S SCHEDULE' : 'SELECTED DATE'}
                   </span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-text-main uppercase tracking-tight mt-0.5">
+                <h3 className="text-2xl sm:text-3xl font-black text-text-main uppercase tracking-tight leading-tight">
                   {formattedSelectedDateLabel}
                 </h3>
               </div>
-              <span className="px-3.5 py-1.5 bg-hover border border-border text-text-main rounded-xl text-xs font-bold uppercase tracking-wider self-start sm:self-auto shrink-0">
-                {selectedDateRides.length} {selectedDateRides.length === 1 ? 'Ride Scheduled' : 'Rides Scheduled'}
-              </span>
+
+              <div className="self-start sm:self-auto shrink-0">
+                <span className="inline-flex items-center px-3 py-1.5 bg-surface border border-border text-text-muted rounded-xl text-[11px] font-mono font-bold uppercase tracking-wider">
+                  {selectedDateRides.length} {selectedDateRides.length === 1 ? 'Ride Scheduled' : 'Rides Scheduled'}
+                </span>
+              </div>
             </div>
 
-            {/* Rides List or Empty State */}
+            {/* 2. Rides List or Empty State */}
             {isLoadingAll || (isLoadingByDate && isFetchingByDate) ? (
-              <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted space-y-3">
+              <div className="py-12 text-center text-text-muted space-y-3">
                 <div className="w-7 h-7 border-2 border-[#EB712B] border-t-transparent rounded-full animate-spin mx-auto" />
                 <p className="text-xs font-bold uppercase tracking-wider">Syncing schedule...</p>
               </div>
             ) : selectedDateRides.length === 0 ? (
-              <div className="bg-surface border border-border rounded-3xl p-10 sm:p-14 text-center text-text-muted space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-hover border border-border flex items-center justify-center mx-auto text-text-muted">
-                  <Bike size={22} />
+              <div className="py-12 sm:py-16 text-center text-text-muted space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto text-text-muted">
+                  <Bike size={24} />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-base font-black uppercase text-text-main">No Rides on this Date</h4>
+                  <h4 className="text-lg font-black uppercase text-text-main">No Rides on this Date</h4>
                   <p className="text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
-                    There are no club rides scheduled for {formattedSelectedDateLabel}. You can choose another marked day on the calendar or create a new ride for the club.
+                    There are no club rides scheduled for {formattedSelectedDateLabel}. You can choose another marked date on the calendar or create a new ride for the club.
                   </p>
                 </div>
                 <div className="flex items-center justify-center gap-3 pt-2">
@@ -576,7 +582,7 @@ export default function UserCalendar() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-4 max-h-[720px] overflow-y-auto pr-1">
+              <div className="space-y-10">
                 {selectedDateRides.map((ride: any) => {
                   const isSaved = isRideSaved(ride.id);
                   const rideImage = getRideCoverImage(ride);
@@ -605,122 +611,138 @@ export default function UserCalendar() {
                   return (
                     <div
                       key={ride.id}
-                      onClick={() => navigate(`/view/userside/dashboard/ride/${ride.id}`)}
-                      className="bg-surface border border-border hover:border-[#EB712B]/40 rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer group flex flex-col"
+                      className="space-y-4 pb-8 border-b border-border last:border-0 last:pb-0"
                     >
-                      {/* ── RIDE COVER IMAGE WITH SCRIM & QUICK ACTIONS ── */}
-                      <div className="relative h-40 sm:h-48 w-full overflow-hidden bg-black/50">
+                      {/* ── Typography Hierarchy: Title, sport kicker, and location placed cleanly ABOVE the card ── */}
+                      <div className="space-y-2">
+                        {/* Top Kicker Row */}
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
+                            <span className="text-[11px] font-mono tracking-widest uppercase text-[#EB712B] font-bold">
+                              {rideSport} {ride.club?.clubName ? `• ${ride.club.clubName}` : ''}
+                            </span>
+                          </div>
+
+                          {formattedTime && (
+                            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#EB712B]">
+                              <Clock size={13} className="shrink-0" />
+                              <span>{formattedTime}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Ride Title */}
+                        <h3
+                          onClick={() => navigate(`/view/userside/dashboard/ride/${ride.id}`)}
+                          className="text-2xl sm:text-3xl font-black text-text-main uppercase tracking-tight leading-tight hover:text-[#EB712B] transition-colors cursor-pointer"
+                        >
+                          {rideTitle}
+                        </h3>
+
+                        {/* Location on dedicated readable line */}
+                        <div className="flex items-start sm:items-center gap-2 text-xs sm:text-sm text-text-main/80 font-medium">
+                          <MapPin size={15} className="text-[#EB712B] shrink-0 mt-0.5 sm:mt-0" />
+                          <span className="leading-snug">{rideLocation}</span>
+                        </div>
+                      </div>
+
+                      {/* ── Clean Visual Card with Ride Image, Telemetry Badges & Quick Actions ── */}
+                      <div
+                        onClick={() => navigate(`/view/userside/dashboard/ride/${ride.id}`)}
+                        className="relative rounded-2xl overflow-hidden border border-border group aspect-[16/9] sm:aspect-[21/9] min-h-[220px] sm:min-h-[260px] bg-black/60 cursor-pointer"
+                      >
                         <img
                           src={rideImage}
                           alt={rideTitle}
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/Images/CycleImage2.png';
+                            (e.target as HTMLImageElement).src = '/Images/CyclingPicture.jpg';
                           }}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/30 to-black/50" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/25 pointer-events-none" />
 
-                        {/* Top Badges & Actions */}
-                        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-10">
-                          <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/70 border border-white/10 text-[10px] font-black uppercase tracking-wider text-[#EB712B]">
-                              <Bike size={12} />
-                              {rideSport}
+                        {/* Card Overlay Content */}
+                        <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-between pointer-events-none">
+                          {/* Top Row: Activity Tag & Quick Action Buttons */}
+                          <div className="flex justify-between items-center pointer-events-auto">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-white/90 uppercase">
+                              {rideSport} Activity
                             </span>
-                            {ride.club?.clubName && (
-                              <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-lg bg-black/70 border border-white/10 text-[10px] font-bold text-white/90 truncate max-w-[140px]">
-                                {ride.club.clubName}
-                              </span>
-                            )}
+
+                            {/* Quick Action Icons */}
+                            <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                              <button
+                                onClick={(e) => handleAddToGoogleCalendar(ride, e)}
+                                title="Add to Google Calendar"
+                                className="px-2.5 py-1.5 rounded-lg bg-black/70 hover:bg-[#EB712B] text-white backdrop-blur-md border border-white/15 transition-colors flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+                              >
+                                <CalendarIcon size={12} />
+                                <span>Google Cal</span>
+                              </button>
+
+                              <button
+                                onClick={(e) => handleToggleSave(ride.id, e)}
+                                title={isSaved ? 'Unsave Ride' : 'Save Ride'}
+                                className={`p-1.5 rounded-lg bg-black/70 backdrop-blur-md border transition-colors cursor-pointer ${
+                                  isSaved
+                                    ? 'border-[#EB712B] text-[#EB712B]'
+                                    : 'border-white/15 text-white/80 hover:text-white'
+                                }`}
+                              >
+                                <Bookmark size={13} className={isSaved ? 'fill-current' : ''} />
+                              </button>
+
+                              <button
+                                onClick={(e) => handleShareRide(ride, e)}
+                                title="Share Ride"
+                                className="p-1.5 rounded-lg bg-black/70 hover:bg-white/20 text-white/80 hover:text-white backdrop-blur-md border border-white/15 transition-colors cursor-pointer"
+                              >
+                                <Share2 size={13} />
+                              </button>
+                            </div>
                           </div>
 
-                          {/* Top-Right Quick Action Icons */}
-                          <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                            <button
-                              onClick={(e) => handleAddToGoogleCalendar(ride, e)}
-                              title="Add to Google Calendar"
-                              className="px-2.5 py-1.5 rounded-lg bg-black/70 hover:bg-[#EB712B] text-white border border-white/15 hover:border-transparent transition-colors flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
-                            >
-                              <CalendarIcon size={12} />
-                              <span>Google Cal</span>
-                            </button>
+                          {/* Bottom Row: Telemetry Chips + Organizer & CTA Button */}
+                          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pt-4 pointer-events-auto">
+                            {/* Telemetry Badges */}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-sm">
+                                <Navigation size={13} className="text-[#EB712B] shrink-0" />
+                                <span>{rideDistance}</span>
+                              </div>
 
-                            <button
-                              onClick={(e) => handleToggleSave(ride.id, e)}
-                              title={isSaved ? 'Unsave Ride' : 'Save Ride'}
-                              className={`p-1.5 rounded-lg bg-black/70 border transition-colors cursor-pointer ${
-                                isSaved
-                                  ? 'border-[#EB712B]/50 text-[#EB712B]'
-                                  : 'border-white/15 text-white/80 hover:text-white'
-                              }`}
-                            >
-                              <Bookmark size={13} className={isSaved ? 'fill-current' : ''} />
-                            </button>
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-sm">
+                                <Activity size={13} className="text-[#EB712B] shrink-0" />
+                                <span>{ridePace}</span>
+                              </div>
 
-                            <button
-                              onClick={(e) => handleShareRide(ride, e)}
-                              title="Share Ride"
-                              className="p-1.5 rounded-lg bg-black/70 hover:bg-white/20 text-white/80 hover:text-white border border-white/15 transition-colors cursor-pointer"
-                            >
-                              <Share2 size={13} />
-                            </button>
-                          </div>
-                        </div>
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-sm">
+                                <Users size={13} className="text-[#EB712B] shrink-0" />
+                                <span>{rideParticipants} Riders</span>
+                              </div>
+                            </div>
 
-                        {/* Bottom Image Overlay: Time pill */}
-                        {formattedTime && (
-                          <div className="absolute bottom-3 left-4 flex items-center gap-1.5 text-white font-bold text-xs bg-black/70 px-2.5 py-1 rounded-lg border border-white/15">
-                            <Clock size={12} className="text-[#EB712B]" />
-                            <span>{formattedTime}</span>
-                          </div>
-                        )}
-                      </div>
+                            {/* Organizer Profile & View Ride CTA */}
+                            <div className="flex items-center gap-2.5">
+                              <div className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 text-white text-xs font-medium">
+                                <OrganizerAvatar src={organizerPhoto} name={organizerName} />
+                                <span className="truncate max-w-[120px] text-xs">{organizerName}</span>
+                              </div>
 
-                      {/* ── RIDE DETAILS BODY ── */}
-                      <div className="p-5 space-y-4">
-                        <div>
-                          <h4 className="text-lg font-black uppercase text-text-main group-hover:text-[#EB712B] transition-colors leading-snug">
-                            {rideTitle}
-                          </h4>
-                          <div className="flex items-center gap-1.5 text-xs text-text-muted mt-1.5 font-medium">
-                            <MapPin size={14} className="text-[#EB712B] shrink-0" />
-                            <span className="truncate">{rideLocation}</span>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/view/userside/dashboard/ride/${ride.id}`);
+                                }}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-[#EB712B] text-black hover:text-white font-black text-xs uppercase tracking-wider transition-colors active:scale-95 cursor-pointer shadow-md"
+                              >
+                                <span>View Ride</span>
+                                <ArrowRight size={13} />
+                              </button>
+                            </div>
                           </div>
-                        </div>
-
-                        {/* Telemetry Pills */}
-                        <div className="grid grid-cols-3 gap-2 py-1">
-                          <div className="bg-main-bg border border-border rounded-xl p-2.5 text-center">
-                            <span className="block text-[9px] font-bold uppercase tracking-wider text-text-muted">Distance</span>
-                            <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
-                              {rideDistance}
-                            </span>
-                          </div>
-                          <div className="bg-main-bg border border-border rounded-xl p-2.5 text-center">
-                            <span className="block text-[9px] font-bold uppercase tracking-wider text-text-muted">Pace</span>
-                            <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
-                              {ridePace}
-                            </span>
-                          </div>
-                          <div className="bg-main-bg border border-border rounded-xl p-2.5 text-center">
-                            <span className="block text-[9px] font-bold uppercase tracking-wider text-text-muted">Riders</span>
-                            <span className="text-xs font-black uppercase text-text-main mt-0.5 block truncate">
-                              {rideParticipants}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Footer: Organizer & View Details Arrow */}
-                        <div className="flex items-center justify-between pt-3 border-t border-border text-xs font-semibold text-text-muted">
-                          <div className="flex items-center gap-2">
-                            <OrganizerAvatar src={organizerPhoto} name={organizerName} />
-                            <span className="text-xs text-text-main font-bold truncate max-w-[170px]">
-                              {organizerName}
-                            </span>
-                          </div>
-                          <span className="text-[11px] font-black uppercase tracking-wider text-[#EB712B] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                            View Details <ArrowRight size={13} />
-                          </span>
                         </div>
                       </div>
 
