@@ -8,6 +8,7 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import type { ShopTypes } from "@/api/types";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { toast } from "sonner";
+import { resolveImageUrl } from "../services/clubGeocoding";
 
 // ── SKELETONS ───────────────────────────────────────────────────────────────
 const ShopSkeleton = () => (
@@ -198,7 +199,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
     price: item.price ? `€${parseFloat(item.price as unknown as string).toFixed(2)}` : "Free",
     rawPrice: parseFloat(item.price as unknown as string) || 0,
     location: item.gender || "Club Store",
-    image: item.image || "/Images/HelmetImage4.jpg",
+    image: resolveImageUrl(item.image) || "/Images/HelmetImage4.jpg",
   }));
 
   // Auto-close success screen after 2.5 s

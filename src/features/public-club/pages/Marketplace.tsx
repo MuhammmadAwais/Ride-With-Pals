@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MapPin, Grid3X3, List, Search, Filter, Plus, Trash2, Share2, Upload, Loader2, X } from "lucide-react";
+import { Heart, MapPin, Grid3X3, List, Search, Filter, Plus, Trash2, Share2, Upload, Loader2, X, Package } from "lucide-react";
 import { toast } from "sonner";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { ROUTES } from "@/Constants";
@@ -15,6 +15,68 @@ import {
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
+import { resolveImageUrl } from "../services/clubGeocoding";
+
+export const getMarketplaceFallbackImage = (name?: string): string => {
+  const n = (name || "").toLowerCase();
+  if (n.includes("watch") || n.includes("coros") || n.includes("garmin")) {
+    return "/Images/SmartWatch.jpg";
+  }
+  if (n.includes("bottle") || n.includes("altavoz") || n.includes("speaker") || n.includes("water")) {
+    return "/Images/BottleImage.png";
+  }
+  if (n.includes("sram") || n.includes("cambio") || n.includes("bike") || n.includes("cycle") || n.includes("libro")) {
+    return "/Images/CycleImage2.png";
+  }
+  if (n.includes("glove")) {
+    return "/Images/CycleGloves.jfif";
+  }
+  return "/Images/HelmetImage4.jpg";
+};
+
+const ProductCardImage = ({
+  src,
+  alt,
+  fallbackSrc,
+}: {
+  src: string;
+  alt: string;
+  fallbackSrc: string;
+}) => {
+  const [imgSrc, setImgSrc] = useState(src);
+  const [isFailed, setIsFailed] = useState(false);
+
+  useEffect(() => {
+    setImgSrc(src);
+    setIsFailed(false);
+  }, [src]);
+
+  const handleImageError = () => {
+    if (imgSrc !== fallbackSrc) {
+      setImgSrc(fallbackSrc);
+    } else {
+      setIsFailed(true);
+    }
+  };
+
+  if (isFailed) {
+    return (
+      <div className="w-full h-full bg-[#1c1c1c] flex flex-col items-center justify-center gap-1.5 text-text-muted">
+        <Package size={22} className="text-[#EB712B]" />
+        <span className="font-black text-[10px] uppercase tracking-wider text-text-muted">Premium Gear</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imgSrc}
+      alt={alt}
+      onError={handleImageError}
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+    />
+  );
+};
 
 interface Product {
   id: string;
@@ -280,7 +342,12 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
                 disabled={isSharing}
                 className="w-full flex items-center gap-3 p-3 rounded-xl bg-main-bg border border-border hover:border-[#EB712B]/40 transition-colors text-left cursor-pointer outline-none disabled:opacity-50"
               >
-                <img src={c.logo || "/Images/CycleImage.png"} alt={c.clubName} className="w-8 h-8 rounded-lg object-cover border border-border" />
+                <img
+                  src={resolveImageUrl(c.logo) || "/Images/CycleImage.png"}
+                  alt={c.clubName}
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage.png'; }}
+                  className="w-8 h-8 rounded-lg object-cover border border-border"
+                />
                 <span className="text-xs font-bold text-text-main truncate">{c.clubName}</span>
               </button>
             ))
@@ -358,18 +425,22 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
       ? marketplaceResponse?.rows || [] 
       : ownListingsResponse?.rows || [];
 
-    return rawRows.map((item) => ({
-      id: item.id.toString(),
-      name: item.productName || "Unknown Item",
-      price: item.price ? `$${parseFloat(item.price).toFixed(2)}` : "Free",
-      condition: (item.condition?.toUpperCase() === "NEW" ? "NEW" : "USED") as "NEW" | "USED",
-      location: item.club?.clubName || "Global Marketplace",
-      image: item.image || "/Images/HelmetImage4.jpg",
-      sellerId: item.sellerId,
-      sellerName: item.seller?.fullName || "Elite Seller",
-      sellerAvatar: item.seller?.profileImage || undefined,
-      description: item.description,
-    }));
+    return rawRows.map((item) => {
+      const fallback = getMarketplaceFallbackImage(item.productName);
+      const resolved = resolveImageUrl(item.image);
+      return {
+        id: item.id.toString(),
+        name: item.productName || "Unknown Item",
+        price: item.price ? `$${parseFloat(item.price).toFixed(2)}` : "Free",
+        condition: (item.condition?.toUpperCase() === "NEW" ? "NEW" : "USED") as "NEW" | "USED",
+        location: item.club?.clubName || "Global Marketplace",
+        image: resolved || fallback,
+        sellerId: item.sellerId,
+        sellerName: item.seller?.fullName || "Elite Seller",
+        sellerAvatar: resolveImageUrl(item.seller?.profileImage) || undefined,
+        description: item.description,
+      };
+    });
   }, [marketplaceResponse, ownListingsResponse, activeTab]);
 
   const handleImageError = (id: string) => {
@@ -543,18 +614,11 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                   <div className={`relative bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${
                     viewMode === "list" ? "w-28 h-28 aspect-square" : "w-full aspect-[4/3]"
                   }`}>
-                    {imageErrors[product.id] ? (
-                      <div className="w-full h-full bg-surface flex flex-col items-center justify-center gap-1.5 text-text-muted">
-                        <span className="font-black text-[10px] uppercase tracking-wider">Premium Gear</span>
-                      </div>
-                    ) : (
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        onError={() => handleImageError(product.id)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    )}
+                    <ProductCardImage 
+                      src={product.image} 
+                      alt={product.name}
+                      fallbackSrc={getMarketplaceFallbackImage(product.name)}
+                    />
                     
                     <button 
                       onClick={(e) => toggleFavorite(product.id, e)}

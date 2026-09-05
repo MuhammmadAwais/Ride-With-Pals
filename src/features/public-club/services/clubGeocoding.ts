@@ -241,10 +241,17 @@ export const resolveClubCoordinates = async (
 export const resolveImageUrl = (img?: string | null): string => {
   if (!img || typeof img !== "string" || img.trim() === "" || img === "null" || img === "undefined") return "";
   const trimmed = img.trim();
+  if (trimmed === "saqi.png") return "";
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("data:") || trimmed.startsWith("blob:")) {
     return trimmed;
   }
-  if (trimmed.startsWith("/") || trimmed.startsWith("./")) {
+  // Local public assets
+  if (
+    trimmed.startsWith("/Images/") ||
+    trimmed.startsWith("/Videos/") ||
+    trimmed.startsWith("/landing/") ||
+    trimmed.startsWith("./Images/")
+  ) {
     return trimmed;
   }
   const cleanPath = trimmed.replace(/\\/g, "/").replace(/^\/?(uploads\/)?/, "");

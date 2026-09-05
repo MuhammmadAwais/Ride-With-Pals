@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Bike, Trophy, Award, Filter, TrendingUp, Activity } from 'lucide-react';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
@@ -6,6 +6,50 @@ import { useGetClubLeaderboardAppRidesQuery } from '@/features/club/api/clubApiS
 import { useGetStravaLeaderboardDataQuery } from '@/features/club/api/stravaApiSlice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { useActiveClub } from '@/hooks/useActiveClub';
+import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
+
+const LeaderboardAvatar = ({ avatar, name }: { avatar?: string | null; name: string }) => {
+  const [hasError, setHasError] = useState(false);
+
+  // Reset error if avatar changes
+  useEffect(() => {
+    setHasError(false);
+  }, [avatar]);
+
+  const resolvedUrl = useMemo(() => {
+    if (!avatar || hasError) return null;
+    const url = resolveImageUrl(avatar);
+    return url || null;
+  }, [avatar, hasError]);
+
+  const initials = useMemo(() => {
+    const clean = (name || 'Rider').trim();
+    const parts = clean.split(/\s+/);
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return clean.slice(0, 2).toUpperCase() || 'R';
+  }, [name]);
+
+  if (!resolvedUrl || hasError) {
+    return (
+      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#1a1a1a] to-[#252525] border border-border flex items-center justify-center font-bold text-[#EB712B] text-xs uppercase shrink-0 select-none shadow-sm">
+        {initials}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-10 h-10 rounded-full border border-border overflow-hidden shrink-0 bg-[#1c1c1c] shadow-sm flex items-center justify-center">
+      <img
+        src={resolvedUrl}
+        alt={name}
+        onError={() => setHasError(true)}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+};
 
 const StatCard = ({ title, value, icon: Icon }: any) => (
   <div className="relative p-6 bg-surface border border-border backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 transition-all duration-500 group">
@@ -75,30 +119,32 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   const leaderboardData = useMemo(() => {
     if (activeTab === 'app') {
       const raw = rawLeaderboard as any;
-      const dataArray = raw?.rows || raw?.data || raw?.response?.data || [];
+      const dataArray = raw?.rows || raw?.data || raw?.response?.rows || raw?.response?.data || [];
       const items = Array.isArray(dataArray) ? dataArray : Array.isArray(rawLeaderboard) ? rawLeaderboard : [];
       
       return items.map((item: any, index: number) => ({
         id: index + 1,
-        name: item.userName || item.name || 'Unknown Rider',
-        role: item.role || 'Member',
+        name: item.userName || item.name || item.fullName || item.user?.fullName || item.user?.username || 'Unknown Rider',
+        role: item.role || item.user?.role || 'Member',
         team: item.team || 'RWP Squad',
         status: item.status || 'Active',
-        rides: item.ridesCount || item.totalRides || 0,
+        rides: item.ridesCount ?? item.rideCount ?? item.totalRides ?? 0,
         attendance: `${item.attendance || 100}%`,
-        avatar: item.profileImage || null
+        avatar: item.profileImage || item.profilePhoto || item.profilePicUrl || item.avatar || item.user?.profileImage || item.user?.profilePhoto || null
       }));
     } else {
-      const items = Array.isArray(stravaData) ? stravaData : (stravaData as any)?.rows || [];
+      const raw = stravaData as any;
+      const dataArray = raw?.rows || raw?.data || raw?.response?.rows || raw?.response?.data || [];
+      const items = Array.isArray(dataArray) ? dataArray : Array.isArray(stravaData) ? stravaData : [];
       return items.map((item: any, index: number) => ({
         id: index + 1,
-        name: item.fullName || 'Strava Rider',
+        name: item.fullName || item.name || item.userName || (item.firstname ? `${item.firstname} ${item.lastname || ''}`.trim() : 'Strava Rider'),
         role: 'Strava',
-        team: item.totalDistance ? `${item.totalDistance} km` : 'Strava Sync',
+        team: item.totalDistance ? `${item.totalDistance} km` : (item.totalKm ? `${item.totalKm} km` : 'Strava Sync'),
         status: 'Active',
-        rides: item.totalRides || item.ridesCount || 0,
+        rides: item.totalRides ?? item.ridesCount ?? item.rideCount ?? 0,
         attendance: item.totalElevation ? `${item.totalElevation}m elev` : '100%',
-        avatar: item.profileImage || null
+        avatar: item.profileImage || item.profile || item.profile_medium || item.profilePhoto || item.avatar || item.user?.profileImage || null
       }));
     }
   }, [activeTab, rawLeaderboard, stravaData]);
@@ -116,13 +162,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       sortable: true,
       render: (user) => (
         <div className="flex items-center gap-4">
-          {user.avatar ? (
-            <img src={user.avatar} className="w-10 h-10 rounded-full object-cover border border-border" alt="" />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#1a1a1a] to-[#252525] border border-border flex items-center justify-center font-bold text-[#EB712B] text-xs uppercase">
-              {user.name.substring(0, 2)}
-            </div>
-          )}
+          <LeaderboardAvatar avatar={user.avatar} name={user.name} />
           <div>
             <div className="font-bold text-text-main transition-colors">{user.name}</div>
             <div className="text-[10px] text-text-muted uppercase tracking-widest">{user.role} • {user.team}</div>
