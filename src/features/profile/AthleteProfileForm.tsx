@@ -1,6 +1,6 @@
 import { useState, useRef, useLayoutEffect, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, Calendar, Loader2, Search, X, Upload, Check, ArrowLeft } from "lucide-react";
+import { ChevronDown, Calendar, Loader2, Search, X, Upload, Check, ArrowLeft, Eye } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
 import { backendApi } from "@/api/backendApi";
@@ -17,6 +17,7 @@ const AthleteProfileForm = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isAvatarPreviewOpen, setIsAvatarPreviewOpen] = useState(false);
   const [isCountryModalOpen, setIsCountryModalOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
   
@@ -241,7 +242,11 @@ const AthleteProfileForm = () => {
             
             {/* ── Profile Image Upload Section ── */}
             <div className="animate-item md:col-span-2 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-5 sm:p-6 bg-main-bg/60 border border-border rounded-2xl">
-              <div className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-surface border-2 border-[#EB712B]/40 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
+              <div 
+                onClick={() => setIsAvatarPreviewOpen(true)}
+                title="Click to view preview"
+                className="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-surface border-2 border-[#EB712B]/40 hover:border-[#EB712B] flex items-center justify-center overflow-hidden shrink-0 shadow-lg cursor-pointer transition-transform hover:scale-105"
+              >
                 <img
                   src={imagePreviewUrl}
                   alt="Profile Avatar"
@@ -252,9 +257,13 @@ const AthleteProfileForm = () => {
                     }
                   }}
                 />
-                {isUploadingImage && (
+                {isUploadingImage ? (
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                     <Loader2 className="animate-spin text-[#EB712B]" size={20} />
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white backdrop-blur-[1px]">
+                    <Eye size={18} />
                   </div>
                 )}
               </div>
@@ -558,6 +567,71 @@ const AthleteProfileForm = () => {
                   {country === c && <Check size={16} className="text-[#EB712B]" />}
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Avatar Lightbox Preview Modal */}
+      {isAvatarPreviewOpen && (
+        <div 
+          className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsAvatarPreviewOpen(false);
+          }}
+        >
+          <div className="bg-surface border border-border rounded-[2.5rem] p-6 sm:p-8 w-full max-w-sm shadow-2xl relative flex flex-col items-center space-y-5 animate-in zoom-in-95 duration-200">
+            {/* Top bar */}
+            <div className="w-full flex items-center justify-between border-b border-border/70 pb-3.5">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
+                <span className="text-xs font-black uppercase tracking-widest text-[#EB712B]">
+                  Avatar Preview
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAvatarPreviewOpen(false)}
+                className="w-8 h-8 rounded-full bg-main-bg border border-border hover:border-[#EB712B]/40 flex items-center justify-center text-text-muted hover:text-text-main transition-colors cursor-pointer"
+                title="Close"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Large Avatar */}
+            <div className="relative w-60 h-60 sm:w-68 sm:h-68 rounded-3xl overflow-hidden border-2 border-border bg-main-bg shadow-2xl flex items-center justify-center shrink-0">
+              <img
+                src={imagePreviewUrl}
+                alt="Avatar Preview"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  if (imagePreviewUrl !== "/Images/ProfileImage.png") {
+                    (e.target as HTMLImageElement).src = "/Images/ProfileImage.png";
+                  }
+                }}
+              />
+            </div>
+
+            {/* Name / Caption */}
+            <div className="text-center space-y-1 w-full px-2">
+              <h3 className="text-lg font-black tracking-tight text-text-main uppercase truncate">
+                {fullName || "Athlete"}
+              </h3>
+              <p className="text-xs font-bold text-[#EB712B] truncate">
+                {userInfo?.email || "Athlete Profile"}
+              </p>
+            </div>
+
+            {/* Close action */}
+            <div className="w-full pt-2">
+              <button
+                type="button"
+                onClick={() => setIsAvatarPreviewOpen(false)}
+                className="w-full py-3 rounded-xl bg-[#EB712B] hover:bg-[#d66525] text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#EB712B]/20"
+              >
+                Done
+              </button>
             </div>
           </div>
         </div>

@@ -431,7 +431,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   const filterRef = useRef<HTMLDivElement>(null);
 
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+
   const navigate = useNavigate();
 
   // Create Listing Form state
@@ -521,9 +521,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
     });
   }, [marketplaceResponse, ownListingsResponse, activeTab]);
 
-  const handleImageError = (id: string) => {
-    setImageErrors((prev) => ({ ...prev, [id]: true }));
-  };
+
 
   const toggleFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();

@@ -70,6 +70,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
   const [imageError, setImageError] = useState(false);
 
   // Modals & States
+  const [isAvatarPreviewOpen, setIsAvatarPreviewOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -79,6 +80,19 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     confirm: "",
   });
   const [errors, setErrors] = useState({ current: "", new: "", confirm: "" });
+
+  // Escape key handler to close modals
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsAvatarPreviewOpen(false);
+        setIsPasswordModalOpen(false);
+        setIsDeleteModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // API Hooks
   const { data: userProfileData, refetch: refetchUserInfo } = useUserInfoQuery();
@@ -318,12 +332,23 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#EB712B]/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-[#EB712B]/20 transition-all duration-700 pointer-events-none"></div>
             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <div className="w-24 h-24 rounded-3xl bg-surface border-2 border-border overflow-hidden shadow-xl shrink-0 flex items-center justify-center relative">
+                <div 
+                  onClick={() => setIsAvatarPreviewOpen(true)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      setIsAvatarPreviewOpen(true);
+                    }
+                  }}
+                  title="Click to view full image"
+                  className="w-24 h-24 rounded-3xl bg-surface border-2 border-border hover:border-[#EB712B] overflow-hidden shadow-xl shrink-0 flex items-center justify-center relative cursor-pointer group/avatar transition-all duration-300 hover:scale-105 active:scale-95"
+                >
                   {!imageError && resolveProfileImageUrl(userProfileData?.profileImage) ? (
                     <img
                       src={resolveProfileImageUrl(userProfileData?.profileImage)!}
                       alt={userProfileData?.fullName || "Profile"}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover/avatar:scale-105 transition-transform duration-300"
                       onError={() => setImageError(true)}
                     />
                   ) : (
@@ -341,6 +366,12 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                       )}
                     </div>
                   )}
+
+                  {/* Hover indicator overlay */}
+                  <div className="absolute inset-0 bg-black/45 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-1 text-white backdrop-blur-[2px]">
+                    <Eye size={18} className="drop-shadow" />
+                    <span className="text-[8px] font-black uppercase tracking-wider text-white/90">Preview</span>
+                  </div>
                 </div>
                 <div>
                   <h2 className="text-3xl font-black tracking-tight text-text-main">{userProfileData?.fullName || "User Profile"}</h2>
@@ -853,6 +884,92 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 className="px-6 py-2.5 bg-red-500 hover:bg-red-600 rounded-xl font-bold text-white transition-all cursor-pointer flex items-center gap-2 text-xs uppercase shadow-lg shadow-red-500/20"
               >
                 <MessageSquare size={14} /> Contact Support
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Avatar Lightbox Preview Modal */}
+      {isAvatarPreviewOpen && (
+        <div 
+          className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsAvatarPreviewOpen(false);
+          }}
+        >
+          <div className="bg-surface border border-border rounded-[2.5rem] p-6 sm:p-8 w-full max-w-sm shadow-2xl relative flex flex-col items-center space-y-5 animate-in zoom-in-95 duration-200">
+            {/* Top bar */}
+            <div className="w-full flex items-center justify-between border-b border-border/70 pb-3.5">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
+                <span className="text-xs font-black uppercase tracking-widest text-[#EB712B]">
+                  Avatar Preview
+                </span>
+              </div>
+              <button
+                onClick={() => setIsAvatarPreviewOpen(false)}
+                className="w-8 h-8 rounded-full bg-main-bg border border-border hover:border-[#EB712B]/40 flex items-center justify-center text-text-muted hover:text-text-main transition-colors cursor-pointer"
+                title="Close"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Large Avatar */}
+            <div className="relative w-60 h-60 sm:w-68 sm:h-68 rounded-3xl overflow-hidden border-2 border-border bg-main-bg shadow-2xl flex items-center justify-center shrink-0">
+              {!imageError && resolveProfileImageUrl(userProfileData?.profileImage) ? (
+                <img
+                  src={resolveProfileImageUrl(userProfileData?.profileImage)!}
+                  alt={userProfileData?.fullName || "Avatar Preview"}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#EB712B]/10 text-[#EB712B] font-black text-6xl uppercase tracking-wider select-none">
+                  {userProfileData?.fullName ? (
+                    userProfileData.fullName
+                      .split(" ")
+                      .filter(Boolean)
+                      .map((n: string) => n[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()
+                  ) : (
+                    <UserIcon size={64} className="text-[#EB712B]" />
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Details */}
+            <div className="text-center space-y-1 w-full px-2">
+              <h3 className="text-lg font-black tracking-tight text-text-main uppercase truncate">
+                {userProfileData?.fullName || "User Profile"}
+              </h3>
+              <p className="text-xs font-bold text-[#EB712B] truncate">
+                {userProfileData?.email}
+              </p>
+              {userProfileData?.createdAt && (
+                <p className="text-[11px] text-text-muted font-medium pt-1">
+                  Joined {new Date(userProfileData.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="w-full flex items-center gap-3 pt-2">
+              <Link
+                to="/athlete-profile"
+                onClick={() => setIsAvatarPreviewOpen(false)}
+                className="flex-1 flex items-center justify-center gap-2 bg-[#EB712B] hover:bg-[#d66525] text-white py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#EB712B]/20"
+              >
+                <Edit3 size={14} /> Change Photo
+              </Link>
+              <button
+                onClick={() => setIsAvatarPreviewOpen(false)}
+                className="px-5 py-3 rounded-xl border border-border text-text-muted hover:text-text-main hover:border-text-muted bg-main-bg font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+              >
+                Close
               </button>
             </div>
           </div>
