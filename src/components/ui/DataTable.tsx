@@ -224,7 +224,7 @@ function DataTable<T extends object>({
             ) : (
               filteredItems.map((row, rowIdx) => (
                 <tr
-                  key={rowIdx}
+                  key={String((row as any).id ?? (row as any).userId ?? (row as any).name ?? rowIdx)}
                   style={{
                     borderBottom: rowIdx < filteredItems.length - 1 ? '1px solid var(--color-border)' : 'none',
                     transition: 'background 0.2s',

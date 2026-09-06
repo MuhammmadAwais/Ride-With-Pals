@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare, Crown, Globe, Lock, Bike, Trophy } from 'lucide-react';
+import { ChevronLeft, Loader2, MapPin, Users, Activity, ShieldCheck, MessageSquare, Crown, Globe, Lock, Bike, Trophy, LogOut, X, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { useGetClubInfoByIdQuery, useGetJoinedClubsQuery, useLeaveClubMutation, useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import { useGetMyMembershipInfoQuery } from '@/features/club/api/membershipApiSlice';
@@ -9,6 +9,7 @@ import { useClub } from '@/features/club/hooks/useClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { ClubMembershipModal } from '../components/ClubMembershipModal';
 import { resolveImageUrl } from '../services/clubGeocoding';
+import AvatarLightboxModal from '@/components/ui/AvatarLightboxModal';
 
 
 // Import refactored tab components
@@ -131,6 +132,8 @@ export default function ClubDetails() {
 
 
   const [showMembershipModal, setShowMembershipModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [showClubAvatarPreview, setShowClubAvatarPreview] = useState(false);
   const [showCodeScreen, setShowCodeScreen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [codeError, setCodeError] = useState("");
@@ -142,6 +145,30 @@ export default function ClubDetails() {
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
+
+  // Lock body scroll and handle Escape key when modals are open
+  useEffect(() => {
+    if (showLeaveModal || showCodeScreen || showDepositScreen || showMembershipModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showLeaveModal, showCodeScreen, showDepositScreen, showMembershipModal]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showLeaveModal) setShowLeaveModal(false);
+        if (showCodeScreen) setShowCodeScreen(false);
+        if (showDepositScreen) setShowDepositScreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLeaveModal, showCodeScreen, showDepositScreen]);
 
   const { data: clubData, isLoading, isError } = useGetClubInfoByIdQuery(
     { clubId: Number(clubId) },
@@ -246,12 +273,16 @@ export default function ClubDetails() {
     }
   };
 
-  const handleLeaveClub = async () => {
+  const handleLeaveClubClick = () => {
+    setShowLeaveModal(true);
+  };
+
+  const handleConfirmLeave = async () => {
     const targetClubId = club?.id || Number(clubId);
     if (!targetClubId) return;
-    if (!window.confirm("Are you sure you want to leave this club?")) return;
     try {
       await leaveClub({ clubId: targetClubId }).unwrap();
+      setShowLeaveModal(false);
       toast.success("You have left the club successfully.");
     } catch (err: any) {
       toast.error(err?.data?.message || err?.message || "Failed to leave the club.");
@@ -368,8 +399,12 @@ export default function ClubDetails() {
           <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-start sm:items-end min-w-0 flex-1 w-full">
             
             {/* Club Logo Avatar */}
-            <div className="relative shrink-0 group">
-              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-3xl overflow-hidden border-4 border-main-bg bg-surface flex items-center justify-center">
+            <div 
+              onClick={() => setShowClubAvatarPreview(true)}
+              className="relative shrink-0 group cursor-pointer"
+              title="Click to preview club avatar"
+            >
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-3xl overflow-hidden border-4 border-main-bg bg-surface flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-102">
                 <img 
                   src={logoImage} 
                   alt={club.clubName || "Club Logo"} 
@@ -377,9 +412,13 @@ export default function ClubDetails() {
                   onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage.png'; }}
                 />
               </div>
+              {/* Hover overlay hint */}
+              <div className="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <Eye size={24} className="text-white drop-shadow-md" />
+              </div>
               {club.isVerified && (
                 <div 
-                  className="absolute -bottom-1 -right-1 sm:bottom-0 sm:right-0 w-8 h-8 bg-emerald-500 rounded-2xl border-2 border-main-bg flex items-center justify-center"
+                  className="absolute -bottom-1 -right-1 sm:bottom-0 sm:right-0 w-8 h-8 bg-emerald-500 rounded-2xl border-2 border-main-bg flex items-center justify-center pointer-events-none"
                   title="Verified Club"
                 >
                   <ShieldCheck size={16} className="text-white" />
@@ -481,7 +520,7 @@ export default function ClubDetails() {
             {/* Joined Status / Leave Club */}
             {isMember && (
               <button 
-                onClick={handleLeaveClub}
+                onClick={handleLeaveClubClick}
                 disabled={isLeaving}
                 className="inline-flex items-center justify-center px-6 py-3 bg-hover hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors text-xs font-black uppercase tracking-wider rounded-2xl cursor-pointer disabled:opacity-50"
                 title="Click to leave club"
@@ -672,10 +711,123 @@ export default function ClubDetails() {
         </div>
       )}
 
+      {/* ── Leave Club Confirmation Modal ── */}
+      {showLeaveModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setShowLeaveModal(false)}
+        >
+          <div 
+            className="bg-surface border border-border/90 p-6 sm:p-8 rounded-3xl w-full max-w-md space-y-6 shadow-2xl relative animate-in zoom-in-95 duration-200 text-text-main"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowLeaveModal(false)}
+              className="absolute top-5 right-5 text-text-muted hover:text-text-main p-2 rounded-xl hover:bg-hover transition-colors cursor-pointer border-0 bg-transparent"
+              title="Close modal"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header Icon & Title */}
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0">
+                <LogOut size={22} />
+              </div>
+              <div className="pr-6">
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-400 block">
+                  Club Membership
+                </span>
+                <h3 className="text-xl font-black text-text-main tracking-tight mt-0.5">
+                  Leave this Club?
+                </h3>
+              </div>
+            </div>
+
+            {/* Club Preview Card with Banner Image in Background */}
+            <div className="relative rounded-2xl overflow-hidden border border-border/80 p-4 shadow-lg group">
+              {/* Banner Image Background */}
+              <img 
+                src={coverImage} 
+                alt="Club Banner" 
+                className="absolute inset-0 w-full h-full object-cover"
+                onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage2.png'; }}
+              />
+              {/* Dark Gradient Overlay for crisp text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/80 to-black/65 backdrop-blur-[1px]" />
+
+              {/* Foreground Content */}
+              <div className="relative z-10 flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-white/20 bg-surface/90 shrink-0 flex items-center justify-center shadow-md">
+                  <img 
+                    src={logoImage} 
+                    alt={club.clubName || club.name || "Club Logo"} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CycleImage.png'; }}
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="text-sm sm:text-base font-black text-white truncate tracking-tight">
+                    {club.clubName || club.name || 'This Club'}
+                  </h4>
+                  <p className="text-[11px] text-gray-300 font-medium truncate mt-0.5 flex items-center gap-1.5">
+                    <MapPin size={11} className="text-[#EB712B] shrink-0" />
+                    <span>{club.location || club.city || 'Community Club'}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Explanation Notice */}
+            <p className="text-xs text-text-muted font-medium leading-relaxed">
+              Are you sure you want to leave <span className="font-bold text-text-main">{club.clubName || club.name || 'this club'}</span>? You will lose access to member-only scheduled rides, club leaderboards, and exclusive activity perks.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowLeaveModal(false)}
+                disabled={isLeaving}
+                className="flex-1 py-3.5 px-4 bg-hover hover:bg-border text-text-main rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all border border-border outline-none disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmLeave}
+                disabled={isLeaving}
+                className="flex-1 py-3.5 px-4 bg-red-500 hover:bg-red-600 active:scale-95 text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-transparent shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 outline-none disabled:opacity-50"
+              >
+                {isLeaving ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span>Leaving...</span>
+                  </>
+                ) : (
+                  <span>Leave Club</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ClubMembershipModal
         clubId={Number(clubId)}
         isOpen={showMembershipModal}
         onClose={() => setShowMembershipModal(false)}
+      />
+
+      <AvatarLightboxModal
+        isOpen={showClubAvatarPreview}
+        onClose={() => setShowClubAvatarPreview(false)}
+        imageUrl={logoImage}
+        name={club.clubName || "Club"}
+        subtitle={club.location || club.sport || "Ride With Pals Club"}
+        tag="Club Avatar"
+        fallbackInitials={(club.clubName || "C").slice(0, 2).toUpperCase()}
       />
     </div>
   );

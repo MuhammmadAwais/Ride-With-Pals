@@ -9,13 +9,12 @@ export interface SortConfig<T> {
 }
 
 /**
- * Generic table sort hook — ported directly from admin panel.
+ * Generic table sort hook — handles strings, numbers, dates, and empty fallbacks.
  *
  * Usage:
  *   const { items, requestSort, sortConfig } = useTableSort(rawData);
  *
  * Cycle: clicking a column goes asc → desc → null (unsorted).
- * Handles: strings, numbers, dates (ISO / common date strings).
  */
 export function useTableSort<T>(data: T[]) {
   const [sortConfig, setSortConfig] = useState<SortConfig<T>>({ key: null, direction: null });
@@ -24,37 +23,68 @@ export function useTableSort<T>(data: T[]) {
     const sortableItems = [...data];
     if (sortConfig.key === null || sortConfig.direction === null) return sortableItems;
 
+    const isAsc = sortConfig.direction === 'asc';
+
     sortableItems.sort((a, b) => {
       const aValue = a[sortConfig.key!];
       const bValue = b[sortConfig.key!];
 
       if (aValue === bValue) return 0;
 
-      // Null/undefined sorts to end
-      if (aValue == null) return sortConfig.direction === 'asc' ? 1 : -1;
-      if (bValue == null) return sortConfig.direction === 'asc' ? -1 : 1;
+      // Null, undefined, or placeholder values ("—", "-", "N/A", "null", "") always sort to the bottom
+      const isNullOrEmpty = (v: unknown) => 
+        v == null || v === '' || v === '—' || v === '-' || v === 'N/A' || v === 'null' || v === 'undefined';
+      const aEmpty = isNullOrEmpty(aValue);
+      const bEmpty = isNullOrEmpty(bValue);
 
-      const aStr = String(aValue).toLowerCase();
-      const bStr = String(bValue).toLowerCase();
+      if (aEmpty && bEmpty) return 0;
+      if (aEmpty) return 1;
+      if (bEmpty) return -1;
 
-      // Try date comparison first (e.g. "2024-01-15", "Jan 15 2024")
-      const dateA = Date.parse(aStr);
-      const dateB = Date.parse(bStr);
-      if (!isNaN(dateA) && !isNaN(dateB)) {
-        return sortConfig.direction === 'asc' ? dateA - dateB : dateB - dateA;
+      // Pure numbers
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return isAsc ? aValue - bValue : bValue - aValue;
       }
 
-      // Numeric comparison
-      const numA = Number(aStr.replace(/[^0-9.-]/g, ''));
-      const numB = Number(bStr.replace(/[^0-9.-]/g, ''));
-      if (!isNaN(numA) && !isNaN(numB) && aStr !== bStr) {
-        return sortConfig.direction === 'asc' ? numA - numB : numB - numA;
+      // Date objects
+      if (aValue instanceof Date && bValue instanceof Date) {
+        return isAsc ? aValue.getTime() - bValue.getTime() : bValue.getTime() - aValue.getTime();
       }
 
-      // Alphabetical fallback
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
+      const aStr = String(aValue).trim();
+      const bStr = String(bValue).trim();
+
+      // Check if both strings are date-like
+      const isDateLike = (s: string) => 
+        /^\d{4}[-/]\d{1,2}[-/]\d{1,2}/.test(s) || 
+        /^\d{1,2}[-/]\d{1,2}[-/]\d{4}/.test(s) || 
+        /^[A-Za-z]{3}\s+\d{1,2},?\s+\d{4}/.test(s);
+
+      if (isDateLike(aStr) && isDateLike(bStr)) {
+        const dateA = Date.parse(aStr);
+        const dateB = Date.parse(bStr);
+        if (!isNaN(dateA) && !isNaN(dateB)) {
+          return isAsc ? dateA - dateB : dateB - dateA;
+        }
+      }
+
+      // Check if both strings are numeric (e.g. numbers or formatted currency)
+      const cleanA = aStr.replace(/[^0-9.-]/g, '');
+      const cleanB = bStr.replace(/[^0-9.-]/g, '');
+      const isPureNumericA = cleanA !== '' && /^\+?[\d\s().-]+$/.test(aStr);
+      const isPureNumericB = cleanB !== '' && /^\+?[\d\s().-]+$/.test(bStr);
+
+      if (isPureNumericA && isPureNumericB) {
+        const numA = Number(cleanA);
+        const numB = Number(cleanB);
+        if (!isNaN(numA) && !isNaN(numB) && cleanA !== cleanB) {
+          return isAsc ? numA - numB : numB - numA;
+        }
+      }
+
+      // Natural Alphabetical string comparison
+      const cmp = aStr.localeCompare(bStr, undefined, { numeric: true, sensitivity: 'base' });
+      return isAsc ? cmp : -cmp;
     });
 
     return sortableItems;

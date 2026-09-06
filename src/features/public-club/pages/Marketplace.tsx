@@ -16,8 +16,7 @@ import {
   Package,
   SlidersHorizontal,
   RotateCcw,
-  Check,
-  Sparkles
+  Check
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -630,9 +629,6 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
             <h1 className="text-2xl md:text-3xl font-black uppercase tracking-wide text-text-main">
               Premium Equipment
             </h1>
-            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B]">
-              <Sparkles size={11} /> Verified Gear
-            </span>
           </div>
           <p className="text-xs font-bold uppercase tracking-wider text-text-muted mt-1.5">
             Showing {filteredProducts.length} items from elite verified riders & clubs
