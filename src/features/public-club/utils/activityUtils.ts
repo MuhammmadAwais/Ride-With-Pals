@@ -183,62 +183,73 @@ export const downloadGpxFile = async (ride: GpxRideData): Promise<void> => {
 };
 
 /**
- * Extracts terrain & category badges from backend activity data (Road, Trail, Social, Training, etc.)
+ * Extracts terrain & category badges from backend activity data.
+ * Guarantees every activity receives a primary surface badge ("Road" or "Trail"),
+ * plus any event category badge ("Social", "Training", "Race", etc.).
  */
 export const extractTerrainAndCategoryBadges = (item: any): string[] => {
   const badges: string[] = [];
 
-  // 1. Terrain / Surface flags
-  if (item.isAsphalt === true || item.isAsphalt === 1 || item.isAsphalt === "true") {
-    badges.push("Road");
-  }
-  if (item.isTrail === true || item.isTrail === 1 || item.isTrail === "true") {
-    badges.push("Trail");
+  // 1. Determine Surface Badge: "Trail", "Gravel", or "Road"
+  const isTrailFlag = item.isTrail === true || item.isTrail === 1 || item.isTrail === "true";
+  const isAsphaltFlag = item.isAsphalt === true || item.isAsphalt === 1 || item.isAsphalt === "true";
+
+  const subTypeId = Number(item.sportSubTypeId || item.subTypeId);
+  const subTypeName = (item.sportSubTypeName || item.subTypeName || item.subType || "").toString().toLowerCase();
+
+  const titleLower = (item.rideName || item.title || item.name || "").toString().toLowerCase();
+  const descLower = (item.description || "").toString().toLowerCase();
+  const textContent = `${titleLower} ${descLower} ${subTypeName}`;
+
+  let surface = "Road";
+
+  if (isTrailFlag) {
+    surface = "Trail";
+  } else if (isAsphaltFlag) {
+    surface = "Road";
+  } else if (subTypeId === 1 || subTypeId === 2 || subTypeId === 3) {
+    // 1: Cross Country, 2: Enduro, 3: Downhill
+    surface = "Trail";
+  } else if (subTypeId === 8 || subTypeName.includes("gravel") || textContent.includes("gravel")) {
+    surface = "Gravel";
+  } else if (subTypeId === 4 || subTypeId === 5 || subTypeId === 6 || subTypeId === 7) {
+    // 4: Gran Fondo, 5: Time Trial, 6: Criterium, 7: Track
+    surface = "Road";
+  } else if (
+    textContent.includes("trail") || 
+    textContent.includes("mountain") || 
+    textContent.includes("mtb") || 
+    textContent.includes("xc") || 
+    textContent.includes("dirt") || 
+    textContent.includes("forest") ||
+    textContent.includes("off-road") ||
+    textContent.includes("offroad") ||
+    textContent.includes("downhill")
+  ) {
+    surface = "Trail";
+  } else {
+    // Default surface for cycling and road activities
+    surface = "Road";
   }
 
-  // 2. Category Type identification
+  badges.push(surface);
+
+  // 2. Determine Category / Event Type (e.g., "Social", "Race", "Training")
   const categoryId = Number(item.categoryTypeId || item.categoryId || item.rideCategoryTypeId);
-  if (categoryId === 1) {
+  const categoryName = (item.categoryTypeName || item.category?.name || item.categoryName || "").toString().toLowerCase();
+
+  if (categoryId === 1 || categoryName.includes("social") || textContent.includes("social") || textContent.includes("roll")) {
     badges.push("Social");
-  } else if (categoryId === 2) {
+  } else if (categoryId === 2 || categoryName.includes("training") || textContent.includes("training")) {
     badges.push("Training");
-  } else if (categoryId === 3) {
+  } else if (categoryId === 3 || categoryName.includes("race") || textContent.includes("race") || textContent.includes("criterium") || textContent.includes("crit")) {
     badges.push("Race");
-  } else if (categoryId === 4) {
+  } else if (categoryId === 4 || categoryName.includes("charity") || textContent.includes("charity")) {
     badges.push("Charity");
-  } else if (categoryId === 5) {
+  } else if (categoryId === 5 || categoryName.includes("tour") || textContent.includes("tour")) {
     badges.push("Tour");
   }
 
-  // 3. Category & SubType names from API
-  const categoryName = (item.categoryTypeName || item.category?.name || item.categoryName || "").toString().toLowerCase();
-  if (categoryName.includes("social") && !badges.includes("Social")) badges.push("Social");
-  if (categoryName.includes("race") && !badges.includes("Race")) badges.push("Race");
-  if (categoryName.includes("training") && !badges.includes("Training")) badges.push("Training");
-
-  const subTypeName = (item.sportSubTypeName || item.subTypeName || item.subType || "").toString().toLowerCase();
-  if (subTypeName.includes("gravel") && !badges.includes("Gravel")) badges.push("Gravel");
-  if (subTypeName.includes("cross country") || subTypeName.includes("xc")) {
-    if (!badges.includes("XC")) badges.push("XC");
-  }
-  if (subTypeName.includes("enduro") && !badges.includes("Enduro")) badges.push("Enduro");
-  if (subTypeName.includes("criterium") && !badges.includes("Crit")) badges.push("Crit");
-  if (subTypeName.includes("time trial") && !badges.includes("Time Trial")) badges.push("Time Trial");
-
-  // 4. Inferred from Title if nothing else set
-  if (badges.length === 0) {
-    const titleLower = (item.rideName || item.title || item.name || "").toString().toLowerCase();
-    if (titleLower.includes("gravel")) badges.push("Gravel");
-    else if (titleLower.includes("trail")) badges.push("Trail");
-    else if (titleLower.includes("road")) badges.push("Road");
-    else if (titleLower.includes("social")) badges.push("Social");
-    else if (titleLower.includes("race") || titleLower.includes("criterium")) badges.push("Race");
-    else {
-      // Default primary surface based on sport or standard asphalt
-      badges.push("Road");
-    }
-  }
-
-  // Maximum 3 badges to keep UI crisp and disciplined
-  return badges.slice(0, 3);
+  // Maximum 2 badges on card image (Surface + Category) for clean modern aesthetics
+  return badges.slice(0, 2);
 };

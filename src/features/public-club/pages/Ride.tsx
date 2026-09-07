@@ -4,7 +4,6 @@ import {
   Calendar, 
   MapPin, 
   Bike,   
-  Flame,
   ArrowRight,
   Search,
   Filter,
@@ -333,7 +332,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 Upcoming Activities
               </h1>
               <p className="text-text-muted font-medium text-xs sm:text-sm">
-                Discover and join elite scheduled group activities in your region.
+                Discover and join scheduled group activities in your region.
               </p>
             </div>
           </div>
@@ -453,34 +452,39 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-main-bg/80 via-transparent to-transparent" />
                     
-                    {/* Terrain & Category Badges (Road, Trail, Social, etc.) */}
-                    {ride.terrainBadges && ride.terrainBadges.length > 0 && (
-                      <div className="absolute top-2.5 left-2.5 flex flex-wrap items-center gap-1 z-10">
-                        {ride.terrainBadges.map((badge, idx) => (
-                          <span 
-                            key={idx}
-                            className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider backdrop-blur-md border ${
-                              badge === "Road" 
-                                ? "bg-sky-950/85 border-sky-500/40 text-sky-300"
-                                : badge === "Trail" 
-                                ? "bg-emerald-950/85 border-emerald-500/40 text-emerald-300"
-                                : badge === "Social"
-                                ? "bg-indigo-950/85 border-indigo-500/40 text-indigo-300"
-                                : badge === "Race"
-                                ? "bg-rose-950/85 border-rose-500/40 text-rose-300"
-                                : "bg-amber-950/85 border-amber-500/40 text-amber-300"
-                            }`}
-                          >
-                            {badge}
-                          </span>
-                        ))}
+                    {/* Primary Surface Badge (Road or Trail) on top-left */}
+                    {ride.terrainBadges && ride.terrainBadges[0] && (
+                      <div className="absolute top-2.5 left-2.5 z-10">
+                        <span 
+                          className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider backdrop-blur-md border ${
+                            ride.terrainBadges[0] === "Road" 
+                              ? "bg-sky-950/85 border-sky-500/40 text-sky-300"
+                              : ride.terrainBadges[0] === "Trail" 
+                              ? "bg-emerald-950/85 border-emerald-500/40 text-emerald-300"
+                              : "bg-amber-950/85 border-amber-500/40 text-amber-300"
+                          }`}
+                        >
+                          {ride.terrainBadges[0]}
+                        </span>
                       </div>
                     )}
 
-                    <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2 py-0.5 rounded-lg shrink-0">
-                      <Flame size={11} className="text-[#EB712B]" />
-                      <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
-                    </div>
+                    {/* Category Badge (Social, Training, Race) on top-right (replaces Elite) */}
+                    {ride.terrainBadges && ride.terrainBadges[1] && (
+                      <div className="absolute top-2.5 right-2.5 z-10">
+                        <span 
+                          className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider backdrop-blur-md border ${
+                            ride.terrainBadges[1] === "Social" 
+                              ? "bg-indigo-950/85 border-indigo-500/40 text-indigo-300"
+                              : ride.terrainBadges[1] === "Race" 
+                              ? "bg-rose-950/85 border-rose-500/40 text-rose-300"
+                              : "bg-purple-950/85 border-purple-500/40 text-purple-300"
+                          }`}
+                        >
+                          {ride.terrainBadges[1]}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Center: Details & Metadata */}
@@ -698,34 +702,39 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent opacity-65" />
                     
-                    {/* Terrain & Category Badges (Road, Trail, Social, etc.) */}
-                    {ride.terrainBadges && ride.terrainBadges.length > 0 && (
-                      <div className="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-1.5 z-10 max-w-[70%]">
-                        {ride.terrainBadges.map((badge, idx) => (
-                          <span 
-                            key={idx}
-                            className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md border ${
-                              badge === "Road" 
-                                ? "bg-sky-950/80 border-sky-500/40 text-sky-300"
-                                : badge === "Trail" 
-                                ? "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
-                                : badge === "Social"
-                                ? "bg-indigo-950/80 border-indigo-500/40 text-indigo-300"
-                                : badge === "Race"
-                                ? "bg-rose-950/80 border-rose-500/40 text-rose-300"
-                                : "bg-amber-950/80 border-amber-500/40 text-amber-300"
-                            }`}
-                          >
-                            {badge}
-                          </span>
-                        ))}
+                    {/* Primary Surface Badge (Road or Trail) on top-left */}
+                    {ride.terrainBadges && ride.terrainBadges[0] && (
+                      <div className="absolute top-3.5 left-3.5 z-10">
+                        <span 
+                          className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md border ${
+                            ride.terrainBadges[0] === "Road" 
+                              ? "bg-sky-950/80 border-sky-500/40 text-sky-300"
+                              : ride.terrainBadges[0] === "Trail" 
+                              ? "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
+                              : "bg-amber-950/80 border-amber-500/40 text-amber-300"
+                          }`}
+                        >
+                          {ride.terrainBadges[0]}
+                        </span>
                       </div>
                     )}
 
-                    <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2.5 py-1 rounded-lg shrink-0">
-                      <Flame size={12} className="text-[#EB712B]" />
-                      <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
-                    </div>
+                    {/* Category Badge (Social, Training, Race) on top-right (replaces Elite) */}
+                    {ride.terrainBadges && ride.terrainBadges[1] && (
+                      <div className="absolute top-3.5 right-3.5 z-10">
+                        <span 
+                          className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md border ${
+                            ride.terrainBadges[1] === "Social" 
+                              ? "bg-indigo-950/80 border-indigo-500/40 text-indigo-300"
+                              : ride.terrainBadges[1] === "Race" 
+                              ? "bg-rose-950/80 border-rose-500/40 text-rose-300"
+                              : "bg-purple-950/80 border-purple-500/40 text-purple-300"
+                          }`}
+                        >
+                          {ride.terrainBadges[1]}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Card content with padding */}

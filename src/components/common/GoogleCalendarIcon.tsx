@@ -14,73 +14,58 @@ export const GoogleCalendarIcon: React.FC<GoogleCalendarIconProps> = ({
     <svg
       width={size}
       height={size}
-      viewBox="0 0 48 48"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       {...props}
     >
-      {/* Background container / border */}
-      <rect width="48" height="48" rx="10" fill="#FFFFFF" />
-      
-      {/* Top Blue Bar */}
+      {/* Calendar body white background */}
+      <rect x="3" y="3" width="18" height="18" rx="3" fill="#FFFFFF" />
+
+      {/* Top Header - Blue */}
       <path
-        d="M38 14H10C7.79086 14 6 15.7909 6 18V20H42V18C42 15.7909 40.2091 14 38 14Z"
-        fill="#4285F4"
-      />
-      
-      {/* Red accent on bottom-right corner */}
-      <path
-        d="M34 42H38C40.2091 42 42 40.2091 42 38V28H34V42Z"
-        fill="#EA4335"
-      />
-      
-      {/* Yellow accent on bottom-left corner */}
-      <path
-        d="M10 42H14V28H6V38C6 40.2091 7.79086 42 10 42Z"
-        fill="#FBBC05"
-      />
-      
-      {/* Green accent on right edge */}
-      <path
-        d="M42 20H34V28H42V20Z"
-        fill="#34A853"
-      />
-      
-      {/* Blue accent on left edge */}
-      <path
-        d="M6 20H14V28H6V20Z"
+        d="M3 8V6C3 4.34315 4.34315 3 6 3H18C19.6569 3 21 4.34315 21 6V8H3Z"
         fill="#4285F4"
       />
 
-      {/* Center 31 / Event date symbol */}
+      {/* Left Stripe - Blue */}
       <path
-        d="M18.5 25.5C18.5 24.1 19.6 23 21 23H27C28.4 23 29.5 24.1 29.5 25.5V33.5C29.5 34.9 28.4 36 27 36H21C19.6 36 18.5 34.9 18.5 33.5V25.5Z"
+        d="M3 8H6.5V16.5H3V8Z"
         fill="#4285F4"
-        opacity="0.12"
       />
+
+      {/* Right Stripe - Green */}
+      <path
+        d="M17.5 8H21V16.5H17.5V8Z"
+        fill="#34A853"
+      />
+
+      {/* Bottom Left - Yellow */}
+      <path
+        d="M3 16.5H12V21H6C4.34315 21 3 19.6569 3 18V16.5Z"
+        fill="#FBBC05"
+      />
+
+      {/* Bottom Right - Red */}
+      <path
+        d="M12 16.5H21V18C21 19.6569 19.6569 21 18 21H12V16.5Z"
+        fill="#EA4335"
+      />
+
+      {/* Center 31 text in Google Blue */}
       <text
-        x="24"
-        y="33"
+        x="12"
+        y="14.2"
         textAnchor="middle"
-        fontFamily="sans-serif"
-        fontSize="12"
+        dominantBaseline="central"
+        fontFamily="Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif"
+        fontSize="6.8"
         fontWeight="800"
         fill="#1A73E8"
       >
         31
       </text>
-
-      {/* Clean outer rounded border */}
-      <rect
-        x="0.75"
-        y="0.75"
-        width="46.5"
-        height="46.5"
-        rx="9.25"
-        stroke="#E2E8F0"
-        strokeWidth="1.5"
-      />
     </svg>
   );
 };
