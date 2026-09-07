@@ -11,8 +11,8 @@ export const APP_VERSION = '1.0.0' as const;
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 export const ROUTES = {
-  // ── Auth (public) ──
-  SIGNUP:             '/',
+  HOME:               '/',
+  SIGNUP:             '/signup',
   LOGIN:              '/login',
   FORGOT_PASSWORD:    '/forgot-password',
   VERIFY_EMAIL:       '/verify-email',

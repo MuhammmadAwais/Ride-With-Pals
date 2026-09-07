@@ -428,7 +428,8 @@ const Login = () => {
               Don't have an account?{' '}
               <span
                 onClick={() => navigate(ROUTES.SIGNUP)}
-                style={{ color: '#EB712B', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px' }}
+                className="hover:cursor-pointer"
+                style={{ color: '#EB712B', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px', cursor: 'pointer' }}
               >
                 Sign up
               </span>
