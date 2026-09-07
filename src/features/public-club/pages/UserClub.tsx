@@ -28,21 +28,21 @@ const renderSportBadge = (typeId?: number | string) => {
   const t = getClubTypeName(typeId);
   if (t === "Running") {
     return (
-      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-600 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
-        <Activity size={11} className="shrink-0" /> RUNNING
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-400 border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
+        <Activity size={11} className="shrink-0" /> Running
       </span>
     );
   }
   if (t === "Triathlon") {
     return (
-      <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-600 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
-        <Trophy size={11} className="shrink-0" /> TRIATHLON
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-purple-300 border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
+        <Trophy size={11} className="shrink-0" /> Triathlon
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#EB712B] text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md whitespace-nowrap shrink-0">
-      <Bike size={11} className="shrink-0" /> CYCLING
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-[#ff8c42] border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
+      <Bike size={11} className="shrink-0" /> Cycling
     </span>
   );
 };
@@ -250,21 +250,17 @@ export default function UserClub() {
 
   // --- DEFAULT VIEW: HUB & SEARCH ---
   return (
-    <div className="flex min-h-screen text-text-main font-sans w-full justify-center p-4 sm:p-8 ">
-      <div className="flex-1 p-4 transition-all max-w-7xl w-full mx-auto space-y-12">
+    <div className="min-h-screen text-text-main font-sans w-full flex justify-center px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="w-full max-w-7xl mx-auto space-y-8 sm:space-y-10">
         
         {/* Top Header & Overview */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/[0.06] pb-8">
-          <div>
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-[#EB712B] mb-3 backdrop-blur-md shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] animate-pulse" />
-              Community Hub
-            </span>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight uppercase text-text-main">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 pb-2">
+          <div className="space-y-1">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase text-text-main">
               Athletic Clubs
             </h1>
-            <p className="text-text-muted text-xs tracking-wide mt-2 font-medium max-w-lg">
-              Manage your personal hubs or discover elite training communities around the region.
+            <p className="text-text-muted text-xs sm:text-sm font-medium">
+              Manage your personal hubs or discover training communities around the region.
             </p>
           </div>
 
@@ -278,57 +274,107 @@ export default function UserClub() {
               }
               navigate("/club-profile-setup");
             }}
-            className="w-full md:w-auto px-6 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 hover:scale-105 active:scale-95 text-center shrink-0 border border-[#EB712B]/30"
+            className="w-full sm:w-auto px-5 py-3 sm:px-6 sm:py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-bold tracking-wider uppercase cursor-pointer shadow-sm transition-all duration-200 active:scale-[0.98] text-center shrink-0"
           >
             + Create Club
           </button>
         </div>
 
+        {/* Modern Dividing Line */}
+        <div className="relative w-full">
+          <div className="h-px w-full bg-border/60" />
+          <div className="absolute left-0 top-0 h-px w-24 bg-[#EB712B]" />
+        </div>
+
         {/* Search Input Bar + Filter Button */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full items-center">
-          <div className="relative w-full">
-            <Search
-              className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted"
-              size={20}
-            />
-            <input
-              type="text"
-              placeholder="Search communities by name or activity type (e.g. Cycling, Running, Triathlon)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface border border-border rounded-2xl py-5 pl-14 pr-6 text-sm focus:outline-none focus:border-[#EB712B] transition-all duration-300 text-text-main placeholder-gray-500 shadow-inner"
-            />
+        <div className="space-y-3 w-full">
+          <div className="flex gap-2 sm:gap-3 w-full items-center">
+            <div className="relative flex-1">
+              <Search
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+                size={18}
+              />
+              <input
+                type="text"
+                placeholder="Search communities by name or sport..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-surface border border-border rounded-xl py-3 sm:py-3.5 pl-11 pr-9 text-xs sm:text-sm focus:outline-none focus:border-[#EB712B] transition-colors text-text-main placeholder:text-text-muted/60"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main p-1 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X size={15} />
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={() => {
+                setTempClubType(clubTypeFilter);
+                setTempSportType(sportTypeFilter);
+                setShowFilterModal(true);
+              }}
+              className={`flex items-center justify-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider cursor-pointer transition-all shrink-0 border ${
+                clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
+                  ? "bg-[#EB712B] text-white border-[#EB712B]"
+                  : "bg-surface text-text-main border-border hover:border-text-muted/50"
+              }`}
+            >
+              <Filter size={16} />
+              <span className="hidden xs:inline sm:inline">Filter</span>
+              {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              )}
+            </button>
           </div>
 
-          <button
-            onClick={() => {
-              setTempClubType(clubTypeFilter);
-              setTempSportType(sportTypeFilter);
-              setShowFilterModal(true);
-            }}
-            className={`flex items-center justify-center gap-2.5 px-7 py-5 rounded-2xl font-black uppercase text-xs tracking-wider cursor-pointer transition-all duration-300 shrink-0 border ${
-              clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
-                ? "bg-[#EB712B] text-white border-[#EB712B] shadow-lg shadow-[#EB712B]/20"
-                : "bg-surface text-text-main border-border hover:border-[#EB712B]/50"
-            }`}
-          >
-            <Filter size={18} />
-            <span>Filter</span>
-            {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            )}
-          </button>
+          {/* Minimalist Sport Filter Pills (Fast 1-click toggling, NO EMOJIS) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {[
+              { id: "ALL", label: "All Sports", icon: null },
+              { id: "CYCLING", label: "Cycling", icon: Bike },
+              { id: "RUNNING", label: "Running", icon: Activity },
+              { id: "TRIATHLON", label: "Triathlon", icon: Trophy },
+            ].map((sport) => {
+              const Icon = sport.icon;
+              const active = sportTypeFilter === sport.id;
+              return (
+                <button
+                  key={sport.id}
+                  type="button"
+                  onClick={() => setSportTypeFilter(sport.id as any)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                    active
+                      ? "bg-[#EB712B] text-white border-[#EB712B]"
+                      : "bg-surface text-text-muted border-border hover:border-text-muted/40 hover:text-text-main"
+                  }`}
+                >
+                  {Icon && <Icon size={12} className="shrink-0" />}
+                  <span>{sport.label}</span>
+                </button>
+              );
+            })}
+
+            <span className="text-[11px] text-text-muted font-medium ml-auto pl-2 hidden sm:inline whitespace-nowrap">
+              {filteredMyClubs.length + filteredDiscoverClubs.length} {filteredMyClubs.length + filteredDiscoverClubs.length === 1 ? "community" : "communities"}
+            </span>
+          </div>
         </div>
 
         {/* Active Filter Chips */}
         {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
-          <div className="flex flex-wrap items-center gap-2 -mt-8">
+          <div className="flex flex-wrap items-center gap-2 -mt-4">
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-1">
-              Active Filters:
+              Active:
             </span>
             {clubTypeFilter !== "ALL" && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-black uppercase tracking-wider">
-                Club Type: {clubTypeFilter}
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-bold uppercase tracking-wider">
+                Type: {clubTypeFilter}
                 <X
                   size={12}
                   className="cursor-pointer hover:text-white"
@@ -337,8 +383,8 @@ export default function UserClub() {
               </span>
             )}
             {sportTypeFilter !== "ALL" && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-black uppercase tracking-wider">
-                Sport Type: {sportTypeFilter}
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-bold uppercase tracking-wider">
+                Sport: {sportTypeFilter}
                 <X
                   size={12}
                   className="cursor-pointer hover:text-white"
@@ -351,9 +397,9 @@ export default function UserClub() {
                 setClubTypeFilter("ALL");
                 setSportTypeFilter("ALL");
               }}
-              className="text-[10px] font-bold text-text-muted hover:text-text-main underline cursor-pointer ml-2"
+              className="text-[10px] font-bold text-text-muted hover:text-text-main underline cursor-pointer ml-1"
             >
-              Clear all
+              Reset
             </button>
           </div>
         )}
@@ -462,44 +508,46 @@ export default function UserClub() {
           )}
 
         {/* --- MY CLUBS SECTION --- */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <div>
-              <h2 className="text-xl font-black tracking-wide uppercase">
+        <section className="space-y-4 sm:space-y-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-base sm:text-lg font-black tracking-wide uppercase text-text-main">
                 My Clubs
               </h2>
-              <p className="text-text-muted text-[10px] font-bold tracking-widest uppercase mt-0.5">
-                Communities you manage
-              </p>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface border border-border text-text-muted">
+                {filteredMyClubs.length}
+              </span>
             </div>
 
+            <div className="h-px flex-1 bg-border/40 hidden md:block" />
+
             {/* List / Grid / Map Toggle View for My Clubs */}
-            <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 w-fit">
+            <div className="flex bg-surface border border-border rounded-lg p-0.5 gap-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setMyClubsViewMode("grid")}
-                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`p-2 rounded-md cursor-pointer transition-colors ${
                   myClubsViewMode === "grid"
-                    ? "bg-white/10 text-text-main shadow-inner"
+                    ? "bg-white/10 text-text-main shadow-xs"
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="Grid View"
                 title="Grid View"
               >
-                <LayoutGrid size={18} />
+                <LayoutGrid size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => setMyClubsViewMode("list")}
-                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`p-2 rounded-md cursor-pointer transition-colors ${
                   myClubsViewMode === "list"
-                    ? "bg-white/10 text-text-main shadow-inner"
+                    ? "bg-white/10 text-text-main shadow-xs"
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="List View"
                 title="List View"
               >
-                <List size={18} />
+                <List size={16} />
               </button>
               <button
                 type="button"
@@ -508,88 +556,104 @@ export default function UserClub() {
                   setViewMode("map");
                   setMapFilterType("my");
                 }}
-                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`p-2 rounded-md cursor-pointer transition-colors ${
                   myClubsViewMode === "map"
-                    ? "bg-white/10 text-text-main shadow-inner"
+                    ? "bg-white/10 text-text-main shadow-xs"
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="Map View"
                 title="Map View"
               >
-                <MapIcon size={18} />
+                <MapIcon size={16} />
               </button>
             </div>
           </div>
 
           {filteredMyClubs.length === 0 ? (
-            <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
-              No matching clubs found in your inventory.
+            <div className="bg-surface/40 border border-border/80 rounded-2xl p-6 sm:p-8 text-center flex flex-col items-center justify-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted">
+                <Bike size={18} />
+              </div>
+              <div className="space-y-0.5 max-w-sm">
+                <p className="text-xs font-bold uppercase tracking-wider text-text-main">
+                  {searchQuery || clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
+                    ? "No matching managed clubs"
+                    : "No managed clubs yet"}
+                </p>
+                <p className="text-[11px] text-text-muted">
+                  {searchQuery || clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
+                    ? "Try clearing your search query or sport filter."
+                    : "Clubs you manage or create will appear here."}
+                </p>
+              </div>
             </div>
           ) : myClubsViewMode === "grid" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {filteredMyClubs.map((club) => (
                 <div
                   key={club.id}
-                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col h-[320px] transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_12px_30px_rgba(235,113,43,0.08)]"
+                  onClick={() => handleSelectMyClub(club)}
+                  className="bg-surface border border-border/80 rounded-2xl overflow-hidden group flex flex-col transition-all duration-300 hover:border-border hover:shadow-md cursor-pointer"
                 >
                   {/* Top Image Banner */}
-                  <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
+                  <div className="relative h-40 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
                       src={getClubImage(club.logo, club.coverImage)}
                       alt={club.clubName}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
                       }}
                     />
-                    {/* Subtle dark gradient overlay to ensure floating badges are readable */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
+                    {/* Subtle dark gradient scrim */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
                     
                     {/* Floating Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10 gap-2">
+                    <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-10 gap-1.5">
                       {renderSportBadge(club.clubTypeId)}
                       <div className="flex items-center gap-1.5 shrink-0">
                         {isClubOwned(club, user, myClubs) && (
                           <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
-                            title="You own this club"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm"
+                            title="You manage this club"
                           >
-                            <ShieldCheck size={11} className="shrink-0" /> OWNED
+                            <ShieldCheck size={11} className="shrink-0 text-amber-400" />
+                            <span>Owned</span>
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg transition-all duration-300 border whitespace-nowrap shrink-0 ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border shrink-0 shadow-sm ${
                           club.clubPrivacyId === 1 
-                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
-                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
+                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
+                            : "bg-black/60 text-rose-400 border-rose-500/30"
                         }`}>
-                          {club.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {club.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />}
+                          <span>{club.clubPrivacyId === 1 ? 'Public' : 'Private'}</span>
                         </span>
                       </div>
                     </div>
                   </div>
 
                   {/* Bottom Details Content */}
-                  <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
-                    <div className="space-y-1.5 min-w-0 w-full">
-                      <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
+                  <div className="p-4 flex flex-col justify-between flex-1 gap-3.5 bg-surface">
+                    <div className="space-y-1 min-w-0 w-full">
+                      <h3 className="text-sm font-bold tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
                         {club.clubName}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted shrink-0" />
-                        <span className="truncate">{club.location || "N/A"}</span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
+                        <span className="truncate">{club.location || "Location not specified"}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
-                        <Users size={13} className="text-text-muted" />
+                    <div className="h-px w-full bg-border/40" />
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-medium">
+                        <Users size={12} className="text-text-muted/70 shrink-0" />
                         <ClubMemberCountText club={club} />
                       </div>
-                      <span 
-                        onClick={() => handleSelectMyClub(club)} 
-                        className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer"
-                      >
-                        {club.isManaged ? "Manage →" : "View Club →"}
+                      <span className="text-[11px] font-bold text-[#EB712B] group-hover:translate-x-0.5 transition-transform shrink-0 flex items-center gap-0.5">
+                        {club.isManaged ? "Manage" : "View"} &rarr;
                       </span>
                     </div>
                   </div>
@@ -597,55 +661,53 @@ export default function UserClub() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {filteredMyClubs.map((club) => (
                 <div
                   key={club.id}
-                  className="bg-surface border border-border rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
+                  onClick={() => handleSelectMyClub(club)}
+                  className="bg-surface border border-border/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-border hover:shadow-xs transition-all cursor-pointer"
                 >
-                  <div className="flex items-center gap-6 w-full min-w-0">
+                  <div className="flex items-center gap-4 w-full min-w-0">
                     <img
                       src={getClubImage(club.logo, club.coverImage)}
                       alt={club.clubName}
-                      className="w-20 h-20 rounded-2xl object-cover shrink-0"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
                       }}
                     />
-                    <div className="space-y-1.5 w-full min-w-0">
+                    <div className="space-y-1 w-full min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         {renderSportBadge(club.clubTypeId)}
                         {isClubOwned(club, user, myClubs) && (
                           <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
-                            title="You own this club"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0"
+                            title="You manage this club"
                           >
-                            <ShieldCheck size={10} className="shrink-0" /> OWNED
+                            <ShieldCheck size={10} className="shrink-0 text-amber-400" /> Owned
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider border whitespace-nowrap shrink-0 ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border shrink-0 ${
                           club.clubPrivacyId === 1 
-                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
-                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10"
+                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
+                            : "bg-black/60 text-rose-400 border-rose-500/30"
                         }`}>
-                          {club.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {club.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {club.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {club.clubPrivacyId === 1 ? 'Public' : 'Private'}
                         </span>
                       </div>
-                      <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
+                      <h3 className="text-base font-bold tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
                         {club.clubName}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted shrink-0" />
-                        <span className="truncate">{club.location || "N/A"}</span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
+                        <span className="truncate">{club.location || "Location not specified"}</span>
                       </div>
-                      <ClubMemberCountText club={club} as="p" className="text-[10px] text-text-muted font-bold tracking-wider uppercase" />
+                      <ClubMemberCountText club={club} as="p" className="text-[11px] text-text-muted font-medium" />
                     </div>
                   </div>
-                  <span 
-                    onClick={() => handleSelectMyClub(club)} 
-                    className="text-[#EB712B] font-black text-xs tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer shrink-0"
-                  >
-                    {club.isManaged ? "Manage Hub →" : "View Hub →"}
+                  <span className="text-[#EB712B] font-bold text-xs tracking-wider uppercase group-hover:translate-x-0.5 transition-transform shrink-0 self-end sm:self-center">
+                    {club.isManaged ? "Manage →" : "View →"}
                   </span>
                 </div>
               ))}
@@ -653,45 +715,50 @@ export default function UserClub() {
           )}
         </section>
 
+        {/* Subtle Modern Section Divider */}
+        <div className="h-px w-full bg-border/40" />
+
         {/* --- DISCOVER ALL CLUBS SECTION --- */}
-        <section className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <div>
-              <h2 className="text-xl font-black tracking-wide uppercase">
+        <section className="space-y-4 sm:space-y-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-base sm:text-lg font-black tracking-wide uppercase text-text-main">
                 Discover All Clubs
               </h2>
-              <p className="text-text-muted text-[10px] font-bold tracking-widest uppercase mt-0.5">
-                Explore external communities
-              </p>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface border border-border text-text-muted">
+                {filteredDiscoverClubs.length}
+              </span>
             </div>
 
+            <div className="h-px flex-1 bg-border/40 hidden md:block" />
+
             {/* List / Grid / Map Toggle View for Discover Clubs */}
-            <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 w-fit">
+            <div className="flex bg-surface border border-border rounded-lg p-0.5 gap-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
-                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`p-2 rounded-md cursor-pointer transition-colors ${
                   viewMode === "grid"
-                    ? "bg-white/10 text-text-main shadow-inner"
+                    ? "bg-white/10 text-text-main shadow-xs"
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="Grid View"
                 title="Grid View"
               >
-                <LayoutGrid size={18} />
+                <LayoutGrid size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("list")}
-                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`p-2 rounded-md cursor-pointer transition-colors ${
                   viewMode === "list"
-                    ? "bg-white/10 text-text-main shadow-inner"
+                    ? "bg-white/10 text-text-main shadow-xs"
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="List View"
                 title="List View"
               >
-                <List size={18} />
+                <List size={16} />
               </button>
               <button
                 type="button"
@@ -699,87 +766,99 @@ export default function UserClub() {
                   setViewMode("map");
                   setMapFilterType("all");
                 }}
-                className={`p-2.5 rounded-lg cursor-pointer transition-all duration-300 ${
+                className={`p-2 rounded-md cursor-pointer transition-colors ${
                   (viewMode as any) === "map"
-                    ? "bg-white/10 text-text-main shadow-inner"
+                    ? "bg-white/10 text-text-main shadow-xs"
                     : "text-text-muted hover:text-text-main hover:bg-hover"
                 }`}
                 aria-label="Map View"
                 title="Map View"
               >
-                <MapIcon size={18} />
+                <MapIcon size={16} />
               </button>
             </div>
           </div>
 
           {filteredDiscoverClubs.length === 0 ? (
-            <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider">
-              No matching clubs found in public directory.
+            <div className="bg-surface/40 border border-border/80 rounded-2xl p-6 sm:p-8 text-center flex flex-col items-center justify-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted">
+                <Bike size={18} />
+              </div>
+              <div className="space-y-0.5 max-w-sm">
+                <p className="text-xs font-bold uppercase tracking-wider text-text-main">
+                  No matching clubs found
+                </p>
+                <p className="text-[11px] text-text-muted">
+                  Try adjusting your search query or sport filter.
+                </p>
+              </div>
             </div>
           ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}
-                  className="bg-surface border border-border rounded-3xl overflow-hidden group flex flex-col h-[320px] transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_12px_30px_rgba(235,113,43,0.08)]"
+                  onClick={() => handleSelectDiscoverClub(comm)}
+                  className="bg-surface border border-border/80 rounded-2xl overflow-hidden group flex flex-col transition-all duration-300 hover:border-border hover:shadow-md cursor-pointer"
                 >
                   {/* Top Image Banner */}
-                  <div className="relative h-36 w-full bg-main-bg overflow-hidden shrink-0">
+                  <div className="relative h-40 w-full bg-main-bg overflow-hidden shrink-0">
                     <img
                       src={getClubImage(comm.logo, comm.coverImage)}
                       alt={comm.clubName}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
                       }}
                     />
-                    {/* Subtle dark gradient overlay to ensure floating badges are readable */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-transparent" />
+                    {/* Subtle dark gradient scrim */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
                     
                     {/* Floating Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10 gap-2">
+                    <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-10 gap-1.5">
                       {renderSportBadge(comm.clubTypeId)}
                       <div className="flex items-center gap-1.5 shrink-0">
                         {isClubOwned(comm, user, myClubs) && (
                           <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
-                            title="You own this club"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm"
+                            title="You manage this club"
                           >
-                            <ShieldCheck size={11} className="shrink-0" /> OWNED
+                            <ShieldCheck size={11} className="shrink-0 text-amber-400" />
+                            <span>Owned</span>
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider backdrop-blur-md shadow-lg border whitespace-nowrap shrink-0 ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border shrink-0 shadow-sm ${
                           comm.clubPrivacyId === 1 
-                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10 shadow-green-950/20 shadow-sm" 
-                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10 shadow-rose-950/20 shadow-sm"
+                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
+                            : "bg-black/60 text-rose-400 border-rose-500/30"
                         }`}>
-                          {comm.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {comm.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />}
+                          <span>{comm.clubPrivacyId === 1 ? 'Public' : 'Private'}</span>
                         </span>
                       </div>
                     </div>
                   </div>
 
                   {/* Bottom Details Content */}
-                  <div className="p-5 flex flex-col justify-between flex-1 bg-surface">
-                    <div className="space-y-1.5 min-w-0 w-full">
-                      <h3 className="text-base font-black tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
+                  <div className="p-4 flex flex-col justify-between flex-1 gap-3.5 bg-surface">
+                    <div className="space-y-1 min-w-0 w-full">
+                      <h3 className="text-sm font-bold tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
                         {comm.clubName}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted shrink-0" />
-                        <span className="truncate">{comm.location || "N/A"}</span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
+                        <span className="truncate">{comm.location || "Location not specified"}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold uppercase tracking-wider">
-                        <Users size={13} className="text-text-muted" />
+                    <div className="h-px w-full bg-border/40" />
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-medium">
+                        <Users size={12} className="text-text-muted/70 shrink-0" />
                         <ClubMemberCountText club={comm} />
                       </div>
-                      <span 
-                        onClick={() => handleSelectDiscoverClub(comm)} 
-                        className="text-[#EB712B] font-black text-[10px] tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer"
-                      >
+                      <span className="text-[11px] font-bold text-[#EB712B] group-hover:translate-x-0.5 transition-transform shrink-0 flex items-center gap-0.5">
                         View &rarr;
                       </span>
                     </div>
@@ -788,55 +867,53 @@ export default function UserClub() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {filteredDiscoverClubs.map((comm) => (
                 <div
                   key={comm.id}
-                  className="bg-surface border border-border rounded-3xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 group hover:border-[#EB712B]/30 transition-all"
+                  onClick={() => handleSelectDiscoverClub(comm)}
+                  className="bg-surface border border-border/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-border hover:shadow-xs transition-all cursor-pointer"
                 >
-                  <div className="flex items-center gap-6 w-full min-w-0">
+                  <div className="flex items-center gap-4 w-full min-w-0">
                     <img
                       src={getClubImage(comm.logo, comm.coverImage)}
                       alt={comm.clubName}
-                      className="w-20 h-20 rounded-2xl object-cover shrink-0"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
                       }}
                     />
-                    <div className="space-y-1.5 w-full min-w-0">
+                    <div className="space-y-1 w-full min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         {renderSportBadge(comm.clubTypeId)}
                         {isClubOwned(comm, user, myClubs) && (
                           <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-500/95 text-white rounded-xl text-[9px] font-black uppercase tracking-wider shadow-md border border-amber-300/40 whitespace-nowrap shrink-0"
-                            title="You own this club"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0"
+                            title="You manage this club"
                           >
-                            <ShieldCheck size={10} className="shrink-0" /> OWNED
+                            <ShieldCheck size={10} className="shrink-0 text-amber-400" /> Owned
                           </span>
                         )}
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider border whitespace-nowrap shrink-0 ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border shrink-0 ${
                           comm.clubPrivacyId === 1 
-                            ? "bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-300 dark:border-green-500/30 dark:bg-green-500/10" 
-                            : "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-300 dark:border-rose-500/30 dark:bg-rose-500/10"
+                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
+                            : "bg-black/60 text-rose-400 border-rose-500/30"
                         }`}>
-                          {comm.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {comm.clubPrivacyId === 1 ? 'PUBLIC' : 'PRIVATE'}
+                          {comm.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {comm.clubPrivacyId === 1 ? 'Public' : 'Private'}
                         </span>
                       </div>
-                      <h3 className="text-lg font-black tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
+                      <h3 className="text-base font-bold tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
                         {comm.clubName}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold tracking-wider uppercase min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted shrink-0" />
-                        <span className="truncate">{comm.location || "N/A"}</span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
+                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
+                        <span className="truncate">{comm.location || "Location not specified"}</span>
                       </div>
-                      <ClubMemberCountText club={comm} as="p" className="text-[10px] text-text-muted font-bold tracking-wider uppercase" />
+                      <ClubMemberCountText club={comm} as="p" className="text-[11px] text-text-muted font-medium" />
                     </div>
                   </div>
-                  <span 
-                    onClick={() => handleSelectDiscoverClub(comm)} 
-                    className="text-[#EB712B] font-black text-xs tracking-widest uppercase group-hover:translate-x-1 transition-transform cursor-pointer shrink-0"
-                  >
-                    View Hub &rarr;
+                  <span className="text-[#EB712B] font-bold text-xs tracking-wider uppercase group-hover:translate-x-0.5 transition-transform shrink-0 self-end sm:self-center">
+                    View &rarr;
                   </span>
                 </div>
               ))}
