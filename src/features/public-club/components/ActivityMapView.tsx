@@ -13,6 +13,7 @@ interface ActivityMapViewProps {
   onTypeChange?: (type: string) => void;
   onViewModeChange: (mode: "grid" | "list" | "map") => void;
   onSelectRide: (rideId: number | string) => void;
+  onShare?: (ride: RideMapItem) => void;
 }
 
 interface ActivityMarkerData {
@@ -139,6 +140,7 @@ export const ActivityMapView: React.FC<ActivityMapViewProps> = ({
   onTypeChange,
   onViewModeChange,
   onSelectRide,
+  onShare,
 }) => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [selectedRide, setSelectedRide] = useState<RideMapItem | null>(null);
@@ -374,6 +376,7 @@ export const ActivityMapView: React.FC<ActivityMapViewProps> = ({
           ride={selectedRide}
           onClose={() => setSelectedRide(null)}
           onSelectRide={onSelectRide}
+          onShare={onShare}
         />
       )}
     </div>

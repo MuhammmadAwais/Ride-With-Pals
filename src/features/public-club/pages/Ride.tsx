@@ -14,20 +14,26 @@ import {
   Bookmark,
   Grid3X3,
   List,
-  Map as MapIcon
+  Map as MapIcon,
+  Download,
+  Share2
 } from "lucide-react";
 
 import { useGetPublicRidesQuery, useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { ActivityMapView } from "../components/ActivityMapView";
+import { GoogleCalendarIcon } from "@/components/common/GoogleCalendarIcon";
+import { UniversalShareModal } from "@/components/common/UniversalShareModal";
+import { buildGoogleCalendarUrl, downloadGpxFile, extractTerrainAndCategoryBadges } from "../utils/activityUtils";
 import { toast } from "sonner";
 
-interface RideItem {
+export interface RideItem {
   id: number;
   title: string;
   clubName: string;
   date: string;
+  time?: string;
   location: string;
   rideType: string;
   speed: string;
@@ -39,6 +45,9 @@ interface RideItem {
   isSaved: boolean;
   image: string;
   isPublic: boolean;
+  gpxFile?: string | null;
+  description?: string;
+  terrainBadges: string[];
 }
 
 interface RideProps {
@@ -123,6 +132,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
   const [selectedType, setSelectedType] = useState<string>("All");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [savedRideIds, setSavedRideIds] = useState<Set<number>>(new Set());
+  const [shareTarget, setShareTarget] = useState<RideItem | null>(null);
 
   const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
 
@@ -161,6 +171,43 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to toggle save.");
     }
+  };
+
+  const handleOpenShare = (ride: RideItem, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setShareTarget(ride);
+  };
+
+  const handleAddToCalendar = (ride: RideItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const gcalUrl = buildGoogleCalendarUrl({
+      id: ride.id,
+      title: ride.title,
+      date: ride.date,
+      time: ride.time,
+      location: ride.location,
+      description: ride.description,
+      clubName: ride.clubName,
+      distance: ride.distance,
+      speed: ride.speed,
+      rideType: ride.rideType,
+      url: `${window.location.origin}/view/userside/dashboard/ride/${ride.id}`
+    });
+    window.open(gcalUrl, "_blank", "noopener,noreferrer");
+    toast.success("Opening Google Calendar to add event...");
+  };
+
+  const handleDownloadGpx = (ride: RideItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    downloadGpxFile({
+      id: ride.id,
+      title: ride.title,
+      clubName: ride.clubName,
+      location: ride.location,
+      date: ride.date,
+      rideType: ride.rideType,
+      gpxFile: ride.gpxFile
+    });
   };
 
   const rides = useMemo<RideItem[]>(() => {
@@ -202,6 +249,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
         title: item.rideName || item.ridename || item.title || item.name || item.activityName || "Ride Event",
         clubName: item.club?.clubName || item.clubName || "Independent",
         date: item.date || item.startDate || "TBD",
+        time: item.time || (typeof item.date === "string" && item.date.includes("T") ? item.date.split("T")[1]?.substring(0, 5) : undefined),
         location: item.meetingPoint || item.location || "TBD",
         rideType: getRideSportType(item),
         speed: displaySpeed,
@@ -212,7 +260,10 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
         isRideJoined: item.isRideJoined !== undefined ? item.isRideJoined : false,
         isSaved: savedRideIds.has(item.id || item.rideId),
         image: bannerImage,
-        isPublic: item.isPublicRide !== undefined ? item.isPublicRide : (item.isPublic !== undefined ? item.isPublic : true)
+        isPublic: item.isPublicRide !== undefined ? item.isPublicRide : (item.isPublic !== undefined ? item.isPublic : true),
+        gpxFile: item.gpxFile || null,
+        description: item.description || "",
+        terrainBadges: extractTerrainAndCategoryBadges(item),
       };
     });
   }, [rawData, savedRideIds]);
@@ -253,7 +304,19 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           onTypeChange={(type) => setSelectedType(type)}
           onViewModeChange={(mode) => setViewMode(mode)}
           onSelectRide={(id) => handleJoinRide(id)}
+          onShare={(rideItem) => setShareTarget(rideItem as unknown as RideItem)}
         />
+        {shareTarget && (
+          <UniversalShareModal
+            isOpen={!!shareTarget}
+            onClose={() => setShareTarget(null)}
+            title={shareTarget.title}
+            description={`Join ${shareTarget.title} hosted by ${shareTarget.clubName}!`}
+            url={`${window.location.origin}/view/userside/dashboard/ride/${shareTarget.id}`}
+            image={shareTarget.image}
+            category="Activity"
+          />
+        )}
       </div>
     );
   }
@@ -382,13 +445,38 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                   <div className="relative w-full md:w-52 lg:w-60 h-40 md:h-32 rounded-xl overflow-hidden shrink-0 border border-border/70">
                     <img 
                       src={ride.image} 
-                      alt={ride.title}
+                      alt={ride.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-main-bg/80 via-transparent to-transparent" />
+                    
+                    {/* Terrain & Category Badges (Road, Trail, Social, etc.) */}
+                    {ride.terrainBadges && ride.terrainBadges.length > 0 && (
+                      <div className="absolute top-2.5 left-2.5 flex flex-wrap items-center gap-1 z-10">
+                        {ride.terrainBadges.map((badge, idx) => (
+                          <span 
+                            key={idx}
+                            className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider backdrop-blur-md border ${
+                              badge === "Road" 
+                                ? "bg-sky-950/85 border-sky-500/40 text-sky-300"
+                                : badge === "Trail" 
+                                ? "bg-emerald-950/85 border-emerald-500/40 text-emerald-300"
+                                : badge === "Social"
+                                ? "bg-indigo-950/85 border-indigo-500/40 text-indigo-300"
+                                : badge === "Race"
+                                ? "bg-rose-950/85 border-rose-500/40 text-rose-300"
+                                : "bg-amber-950/85 border-amber-500/40 text-amber-300"
+                            }`}
+                          >
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2 py-0.5 rounded-lg shrink-0">
                       <Flame size={11} className="text-[#EB712B]" />
                       <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
@@ -406,20 +494,49 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
                         </p>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleSave(ride.id);
-                        }}
-                        className={`p-2 rounded-xl border transition-all cursor-pointer shrink-0 md:hidden ${
-                          ride.isSaved
-                            ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
-                            : "bg-surface border-border text-text-muted hover:text-text-main"
-                        }`}
-                        title={ride.isSaved ? "Saved" : "Save activity"}
-                      >
-                        <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
-                      </button>
+
+                      {/* Mobile action buttons row */}
+                      <div className="flex items-center gap-1 shrink-0 md:hidden">
+                        <button
+                          type="button"
+                          onClick={(e) => handleAddToCalendar(ride, e)}
+                          className="p-1.5 rounded-lg bg-surface border border-border text-text-muted hover:text-text-main"
+                          title="Add to Google Calendar"
+                        >
+                          <GoogleCalendarIcon size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleDownloadGpx(ride, e)}
+                          className="px-1.5 py-1 rounded-lg bg-surface border border-border text-emerald-500 flex items-center gap-0.5 text-[8px] font-bold"
+                          title="Download GPX Route"
+                        >
+                          <Download size={11} /> GPX
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenShare(ride, e)}
+                          className="p-1.5 rounded-lg bg-surface border border-border text-text-muted hover:text-[#EB712B]"
+                          title="Share Activity"
+                        >
+                          <Share2 size={13} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleSave(ride.id);
+                          }}
+                          className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                            ride.isSaved
+                              ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                              : "bg-surface border-border text-text-muted hover:text-text-main"
+                          }`}
+                          title={ride.isSaved ? "Saved" : "Save activity"}
+                        >
+                          <Bookmark size={13} fill={ride.isSaved ? "#EB712B" : "none"} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Info Chips */}
@@ -483,22 +600,59 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     </div>
                   </div>
 
-                  {/* Right: Join Button & Save (Vertical divider line before action column) */}
-                  <div className="flex items-center md:flex-col justify-between md:justify-center gap-3 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-border md:pl-6 min-w-[170px] self-stretch">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleSave(ride.id);
-                      }}
-                      className={`hidden md:flex items-center justify-center p-2 rounded-xl border transition-all cursor-pointer self-end ${
-                        ride.isSaved
-                          ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
-                          : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
-                      }`}
-                      title={ride.isSaved ? "Saved" : "Save activity"}
-                    >
-                      <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
-                    </button>
+                  {/* Right: Action Buttons & Join Button (Desktop) */}
+                  <div className="flex items-center md:flex-col justify-between md:justify-center gap-3 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-border md:pl-6 min-w-[190px] self-stretch">
+                    {/* Desktop utility toolbar */}
+                    <div className="hidden md:flex items-center gap-1.5 self-end">
+                      <button
+                        type="button"
+                        onClick={(e) => handleAddToCalendar(ride, e)}
+                        className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#4285F4]/40 hover:bg-[#4285F4]/10 transition-all cursor-pointer shadow-sm group/btn"
+                        title="Add to Google Calendar"
+                        aria-label="Add to Google Calendar"
+                      >
+                        <GoogleCalendarIcon size={15} className="group-hover/btn:scale-110 transition-transform" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleDownloadGpx(ride, e)}
+                        className="px-2 py-1.5 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all cursor-pointer shadow-sm flex items-center gap-1 group/btn"
+                        title="Download GPX Route"
+                        aria-label="Download GPX Route"
+                      >
+                        <Download size={13} className="text-emerald-500 group-hover/btn:scale-110 transition-transform" />
+                        <span className="text-[9px] font-black text-emerald-500 tracking-wider">GPX</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleOpenShare(ride, e)}
+                        className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/40 hover:bg-[#EB712B]/10 transition-all cursor-pointer shadow-sm group/btn"
+                        title="Share Activity"
+                        aria-label="Share Activity"
+                      >
+                        <Share2 size={14} className="group-hover/btn:text-[#EB712B] group-hover/btn:scale-110 transition-all" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleSave(ride.id);
+                        }}
+                        className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                          ride.isSaved
+                            ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                            : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
+                        }`}
+                        title={ride.isSaved ? "Saved" : "Save activity"}
+                        aria-label="Save activity"
+                      >
+                        <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
+                      </button>
+                    </div>
+
                     <button 
                       onClick={() => handleJoinRide(ride.id)}
                       className={`w-full py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer text-white border-0 outline-none ${
@@ -543,7 +697,32 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent opacity-65" />
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2.5 py-1 rounded-lg shrink-0">
+                    
+                    {/* Terrain & Category Badges (Road, Trail, Social, etc.) */}
+                    {ride.terrainBadges && ride.terrainBadges.length > 0 && (
+                      <div className="absolute top-3.5 left-3.5 flex flex-wrap items-center gap-1.5 z-10 max-w-[70%]">
+                        {ride.terrainBadges.map((badge, idx) => (
+                          <span 
+                            key={idx}
+                            className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md border ${
+                              badge === "Road" 
+                                ? "bg-sky-950/80 border-sky-500/40 text-sky-300"
+                                : badge === "Trail" 
+                                ? "bg-emerald-950/80 border-emerald-500/40 text-emerald-300"
+                                : badge === "Social"
+                                ? "bg-indigo-950/80 border-indigo-500/40 text-indigo-300"
+                                : badge === "Race"
+                                ? "bg-rose-950/80 border-rose-500/40 text-rose-300"
+                                : "bg-amber-950/80 border-amber-500/40 text-amber-300"
+                            }`}
+                          >
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5 bg-surface/85 backdrop-blur-md border border-border px-2.5 py-1 rounded-lg shrink-0">
                       <Flame size={12} className="text-[#EB712B]" />
                       <span className="text-[9px] font-extrabold uppercase text-[#EB712B] tracking-wider">Elite</span>
                     </div>
@@ -554,7 +733,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     {/* Card Header */}
                     <div className="space-y-4 z-10">
                       <div className="flex justify-between items-start gap-2">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0 pr-1">
                           <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1 mb-1">
                             {ride.title}
                           </h3>
@@ -562,19 +741,61 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                             Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
                           </p>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleSave(ride.id);
-                          }}
-                          className={`p-2 rounded-xl border transition-all cursor-pointer ${
-                            ride.isSaved
-                              ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
-                              : "bg-surface border-border text-text-muted hover:text-text-main"
-                          }`}
-                        >
-                          <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
-                        </button>
+                        
+                        {/* Action Utility Bar: Google Calendar, Download GPX, Share, Bookmark */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Google Calendar */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleAddToCalendar(ride, e)}
+                            className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#4285F4]/40 hover:bg-[#4285F4]/10 transition-all cursor-pointer shadow-sm group/btn"
+                            title="Add to Google Calendar"
+                            aria-label="Add to Google Calendar"
+                          >
+                            <GoogleCalendarIcon size={16} className="group-hover/btn:scale-110 transition-transform" />
+                          </button>
+
+                          {/* Download GPX */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleDownloadGpx(ride, e)}
+                            className="px-2.5 py-1.5 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all cursor-pointer shadow-sm flex items-center gap-1 group/btn"
+                            title="Download GPX Route"
+                            aria-label="Download GPX Route"
+                          >
+                            <Download size={13} className="text-emerald-500 group-hover/btn:scale-110 transition-transform" />
+                            <span className="text-[9px] font-black text-emerald-500 tracking-wider">GPX</span>
+                          </button>
+
+                          {/* Universal Share */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleOpenShare(ride, e)}
+                            className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/40 hover:bg-[#EB712B]/10 transition-all cursor-pointer shadow-sm group/btn"
+                            title="Share Activity"
+                            aria-label="Share Activity"
+                          >
+                            <Share2 size={15} className="group-hover/btn:text-[#EB712B] group-hover/btn:scale-110 transition-all" />
+                          </button>
+
+                          {/* Bookmark */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleSave(ride.id);
+                            }}
+                            className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                              ride.isSaved
+                                ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                                : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
+                            }`}
+                            title={ride.isSaved ? "Saved" : "Save activity"}
+                            aria-label="Save activity"
+                          >
+                            <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
+                          </button>
+                        </div>
                       </div>
 
                       {/* Info Rows */}
@@ -679,6 +900,18 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           </div>
         )}
 
+        {/* Universal Share Modal */}
+        {shareTarget && (
+          <UniversalShareModal
+            isOpen={!!shareTarget}
+            onClose={() => setShareTarget(null)}
+            title={shareTarget.title}
+            description={`Join ${shareTarget.title} hosted by ${shareTarget.clubName}!`}
+            url={`${window.location.origin}/view/userside/dashboard/ride/${shareTarget.id}`}
+            image={shareTarget.image}
+            category="Activity"
+          />
+        )}
       </div>
     </div>
   );
