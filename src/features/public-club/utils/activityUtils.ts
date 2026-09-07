@@ -253,3 +253,31 @@ export const extractTerrainAndCategoryBadges = (item: any): string[] => {
   // Maximum 2 badges on card image (Surface + Category) for clean modern aesthetics
   return badges.slice(0, 2);
 };
+
+/**
+ * Accurately determines the sport type (Cycling, Running, Triathlon, Swimming) from activity backend data
+ */
+export const getRideSportType = (item: any): string => {
+  if (!item) return "Cycling";
+  const typeId = Number(item.sportTypeId || item.activityTypeId || item.rideTypeId || item.clubTypeId || item.club?.sportTypeId);
+  if (typeId === 1) return "Cycling";
+  if (typeId === 2) return "Running";
+  if (typeId === 3) return "Triathlon";
+  if (typeId === 4) return "Swimming";
+
+  const str = (item.sportTypeName || item.activityTypeName || item.sportSubTypeName || item.rideType || item.type || "").toString().trim();
+  const lower = str.toLowerCase();
+  if (!str || lower === "road" || lower === "gravel" || lower === "mtb" || lower === "criterium" || lower === "asphalt" || lower === "trail" || lower === "cycling" || lower === "1" || lower.includes("biking") || lower.includes("cycling")) {
+    return "Cycling";
+  }
+  if (lower === "running" || lower === "run" || lower === "2" || lower.includes("running")) {
+    return "Running";
+  }
+  if (lower === "triathlon" || lower === "3" || lower.includes("triathlon")) {
+    return "Triathlon";
+  }
+  if (lower === "swimming" || lower === "swim" || lower === "4" || lower.includes("swimming")) {
+    return "Swimming";
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
