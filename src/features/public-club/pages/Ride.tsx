@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -14,11 +13,14 @@ import {
   CheckCircle2,
   Bookmark,
   Grid3X3,
-  List
+  List,
+  Map as MapIcon
 } from "lucide-react";
 
 import { useGetPublicRidesQuery, useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { ActivityMapView } from "../components/ActivityMapView";
 import { toast } from "sonner";
 
 interface RideItem {
@@ -116,9 +118,10 @@ const RideListSkeleton = () => (
 
 const Ride: React.FC<RideProps> = ({ clubId }) => {
   const navigate = useNavigate();
+  const user = useAppSelector((s) => s.auth.user);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("All");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
   const [savedRideIds, setSavedRideIds] = useState<Set<number>>(new Set());
 
   const activeClubId = clubId ? parseInt(clubId.toString()) : undefined;
@@ -239,25 +242,48 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
     navigate(`/view/userside/dashboard/ride/${id}`);
   };
 
+  // --- MAP VIEW: TAKES PAGE AREA WITH OVERFLOW HIDDEN ---
+  if (viewMode === "map") {
+    return (
+      <div className="w-full h-[calc(100vh-80px)] overflow-hidden relative">
+        <ActivityMapView
+          rides={filteredRides}
+          user={user}
+          selectedType={selectedType}
+          onTypeChange={(type) => setSelectedType(type)}
+          onViewModeChange={(mode) => setViewMode(mode)}
+          onSelectRide={(id) => handleJoinRide(id)}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen text-text-main p-6 md:p-10 font-sans select-none w-full">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen text-text-main px-3 sm:px-6 lg:px-8 py-4 sm:py-8 font-sans select-none w-full flex justify-center">
+      <div className="w-full max-w-7xl mx-auto space-y-6 sm:space-y-8">
         
         {/* Header Section */}
-        <div className="relative flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-8 mb-4">
-          <div className="space-y-2.5 relative">
-            <div className="absolute -left-10 top-0 w-20 h-20 bg-[#EB712B]/10 rounded-full blur-3xl pointer-events-none" />
-            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-text-main via-text-main to-text-muted bg-clip-text text-transparent">
-              Upcoming Activities
-            </h1>
-            <p className="text-text-muted font-medium text-sm max-w-xl">
-              Discover and join elite scheduled group activities in your region.
-            </p>
+        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase text-text-main">
+                Upcoming Activities
+              </h1>
+              <p className="text-text-muted font-medium text-xs sm:text-sm">
+                Discover and join elite scheduled group activities in your region.
+              </p>
+            </div>
+          </div>
+
+          {/* Modern Dividing Line */}
+          <div className="relative w-full">
+            <div className="h-px w-full bg-border/60" />
+            <div className="absolute left-0 top-0 h-px w-24 bg-[#EB712B]" />
           </div>
         </div>
 
         {/* Functional Search & Filters Toolbar */}
-        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-main-bg border border-border p-4 rounded-2xl">
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-main-bg border border-border p-3.5 sm:p-4 rounded-2xl">
           <div className="relative w-full lg:w-[420px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input 
@@ -280,13 +306,13 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           {/* Right Controls: Filters & View Mode Toggle */}
           <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
             {/* Ride Type Filters */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               <Filter size={16} className="text-text-muted shrink-0 hidden md:block" />
               {activityTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => setSelectedType(type)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
+                  className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition-all shrink-0 border cursor-pointer ${
                     selectedType === type 
                       ? "bg-[#EB712B] border-[#EB712B] text-white shadow-[0_0_15px_rgba(235,113,43,0.3)]" 
                       : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
@@ -300,22 +326,34 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
             {/* View Mode Toggle */}
             <div className="flex bg-surface border border-border rounded-xl p-1 gap-1 shrink-0">
               <button 
+                type="button"
                 onClick={() => setViewMode("grid")}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
-                  viewMode === "grid" ? "bg-hover text-text-main shadow-sm" : "text-text-muted hover:text-text-main bg-transparent"
+                  viewMode === "grid" ? "bg-white/10 text-text-main shadow-xs" : "text-text-muted hover:text-text-main bg-transparent"
                 }`}
                 title="Grid View"
               >
                 <Grid3X3 size={16} />
               </button>
               <button 
+                type="button"
                 onClick={() => setViewMode("list")}
                 className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
-                  viewMode === "list" ? "bg-hover text-text-main shadow-sm" : "text-text-muted hover:text-text-main bg-transparent"
+                  viewMode === "list" ? "bg-white/10 text-text-main shadow-xs" : "text-text-muted hover:text-text-main bg-transparent"
                 }`}
                 title="List View"
               >
                 <List size={16} />
+              </button>
+              <button 
+                type="button"
+                onClick={() => setViewMode("map")}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
+                  (viewMode as string) === "map" ? "bg-[#EB712B] text-white shadow-xs" : "text-text-muted hover:text-text-main bg-transparent"
+                }`}
+                title="Map View"
+              >
+                <MapIcon size={16} />
               </button>
             </div>
           </div>
