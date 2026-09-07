@@ -384,6 +384,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Link
                   to="/athlete-profile"
+                  state={{ isEditing: true }}
                   className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#EB712B]/10 hover:bg-[#EB712B] border border-[#EB712B]/30 hover:border-[#EB712B] px-5 py-3 rounded-2xl text-sm font-bold text-[#EB712B] hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
                 >
                   <Edit3 size={15} /> Edit
@@ -960,6 +961,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="w-full flex items-center gap-3 pt-2">
               <Link
                 to="/athlete-profile"
+                state={{ isEditing: true }}
                 onClick={() => setIsAvatarPreviewOpen(false)}
                 className="flex-1 flex items-center justify-center gap-2 bg-[#EB712B] hover:bg-[#d66525] text-white py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#EB712B]/20"
               >

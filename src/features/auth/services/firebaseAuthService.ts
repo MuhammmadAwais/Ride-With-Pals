@@ -40,9 +40,12 @@ export const formatFirebaseError = (err: any): string => {
       return "Sign-in popup was blocked by your browser. Please allow popups.";
     case "auth/operation-not-allowed":
       return "This sign-in method is not enabled in Firebase console.";
+    case "auth/unauthorized-domain":
+      return "This domain (e.g. Vercel) is not authorized in Firebase Console. Please add this domain under Firebase Console > Authentication > Settings > Authorized domains.";
     case "auth/network-request-failed":
       return "Network connection error. Please check your internet connection.";
     default:
+      console.error("[FirebaseAuth] Unexpected error:", err);
       return err?.message || "An error occurred during authentication.";
   }
 };

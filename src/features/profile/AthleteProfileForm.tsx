@@ -1,5 +1,5 @@
 import { useState, useRef, useLayoutEffect, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown, Calendar, Loader2, Search, X, Upload, Check, ArrowLeft, Eye } from "lucide-react";
 import gsap from "gsap";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import { WORLD_COUNTRIES } from "@/lib/countries";
 
 const AthleteProfileForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const { data: userInfo, isLoading: isFetchingUserInfo } = useUserInfoQuery();
 
@@ -180,8 +181,8 @@ const AthleteProfileForm = () => {
       if (response.status === 200) {
         dispatch(setAthleteProfileSuccess());
         toast.success("Profile saved successfully!");
-        // If user already had a profile or is editing, return back to profile
-        if (userInfo?.isAthleteProfile || userInfo?.fullName) {
+        // If user is editing existing profile, return back to profile. Otherwise continue onboarding.
+        if (isEditing) {
           navigate('/view/userside/profile');
         } else {
           navigate('/auth-subscription'); 
@@ -196,7 +197,10 @@ const AthleteProfileForm = () => {
     }
   };
 
-  const isEditing = Boolean(userInfo?.fullName || userInfo?.isAthleteProfile);
+  const isEditing = Boolean(
+    (location.state as any)?.isEditing ?? 
+    (Number(userInfo?.isAthleteProfile) === 1 || userInfo?.isAthleteProfile === true)
+  );
 
   return (
     <div ref={containerRef} className="p-4 sm:p-6 md:p-10 min-h-screen text-text-main bg-main-bg font-sans">

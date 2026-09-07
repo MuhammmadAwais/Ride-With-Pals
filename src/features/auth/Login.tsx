@@ -47,6 +47,10 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
+      if (Number(user.isAthleteProfile) !== 1 && user.isAthleteProfile !== true) {
+        navigate('/create-profile', { replace: true });
+        return;
+      }
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
       navigate(from ?? '/dashboard', { replace: true });
     }
@@ -83,10 +87,15 @@ const Login = () => {
     if (!validate()) return;
 
     try {
-      await loginWithEmail(email.trim().toLowerCase(), password);
+      const res = await loginWithEmail(email.trim().toLowerCase(), password);
       toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
       
-      // Navigate to root, where the RootGuard will sort out where they should go based on state.
+      if (Number(res?.isAthleteProfile) !== 1 && res?.isAthleteProfile !== true) {
+        navigate('/create-profile', { replace: true });
+        return;
+      }
+
+      // Navigate to destination or dashboard
       const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
       navigate(from ?? '/dashboard', { replace: true });
     } catch (err: any) {
@@ -101,6 +110,10 @@ const Login = () => {
       const res = await loginWithGoogle();
       if (res) {
         toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
+        if (Number(res?.isAthleteProfile) !== 1 && res?.isAthleteProfile !== true) {
+          navigate('/create-profile', { replace: true });
+          return;
+        }
         const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
         navigate(from ?? '/dashboard', { replace: true });
       }
@@ -114,6 +127,10 @@ const Login = () => {
       const res = await loginWithApple();
       if (res) {
         toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
+        if (Number(res?.isAthleteProfile) !== 1 && res?.isAthleteProfile !== true) {
+          navigate('/create-profile', { replace: true });
+          return;
+        }
         const from = (location.state as { from?: { pathname: string } })?.from?.pathname;
         navigate(from ?? '/dashboard', { replace: true });
       }

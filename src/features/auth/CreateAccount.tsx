@@ -66,7 +66,11 @@ const CreateAccount = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      navigate('/dashboard');
+      if (Number(user.isAthleteProfile) === 1 || user.isAthleteProfile === true) {
+        navigate('/dashboard');
+      } else {
+        navigate('/create-profile');
+      }
     }
   }, [isAuthenticated, user, navigate]);
 
@@ -118,9 +122,13 @@ const CreateAccount = () => {
   const handleSignUp = async () => {
     if (validate()) {
       try {
-        await registerWithEmail(email.trim().toLowerCase(), password);
+        const res = await registerWithEmail(email.trim().toLowerCase(), password);
         toast.success('Registration successful. Welcome!');
-        navigate('/dashboard');
+        if (Number(res?.isAthleteProfile) === 1 || res?.isAthleteProfile === true) {
+          navigate('/dashboard');
+        } else {
+          navigate('/create-profile');
+        }
       } catch (err: any) {
         const errorMsg = err?.message || 'An error occurred during registration.';
         toast.error(errorMsg);
@@ -134,7 +142,11 @@ const CreateAccount = () => {
       const res = await loginWithGoogle();
       if (res) {
         toast.success('Signed up with Google successfully! Welcome!');
-        navigate('/dashboard');
+        if (Number(res?.isAthleteProfile) === 1 || res?.isAthleteProfile === true) {
+          navigate('/dashboard');
+        } else {
+          navigate('/create-profile');
+        }
       }
     } catch (err: any) {
       toast.error(err?.message || 'Google sign-up failed.');
@@ -146,7 +158,11 @@ const CreateAccount = () => {
       const res = await loginWithApple();
       if (res) {
         toast.success('Signed up with Apple successfully! Welcome!');
-        navigate('/dashboard');
+        if (Number(res?.isAthleteProfile) === 1 || res?.isAthleteProfile === true) {
+          navigate('/dashboard');
+        } else {
+          navigate('/create-profile');
+        }
       }
     } catch (err: any) {
       toast.error(err?.message || 'Apple sign-up failed.');

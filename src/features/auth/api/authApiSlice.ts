@@ -91,12 +91,13 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          const hasProfile = Boolean(Number(data.isAthleteProfile) === 1 || data.isAthleteProfile === true);
           let user: AppUser = {
             id: data.id,
             email: data.email,
             token: data.token,
-            isAthleteProfile: !!data.isAthleteProfile,
-            role: data.isAthleteProfile ? 'athlete' : 'organizer',
+            isAthleteProfile: hasProfile,
+            role: hasProfile ? 'athlete' : undefined,
           };
           dispatch(setUser(user));
           dispatch(bypassOtpSuccess());
@@ -104,10 +105,11 @@ export const authApiSlice = apiSlice.injectEndpoints({
           // Fetch full user info behind the scenes to populate missing profile fields
           try {
             const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
+            const hasProfileFromInfo = Boolean(Number(userInfoResult.isAthleteProfile) === 1 || userInfoResult.isAthleteProfile === true);
             user = {
               ...user,
-              isAthleteProfile: !!userInfoResult.isAthleteProfile,
-              role: userInfoResult.isAthleteProfile ? 'athlete' : 'organizer',
+              isAthleteProfile: hasProfileFromInfo,
+              role: hasProfileFromInfo ? (user.role || 'athlete') : undefined,
               fullName: userInfoResult.fullName,
               profileImage: userInfoResult.profileImage || undefined,
               dob: userInfoResult.dob || undefined,
@@ -210,22 +212,24 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          const hasProfile = Boolean(Number(data.isAthleteProfile) === 1 || data.isAthleteProfile === true);
           let user: AppUser = {
             id: data.id,
             email: data.email,
             token: data.token,
-            isAthleteProfile: !!data.isAthleteProfile,
-            role: data.isAthleteProfile ? 'athlete' : 'organizer',
+            isAthleteProfile: hasProfile,
+            role: hasProfile ? 'athlete' : undefined,
           };
           dispatch(setUser(user));
           dispatch(bypassOtpSuccess());
           
           try {
             const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
+            const hasProfileFromInfo = Boolean(Number(userInfoResult.isAthleteProfile) === 1 || userInfoResult.isAthleteProfile === true);
             user = {
               ...user,
-              isAthleteProfile: !!userInfoResult.isAthleteProfile,
-              role: userInfoResult.isAthleteProfile ? 'athlete' : 'organizer',
+              isAthleteProfile: hasProfileFromInfo,
+              role: hasProfileFromInfo ? (user.role || 'athlete') : undefined,
               fullName: userInfoResult.fullName,
               profileImage: userInfoResult.profileImage || undefined,
               dob: userInfoResult.dob || undefined,
