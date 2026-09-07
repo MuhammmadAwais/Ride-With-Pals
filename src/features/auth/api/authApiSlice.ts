@@ -91,7 +91,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const hasProfile = Boolean(Number(data.isAthleteProfile) === 1 || data.isAthleteProfile === true);
+          const hasProfile = Boolean(data.isAthleteProfile);
           let user: AppUser = {
             id: data.id,
             email: data.email,
@@ -105,7 +105,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           // Fetch full user info behind the scenes to populate missing profile fields
           try {
             const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
-            const hasProfileFromInfo = Boolean(Number(userInfoResult.isAthleteProfile) === 1 || userInfoResult.isAthleteProfile === true);
+            const hasProfileFromInfo = Boolean(userInfoResult.isAthleteProfile);
             user = {
               ...user,
               isAthleteProfile: hasProfileFromInfo,
@@ -212,7 +212,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const hasProfile = Boolean(Number(data.isAthleteProfile) === 1 || data.isAthleteProfile === true);
+          const hasProfile = Boolean(data.isAthleteProfile);
           let user: AppUser = {
             id: data.id,
             email: data.email,
@@ -225,7 +225,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
           
           try {
             const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
-            const hasProfileFromInfo = Boolean(Number(userInfoResult.isAthleteProfile) === 1 || userInfoResult.isAthleteProfile === true);
+            const hasProfileFromInfo = Boolean(userInfoResult.isAthleteProfile);
             user = {
               ...user,
               isAthleteProfile: hasProfileFromInfo,

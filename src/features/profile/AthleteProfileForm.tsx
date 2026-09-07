@@ -199,7 +199,7 @@ const AthleteProfileForm = () => {
 
   const isEditing = Boolean(
     (location.state as any)?.isEditing ?? 
-    (Number(userInfo?.isAthleteProfile) === 1 || userInfo?.isAthleteProfile === true)
+    (Number(userInfo?.isAthleteProfile) === 1)
   );
 
   return (

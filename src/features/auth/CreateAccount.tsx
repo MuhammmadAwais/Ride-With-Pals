@@ -66,7 +66,7 @@ const CreateAccount = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      if (Number(user.isAthleteProfile) === 1 || user.isAthleteProfile === true) {
+      if (Number(user.isAthleteProfile) === 1) {
         navigate('/dashboard');
       } else {
         navigate('/create-profile');
@@ -124,7 +124,7 @@ const CreateAccount = () => {
       try {
         const res = await registerWithEmail(email.trim().toLowerCase(), password);
         toast.success('Registration successful. Welcome!');
-        if (Number(res?.isAthleteProfile) === 1 || res?.isAthleteProfile === true) {
+        if (Number(res?.isAthleteProfile) === 1) {
           navigate('/dashboard');
         } else {
           navigate('/create-profile');
@@ -142,7 +142,7 @@ const CreateAccount = () => {
       const res = await loginWithGoogle();
       if (res) {
         toast.success('Signed up with Google successfully! Welcome!');
-        if (Number(res?.isAthleteProfile) === 1 || res?.isAthleteProfile === true) {
+        if (Number(res?.isAthleteProfile) === 1) {
           navigate('/dashboard');
         } else {
           navigate('/create-profile');
@@ -158,7 +158,7 @@ const CreateAccount = () => {
       const res = await loginWithApple();
       if (res) {
         toast.success('Signed up with Apple successfully! Welcome!');
-        if (Number(res?.isAthleteProfile) === 1 || res?.isAthleteProfile === true) {
+        if (Number(res?.isAthleteProfile) === 1) {
           navigate('/dashboard');
         } else {
           navigate('/create-profile');

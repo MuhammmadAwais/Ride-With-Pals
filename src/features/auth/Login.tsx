@@ -47,7 +47,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      if (Number(user.isAthleteProfile) !== 1 && user.isAthleteProfile !== true) {
+      if (Number(user.isAthleteProfile) !== 1) {
         navigate('/create-profile', { replace: true });
         return;
       }
@@ -90,7 +90,7 @@ const Login = () => {
       const res = await loginWithEmail(email.trim().toLowerCase(), password);
       toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
       
-      if (Number(res?.isAthleteProfile) !== 1 && res?.isAthleteProfile !== true) {
+      if (Number(res?.isAthleteProfile) !== 1) {
         navigate('/create-profile', { replace: true });
         return;
       }
@@ -110,7 +110,7 @@ const Login = () => {
       const res = await loginWithGoogle();
       if (res) {
         toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
-        if (Number(res?.isAthleteProfile) !== 1 && res?.isAthleteProfile !== true) {
+        if (Number(res?.isAthleteProfile) !== 1) {
           navigate('/create-profile', { replace: true });
           return;
         }
@@ -127,7 +127,7 @@ const Login = () => {
       const res = await loginWithApple();
       if (res) {
         toast.success(LOGIN_COPY.SUCCESS_MESSAGE);
-        if (Number(res?.isAthleteProfile) !== 1 && res?.isAthleteProfile !== true) {
+        if (Number(res?.isAthleteProfile) !== 1) {
           navigate('/create-profile', { replace: true });
           return;
         }

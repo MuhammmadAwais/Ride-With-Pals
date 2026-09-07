@@ -85,6 +85,7 @@ export const useFirebaseAuth = () => {
       if (err?.code === "auth/popup-closed-by-user") {
         return null;
       }
+      console.error("[useFirebaseAuth] Google login error:", err);
       const message = formatFirebaseError(err);
       throw new Error(message);
     } finally {
@@ -105,6 +106,7 @@ export const useFirebaseAuth = () => {
       if (err?.code === "auth/popup-closed-by-user") {
         return null;
       }
+      console.error("[useFirebaseAuth] Apple login error:", err);
       const message = formatFirebaseError(err);
       throw new Error(message);
     } finally {
