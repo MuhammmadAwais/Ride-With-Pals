@@ -103,8 +103,8 @@ const AppLayout: React.FC = () => {
           {/* Main content column */}
           <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[288px]">
 
-            {/* Sticky Navbar */}
-            <div className="sticky top-0 left-0 right-0 z-30">
+            {/* Fixed Navbar — permanently pinned to top across all screen sizes */}
+            <div className="fixed top-0 right-0 left-0 lg:left-[288px] z-30 h-[80px]">
               <Navbar
                 onMenuClick={() => setSidebarOpen(true)}
                 pageTitle={pageTitle}
@@ -112,12 +112,12 @@ const AppLayout: React.FC = () => {
               />
             </div>
 
-            {/* Scrollable page content — Outlet renders the matched child route */}
+            {/* Scrollable page content — offset by 80px fixed navbar height */}
             <main
               ref={contentRef}
               id={isSupportPage ? undefined : "main-content"}
               className={cn(
-                "flex-1",
+                "flex-1 mt-[80px]",
                 isSupportPage ? "p-0 overflow-hidden h-[calc(100svh-80px)] flex flex-col" : ""
               )}
             >

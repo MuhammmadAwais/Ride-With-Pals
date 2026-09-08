@@ -106,12 +106,14 @@ export const useClub = () => {
 
 export const ClubService = {
   // Maintaining backwards compatibility for components that haven't migrated to hooks yet
-  getAllClubs: async (owned?: boolean) => {
-    const response = await ApiClubService.clubs(owned ? { owned: true } : {});
+  getAllClubs: async (owned?: boolean, params?: Record<string, any>) => {
+    const queryParams: Record<string, any> = { ...(params || {}) };
+    if (owned) queryParams.owned = true;
+    const response = await ApiClubService.clubs(queryParams);
     return response;
   },
-  getJoinedClubs: async () => {
-    const response = await ApiClubService.getJoinedClubs();
+  getJoinedClubs: async (params?: Record<string, any>) => {
+    const response = await ApiClubService.getJoinedClubs(params);
     return response;
   },
   getClubById: async (clubId: number) => {

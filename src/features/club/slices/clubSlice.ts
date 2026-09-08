@@ -42,11 +42,11 @@ const initialState: ClubState & {
  * Maps to GET /clubs?owned=true (equivalent to Flutter's getAllClubs(owned: true)).
  * Used to populate the Club Management sidebar.
  */
-export const fetchMyClubs = createAsyncThunk<Club[], void, { rejectValue: string }>(
+export const fetchMyClubs = createAsyncThunk<Club[], Record<string, any> | void, { rejectValue: string }>(
   'club/fetchMyClubs',
-  async (_, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await ClubService.getAllClubs(true);
+      const response = await ClubService.getAllClubs(true, params || undefined);
       return extractArray(response);
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch managed clubs.');
@@ -59,11 +59,11 @@ export const fetchMyClubs = createAsyncThunk<Club[], void, { rejectValue: string
  * Maps to GET /clubs/joined (equivalent to Flutter's userJoinedClub()).
  * Used to populate the Athlete Interface "Joined Clubs" section.
  */
-export const fetchJoinedClubs = createAsyncThunk<Club[], void, { rejectValue: string }>(
+export const fetchJoinedClubs = createAsyncThunk<Club[], Record<string, any> | void, { rejectValue: string }>(
   'club/fetchJoinedClubs',
-  async (_, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await ClubService.getJoinedClubs();
+      const response = await ClubService.getJoinedClubs(params || undefined);
       return extractArray(response);
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch joined clubs.');
@@ -74,11 +74,11 @@ export const fetchJoinedClubs = createAsyncThunk<Club[], void, { rejectValue: st
 /**
  * Fetches ALL public clubs for discovery (Explore tab).
  */
-export const fetchExploreClubs = createAsyncThunk<Club[], void, { rejectValue: string }>(
+export const fetchExploreClubs = createAsyncThunk<Club[], Record<string, any> | void, { rejectValue: string }>(
   'club/fetchExploreClubs',
-  async (_, { rejectWithValue }) => {
+  async (params, { rejectWithValue }) => {
     try {
-      const response = await ClubService.getAllClubs(false);
+      const response = await ClubService.getAllClubs(false, params || undefined);
       return extractArray(response);
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch explore clubs.');

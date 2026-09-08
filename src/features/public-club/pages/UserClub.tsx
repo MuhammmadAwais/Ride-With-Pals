@@ -1,143 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { Search, LayoutGrid, List, Globe, Lock, MapPin, Users, ShieldCheck, Bike, Activity, Trophy, Filter, X, Map as MapIcon } from "lucide-react";
+import { Search, LayoutGrid, List, Bike, Activity, Trophy, Filter, X, Map as MapIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { setUser } from "@/features/auth/slices/authSlice";
 import { fetchMyClubs, fetchExploreClubs, fetchJoinedClubs } from "@/features/club/slices/clubSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { ClubMapView } from "../components/ClubMapView";
-import { useGetClubMembersListQuery } from "@/features/club/api/clubApiSlice";
-import { extractMembersList } from "./ClubDetails";
-
-const getClubTypeName = (typeId?: number | string) => {
-  if (typeId === 2 || typeId === "2" || String(typeId).toLowerCase() === "running") return "Running";
-  if (
-    typeId === 3 ||
-    typeId === "3" ||
-    String(typeId).toLowerCase() === "triathlon" ||
-    String(typeId).toLowerCase() === "cycling & running"
-  )
-    return "Triathlon";
-  return "Cycling";
-};
-
-const renderSportBadge = (typeId?: number | string) => {
-  const t = getClubTypeName(typeId);
-  if (t === "Running") {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-400 border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
-        <Activity size={11} className="shrink-0" /> Running
-      </span>
-    );
-  }
-  if (t === "Triathlon") {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-purple-300 border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
-        <Trophy size={11} className="shrink-0" /> Triathlon
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-[#ff8c42] border border-white/10 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
-      <Bike size={11} className="shrink-0" /> Cycling
-    </span>
-  );
-};
-
-const getClubImage = (logo?: string | null, coverImage?: string | null): string => {
-  const img = logo || coverImage;
-  if (!img || img === "null" || img.trim() === "") {
-    return "/Images/CycleImage2.png";
-  }
-  if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:") || img.startsWith("/")) {
-    return img;
-  }
-  return `https://api.ridewithpals.com/uploads/${img}`;
-};
-
-const getMemberCount = (club: any) => {
-  if (!club) return 0;
-
-  // Prioritize live approved members array if present
-  const list =
-    club.clubMembers ||
-    club.ClubMembers ||
-    club.club_members ||
-    club.members ||
-    club.Members ||
-    club.user_clubs ||
-    club.userClubs ||
-    club.UserClubs ||
-    club.participants ||
-    club.Participants;
-
-  if (Array.isArray(list) && list.length > 0) {
-    return list.length;
-  }
-
-  const val =
-    club._count?.user_clubs ??
-    club._count?.members ??
-    club._count?.users ??
-    club.membersCount ??
-    club.members_count ??
-    club.memberCount ??
-    club.member_count ??
-    club.participantCount ??
-    club.participant_count ??
-    club.totalMembers ??
-    club.total_members ??
-    club.userCount ??
-    club.user_count ??
-    club.count ??
-    club.total;
-
-  const count = Number(val);
-  if (!isNaN(count) && count > 0) return count;
-  return 0;
-};
-
-const ClubMemberCountText: React.FC<{ club: any; className?: string; as?: "span" | "p" }> = ({ 
-  club, 
-  className,
-  as = "span" 
-}) => {
-  const clubId = club?.id || club?.clubId;
-  const { data: membersData } = useGetClubMembersListQuery(
-    { clubId: Number(clubId) },
-    { skip: !clubId }
-  );
-
-  const count = React.useMemo(() => {
-    if (membersData !== undefined && membersData !== null) {
-      const list = extractMembersList(membersData);
-      return list.length;
-    }
-    const fromClub = extractMembersList(
-      club?.clubMembers || club?.members || club?.user_clubs || club?.participants
-    );
-    if (fromClub.length > 0) return fromClub.length;
-    return getMemberCount(club);
-  }, [membersData, club]);
-
-  const text = `${count} Pals joined`;
-
-  if (as === "p") {
-    return <p className={className}>{text}</p>;
-  }
-  return <span className={className}>{text}</span>;
-};
-
-const isClubOwned = (club: any, user: any, myClubs: any[]) => {
-  if (!club) return false;
-  if (club.isOwner === true || club.owned === true || club.isManaged === true) return true;
-  if (user?.id && (club.ownerId === user.id || club.userId === user.id || club.owner_id === user.id)) return true;
-  if (myClubs && myClubs.some(c => (c.id === club.id || (c as any).clubId === club.id || c.id === (club as any).clubId))) return true;
-  return false;
-};
+import { ClubCard, getClubTypeName } from "../components/ClubCard";
+import { cn } from "@/lib/utils";
 
 export default function UserClub() {
   const navigate = useNavigate();
@@ -158,13 +30,23 @@ export default function UserClub() {
   const [tempClubType, setTempClubType] = useState<"ALL" | "PUBLIC" | "PRIVATE">("ALL");
   const [tempSportType, setTempSportType] = useState<"ALL" | "CYCLING" | "RUNNING" | "TRIATHLON">("ALL");
 
-  React.useEffect(() => {
+  // Modern Pagination State for Discover All Clubs
+  const [discoverPage, setDiscoverPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const discoverSectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
     dispatch(fetchMyClubs());
     dispatch(fetchJoinedClubs());
     dispatch(fetchExploreClubs());
   }, [dispatch]);
 
-  const combinedMyClubs = React.useMemo(() => {
+  // Reset pagination when search, filters, or items-per-page change
+  useEffect(() => {
+    setDiscoverPage(1);
+  }, [searchQuery, clubTypeFilter, sportTypeFilter, itemsPerPage]);
+
+  const combinedMyClubs = useMemo(() => {
     const map = new Map();
     myClubs.forEach((c) => map.set(c.id, { ...c, isManaged: true }));
     (joinedClubs || []).forEach((c) => {
@@ -203,6 +85,21 @@ export default function UserClub() {
 
   const filteredMyClubs = combinedMyClubs.filter(filterClub);
   const filteredDiscoverClubs = exploreClubs.filter(filterClub);
+
+  // Paginated clubs slice
+  const totalPages = Math.max(1, Math.ceil(filteredDiscoverClubs.length / itemsPerPage));
+  const paginatedDiscoverClubs = useMemo(() => {
+    const startIndex = (discoverPage - 1) * itemsPerPage;
+    return filteredDiscoverClubs.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredDiscoverClubs, discoverPage, itemsPerPage]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setDiscoverPage(newPage);
+    if (discoverSectionRef.current) {
+      discoverSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   const handleSelectMyClub = (club: any) => {
     if (club.isManaged) {
@@ -569,7 +466,7 @@ export default function UserClub() {
             </div>
           </div>
 
-          {filteredMyClubs.length === 0 ? (
+              {filteredMyClubs.length === 0 ? (
             <div className="bg-surface/40 border border-border/80 rounded-2xl p-6 sm:p-8 text-center flex flex-col items-center justify-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted">
                 <Bike size={18} />
@@ -590,126 +487,27 @@ export default function UserClub() {
           ) : myClubsViewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {filteredMyClubs.map((club) => (
-                <div
+                <ClubCard
                   key={club.id}
-                  onClick={() => handleSelectMyClub(club)}
-                  className="bg-surface border border-border/80 rounded-2xl overflow-hidden group flex flex-col transition-all duration-300 hover:border-border hover:shadow-md cursor-pointer"
-                >
-                  {/* Top Image Banner */}
-                  <div className="relative h-40 w-full bg-main-bg overflow-hidden shrink-0">
-                    <img
-                      src={getClubImage(club.logo, club.coverImage)}
-                      alt={club.clubName}
-                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-                      }}
-                    />
-                    {/* Subtle dark gradient scrim */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
-                    
-                    {/* Floating Badges */}
-                    <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-10 gap-1.5">
-                      {renderSportBadge(club.clubTypeId)}
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {isClubOwned(club, user, myClubs) && (
-                          <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm"
-                            title="You manage this club"
-                          >
-                            <ShieldCheck size={11} className="shrink-0 text-amber-400" />
-                            <span>Owned</span>
-                          </span>
-                        )}
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border shrink-0 shadow-sm ${
-                          club.clubPrivacyId === 1 
-                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
-                            : "bg-black/60 text-rose-400 border-rose-500/30"
-                        }`}>
-                          {club.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />}
-                          <span>{club.clubPrivacyId === 1 ? 'Public' : 'Private'}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Details Content */}
-                  <div className="p-4 flex flex-col justify-between flex-1 gap-3.5 bg-surface">
-                    <div className="space-y-1 min-w-0 w-full">
-                      <h3 className="text-sm font-bold tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
-                        {club.clubName}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
-                        <span className="truncate">{club.location || "Location not specified"}</span>
-                      </div>
-                    </div>
-
-                    <div className="h-px w-full bg-border/40" />
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-medium">
-                        <Users size={12} className="text-text-muted/70 shrink-0" />
-                        <ClubMemberCountText club={club} />
-                      </div>
-                      <span className="text-[11px] font-bold text-[#EB712B] group-hover:translate-x-0.5 transition-transform shrink-0 flex items-center gap-0.5">
-                        {club.isManaged ? "Manage" : "View"} &rarr;
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                  club={club}
+                  user={user}
+                  myClubs={myClubs}
+                  onClick={handleSelectMyClub}
+                  viewMode="grid"
+                />
               ))}
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               {filteredMyClubs.map((club) => (
-                <div
+                <ClubCard
                   key={club.id}
-                  onClick={() => handleSelectMyClub(club)}
-                  className="bg-surface border border-border/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-border hover:shadow-xs transition-all cursor-pointer"
-                >
-                  <div className="flex items-center gap-4 w-full min-w-0">
-                    <img
-                      src={getClubImage(club.logo, club.coverImage)}
-                      alt={club.clubName}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-                      }}
-                    />
-                    <div className="space-y-1 w-full min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {renderSportBadge(club.clubTypeId)}
-                        {isClubOwned(club, user, myClubs) && (
-                          <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0"
-                            title="You manage this club"
-                          >
-                            <ShieldCheck size={10} className="shrink-0 text-amber-400" /> Owned
-                          </span>
-                        )}
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border shrink-0 ${
-                          club.clubPrivacyId === 1 
-                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
-                            : "bg-black/60 text-rose-400 border-rose-500/30"
-                        }`}>
-                          {club.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {club.clubPrivacyId === 1 ? 'Public' : 'Private'}
-                        </span>
-                      </div>
-                      <h3 className="text-base font-bold tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
-                        {club.clubName}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
-                        <span className="truncate">{club.location || "Location not specified"}</span>
-                      </div>
-                      <ClubMemberCountText club={club} as="p" className="text-[11px] text-text-muted font-medium" />
-                    </div>
-                  </div>
-                  <span className="text-[#EB712B] font-bold text-xs tracking-wider uppercase group-hover:translate-x-0.5 transition-transform shrink-0 self-end sm:self-center">
-                    {club.isManaged ? "Manage →" : "View →"}
-                  </span>
-                </div>
+                  club={club}
+                  user={user}
+                  myClubs={myClubs}
+                  onClick={handleSelectMyClub}
+                  viewMode="list"
+                />
               ))}
             </div>
           )}
@@ -719,7 +517,7 @@ export default function UserClub() {
         <div className="h-px w-full bg-border/40" />
 
         {/* --- DISCOVER ALL CLUBS SECTION --- */}
-        <section className="space-y-4 sm:space-y-5">
+        <section ref={discoverSectionRef} className="space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <h2 className="text-base sm:text-lg font-black tracking-wide uppercase text-text-main">
@@ -795,128 +593,125 @@ export default function UserClub() {
             </div>
           ) : viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-              {filteredDiscoverClubs.map((comm) => (
-                <div
+              {paginatedDiscoverClubs.map((comm) => (
+                <ClubCard
                   key={comm.id}
-                  onClick={() => handleSelectDiscoverClub(comm)}
-                  className="bg-surface border border-border/80 rounded-2xl overflow-hidden group flex flex-col transition-all duration-300 hover:border-border hover:shadow-md cursor-pointer"
-                >
-                  {/* Top Image Banner */}
-                  <div className="relative h-40 w-full bg-main-bg overflow-hidden shrink-0">
-                    <img
-                      src={getClubImage(comm.logo, comm.coverImage)}
-                      alt={comm.clubName}
-                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-                      }}
-                    />
-                    {/* Subtle dark gradient scrim */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
-                    
-                    {/* Floating Badges */}
-                    <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-10 gap-1.5">
-                      {renderSportBadge(comm.clubTypeId)}
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {isClubOwned(comm, user, myClubs) && (
-                          <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm"
-                            title="You manage this club"
-                          >
-                            <ShieldCheck size={11} className="shrink-0 text-amber-400" />
-                            <span>Owned</span>
-                          </span>
-                        )}
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border shrink-0 shadow-sm ${
-                          comm.clubPrivacyId === 1 
-                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
-                            : "bg-black/60 text-rose-400 border-rose-500/30"
-                        }`}>
-                          {comm.clubPrivacyId === 1 ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />}
-                          <span>{comm.clubPrivacyId === 1 ? 'Public' : 'Private'}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Details Content */}
-                  <div className="p-4 flex flex-col justify-between flex-1 gap-3.5 bg-surface">
-                    <div className="space-y-1 min-w-0 w-full">
-                      <h3 className="text-sm font-bold tracking-tight text-text-main uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1">
-                        {comm.clubName}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
-                        <span className="truncate">{comm.location || "Location not specified"}</span>
-                      </div>
-                    </div>
-
-                    <div className="h-px w-full bg-border/40" />
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-medium">
-                        <Users size={12} className="text-text-muted/70 shrink-0" />
-                        <ClubMemberCountText club={comm} />
-                      </div>
-                      <span className="text-[11px] font-bold text-[#EB712B] group-hover:translate-x-0.5 transition-transform shrink-0 flex items-center gap-0.5">
-                        View &rarr;
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                  club={comm}
+                  user={user}
+                  myClubs={myClubs}
+                  onClick={handleSelectDiscoverClub}
+                  viewMode="grid"
+                />
               ))}
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {filteredDiscoverClubs.map((comm) => (
-                <div
+              {paginatedDiscoverClubs.map((comm) => (
+                <ClubCard
                   key={comm.id}
-                  onClick={() => handleSelectDiscoverClub(comm)}
-                  className="bg-surface border border-border/80 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 group hover:border-border hover:shadow-xs transition-all cursor-pointer"
-                >
-                  <div className="flex items-center gap-4 w-full min-w-0">
-                    <img
-                      src={getClubImage(comm.logo, comm.coverImage)}
-                      alt={comm.clubName}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover shrink-0"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/Images/CycleImage2.png";
-                      }}
-                    />
-                    <div className="space-y-1 w-full min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {renderSportBadge(comm.clubTypeId)}
-                        {isClubOwned(comm, user, myClubs) && (
-                          <span
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0"
-                            title="You manage this club"
-                          >
-                            <ShieldCheck size={10} className="shrink-0 text-amber-400" /> Owned
-                          </span>
-                        )}
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border shrink-0 ${
-                          comm.clubPrivacyId === 1 
-                            ? "bg-black/60 text-emerald-400 border-emerald-500/30" 
-                            : "bg-black/60 text-rose-400 border-rose-500/30"
-                        }`}>
-                          {comm.clubPrivacyId === 1 ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />} {comm.clubPrivacyId === 1 ? 'Public' : 'Private'}
-                        </span>
-                      </div>
-                      <h3 className="text-base font-bold tracking-tight group-hover:text-[#EB712B] transition-colors uppercase truncate">
-                        {comm.clubName}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
-                        <MapPin size={12} className="text-text-muted/70 shrink-0" />
-                        <span className="truncate">{comm.location || "Location not specified"}</span>
-                      </div>
-                      <ClubMemberCountText club={comm} as="p" className="text-[11px] text-text-muted font-medium" />
-                    </div>
-                  </div>
-                  <span className="text-[#EB712B] font-bold text-xs tracking-wider uppercase group-hover:translate-x-0.5 transition-transform shrink-0 self-end sm:self-center">
-                    View &rarr;
-                  </span>
-                </div>
+                  club={comm}
+                  user={user}
+                  myClubs={myClubs}
+                  onClick={handleSelectDiscoverClub}
+                  viewMode="list"
+                />
               ))}
+            </div>
+          )}
+
+          {/* Modern Responsive Pagination Controls */}
+          {filteredDiscoverClubs.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
+              <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+                <p className="text-xs text-text-muted font-medium">
+                  Showing <span className="text-text-main font-bold">{(discoverPage - 1) * itemsPerPage + 1}</span> to <span className="text-text-main font-bold">{Math.min(discoverPage * itemsPerPage, filteredDiscoverClubs.length)}</span> of <span className="text-text-main font-bold">{filteredDiscoverClubs.length}</span> clubs
+                </p>
+
+                {filteredDiscoverClubs.length > 8 && (
+                  <div className="flex items-center gap-1.5 text-xs text-text-muted pl-2 border-l border-border/60">
+                    <span className="text-[11px] uppercase font-semibold">Per page:</span>
+                    {[8, 16, 24].map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          setItemsPerPage(size);
+                          setDiscoverPage(1);
+                        }}
+                        className={cn(
+                          "px-2 py-0.5 rounded text-[11px] font-bold transition-colors cursor-pointer",
+                          itemsPerPage === size
+                            ? "bg-[#EB712B] text-white"
+                            : "bg-surface hover:bg-hover text-text-muted hover:text-text-main border border-border"
+                        )}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5 select-none">
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(discoverPage - 1)}
+                  disabled={discoverPage === 1}
+                  className="px-3 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-hover transition-colors cursor-pointer flex items-center gap-1"
+                >
+                  <ChevronLeft size={14} />
+                  <span className="hidden sm:inline">Prev</span>
+                </button>
+
+                {/* Page Number Buttons */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                    if (
+                      pageNum === 1 ||
+                      pageNum === totalPages ||
+                      (pageNum >= discoverPage - 1 && pageNum <= discoverPage + 1)
+                    ) {
+                      const isActive = pageNum === discoverPage;
+                      return (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => handlePageChange(pageNum)}
+                          disabled={isActive}
+                          className={cn(
+                            "w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center",
+                            isActive
+                              ? "bg-[#EB712B] text-white shadow-md cursor-default"
+                              : "bg-surface border border-border text-text-muted hover:text-text-main hover:bg-hover"
+                          )}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    } else if (
+                      (pageNum === discoverPage - 2 && pageNum > 1) ||
+                      (pageNum === discoverPage + 2 && pageNum < totalPages)
+                    ) {
+                      return (
+                        <span key={pageNum} className="w-6 text-center text-text-muted text-xs">
+                          ...
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(discoverPage + 1)}
+                  disabled={discoverPage === totalPages}
+                  className="px-3 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-hover transition-colors cursor-pointer flex items-center gap-1"
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight size={14} />
+                </button>
+              </div>
             </div>
           )}
         </section>
