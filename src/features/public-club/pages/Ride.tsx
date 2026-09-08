@@ -518,9 +518,13 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         <h3 className="font-bold text-base sm:text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors truncate">
                           {ride.title}
                         </h3>
-                        <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">
-                          Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
-                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5 text-xs text-text-muted">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shrink-0" />
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted shrink-0">Club</span>
+                          <span className="font-semibold text-xs text-text-main hover:text-[#EB712B] transition-colors truncate">
+                            {ride.clubName}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Mobile action buttons row */}
@@ -773,72 +777,76 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                   {/* Card content with padding */}
                   <div className="p-6 flex flex-col justify-between flex-1 space-y-4">
                     {/* Card Header */}
-                    <div className="space-y-4 z-10">
-                      <div className="flex justify-between items-start gap-2">
-                        <div className="flex-1 min-w-0 pr-1">
-                          <h3 className="font-bold text-lg tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors line-clamp-1 mb-1">
-                            {ride.title}
-                          </h3>
-                          <p className="text-[10px] uppercase font-extrabold text-text-muted tracking-wider mt-0.5">
-                            Club Name: <span className="text-text-main font-semibold">{ride.clubName}</span>
-                          </p>
-                        </div>
-                        
-                        {/* Action Utility Bar: Google Calendar, Download GPX, Share, Bookmark */}
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {/* Google Calendar */}
-                          <button
-                            type="button"
-                            onClick={(e) => handleAddToCalendar(ride, e)}
-                            className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#4285F4]/40 hover:bg-[#4285F4]/10 transition-all cursor-pointer shadow-sm group/btn"
-                            title="Add to Google Calendar"
-                            aria-label="Add to Google Calendar"
-                          >
-                            <GoogleCalendarIcon size={16} className="group-hover/btn:scale-110 transition-transform" />
-                          </button>
-
-                          {/* Download GPX */}
-                          <button
-                            type="button"
-                            onClick={(e) => handleDownloadGpx(ride, e)}
-                            className="px-2.5 py-1.5 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all cursor-pointer shadow-sm flex items-center gap-1 group/btn"
-                            title="Download GPX Route"
-                            aria-label="Download GPX Route"
-                          >
-                            <Download size={13} className="text-emerald-500 group-hover/btn:scale-110 transition-transform" />
-                            <span className="text-[9px] font-black text-emerald-500 tracking-wider">GPX</span>
-                          </button>
-
-                          {/* Universal Share */}
-                          <button
-                            type="button"
-                            onClick={(e) => handleOpenShare(ride, e)}
-                            className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/40 hover:bg-[#EB712B]/10 transition-all cursor-pointer shadow-sm group/btn"
-                            title="Share Activity"
-                            aria-label="Share Activity"
-                          >
-                            <Share2 size={15} className="group-hover/btn:text-[#EB712B] group-hover/btn:scale-110 transition-all" />
-                          </button>
-
-                          {/* Bookmark */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleToggleSave(ride.id);
-                            }}
-                            className={`p-2 rounded-xl border transition-all cursor-pointer ${
-                              ride.isSaved
-                                ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
-                                : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
-                            }`}
-                            title={ride.isSaved ? "Saved" : "Save activity"}
-                            aria-label="Save activity"
-                          >
-                            <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
-                          </button>
+                    <div className="space-y-3 z-10">
+                      {/* Activity Title & Club Name (Full Width Prominence) */}
+                      <div className="min-w-0">
+                        <h3 className="font-extrabold text-lg sm:text-xl tracking-tight text-text-main group-hover:text-[#EB712B] transition-colors truncate" title={ride.title}>
+                          {ride.title}
+                        </h3>
+                        <div className="flex items-center gap-1.5 mt-1 text-xs text-text-muted">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shrink-0" />
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted shrink-0">Club</span>
+                          <span className="font-bold text-xs text-text-main hover:text-[#EB712B] transition-colors truncate" title={ride.clubName}>
+                            {ride.clubName}
+                          </span>
                         </div>
                       </div>
+                      
+                      {/* Action Utility Bar: Google Calendar, Download GPX, Share, Bookmark */}
+                      <div className="flex items-center gap-2 pt-0.5">
+                        {/* Google Calendar */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleAddToCalendar(ride, e)}
+                          className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#4285F4]/40 hover:bg-[#4285F4]/10 transition-all cursor-pointer shadow-sm group/btn"
+                          title="Add to Google Calendar"
+                          aria-label="Add to Google Calendar"
+                        >
+                          <GoogleCalendarIcon size={16} className="group-hover/btn:scale-110 transition-transform" />
+                        </button>
+
+                        {/* Download GPX */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleDownloadGpx(ride, e)}
+                          className="px-2.5 py-1.5 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all cursor-pointer shadow-sm flex items-center gap-1 group/btn"
+                          title="Download GPX Route"
+                          aria-label="Download GPX Route"
+                        >
+                          <Download size={13} className="text-emerald-500 group-hover/btn:scale-110 transition-transform" />
+                          <span className="text-[9px] font-black text-emerald-500 tracking-wider">GPX</span>
+                        </button>
+
+                        {/* Universal Share */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenShare(ride, e)}
+                          className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/40 hover:bg-[#EB712B]/10 transition-all cursor-pointer shadow-sm group/btn"
+                          title="Share Activity"
+                          aria-label="Share Activity"
+                        >
+                          <Share2 size={15} className="group-hover/btn:text-[#EB712B] group-hover/btn:scale-110 transition-all" />
+                        </button>
+
+                        {/* Bookmark */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleSave(ride.id);
+                          }}
+                          className={`p-2 rounded-xl border transition-all cursor-pointer shadow-sm ${
+                            ride.isSaved
+                              ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
+                              : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
+                          }`}
+                          title={ride.isSaved ? "Saved" : "Save activity"}
+                          aria-label="Save activity"
+                        >
+                          <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
+                        </button>
+                      </div>
+                    </div>
 
                       {/* Info Rows */}
                       <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
@@ -857,7 +865,6 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           </span>
                         </div>
                       </div>
-                    </div>
 
                     {/* Metrics Grid */}
                     <div className="grid grid-cols-3 gap-2 py-2 z-10">
