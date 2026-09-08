@@ -308,7 +308,7 @@ const Subscription = () => {
                       type="button"
                       onClick={handleOpenPortal}
                       disabled={isOpeningPortal}
-                      className="w-full bg-[#EB712B] text-white py-4 rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 border-0 cursor-pointer outline-none"
+                      className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(235,113,43,0.4)] flex items-center justify-center gap-2 border-0 cursor-pointer outline-none disabled:opacity-50"
                     >
                       {isOpeningPortal && <Loader2 size={16} className="animate-spin" />}
                       Manage on Stripe
@@ -318,7 +318,7 @@ const Subscription = () => {
                       type="button"
                       onClick={(e) => handleCheckout(e, plan.id)} 
                       disabled={isStartingCheckout}
-                      className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-[0_10px_20px_-10px_rgba(235,113,43,0.5)] flex items-center justify-center gap-2 border-0 cursor-pointer outline-none disabled:opacity-50"
+                      className="w-full bg-[#EB712B] hover:bg-[#ff8c4a] text-white py-4 rounded-2xl font-bold transition-all duration-300 shadow-[0_10px_24px_-8px_rgba(235,113,43,0.5)] hover:shadow-[0_14px_28px_-6px_rgba(235,113,43,0.65)] hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 border-0 cursor-pointer outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
                       {isStartingCheckout && <Loader2 size={16} className="animate-spin" />}
                       Subscribe Now

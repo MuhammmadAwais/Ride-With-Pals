@@ -137,7 +137,8 @@ export function ChatWindow({
                   <img
                     src={activeUser.avatar.startsWith('http') || activeUser.avatar.startsWith('data:') ? activeUser.avatar : `https://api.ridewithpals.com/uploads/${activeUser.avatar}`}
                     alt={activeUser.name}
-                    style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }}
+                    className="w-10 h-10 rounded-2xl object-cover block"
+                    style={{ background: 'var(--color-secondary-bg)' }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
                       const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLElement;
@@ -146,22 +147,10 @@ export function ChatWindow({
                   />
                 )}
                 <div
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: activeUser.isGroup ? 'rgba(235,113,43,0.25)' : 'rgba(235,113,43,0.2)',
-                    color: '#EB712B',
-                    border: '1px solid rgba(235,113,43,0.3)',
-                    display: activeUser.avatar ? 'none' : 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    fontFamily: 'var(--font-poppins)',
-                  }}
+                  className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/30 text-[#EB712B] font-bold font-poppins text-[13px] shadow-md items-center justify-center"
+                  style={{ display: activeUser.avatar ? 'none' : 'flex', flexShrink: 0 }}
                 >
-                  {activeUser.isGroup ? <Users size={18} /> : (activeUser.name || 'U').charAt(0).toUpperCase()}
+                  {activeUser.isGroup ? <Users size={17} /> : (activeUser.name || 'U').charAt(0).toUpperCase()}
                 </div>
               </div>
 

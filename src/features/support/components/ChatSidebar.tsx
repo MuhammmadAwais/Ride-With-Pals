@@ -97,29 +97,18 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
                   <img
                     src={user.avatar.startsWith('http') || user.avatar.startsWith('data:') ? user.avatar : `https://api.ridewithpals.com/uploads/${user.avatar}`}
                     alt=""
-                    style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', display: 'block', background: 'var(--color-secondary-bg)' }}
+                    className="w-11 h-11 rounded-2xl object-cover block"
+                    style={{ background: 'var(--color-secondary-bg)', display: 'block' }}
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display = 'none';
                     }}
                   />
                 )}
                 <div
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '50%',
-                    background: user.isGroup ? 'rgba(235,113,43,0.18)' : 'rgba(235,113,43,0.15)',
-                    color: '#EB712B',
-                    border: '1px solid rgba(235,113,43,0.3)',
-                    display: user.avatar ? 'none' : 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 800,
-                    fontSize: '15px',
-                    fontFamily: 'var(--font-poppins)',
-                  }}
+                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/30 flex items-center justify-center text-[#EB712B] font-black text-[14px] font-poppins shadow-md"
+                  style={{ display: user.avatar ? 'none' : 'flex', flexShrink: 0 }}
                 >
-                  {user.isGroup ? <Users size={18} /> : (user.name || 'U').charAt(0).toUpperCase()}
+                  {user.isGroup ? <Users size={17} /> : (user.name || 'U').charAt(0).toUpperCase()}
                 </div>
                 {user.isOnline && (
                   <div style={{ position: 'absolute', bottom: '1px', right: '1px', width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', border: '2px solid var(--color-secondary-bg)' }} />
