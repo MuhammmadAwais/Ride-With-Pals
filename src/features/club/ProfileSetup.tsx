@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom"; 
-import { Upload, ChevronDown, Sparkles, ArrowRight, Mail, MapPin } from "lucide-react";
+import { ChevronDown, Sparkles, ArrowRight, Mail, MapPin, Camera, Image as ImageIcon, X } from "lucide-react";
 import gsap from "gsap"; 
 import { useGSAP } from "@gsap/react";
 import { toast } from "sonner";
@@ -37,14 +37,15 @@ export default function ProfileSetup() {
 
   const { handleCreateClub, isCreating } = useClub();
 
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   const { ref: placesRef } = usePlacesWidget({
-    apiKey: apiKey,
-    onPlaceSelected: (place: any) => {
-      const formatted = place.formatted_address || place.name || "";
-      setLocation(formatted);
-      setErrors(p => ({ ...p, location: '' }));
+    apiKey: apiKey || "",
+    onPlaceSelected: (place) => {
+      if (place?.formatted_address) {
+        setLocation(place.formatted_address);
+        setErrors(p => ({...p, location: ''}));
+      }
     },
     options: {
       types: ["(cities)"],
@@ -157,6 +158,20 @@ export default function ProfileSetup() {
     }
   };
 
+  const handleRemoveLogo = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLogoFile(null);
+    setLogoPreview(null);
+  };
+
+  const handleRemoveCover = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCoverFile(null);
+    setCoverPreview(null);
+  };
+
   return (
     <div ref={container} className="min-h-screen w-full bg-[#111111] flex overflow-hidden">
       {/* LEFT SIDE */}
@@ -190,33 +205,123 @@ export default function ProfileSetup() {
         </div>
 
         <form className="space-y-4 fade-in" onSubmit={(e) => e.preventDefault()}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="relative">
-              <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" id="logo-upload" />
-              <label htmlFor="logo-upload" className="border border-dashed border-gray-700 rounded-lg h-24 flex flex-col items-center justify-center text-gray-500 hover:border-[#EB712B] focus-within:border-[#EB712B] transition-colors cursor-pointer relative overflow-hidden bg-[#1a1a1a]">
-                {logoPreview ? (
-                  <img src={logoPreview} alt="Logo" className="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-50 transition-opacity" />
-                ) : (
-                  <>
-                    <Upload size={16} className="mb-1" />
-                    <span className="text-[9px] uppercase">Upload Logo</span>
-                  </>
-                )}
+          {/* Club Media & Visual Identity Section */}
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] text-gray-400 font-extrabold tracking-wider uppercase flex items-center gap-1.5">
+                <span>Club Visual Identity</span>
+                <span className="text-gray-600 font-normal">(Logo & Banner)</span>
               </label>
+              <span className="text-[10px] text-gray-500 font-medium">PNG, JPG, WEBP</span>
             </div>
-            
-            <div className="relative">
-              <input type="file" accept="image/*" onChange={handleCoverChange} className="hidden" id="cover-upload" />
-              <label htmlFor="cover-upload" className="border border-dashed border-gray-700 rounded-lg h-24 flex flex-col items-center justify-center text-gray-500 hover:border-[#EB712B] focus-within:border-[#EB712B] transition-colors cursor-pointer relative overflow-hidden bg-[#1a1a1a]">
-                {coverPreview ? (
-                  <img src={coverPreview} alt="Cover" className="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-50 transition-opacity" />
-                ) : (
-                  <>
-                    <Upload size={16} className="mb-1" />
-                    <span className="text-[9px] uppercase">Club Cover Banner</span>
-                  </>
-                )}
-              </label>
+
+            <div className="flex flex-col sm:flex-row items-stretch gap-3 sm:gap-4">
+              {/* 1. Club Logo / Avatar (1:1 Square Emblem) */}
+              <div className="w-full sm:w-36 flex flex-col gap-1.5 shrink-0">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  className="hidden"
+                  id="logo-upload"
+                />
+                <label
+                  htmlFor="logo-upload"
+                  className="relative w-full sm:w-36 h-36 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-700 hover:border-[#EB712B] bg-[#1a1a1a] hover:bg-[#1f1f1f] flex flex-col items-center justify-center text-center p-3 transition-all duration-300 cursor-pointer overflow-hidden group shadow-md"
+                  title="Upload 1:1 Club Logo or Emblem"
+                >
+                  {logoPreview ? (
+                    <>
+                      <img
+                        src={logoPreview}
+                        alt="Logo Preview"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-white">
+                        <Camera size={20} className="mb-1 text-[#EB712B]" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Change Logo</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveLogo}
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 hover:bg-rose-600 text-white flex items-center justify-center transition-colors shadow-md z-10 cursor-pointer"
+                        title="Remove logo"
+                      >
+                        <X size={12} />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center space-y-1.5">
+                      <div className="w-10 h-10 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center text-[#EB712B] group-hover:scale-110 transition-transform">
+                        <Camera size={18} />
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="text-[11px] font-black uppercase tracking-wider text-white block">
+                          Upload Logo
+                        </span>
+                        <span className="text-[9px] font-bold text-[#EB712B] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#EB712B]/10 inline-block">
+                          1:1 Square
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </label>
+              </div>
+
+              {/* 2. Club Cover Banner (16:9 Landscape Banner) */}
+              <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverChange}
+                  className="hidden"
+                  id="cover-upload"
+                />
+                <label
+                  htmlFor="cover-upload"
+                  className="relative w-full h-36 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-700 hover:border-[#EB712B] bg-[#1a1a1a] hover:bg-[#1f1f1f] flex flex-col items-center justify-center text-center p-4 transition-all duration-300 cursor-pointer overflow-hidden group shadow-md"
+                  title="Upload Wide 16:9 Club Cover Banner"
+                >
+                  {coverPreview ? (
+                    <>
+                      <img
+                        src={coverPreview}
+                        alt="Cover Preview"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-white">
+                        <ImageIcon size={22} className="mb-1 text-[#EB712B]" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider">Change Cover Banner</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemoveCover}
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 hover:bg-rose-600 text-white flex items-center justify-center transition-colors shadow-md z-10 cursor-pointer"
+                        title="Remove cover banner"
+                      >
+                        <X size={12} />
+                      </button>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center space-y-1.5">
+                      <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform">
+                        <ImageIcon size={20} />
+                      </div>
+                      <div className="space-y-0.5">
+                        <span className="text-[11px] font-black uppercase tracking-wider text-white block">
+                          Club Cover Banner
+                        </span>
+                        <span className="text-[9px] font-bold text-orange-400 uppercase tracking-wider px-2 py-0.5 rounded bg-orange-500/10 inline-block">
+                          16:9 Landscape (1200×400px)
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-gray-500 hidden sm:inline">
+                        Header background shown across club profile & cards
+                      </span>
+                    </div>
+                  )}
+                </label>
+              </div>
             </div>
           </div>
 

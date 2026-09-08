@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Tag, AlertCircle, Sparkles, Trash2, Edit2, Loader2, X, Check } from 'lucide-react';
+import { Plus, Search, Tag, AlertCircle, Sparkles, Trash2, Edit2, Loader2, X, Check, Copy, Calendar } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
@@ -112,73 +113,136 @@ const EditDiscountModal: React.FC<EditDiscountModalProps> = ({ discount, onClose
   );
 };
 
-// ── Coupon Card (with edit/delete actions for organizers) ──────────────────
-const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) => (
-  <div className="group relative bg-surface border border-border rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-500 hover:border-[#EB712B]/30 shadow-xl">
-    <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+// ── Coupon Card (with copy micro-interaction & edit/delete actions) ──────────
+const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) => {
+  const [copied, setCopied] = useState(false);
 
-    <div className="relative z-10">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-6 gap-2">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-hover flex items-center justify-center border border-border">
-            <span className="text-lg">🏷️</span>
-          </div>
-          <div className="min-w-0">
-            <h3 className="font-bold text-text-main text-sm truncate">{discount.title}</h3>
-            <p className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">Promotion</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20 flex items-center">
-            <span className="text-[#EB712B] text-[10px] font-black uppercase tracking-wider">{discount.percentage || 0}% OFF</span>
-          </div>
-          {canManage && (
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => onEdit(discount)}
-                className="p-1.5 rounded-lg text-text-muted hover:text-[#EB712B] hover:bg-[#EB712B]/10 transition-colors cursor-pointer"
-                title="Edit discount"
-              >
-                <Edit2 size={13} />
-              </button>
-              <button
-                onClick={() => onDelete(discount.id)}
-                disabled={isDeleting}
-                className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer disabled:opacity-50"
-                title="Delete discount"
-              >
-                {isDeleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
-              </button>
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!discount.code) return;
+    navigator.clipboard.writeText(discount.code);
+    setCopied(true);
+    toast.success(`Discount code "${discount.code}" copied to clipboard!`);
+    setTimeout(() => setCopied(false), 2200);
+  };
+
+  return (
+    <div className="group relative bg-surface border border-border/80 hover:border-[#EB712B]/40 rounded-3xl p-5 md:p-6 overflow-hidden transition-all duration-300 shadow-md hover:shadow-2xl flex flex-col justify-between">
+      {/* Background ambient gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      <div className="relative z-10 space-y-4">
+        {/* Top Header */}
+        <div className="flex justify-between items-start gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#EB712B]/20 to-[#EB712B]/5 border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-300">
+              <Tag size={18} className="text-[#EB712B]" />
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Code & Expiry */}
-      <div className="bg-main-bg p-4 rounded-2xl border border-border mb-4">
-        <div className="flex justify-between items-center gap-4">
-          <div className="min-w-0">
-            <p className="text-[9px] text-text-muted uppercase font-bold mb-0.5">Promo Code</p>
-            <span className="font-mono text-sm font-bold text-text-main tracking-widest block truncate">{discount.code}</span>
+            <div className="min-w-0">
+              <h3 className="font-extrabold text-text-main text-sm truncate tracking-tight group-hover:text-[#EB712B] transition-colors">
+                {discount.title}
+              </h3>
+              <p className="text-[10px] text-text-muted uppercase tracking-wider font-bold">
+                Promotion
+              </p>
+            </div>
           </div>
-          <div className="text-right shrink-0">
-            <p className="text-[9px] text-text-muted uppercase font-bold mb-0.5">Expires</p>
-            <span className="text-xs font-medium text-red-700">{discount.expiry}</span>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="bg-gradient-to-r from-[#EB712B]/20 to-orange-500/10 px-3 py-1 rounded-full border border-[#EB712B]/30 flex items-center shadow-xs">
+              <span className="text-[#EB712B] text-[11px] font-black uppercase tracking-wider">
+                {discount.percentage || 0}% OFF
+              </span>
+            </div>
+
+            {canManage && (
+              <div className="flex items-center gap-1 pl-1">
+                <button
+                  type="button"
+                  onClick={() => onEdit(discount)}
+                  className="p-1.5 rounded-xl text-text-muted hover:text-[#EB712B] hover:bg-[#EB712B]/10 transition-colors cursor-pointer"
+                  title="Edit discount"
+                >
+                  <Edit2 size={13} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDelete(discount.id)}
+                  disabled={isDeleting}
+                  className="p-1.5 rounded-xl text-text-muted hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer disabled:opacity-50"
+                  title="Delete discount"
+                >
+                  {isDeleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Description */}
-      <div className="mt-4">
-        <h4 className="text-[10px] font-bold text-text-main uppercase tracking-wider mb-2">Description</h4>
-        <p className="text-xs text-text-muted leading-relaxed line-clamp-2 md:line-clamp-3">
-          {discount.description || "No description provided."}
-        </p>
+        {/* Promo Code & Expiry Ticket Box */}
+        <div
+          onClick={handleCopy}
+          className="relative bg-main-bg/90 hover:bg-main-bg border border-dashed border-[#EB712B]/35 hover:border-[#EB712B] p-4 rounded-2xl transition-all duration-200 cursor-pointer group/code select-none shadow-inner"
+          title="Click to copy promo code"
+        >
+          <div className="flex justify-between items-center gap-4">
+            <div className="min-w-0 flex-1">
+              <span className="text-[9px] text-text-muted uppercase font-black tracking-widest block mb-1">
+                Promo Code
+              </span>
+              <span className="font-mono text-base sm:text-lg font-black text-text-main tracking-widest block truncate group-hover/code:text-[#EB712B] transition-colors">
+                {discount.code}
+              </span>
+            </div>
+
+            {/* Micro-interaction Copy Button */}
+            <button
+              type="button"
+              onClick={handleCopy}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer select-none active:scale-95 shadow-sm border shrink-0",
+                copied
+                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/40"
+                  : "bg-[#EB712B] hover:bg-[#ff8036] text-white border-[#EB712B]/40 hover:shadow-[#EB712B]/25 hover:shadow-md"
+              )}
+            >
+              {copied ? (
+                <>
+                  <Check size={13} className="text-emerald-400 animate-in zoom-in-50 duration-200" />
+                  <span className="font-mono text-[10px] tracking-wider uppercase">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={13} />
+                  <span className="text-[10px] tracking-wider uppercase">Copy</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Expiry line */}
+          <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px]">
+            <span className="text-text-muted text-[10px] uppercase tracking-wider font-semibold">Valid Until</span>
+            <div className="flex items-center gap-1 text-text-muted font-medium">
+              <Calendar size={12} className="text-[#EB712B]" />
+              <span>{discount.expiry || "No Expiry"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="pt-1">
+          <h4 className="text-[10px] font-black text-text-muted uppercase tracking-wider mb-1">
+            Description
+          </h4>
+          <p className="text-xs text-text-main/85 leading-relaxed line-clamp-2 md:line-clamp-3">
+            {discount.description || "No description provided."}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 interface DiscountProps {
   role?: "organizer" | "athlete";

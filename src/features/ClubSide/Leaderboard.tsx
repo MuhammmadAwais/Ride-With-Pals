@@ -52,16 +52,25 @@ const LeaderboardAvatar = ({ avatar, name }: { avatar?: string | null; name: str
 };
 
 const StatCard = ({ title, value, icon: Icon }: any) => (
-  <div className="relative p-6 bg-surface border border-border backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 transition-all duration-500 group">
-    <div className="flex justify-between items-start mb-4">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-text-muted font-bold">{title}</p>
-      <div className="p-2 rounded-xl bg-hover group-hover:bg-[#EB712B] transition-colors duration-500">
-        <Icon size={16} className="text-[#EB712B] group-hover:text-white transition-colors duration-500" />
+  <div className="relative p-5 sm:p-6 bg-surface border border-border/80 backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 hover:shadow-xl transition-all duration-300 group flex items-center gap-4 sm:gap-5">
+    {/* Large Prominent Icon Container */}
+    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent border border-[#EB712B]/25 flex items-center justify-center shrink-0 group-hover:bg-[#EB712B] group-hover:scale-105 transition-all duration-300 shadow-md">
+      <Icon size={28} className="text-[#EB712B] group-hover:text-white transition-colors duration-300 shrink-0" />
+    </div>
+
+    {/* Text & Value Side-by-Side with Icon */}
+    <div className="min-w-0 flex-1 space-y-1">
+      <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-text-muted font-black truncate">
+        {title}
+      </p>
+      <div className="text-2xl sm:text-3xl font-black text-text-main tracking-tight truncate leading-tight">
+        {value}
       </div>
     </div>
-    <div className="text-3xl font-extrabold text-text-main tracking-tighter">{value}</div>
-    <div className="mt-4 w-full h-1 bg-border rounded-full overflow-hidden">
-      <div className="w-1/3 h-full bg-[#EB712B] rounded-full transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-out" />
+
+    {/* Bottom Accent Bar on Hover */}
+    <div className="absolute bottom-0 inset-x-0 h-1 bg-border/40 overflow-hidden">
+      <div className="w-full h-full bg-gradient-to-r from-transparent via-[#EB712B]/60 to-[#EB712B] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
     </div>
   </div>
 );
