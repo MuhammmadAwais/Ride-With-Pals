@@ -145,7 +145,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
   const renderSportBadge = () => {
     if (sportName === "Running") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-400 border border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-amber-600 dark:text-amber-400 border border-amber-500/25 dark:border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
           <Activity size={11} className="shrink-0" />
           <span>Running</span>
         </span>
@@ -153,14 +153,14 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
     }
     if (sportName === "Triathlon") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-purple-300 border border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-purple-600 dark:text-purple-300 border border-purple-500/25 dark:border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
           <Trophy size={11} className="shrink-0" />
           <span>Triathlon</span>
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-md text-[#ff8c42] border border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-[#EB712B] dark:text-[#ff8c42] border border-[#EB712B]/25 dark:border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
         <Bike size={11} className="shrink-0" />
         <span>Cycling</span>
       </span>
@@ -189,18 +189,18 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
               {renderSportBadge()}
               {isOwned && (
                 <span
-                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-amber-600 dark:text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs"
                   title="You manage this club"
                 >
-                  <ShieldCheck size={10} className="shrink-0 text-amber-400" />
+                  <ShieldCheck size={10} className="shrink-0 text-amber-500" />
                   <span>Owned</span>
                 </span>
               )}
               <span className={cn(
-                "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border shrink-0 backdrop-blur-md shadow-sm",
+                "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border shrink-0 backdrop-blur-md shadow-xs",
                 isPublic
-                  ? "bg-black/60 text-emerald-400 border-emerald-500/30"
-                  : "bg-black/60 text-rose-400 border-rose-500/30"
+                  ? "bg-surface/90 dark:bg-black/60 text-emerald-600 dark:text-emerald-400 border-emerald-500/25 dark:border-emerald-500/30"
+                  : "bg-surface/90 dark:bg-black/60 text-rose-600 dark:text-rose-400 border-rose-500/25 dark:border-rose-500/30"
               )}>
                 {isPublic ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />}
                 <span>{isPublic ? 'Public' : 'Private'}</span>
@@ -228,13 +228,13 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
     );
   }
 
-  // ─── GRID VIEW MODE (Full-bleed card with bottom gradient blur backdrop) ───
+  // ─── GRID VIEW MODE (Full-Bleed Media with Seamless Localized Glass Scrim) ───
   return (
     <div
       onClick={() => onClick(club)}
-      className="relative w-full h-[320px] sm:h-[340px] rounded-2xl overflow-hidden border border-border/80 hover:border-[#EB712B]/60 shadow-xs hover:shadow-2xl transition-all duration-300 group cursor-pointer flex flex-col justify-between select-none bg-main-bg"
+      className="relative w-full h-[320px] sm:h-[340px] rounded-2xl overflow-hidden border border-border/80 hover:border-[#EB712B]/60 shadow-xs hover:shadow-xl dark:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col justify-between select-none bg-main-bg"
     >
-      {/* 1. Full-Card Background Image */}
+      {/* 1. Full-Bleed Background Image — 100% visible, sharp & vivid */}
       <img
         src={bgImage}
         alt={club.clubName}
@@ -242,11 +242,19 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
         onError={() => setImgError(true)}
       />
 
-      {/* 2. Top Scrim for badge contrast */}
-      <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black/70 via-black/30 to-transparent pointer-events-none z-[1]" />
+      {/* 2. Subtle Top Scrim for badge contrast */}
+      <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-black/25 to-transparent dark:from-black/60 dark:to-transparent pointer-events-none z-[1]" />
 
-      {/* 3. Bottom Multi-stop Gradient Scrim */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 via-45% to-transparent pointer-events-none z-[1]" />
+      {/* 3. Progressive Masked Glass Scrim (Smooth gradient blur with feathered mask — zero hard cutoff edges) */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-white/95 via-white/75 via-45% to-transparent dark:from-black/95 dark:via-black/75 dark:via-45% dark:to-transparent pointer-events-none z-[1]"
+        style={{
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          maskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0) 100%)",
+          WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 45%, rgba(0,0,0,0) 100%)",
+        }}
+      />
 
       {/* 4. Top Badges Bar */}
       <div className="relative z-10 p-3 sm:p-3.5 flex justify-between items-center gap-1.5">
@@ -255,18 +263,18 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
         <div className="flex items-center gap-1.5 shrink-0">
           {isOwned && (
             <span
-              className="inline-flex items-center gap-1 px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-sm"
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-amber-600 dark:text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs"
               title="You manage this club"
             >
-              <ShieldCheck size={11} className="shrink-0 text-amber-400" />
+              <ShieldCheck size={11} className="shrink-0 text-amber-500" />
               <span>Owned</span>
             </span>
           )}
           <span className={cn(
-            "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border shrink-0 shadow-sm",
+            "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border shrink-0 shadow-xs",
             isPublic
-              ? "bg-black/60 text-emerald-400 border-emerald-500/30"
-              : "bg-black/60 text-rose-400 border-rose-500/30"
+              ? "bg-surface/90 dark:bg-black/60 text-emerald-600 dark:text-emerald-400 border-emerald-500/25 dark:border-emerald-500/30"
+              : "bg-surface/90 dark:bg-black/60 text-rose-600 dark:text-rose-400 border-rose-500/25 dark:border-rose-500/30"
           )}>
             {isPublic ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />}
             <span>{isPublic ? 'Public' : 'Private'}</span>
@@ -274,23 +282,23 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
         </div>
       </div>
 
-      {/* 5. Bottom Details with Gradient Blur Backdrop */}
-      <div className="relative z-10 p-4 sm:p-4.5 space-y-2.5 backdrop-blur-[2px] rounded-b-2xl">
+      {/* 5. Bottom Details seamlessly supported by the feathered glass scrim */}
+      <div className="relative z-10 p-4 sm:p-4.5 space-y-2">
         <div className="flex items-center gap-2.5 min-w-0">
           {hasDistinctAvatar && (
             <img
               src={avatarImage!}
               alt=""
-              className="w-9 h-9 rounded-xl object-cover border border-white/25 shadow-md shrink-0 bg-black/40"
+              className="w-9 h-9 rounded-xl object-cover border border-black/10 dark:border-white/25 shadow-xs shrink-0 bg-white dark:bg-black/40"
               onError={() => setAvatarError(true)}
             />
           )}
 
           <div className="space-y-0.5 min-w-0 flex-1">
-            <h3 className="text-base font-black tracking-tight text-white uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1 drop-shadow-sm font-poppins">
+            <h3 className="text-base font-black tracking-tight text-zinc-950 dark:text-white uppercase group-hover:text-[#EB712B] transition-colors line-clamp-1 font-poppins">
               {club.clubName}
             </h3>
-            <div className="flex items-center gap-1.5 text-[11px] text-white/80 font-normal min-w-0">
+            <div className="flex items-center gap-1.5 text-[11px] text-zinc-600 dark:text-white/80 font-normal min-w-0">
               <MapPin size={12} className="text-[#EB712B] shrink-0" />
               <span className="truncate">{club.location || "Location not specified"}</span>
             </div>
@@ -298,12 +306,12 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
         </div>
 
         {/* Thin Modern Divider */}
-        <div className="h-px w-full bg-white/15" />
+        <div className="h-px w-full bg-black/8 dark:bg-white/15" />
 
         {/* Bottom Bar: Pals Count & CTA */}
         <div className="flex items-center justify-between pt-0.5">
-          <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
-            <Users size={12} className="text-white/70 shrink-0" />
+          <div className="flex items-center gap-1.5 text-xs text-zinc-700 dark:text-white/90 font-medium">
+            <Users size={12} className="text-zinc-500 dark:text-white/70 shrink-0" />
             <ClubMemberCountText club={club} />
           </div>
 

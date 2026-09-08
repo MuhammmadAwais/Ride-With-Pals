@@ -88,12 +88,12 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
   return (
     <div
       onClick={() => onSelectRide(ride.id)}
-      className="absolute bottom-6 left-4 sm:left-6 z-[1000] w-[340px] sm:w-[420px] bg-[#161616] border border-white/10 rounded-3xl overflow-hidden shadow-2xl shadow-black/90 flex cursor-pointer transition-transform duration-300 hover:scale-[1.02] active:scale-[0.99] group backdrop-blur-md"
+      className="absolute bottom-6 left-4 sm:left-6 z-[1000] w-[340px] sm:w-[420px] bg-surface dark:bg-[#161616] border border-border/80 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl flex cursor-pointer transition-transform duration-300 hover:scale-[1.02] active:scale-[0.99] group backdrop-blur-md"
       role="button"
       tabIndex={0}
     >
       {/* Left section: Cover Image & Title */}
-      <div className="relative w-[46%] h-52 bg-black overflow-hidden shrink-0">
+      <div className="relative w-[46%] h-52 bg-main-bg dark:bg-black overflow-hidden shrink-0">
         <img
           src={ride.image || "/Images/CycleImage2.png"}
           alt={ride.title}
@@ -104,7 +104,7 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
         />
 
         {/* Gradient Scrim */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
         {/* Close Button */}
         <button
@@ -113,7 +113,7 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
             e.stopPropagation();
             onClose();
           }}
-          className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center transition-all cursor-pointer border border-white/10"
+          className="absolute top-3 left-3 w-8 h-8 rounded-full bg-surface/85 dark:bg-black/60 hover:bg-surface dark:hover:bg-black/90 text-text-main dark:text-white flex items-center justify-center transition-all cursor-pointer border border-border dark:border-white/10 shadow-xs"
           aria-label="Close preview"
         >
           <X size={15} />
@@ -146,21 +146,21 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
           <h4 className="font-extrabold text-white text-sm leading-snug line-clamp-1 group-hover:text-[#EB712B] transition-colors uppercase">
             {ride.title}
           </h4>
-          <p className="text-gray-300 text-[11px] font-medium mt-0.5 tracking-wide line-clamp-1">
+          <p className="text-white/80 text-[11px] font-medium mt-0.5 tracking-wide line-clamp-1">
             {ride.clubName}
           </p>
         </div>
       </div>
 
       {/* Right section: Telemetry & Actions */}
-      <div className="w-[54%] p-3.5 sm:p-4 flex flex-col justify-between bg-[#161616] text-left">
+      <div className="w-[54%] p-3.5 sm:p-4 flex flex-col justify-between bg-surface dark:bg-[#161616] text-left">
         {/* Top: Sport Badge + Public / Private */}
         <div className="flex items-center justify-between gap-1.5">
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/10 text-white rounded-full text-[10px] font-bold tracking-wide">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-hover dark:bg-white/5 border border-border dark:border-white/10 text-text-main dark:text-white rounded-full text-[10px] font-bold tracking-wide">
             {sportName === "Running" ? (
-              <Activity size={11} className="text-amber-400 shrink-0" />
+              <Activity size={11} className="text-amber-500 dark:text-amber-400 shrink-0" />
             ) : sportName === "Triathlon" ? (
-              <Trophy size={11} className="text-purple-300 shrink-0" />
+              <Trophy size={11} className="text-purple-600 dark:text-purple-300 shrink-0" />
             ) : (
               <Bike size={11} className="text-[#EB712B] shrink-0" />
             )}
@@ -169,15 +169,15 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
 
           <div className="flex items-center gap-1.5">
             {ride.isPaymentRequired && (
-              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                 {ride.priceFormatted || "Paid"}
               </span>
             )}
             <span
               className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
                 ride.isPublic
-                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                  : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                  ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                  : "bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
               }`}
             >
               {ride.isPublic ? "Public" : "Private"}
@@ -187,21 +187,21 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
 
         {/* Middle: Details (Date, Location, Distance) */}
         <div className="space-y-1 my-auto py-1">
-          <div className="flex items-center gap-1.5 text-[10px] text-gray-300">
-            <Calendar size={11} className="text-gray-400 shrink-0" />
+          <div className="flex items-center gap-1.5 text-[10px] text-text-muted dark:text-gray-300">
+            <Calendar size={11} className="text-text-muted dark:text-gray-400 shrink-0" />
             <span className="truncate">{ride.date}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] text-gray-300">
-            <MapPin size={11} className="text-gray-400 shrink-0" />
+          <div className="flex items-center gap-1.5 text-[10px] text-text-muted dark:text-gray-300">
+            <MapPin size={11} className="text-text-muted dark:text-gray-400 shrink-0" />
             <span className="truncate">{ride.location}</span>
           </div>
-          <div className="flex items-center gap-2 pt-0.5 text-[10px] text-gray-300 font-semibold">
+          <div className="flex items-center gap-2 pt-0.5 text-[10px] text-text-main dark:text-gray-300 font-semibold">
             {ride.distance !== "N/A" && (
-              <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px]">
+              <span className="px-1.5 py-0.5 rounded bg-hover dark:bg-white/5 border border-border dark:border-white/10 text-[9px]">
                 {ride.distance}
               </span>
             )}
-            <span className="flex items-center gap-1 text-gray-400 text-[9px]">
+            <span className="flex items-center gap-1 text-text-muted dark:text-gray-400 text-[9px]">
               <Users size={10} className="shrink-0" />
               <span>{ride.participants} joined</span>
             </span>
@@ -209,11 +209,11 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
         </div>
 
         {/* Quick Utility Action Buttons: GCal, GPX, Share */}
-        <div className="flex items-center gap-1 py-1 border-t border-white/10">
+        <div className="flex items-center gap-1 py-1 border-t border-border/80 dark:border-white/10">
           <button
             type="button"
             onClick={handleAddToCalendar}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all cursor-pointer"
+            className="p-1.5 rounded-lg bg-hover dark:bg-white/5 hover:bg-hover/80 dark:hover:bg-white/10 border border-border dark:border-white/10 text-text-muted hover:text-text-main dark:text-gray-300 dark:hover:text-white transition-all cursor-pointer"
             title="Add to Google Calendar"
           >
             <GoogleCalendarIcon size={14} />
@@ -221,7 +221,7 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
           <button
             type="button"
             onClick={handleDownloadGpx}
-            className="px-2 py-1 rounded-lg bg-white/5 hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 text-emerald-400 transition-all cursor-pointer flex items-center gap-1 text-[9px] font-bold"
+            className="px-2 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 transition-all cursor-pointer flex items-center gap-1 text-[9px] font-bold"
             title="Download GPX Route"
           >
             <Download size={11} /> GPX
@@ -229,7 +229,7 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
           <button
             type="button"
             onClick={handleShareClick}
-            className="p-1.5 rounded-lg bg-white/5 hover:bg-[#EB712B]/10 border border-white/10 hover:border-[#EB712B]/30 text-gray-300 hover:text-[#EB712B] transition-all cursor-pointer ml-auto"
+            className="p-1.5 rounded-lg bg-hover dark:bg-white/5 hover:bg-[#EB712B]/10 border border-border dark:border-white/10 hover:border-[#EB712B]/30 text-text-muted hover:text-[#EB712B] dark:text-gray-300 dark:hover:text-[#EB712B] transition-all cursor-pointer ml-auto"
             title="Share Activity"
           >
             <Share2 size={13} />

@@ -345,7 +345,7 @@ function MapControls({
       <button
         type="button"
         onClick={handleRecenter}
-        className="w-9 h-9 rounded-xl bg-black/85 hover:bg-black text-[#EB712B] hover:text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+        className="w-9 h-9 rounded-xl bg-surface/90 hover:bg-surface dark:bg-black/85 dark:hover:bg-black text-[#EB712B] border border-border dark:border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-md"
         title="Fit Route to View"
         aria-label="Fit Route to View"
       >
@@ -357,7 +357,7 @@ function MapControls({
           e.stopPropagation();
           map.zoomIn();
         }}
-        className="w-9 h-9 rounded-xl bg-black/85 hover:bg-black text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+        className="w-9 h-9 rounded-xl bg-surface/90 hover:bg-surface dark:bg-black/85 dark:hover:bg-black text-text-main dark:text-white border border-border dark:border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-md"
         title="Zoom In"
         aria-label="Zoom In"
       >
@@ -369,7 +369,7 @@ function MapControls({
           e.stopPropagation();
           map.zoomOut();
         }}
-        className="w-9 h-9 rounded-xl bg-black/85 hover:bg-black text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+        className="w-9 h-9 rounded-xl bg-surface/90 hover:bg-surface dark:bg-black/85 dark:hover:bg-black text-text-main dark:text-white border border-border dark:border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95 shadow-md"
         title="Zoom Out"
         aria-label="Zoom Out"
       >
@@ -1270,25 +1270,25 @@ const RideJoining = () => {
             <button 
               type="button"
               onClick={() => navigate(-1)}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-black/75 hover:bg-black/90 backdrop-blur-md border border-white/15 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer"
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-surface/90 hover:bg-surface dark:bg-black/75 dark:hover:bg-black/90 backdrop-blur-md border border-border dark:border-white/15 text-text-main dark:text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer"
               title="Back to Activities"
               aria-label="Back"
             >
               <ArrowLeft size={18} />
             </button>
 
-            <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-black/75 backdrop-blur-md border border-white/15 text-white text-xs font-bold shadow-xl">
+            <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-surface/90 dark:bg-black/75 backdrop-blur-md border border-border dark:border-white/15 text-text-main dark:text-white text-xs font-bold shadow-xl">
               {rideDetails.type === "Running" ? (
-                <ActivityIcon size={14} className="text-amber-400 shrink-0" />
+                <ActivityIcon size={14} className="text-amber-500 dark:text-amber-400 shrink-0" />
               ) : rideDetails.type === "Triathlon" ? (
-                <Trophy size={14} className="text-purple-400 shrink-0" />
+                <Trophy size={14} className="text-purple-600 dark:text-purple-400 shrink-0" />
               ) : (
                 <Bike size={14} className="text-[#EB712B] shrink-0" />
               )}
-              <span className="font-extrabold uppercase tracking-wide truncate max-w-[200px]">{rideDetails.title}</span>
-              <span className="text-white/40">•</span>
+              <span className="font-extrabold uppercase tracking-wide truncate max-w-[200px] text-text-main dark:text-white">{rideDetails.title}</span>
+              <span className="text-text-muted/40 dark:text-white/40">•</span>
               <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${
-                surfaceBadge === "Road" ? "bg-sky-950/80 text-sky-300 border border-sky-500/30" : "bg-emerald-950/80 text-emerald-300 border border-emerald-500/30"
+                surfaceBadge === "Road" ? "bg-sky-50 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-500/30" : "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
               }`}>
                 {surfaceBadge}
               </span>
@@ -1304,8 +1304,8 @@ const RideJoining = () => {
               className={cn(
                 "h-10 sm:h-11 inline-flex items-center gap-2.5 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl backdrop-blur-xl border shadow-lg transition-all duration-200 cursor-pointer select-none group",
                 isJoined 
-                  ? "bg-[#141414]/90 hover:bg-[#1E1E1E] border-white/15 hover:border-[#EB712B]/40 text-text-main hover:shadow-2xl" 
-                  : "bg-black/80 hover:bg-black/95 border-white/10 text-text-muted hover:text-text-main"
+                  ? "bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1E1E1E] border-border dark:border-white/15 hover:border-[#EB712B]/40 text-text-main hover:shadow-2xl" 
+                  : "bg-surface/90 hover:bg-surface dark:bg-black/80 dark:hover:bg-black/95 border-border dark:border-white/10 text-text-muted hover:text-text-main"
               )}
               title={isJoined ? "Open Activity Group Chat" : "Join activity to unlock group chat room"}
             >
@@ -1317,7 +1317,7 @@ const RideJoining = () => {
                   </span>
                   <MessageSquare size={15} className="text-[#EB712B] group-hover:scale-110 transition-transform shrink-0" />
                   <span className="text-xs font-semibold tracking-wide text-text-main">Group Chat</span>
-                  <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[9px] font-extrabold uppercase tracking-wider hidden sm:inline-flex items-center">
+                  <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold uppercase tracking-wider hidden sm:inline-flex items-center">
                     Live
                   </span>
                 </>
@@ -1325,7 +1325,7 @@ const RideJoining = () => {
                 <>
                   <Lock size={13} className="text-text-muted shrink-0" />
                   <span className="text-xs font-semibold text-text-muted">Group Chat</span>
-                  <span className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[9px] font-bold text-text-muted uppercase tracking-wider hidden sm:inline">
+                  <span className="px-1.5 py-0.5 rounded-md bg-hover dark:bg-white/5 border border-border dark:border-white/10 text-[9px] font-bold text-text-muted uppercase tracking-wider hidden sm:inline">
                     Locked
                   </span>
                 </>
@@ -1336,7 +1336,7 @@ const RideJoining = () => {
             <button 
               type="button"
               onClick={() => setIsShareModalOpen(true)}
-              className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-[#141414]/90 hover:bg-[#1E1E1E] backdrop-blur-xl border border-white/15 hover:border-white/30 text-text-muted hover:text-text-main flex items-center justify-center active:scale-95 transition-all shadow-lg cursor-pointer"
+              className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1E1E1E] backdrop-blur-xl border border-border dark:border-white/15 hover:border-[#EB712B]/40 text-text-muted hover:text-text-main flex items-center justify-center active:scale-95 transition-all shadow-lg cursor-pointer"
               title="Share Activity"
               aria-label="Share"
             >
@@ -1351,7 +1351,7 @@ const RideJoining = () => {
                 "h-10 w-10 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl backdrop-blur-xl border transition-all shadow-lg flex items-center justify-center cursor-pointer active:scale-95",
                 isSaved 
                   ? "bg-[#EB712B]/15 border-[#EB712B]/50 text-[#EB712B] shadow-[#EB712B]/10" 
-                  : "bg-[#141414]/90 hover:bg-[#1E1E1E] border-white/15 hover:border-white/30 text-text-muted hover:text-text-main"
+                  : "bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1E1E1E] border-border dark:border-white/15 hover:border-[#EB712B]/40 text-text-muted hover:text-text-main"
               )}
               title={isSaved ? "Saved" : "Save Activity"}
               aria-label="Save"
@@ -1362,22 +1362,22 @@ const RideJoining = () => {
 
           {/* Bottom-Left Floating Telemetry HUD */}
           <div className="absolute bottom-4 left-4 right-16 sm:left-6 sm:right-auto z-[400]">
-            <div className="inline-flex flex-wrap items-center gap-3 sm:gap-4 px-4 py-2.5 rounded-2xl bg-black/85 backdrop-blur-md border border-white/15 text-white shadow-2xl">
+            <div className="inline-flex flex-wrap items-center gap-3 sm:gap-4 px-4 py-2.5 rounded-2xl bg-surface/90 dark:bg-black/85 backdrop-blur-md border border-border dark:border-white/15 text-text-main dark:text-white shadow-2xl">
               <div className="flex items-center gap-1.5 text-xs font-bold">
-                <Navigation size={13} className="text-main shrink-0" />
-                <span className="text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Dist:</span>
-                <span className="font-extrabold text-white">{rideDetails.distance}</span>
+                <Navigation size={13} className="text-[#EB712B] shrink-0" />
+                <span className="text-text-muted dark:text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Dist:</span>
+                <span className="font-extrabold text-text-main dark:text-white">{rideDetails.distance}</span>
               </div>
-              <div className="h-3 w-px bg-white/20 hidden sm:block" />
+              <div className="h-3 w-px bg-border dark:bg-white/20 hidden sm:block" />
               <div className="flex items-center gap-1.5 text-xs font-bold">
                 <Gauge size={13} className="text-[#EB712B] shrink-0" />
-                <span className="text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Pace:</span>
-                <span className="font-extrabold text-white">{rideDetails.avgPace}</span>
+                <span className="text-text-muted dark:text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Pace:</span>
+                <span className="font-extrabold text-text-main dark:text-white">{rideDetails.avgPace}</span>
               </div>
-              <div className="h-3 w-px bg-white/20 hidden sm:block" />
+              <div className="h-3 w-px bg-border dark:bg-white/20 hidden sm:block" />
               <div className="flex items-center gap-1.5 text-xs font-bold">
                 <Users size={13} className="text-[#EB712B] shrink-0" />
-                <span className="font-extrabold text-white">{rideDetails.participantsCount} Joined</span>
+                <span className="font-extrabold text-text-main dark:text-white">{rideDetails.participantsCount} Joined</span>
               </div>
             </div>
           </div>

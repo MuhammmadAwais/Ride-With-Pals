@@ -240,11 +240,11 @@ export const ClubMapView: React.FC<ClubMapViewProps> = ({
       {/* ── Top Floating Control Bar ── */}
       <div className="absolute top-4 left-4 right-4 sm:right-auto z-[1000] flex flex-wrap items-center gap-3">
         {/* View Mode Toggle Switch (Grid, List, Map) */}
-        <div className="flex bg-[#141414]/90 border border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-md">
+        <div className="flex bg-surface/90 dark:bg-[#141414]/90 border border-border dark:border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-md">
           <button
             type="button"
             onClick={() => onViewModeChange("grid")}
-            className="p-2.5 rounded-xl text-text-muted hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+            className="p-2.5 rounded-xl text-text-muted hover:text-text-main dark:hover:text-white hover:bg-hover dark:hover:bg-white/5 transition-all cursor-pointer"
             title="Grid View"
           >
             <LayoutGrid size={18} />
@@ -252,7 +252,7 @@ export const ClubMapView: React.FC<ClubMapViewProps> = ({
           <button
             type="button"
             onClick={() => onViewModeChange("list")}
-            className="p-2.5 rounded-xl text-text-muted hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+            className="p-2.5 rounded-xl text-text-muted hover:text-text-main dark:hover:text-white hover:bg-hover dark:hover:bg-white/5 transition-all cursor-pointer"
             title="List View"
           >
             <ListIcon size={18} />
@@ -269,14 +269,14 @@ export const ClubMapView: React.FC<ClubMapViewProps> = ({
 
         {/* Club Filter Switch (All vs My Clubs) if handler provided */}
         {onFilterTypeChange && (
-          <div className="flex bg-[#141414]/90 border border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-md text-xs font-black uppercase tracking-wider">
+          <div className="flex bg-surface/90 dark:bg-[#141414]/90 border border-border dark:border-white/10 rounded-2xl p-1 shadow-2xl backdrop-blur-md text-xs font-black uppercase tracking-wider">
             <button
               type="button"
               onClick={() => onFilterTypeChange("all")}
               className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
                 currentFilterType === "all"
-                  ? "bg-white/10 text-white shadow-inner"
-                  : "text-text-muted hover:text-white"
+                  ? "bg-text-main/10 text-text-main dark:bg-white/10 dark:text-white shadow-inner"
+                  : "text-text-muted hover:text-text-main dark:hover:text-white"
               }`}
             >
               All Clubs
@@ -286,8 +286,8 @@ export const ClubMapView: React.FC<ClubMapViewProps> = ({
               onClick={() => onFilterTypeChange("my")}
               className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
                 currentFilterType === "my"
-                  ? "bg-white/10 text-white shadow-inner"
-                  : "text-text-muted hover:text-white"
+                  ? "bg-text-main/10 text-text-main dark:bg-white/10 dark:text-white shadow-inner"
+                  : "text-text-muted hover:text-text-main dark:hover:text-white"
               }`}
             >
               My Clubs
@@ -296,7 +296,7 @@ export const ClubMapView: React.FC<ClubMapViewProps> = ({
         )}
 
         {/* Total clubs in view pill */}
-        <div className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 bg-[#141414]/90 border border-white/10 rounded-2xl text-xs font-bold text-gray-300 shadow-2xl backdrop-blur-md">
+        <div className="hidden sm:flex items-center gap-1.5 px-4 py-2.5 bg-surface/90 dark:bg-[#141414]/90 border border-border dark:border-white/10 rounded-2xl text-xs font-bold text-text-muted dark:text-gray-300 shadow-2xl backdrop-blur-md">
           <Users size={14} className="text-[#EB712B]" />
           <span>{clubs.length} Clubs Located</span>
           {isLoadingMarkers && <Loader2 size={12} className="animate-spin text-[#EB712B] ml-1" />}
@@ -308,11 +308,11 @@ export const ClubMapView: React.FC<ClubMapViewProps> = ({
         <button
           type="button"
           onClick={handleRecenter}
-          className="w-11 h-11 rounded-2xl bg-[#141414]/90 hover:bg-[#1f1f1f] text-white hover:text-[#EB712B] border border-white/10 flex items-center justify-center shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-11 h-11 rounded-2xl bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1f1f1f] text-text-main dark:text-white hover:text-[#EB712B] border border-border dark:border-white/10 flex items-center justify-center shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
           title="Recenter to my location"
           aria-label="Recenter location"
         >
-          <Navigation size={20} className={userLocation ? "text-[#EB712B]" : "text-white"} />
+          <Navigation size={20} className={userLocation ? "text-[#EB712B]" : "text-text-main dark:text-white"} />
         </button>
       </div>
 
