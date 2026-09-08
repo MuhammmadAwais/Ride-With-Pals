@@ -1,6 +1,6 @@
 import { type ChatMessage } from '../utils/constants';
 import { CustomAudioPlayer } from './CustomAudioPlayer';
-import { Check, CheckCheck, User } from 'lucide-react';
+import { Check, CheckCheck } from 'lucide-react';
 
 interface MessageBubbleProps {
   message: ChatMessage;
@@ -68,19 +68,20 @@ export function MessageBubble({ message, isGroup }: MessageBubbleProps) {
     <div className={`flex w-full ${isOutgoing ? 'justify-end' : 'justify-start'} mb-3 items-end gap-2`}>
       {/* Sender Avatar for group chat received messages */}
       {showSenderInfo && (
-        <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden bg-white/10 border border-white/15 flex items-center justify-center text-xs font-bold text-[#EB712B]">
+        <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden bg-[#1E1E1E] border border-white/15 flex items-center justify-center text-xs font-bold text-[#EB712B] relative">
+          <div className="w-full h-full items-center justify-center text-[10px] font-black uppercase text-[#EB712B] bg-[#EB712B]/10 absolute inset-0 flex select-none">
+            {displayName.charAt(0).toUpperCase() || 'A'}
+          </div>
           {message.senderAvatar ? (
             <img 
               src={message.senderAvatar.startsWith('http') || message.senderAvatar.startsWith('data:') ? message.senderAvatar : `https://api.ridewithpals.com/uploads/${message.senderAvatar}`} 
-              alt={displayName} 
-              className="w-full h-full object-cover"
+              alt="" 
+              className="w-full h-full object-cover relative z-10"
               onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
+                (e.currentTarget as HTMLImageElement).style.display = 'none';
               }}
             />
-          ) : (
-            displayName.charAt(0).toUpperCase() || <User size={14} />
-          )}
+          ) : null}
         </div>
       )}
 

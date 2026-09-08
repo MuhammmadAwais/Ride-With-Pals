@@ -37,7 +37,9 @@ const Support = () => {
     messages, 
     activeThreadId, 
     setActiveThreadId, 
-    sendMessage 
+    sendMessage,
+    startDirectChat,
+    updateThreadDetails
   } = useChat(
     targetUserId, 
     targetUserName, 
@@ -76,6 +78,15 @@ const Support = () => {
           onSendMessage={sendMessage}
           onBack={() => setActiveThreadId(null)}
           onOpenProfile={(uId) => setViewProfileUserId(uId)}
+          onStartDirectChat={(tId, tName, tAvatar) => startDirectChat(tId, tName, tAvatar)}
+          onUpdateGroupDetails={(updated) => {
+            if (activeThreadId) {
+              updateThreadDetails(activeThreadId, {
+                name: updated.title,
+                avatar: updated.avatar,
+              });
+            }
+          }}
           isHiddenOnMobile={activeThreadId === null}
         />
       </div>

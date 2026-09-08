@@ -445,12 +445,58 @@ export const useChat = (
     }
   }, [activeThreadId, initialPrefillMessage, sendMessage]);
 
+  // Start direct chat helper for member roster
+  const startDirectChat = useCallback(async (targetUserId: number, targetUserName?: string, targetUserAvatar?: string) => {
+    try {
+      const existing = threads.find(t => !t.isGroup && (Number(t.targetUserId) === Number(targetUserId) || t.id === `new-${targetUserId}`));
+      if (existing) {
+        setActiveThreadId(existing.id);
+        return;
+      }
+
+      let newThreadId = `new-${targetUserId}`;
+      try {
+        const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { targetUserId });
+        const realId = res?.id || res?.threadId || res?.data?.id || (typeof res === 'number' || typeof res === 'string' ? res : null);
+        if (realId) {
+          newThreadId = realId.toString();
+        }
+      } catch {
+        // Fallback to new-ID
+      }
+
+      const newThread: ChatUser = {
+        id: newThreadId,
+        name: targetUserName || `User #${targetUserId}`,
+        avatar: targetUserAvatar,
+        isOnline: false,
+        unreadCount: 0,
+        lastMessage: 'Conversation started',
+        lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        targetUserId,
+        isGroup: false,
+      };
+
+      setThreads(prev => [newThread, ...prev.filter(t => t.id !== newThreadId)]);
+      setActiveThreadId(newThreadId);
+    } catch (err) {
+      console.error('Failed to start direct chat', err);
+    }
+  }, [threads]);
+
+  // Update thread details locally (e.g. title, avatar)
+  const updateThreadDetails = useCallback((threadId: string, updates: Partial<ChatUser>) => {
+    setThreads(prev => prev.map(t => t.id === threadId ? { ...t, ...updates } : t));
+  }, []);
+
   return {
     threads,
     messages: activeThreadId ? messagesMap[activeThreadId] || [] : [],
     activeThreadId,
     setActiveThreadId,
     sendMessage,
+    startDirectChat,
+    updateThreadDetails,
     isLoading,
   };
 };
