@@ -1,6 +1,7 @@
 /** ChatWindow — hexagon wallpaper, GSAP bubble entrance, message feed, input bar. Ported from admin panel. */
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, MoreVertical, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, MoreVertical, Send, Users } from 'lucide-react';
 import { type ChatUser, type ChatMessage } from '../utils/constants';
 import { MessageBubble } from './MessageBubble';
 import { useGSAP } from '@gsap/react';
@@ -39,6 +40,7 @@ function HexWallpaper(): React.ReactElement {
 }
 
 export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpenProfile, isHiddenOnMobile }: ChatWindowProps) {
+  const navigate = useNavigate();
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef   = useRef<HTMLDivElement>(null);
@@ -135,6 +137,10 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
 
           <div 
             onClick={() => {
+              if (activeUser.isGroup && activeUser.rideId) {
+                navigate(`/view/userside/dashboard/ride/${activeUser.rideId}`);
+                return;
+              }
               const targetId = activeUser.targetUserId || activeUser.id;
               onOpenProfile?.(targetId.toString().startsWith('new-') ? targetId.toString().replace('new-', '') : targetId);
             }}
@@ -158,7 +164,7 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
                   width: '40px',
                   height: '40px',
                   borderRadius: '50%',
-                  background: 'rgba(235,113,43,0.2)',
+                  background: activeUser.isGroup ? 'rgba(235,113,43,0.25)' : 'rgba(235,113,43,0.2)',
                   color: '#EB712B',
                   border: '1px solid rgba(235,113,43,0.3)',
                   display: activeUser.avatar ? 'none' : 'flex',
@@ -169,16 +175,25 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
                   fontFamily: 'var(--font-poppins)',
                 }}
               >
-                {(activeUser.name || 'U').charAt(0).toUpperCase()}
+                {activeUser.isGroup ? <Users size={18} /> : (activeUser.name || 'U').charAt(0).toUpperCase()}
               </div>
             </div>
 
             <div>
-              <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '15px', color: 'var(--color-main-text)', lineHeight: 1.2 }} className="group-hover:text-[#EB712B] transition-colors">
-                {activeUser.name}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '15px', color: 'var(--color-main-text)', lineHeight: 1.2 }} className="group-hover:text-[#EB712B] transition-colors">
+                  {activeUser.name}
+                </h3>
+                {activeUser.isGroup && (
+                  <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20">
+                    Activity
+                  </span>
+                )}
+              </div>
               <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'var(--color-secondary-text)' }}>
-                {activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Click to view profile'}
+                {activeUser.isGroup 
+                  ? `Activity Group Chat • ${activeUser.participantCount ? `${activeUser.participantCount} athletes` : 'Open Discussion'}`
+                  : (activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Click to view profile')}
               </span>
             </div>
           </div>

@@ -21,6 +21,9 @@ const Support = () => {
   const targetUserName = location.state?.targetUserName as string | undefined;
   const targetUserAvatar = location.state?.targetUserAvatar as string | undefined;
   const prefillMessage = location.state?.prefillMessage as string | undefined;
+  const rideId = location.state?.rideId as number | undefined;
+  const isGroup = location.state?.isGroup as boolean | undefined;
+  const rideTitle = location.state?.rideTitle as string | undefined;
 
   const [viewProfileUserId, setViewProfileUserId] = useState<number | string | null>(null);
 
@@ -30,7 +33,15 @@ const Support = () => {
     activeThreadId, 
     setActiveThreadId, 
     sendMessage 
-  } = useChat(targetUserId, targetUserName, targetUserAvatar, prefillMessage);
+  } = useChat(
+    targetUserId, 
+    targetUserName, 
+    targetUserAvatar, 
+    prefillMessage,
+    rideId,
+    isGroup,
+    rideTitle
+  );
 
   const activeUser = useMemo(
     () => threads.find((u) => u.id === activeThreadId) || null,

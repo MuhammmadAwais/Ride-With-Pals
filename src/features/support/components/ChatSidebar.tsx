@@ -1,6 +1,6 @@
 /** ChatSidebar — user list with search + unread badge. Ported from admin panel. */
 import React, { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
 import { type ChatUser } from '../utils/constants';
 
 interface ChatSidebarProps {
@@ -120,7 +120,7 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
                     width: '48px',
                     height: '48px',
                     borderRadius: '50%',
-                    background: 'rgba(235,113,43,0.15)',
+                    background: user.isGroup ? 'rgba(235,113,43,0.18)' : 'rgba(235,113,43,0.15)',
                     color: '#EB712B',
                     border: '1px solid rgba(235,113,43,0.3)',
                     display: user.avatar ? 'none' : 'flex',
@@ -131,7 +131,7 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
                     fontFamily: 'var(--font-poppins)',
                   }}
                 >
-                  {(user.name || 'U').charAt(0).toUpperCase()}
+                  {user.isGroup ? <Users size={20} /> : (user.name || 'U').charAt(0).toUpperCase()}
                 </div>
                 {user.isOnline && (
                   <div style={{ position: 'absolute', bottom: '1px', right: '1px', width: '12px', height: '12px', borderRadius: '50%', background: '#10b981', border: '2px solid var(--color-main-bg)' }} />
@@ -140,10 +140,32 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
 
               {/* Text */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-                  <h4 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 600, fontSize: '14px', color: 'var(--color-main-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    <HighlightText text={user.name} query={searchTerm} />
-                  </h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0, flex: 1 }}>
+                    {user.isGroup && (
+                      <span style={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: '3px', 
+                        padding: '1px 6px', 
+                        borderRadius: '6px', 
+                        fontSize: '9px', 
+                        fontWeight: 800, 
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        color: '#EB712B', 
+                        background: 'rgba(235,113,43,0.12)', 
+                        border: '1px solid rgba(235,113,43,0.25)', 
+                        flexShrink: 0 
+                      }}>
+                        <Users size={9} />
+                        Group
+                      </span>
+                    )}
+                    <h4 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 600, fontSize: '14px', color: 'var(--color-main-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <HighlightText text={user.name} query={searchTerm} />
+                    </h4>
+                  </div>
                   <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '11px', color: isActive ? '#EB712B' : 'var(--color-secondary-text)', flexShrink: 0, marginLeft: '8px' }}>
                     {user.lastMessageTime}
                   </span>

@@ -22,6 +22,9 @@ export interface RideMapItem {
   gpxFile?: string | null;
   description?: string;
   terrainBadges?: string[];
+  isPaymentRequired?: boolean;
+  price?: number;
+  priceFormatted?: string;
 }
 
 interface ActivityMapPreviewCardProps {
@@ -164,15 +167,22 @@ export const ActivityMapPreviewCard: React.FC<ActivityMapPreviewCardProps> = ({
             <span>{sportName}</span>
           </div>
 
-          <span
-            className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
-              ride.isPublic
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
-            }`}
-          >
-            {ride.isPublic ? "Public" : "Private"}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {ride.isPaymentRequired && (
+              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                {ride.priceFormatted || "Paid"}
+              </span>
+            )}
+            <span
+              className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
+                ride.isPublic
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+              }`}
+            >
+              {ride.isPublic ? "Public" : "Private"}
+            </span>
+          </div>
         </div>
 
         {/* Middle: Details (Date, Location, Distance) */}

@@ -7,7 +7,10 @@ export const useChat = (
   initialTargetUserId?: number, 
   initialTargetUserName?: string, 
   initialTargetUserAvatar?: string,
-  initialPrefillMessage?: string
+  initialPrefillMessage?: string,
+  initialRideId?: number,
+  initialIsGroup?: boolean,
+  initialChatTitle?: string
 ) => {
   const { user } = useAppSelector((state) => state.auth);
   const [threads, setThreads] = useState<ChatUser[]>([]);
@@ -28,8 +31,23 @@ export const useChat = (
       try {
         let initialThreadId: string | null = null;
 
-        // If we have an initialTargetUserId, get or create the thread first
-        if (initialTargetUserId) {
+        // If we have an initialRideId, get or create the activity group thread first
+        if (initialRideId) {
+          try {
+            const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { rideId: initialRideId });
+            const realId = res?.id || res?.threadId || res?.data?.id || (typeof res === 'number' || typeof res === 'string' ? res : null);
+            if (realId) {
+              initialThreadId = realId.toString();
+            }
+          } catch (createErr) {
+            console.error('Failed to getOrCreate activity group thread:', createErr);
+          }
+
+          if (!initialThreadId) {
+            initialThreadId = `ride-${initialRideId}`;
+          }
+        } else if (initialTargetUserId) {
+          // If we have an initialTargetUserId, get or create the 1-on-1 thread first
           try {
             const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { targetUserId: initialTargetUserId });
             const realId = res?.id || res?.threadId || res?.data?.id || (typeof res === 'number' || typeof res === 'string' ? res : null);
@@ -55,6 +73,36 @@ export const useChat = (
         }
 
         const mappedThreads: ChatUser[] = rows.map((row: any) => {
+          const isGroupThread = row.type === 'activity' || row.isGroup === true || Boolean(row.rideId || row.ride);
+
+          if (isGroupThread) {
+            const rideName = row.ride?.rideName || row.title || row.name || (row.rideId ? `Ride #${row.rideId} Group` : 'Activity Group');
+            const rideLogo = row.ride?.club?.logo || row.club?.logo || row.avatar || row.image;
+            const avatar = rideLogo
+              ? (rideLogo.startsWith('http') || rideLogo.startsWith('data:') ? rideLogo : `https://api.ridewithpals.com/uploads/${rideLogo}`)
+              : undefined;
+            const lastMsg = row.lastMessage?.message || row.lastMessage || 'No messages yet';
+            let timeStr = '';
+            if (row.lastMessageAt || row.updatedAt) {
+              const date = new Date(row.lastMessageAt || row.updatedAt);
+              timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            return {
+              id: row.id.toString(),
+              name: rideName,
+              avatar,
+              isOnline: false,
+              unreadCount: Number(row.unreadCount || 0),
+              lastMessage: typeof lastMsg === 'string' ? lastMsg : (lastMsg?.message || 'No messages yet'),
+              lastMessageTime: timeStr,
+              isGroup: true,
+              type: 'activity',
+              rideId: row.rideId || row.ride?.id,
+              participantCount: row.ride?.joinedParticipants?.length || row.participantsCount,
+            };
+          }
+
           // Find the other participant who is NOT the current logged-in user
           let other = null;
           if (row.otherUser && Number(row.otherUser.id) !== Number(user.id)) {
@@ -88,25 +136,45 @@ export const useChat = (
             lastMessage: lastMsg,
             lastMessageTime: timeStr,
             targetUserId: oId,
+            isGroup: false,
           };
         });
 
         if (initialThreadId) {
           const exists = mappedThreads.some(t => t.id === initialThreadId);
           if (!exists) {
-            const avatar = initialTargetUserAvatar
-              ? (initialTargetUserAvatar.startsWith('http') || initialTargetUserAvatar.startsWith('data:') ? initialTargetUserAvatar : `https://api.ridewithpals.com/uploads/${initialTargetUserAvatar}`)
-              : undefined;
-            mappedThreads.unshift({
-              id: initialThreadId,
-              name: initialTargetUserName || `User #${initialTargetUserId}`,
-              avatar,
-              isOnline: true,
-              unreadCount: 0,
-              lastMessage: 'Say Hi!',
-              lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              targetUserId: initialTargetUserId,
-            });
+            if (initialRideId) {
+              const avatar = initialTargetUserAvatar
+                ? (initialTargetUserAvatar.startsWith('http') || initialTargetUserAvatar.startsWith('data:') ? initialTargetUserAvatar : `https://api.ridewithpals.com/uploads/${initialTargetUserAvatar}`)
+                : undefined;
+              mappedThreads.unshift({
+                id: initialThreadId,
+                name: initialChatTitle || initialTargetUserName || `Ride #${initialRideId} Group`,
+                avatar,
+                isOnline: true,
+                unreadCount: 0,
+                lastMessage: 'Activity group chat ready',
+                lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isGroup: true,
+                type: 'activity',
+                rideId: initialRideId,
+              });
+            } else if (initialTargetUserId) {
+              const avatar = initialTargetUserAvatar
+                ? (initialTargetUserAvatar.startsWith('http') || initialTargetUserAvatar.startsWith('data:') ? initialTargetUserAvatar : `https://api.ridewithpals.com/uploads/${initialTargetUserAvatar}`)
+                : undefined;
+              mappedThreads.unshift({
+                id: initialThreadId,
+                name: initialTargetUserName || `User #${initialTargetUserId}`,
+                avatar,
+                isOnline: true,
+                unreadCount: 0,
+                lastMessage: 'Say Hi!',
+                lastMessageTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                targetUserId: initialTargetUserId,
+                isGroup: false,
+              });
+            }
           }
         }
 
@@ -121,7 +189,7 @@ export const useChat = (
     };
 
     fetchThreads();
-  }, [user, initialTargetUserId, initialTargetUserName, initialTargetUserAvatar]);
+  }, [user, initialTargetUserId, initialTargetUserName, initialTargetUserAvatar, initialRideId, initialIsGroup, initialChatTitle]);
 
   // 2. Load Messages when a Thread is selected
   useEffect(() => {
@@ -251,7 +319,27 @@ export const useChat = (
     let targetThreadId = activeThreadId;
 
     // Handle lazy thread creation if this is a temporary thread
-    if (activeThreadId.startsWith('new-')) {
+    if (activeThreadId.startsWith('ride-')) {
+      const rideId = parseInt(activeThreadId.split('-')[1]);
+      try {
+        const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { rideId });
+        const realId = res?.id || res?.threadId || res?.data?.id;
+        if (realId) {
+          targetThreadId = realId.toString();
+          setActiveThreadId(targetThreadId);
+          setThreads(prev => prev.map(t => 
+            t.id === activeThreadId ? { ...t, id: targetThreadId, rideId } : t
+          ));
+        } else if (typeof res === 'number' || typeof res === 'string') {
+          targetThreadId = res.toString();
+          setActiveThreadId(targetThreadId);
+          setThreads(prev => prev.map(t => t.id === activeThreadId ? { ...t, id: targetThreadId, rideId } : t));
+        }
+      } catch (err) {
+        console.error('Failed to create activity group thread on the fly:', err);
+        return;
+      }
+    } else if (activeThreadId.startsWith('new-')) {
       const targetUserId = parseInt(activeThreadId.split('-')[1]);
       try {
         const res = await SocketService.emitWithAck('chat:thread:getOrCreate', { targetUserId });
@@ -278,10 +366,16 @@ export const useChat = (
     }
 
     try {
-      const result = await SocketService.emitWithAck('chat:message:send', {
+      const activeThreadObj = threads.find(t => t.id === targetThreadId || t.id === activeThreadId);
+      const payload: any = {
         threadId: parseInt(targetThreadId),
         message: text,
-      });
+      };
+      if (activeThreadObj?.rideId) {
+        payload.rideId = activeThreadObj.rideId;
+      }
+
+      const result = await SocketService.emitWithAck('chat:message:send', payload);
 
       const sentMsg: ChatMessage = {
         id: result.id?.toString() || Date.now().toString(),

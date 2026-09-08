@@ -102,6 +102,15 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Ride'],
     }),
 
+    leaveRide: builder.mutation<{ statusCode: number; message: string; response?: any }, ClubTypes.LeaveRideRequest>({
+      query: (body) => ({
+        url: '/user/ride/leave',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Ride'],
+    }),
+
     getClubMembersList: builder.query<ClubTypes.GetClubMembersListResponseResponse[], ClubTypes.GetClubMembersListParams>({
       query: (params) => ({
         url: '/user/club/members',
@@ -233,6 +242,7 @@ export const {
   useGetJoinedClubsQuery,
   useLeaveClubMutation,
   useJoinRideMutation,
+  useLeaveRideMutation,
   useGetClubMembersListQuery,
   useGetClubJoinRequestQuery,
   useManageJoinGroupRequestMutation,

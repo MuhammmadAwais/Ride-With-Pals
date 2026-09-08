@@ -417,7 +417,9 @@ export type JoinRideResponse = {
 }
 
 export type JoinRideResponseResponse = {
-    joinedParticipants: number[];
+    joinedParticipants?: (number | { id: number; name?: string; profile?: string })[];
+    checkoutUrl?: string;
+    requiresPayment?: boolean;
 }
 
 export type GetClubMembersListResponse = {
@@ -561,6 +563,11 @@ export type LeaveClubRequest = {
 }
 
 export type JoinRideRequest = {
+    rideId: number;
+    isTermsAccepted?: boolean;
+}
+
+export type LeaveRideRequest = {
     rideId: number;
 }
 

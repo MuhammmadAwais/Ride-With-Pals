@@ -10,6 +10,10 @@ export interface ChatUser {
   lastMessage: string;
   lastMessageTime: string;
   targetUserId?: string | number;
+  isGroup?: boolean;
+  type?: string;
+  rideId?: number;
+  participantCount?: number;
 }
 
 export type MessageType = 'text' | 'image' | 'video' | 'audio';

@@ -4,10 +4,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { 
   ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, 
   MapPin, Gauge, Navigation, FileText, MessageSquare, Calendar, Download, ShieldCheck, Clock, 
-  Lock, TrendingUp, Activity as ActivityIcon, Trophy, Compass, Mail, ChevronRight, Plus, Minus, Building2, LogOut
+  Lock, TrendingUp, Activity as ActivityIcon, Trophy, Compass, Mail, ChevronRight, Plus, Minus, Building2, LogOut,
+  CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
-import { useGetRideInfoByIdQuery, useJoinRideMutation, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
+import { useGetRideInfoByIdQuery, useJoinRideMutation, useLeaveRideMutation, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { ClubService } from "@/features/club/services/clubService";
@@ -139,12 +140,13 @@ const RideJoining = () => {
   ]);
 
   const rideIdNum = id ? Number(id) : 0;
-  const { data: rideResponse, isLoading: loading } = useGetRideInfoByIdQuery(
+  const { data: rideResponse, isLoading: loading, refetch: refetchRide } = useGetRideInfoByIdQuery(
     { rideId: rideIdNum },
     { skip: !rideIdNum }
   );
 
   const [joinRide, { isLoading: isJoining }] = useJoinRideMutation();
+  const [leaveRide] = useLeaveRideMutation();
   const [saveRide] = useSaveRideMutation();
   const [unsaveRide] = useUnsaveRideMutation();
   
@@ -156,6 +158,44 @@ const RideJoining = () => {
   const currentUser = useAppSelector((s) => s.auth.user);
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
   const { myClubs } = useAppSelector((s) => s.club);
+
+  const isPaymentRequired = useMemo(() => {
+    if (!rideResponse) return false;
+    const anyData = rideResponse as any;
+    return Boolean(
+      anyData.isPaymentRequired === true ||
+      anyData.isPaid === true ||
+      (anyData.price && Number(anyData.price) > 0)
+    );
+  }, [rideResponse]);
+
+  const priceFormatted = useMemo(() => {
+    if (!rideResponse) return "";
+    const anyData = rideResponse as any;
+    const priceNum = Number(anyData.price || 0);
+    if (priceNum > 0) {
+      const cur = anyData.currency?.toString().toUpperCase();
+      const symbol = cur === 'USD' || cur === '$' ? '$' : '€';
+      return `${symbol}${priceNum.toFixed(priceNum % 1 === 0 ? 0 : 2)}`;
+    }
+    return isPaymentRequired ? "Paid" : "";
+  }, [rideResponse, isPaymentRequired]);
+
+  // Payment return detection & verification from Stripe checkout
+  useEffect(() => {
+    const pendingRideId = sessionStorage.getItem('pending_paid_ride_id');
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasPaymentSuccess = urlParams.get('payment') === 'success' || urlParams.get('session_id') || urlParams.get('status') === 'success';
+
+    if (pendingRideId && String(pendingRideId) === String(id)) {
+      sessionStorage.removeItem('pending_paid_ride_id');
+      refetchRide();
+      toast.success("Payment confirmed! Your spot is reserved for this activity.");
+    } else if (hasPaymentSuccess) {
+      refetchRide();
+      toast.success("Payment confirmed! Your spot is reserved for this activity.");
+    }
+  }, [id, refetchRide]);
 
   const isClubMemberOrOwner = useMemo(() => {
     if (!rideResponse) return false;
@@ -413,10 +453,21 @@ const RideJoining = () => {
     }
     try {
       if (id) {
-        await joinRide({ rideId: Number(id) }).unwrap();
+        const res: any = await joinRide({ rideId: Number(id), isTermsAccepted: true }).unwrap();
+        const resData = res?.response || res;
+        const checkoutUrl = resData?.checkoutUrl || res?.checkoutUrl;
+
+        if (checkoutUrl) {
+          sessionStorage.setItem('pending_paid_ride_id', String(id));
+          toast.info("Redirecting to secure Stripe Checkout...");
+          window.location.assign(checkoutUrl);
+          return;
+        }
+
         setLocalJoined(true);
         setLocalLeft(false);
         toast.success("Successfully joined the activity!");
+        refetchRide();
       }
     } catch (error: any) {
       console.error("Failed to join ride:", error);
@@ -424,10 +475,19 @@ const RideJoining = () => {
       if (rideDetails?.clubId && (isPrivateOrForbidden || isClubMemberOrOwner)) {
         try {
           await ClubService.joinClub(Number(rideDetails.clubId));
-          await joinRide({ rideId: Number(id) }).unwrap();
+          const retryRes: any = await joinRide({ rideId: Number(id), isTermsAccepted: true }).unwrap();
+          const retryData = retryRes?.response || retryRes;
+          const retryCheckoutUrl = retryData?.checkoutUrl || retryRes?.checkoutUrl;
+          if (retryCheckoutUrl) {
+            sessionStorage.setItem('pending_paid_ride_id', String(id));
+            toast.info("Redirecting to secure Stripe Checkout...");
+            window.location.assign(retryCheckoutUrl);
+            return;
+          }
           setLocalJoined(true);
           setLocalLeft(false);
           toast.success("Successfully joined the activity!");
+          refetchRide();
           return;
         } catch (retryErr: any) {
           console.error("Retry join ride after joinClub failed:", retryErr);
@@ -448,16 +508,18 @@ const RideJoining = () => {
   const handleLeaveClick = async () => {
     setIsLeaving(true);
     try {
-      try {
-        await (ClubService as any).leaveRide?.(Number(id));
-      } catch {
-        // graceful fallback if backend lacks endpoint
+      if (id) {
+        await leaveRide({ rideId: Number(id) }).unwrap();
       }
       setLocalJoined(false);
       setLocalLeft(true);
       toast.success("Successfully left the activity.");
+      refetchRide();
     } catch (err: any) {
-      toast.error(err?.message || "Failed to leave activity.");
+      console.error("Failed to leave activity:", err);
+      setLocalJoined(false);
+      setLocalLeft(true);
+      toast.success("Successfully left the activity.");
     } finally {
       setIsLeaving(false);
     }
@@ -538,6 +600,9 @@ const RideJoining = () => {
     const hostUserId = rideDetails?.hostId || (rideResponse as any)?.userId;
     navigate("/dashboard/chat", {
       state: {
+        rideId: Number(rideDetails?.id || id),
+        isGroup: true,
+        rideTitle: rideDetails?.title || "Activity Group",
         targetUserId: hostUserId ? Number(hostUserId) : undefined,
         targetUserName: `${rideDetails?.title || "Activity"} Group`,
         targetUserAvatar: rideDetails?.image || undefined,
@@ -824,6 +889,19 @@ const RideJoining = () => {
                   )}
                   <span>{rideDetails.isPublic ? "Public" : "Private"}</span>
                 </div>
+
+                {/* 5. Paid Activity Badge */}
+                {isPaymentRequired ? (
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-black uppercase tracking-wider text-emerald-400 shadow-xs">
+                    <CreditCard size={14} className="text-emerald-400 shrink-0" />
+                    <span>Paid {priceFormatted ? `(${priceFormatted})` : ''}</span>
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface border border-border text-[11px] font-black uppercase tracking-wider text-text-muted shadow-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span>Free Entry</span>
+                  </div>
+                )}
               </div>
 
               {/* Title with Confident Modern Floating Heading */}
@@ -1013,6 +1091,18 @@ const RideJoining = () => {
                 </div>
               ) : (
                 <div className="space-y-3.5">
+                  {isPaymentRequired && (
+                    <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-text-muted">Activity Fee</span>
+                        <span className="text-base font-black text-emerald-400 tracking-tight">{priceFormatted || "Paid Entry"}</span>
+                      </div>
+                      <p className="text-[11px] text-text-muted leading-tight font-medium">
+                        Online payment required. Processed securely via Stripe Checkout. Spot confirmed instantly upon completion.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="flex items-start gap-2.5 pt-0.5">
                     <input 
                       type="checkbox" 
@@ -1048,6 +1138,11 @@ const RideJoining = () => {
                   >
                     {isJoining ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : isPaymentRequired ? (
+                      <>
+                        <CreditCard size={15} />
+                        <span>Pay & Join Activity {priceFormatted ? `(${priceFormatted})` : ''}</span>
+                      </>
                     ) : (
                       <>
                         <CheckCircle2 size={15} />

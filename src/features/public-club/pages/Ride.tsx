@@ -15,7 +15,8 @@ import {
   List,
   Map as MapIcon,
   Download,
-  Share2
+  Share2,
+  CreditCard
 } from "lucide-react";
 
 import { useGetPublicRidesQuery, useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
@@ -47,6 +48,9 @@ export interface RideItem {
   gpxFile?: string | null;
   description?: string;
   terrainBadges: string[];
+  isPaymentRequired?: boolean;
+  price?: number;
+  priceFormatted?: string;
 }
 
 interface RideProps {
@@ -243,6 +247,18 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           ? logoPath
           : `https://api.ridewithpals.com/uploads/${logoPath}`;
       }
+      const isPaymentRequired = Boolean(
+        item.isPaymentRequired === true ||
+        item.isPaid === true ||
+        (item.price && Number(item.price) > 0)
+      );
+      const priceNum = Number(item.price || 0);
+      const cur = item.currency?.toString().toUpperCase();
+      const symbol = cur === 'USD' || cur === '$' ? '$' : '€';
+      const priceFormatted = priceNum > 0 
+        ? `${symbol}${priceNum.toFixed(priceNum % 1 === 0 ? 0 : 2)}` 
+        : (isPaymentRequired ? 'Paid' : '');
+
       return {
         id: item.id || item.rideId,
         title: item.rideName || item.ridename || item.title || item.name || item.activityName || "Ride Event",
@@ -263,6 +279,9 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
         gpxFile: item.gpxFile || null,
         description: item.description || "",
         terrainBadges: extractTerrainAndCategoryBadges(item),
+        isPaymentRequired,
+        price: priceNum,
+        priceFormatted,
       };
     });
   }, [rawData, savedRideIds]);
@@ -469,9 +488,14 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       </div>
                     )}
 
-                    {/* Category Badge (Social, Training, Race) on top-right (replaces Elite) */}
-                    {ride.terrainBadges && ride.terrainBadges[1] && (
-                      <div className="absolute top-2.5 right-2.5 z-10">
+                    {/* Category Badge & Paid Badge on top-right */}
+                    <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5">
+                      {ride.isPaymentRequired && (
+                        <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-950/85 border border-emerald-500/40 text-emerald-300 backdrop-blur-md">
+                          {ride.priceFormatted || "Paid"}
+                        </span>
+                      )}
+                      {ride.terrainBadges && ride.terrainBadges[1] && (
                         <span 
                           className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider backdrop-blur-md border ${
                             ride.terrainBadges[1] === "Social" 
@@ -483,8 +507,8 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         >
                           {ride.terrainBadges[1]}
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
 
                   {/* Center: Details & Metadata */}
@@ -669,6 +693,10 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         <>
                           Joined <CheckCircle2 size={14} />
                         </>
+                      ) : ride.isPaymentRequired ? (
+                        <>
+                          Pay & Join {ride.priceFormatted ? `(${ride.priceFormatted})` : ''} <CreditCard size={14} />
+                        </>
                       ) : (
                         <>
                           Join Activity <ArrowRight size={14} />
@@ -719,9 +747,14 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       </div>
                     )}
 
-                    {/* Category Badge (Social, Training, Race) on top-right (replaces Elite) */}
-                    {ride.terrainBadges && ride.terrainBadges[1] && (
-                      <div className="absolute top-3.5 right-3.5 z-10">
+                    {/* Category Badge & Paid Badge on top-right */}
+                    <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5">
+                      {ride.isPaymentRequired && (
+                        <span className="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md bg-emerald-950/85 border border-emerald-500/40 text-emerald-300">
+                          {ride.priceFormatted || "Paid"}
+                        </span>
+                      )}
+                      {ride.terrainBadges && ride.terrainBadges[1] && (
                         <span 
                           className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md border ${
                             ride.terrainBadges[1] === "Social" 
@@ -733,8 +766,8 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         >
                           {ride.terrainBadges[1]}
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
 
                   {/* Card content with padding */}
@@ -855,6 +888,10 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         {ride.isRideJoined ? (
                           <>
                             Joined <CheckCircle2 size={14} />
+                          </>
+                        ) : ride.isPaymentRequired ? (
+                          <>
+                            Pay & Join {ride.priceFormatted ? `(${ride.priceFormatted})` : ''} <CreditCard size={14} />
                           </>
                         ) : (
                           <>
