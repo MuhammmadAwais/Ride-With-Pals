@@ -206,18 +206,17 @@ export default function ProfileSetup() {
 
         <form className="space-y-4 fade-in" onSubmit={(e) => e.preventDefault()}>
           {/* Club Media & Visual Identity Section */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-[10px] text-gray-400 font-extrabold tracking-wider uppercase flex items-center gap-1.5">
-                <span>Club Visual Identity</span>
-                <span className="text-gray-600 font-normal">(Logo & Banner)</span>
+              <label className="text-[10px] text-gray-400 font-bold tracking-wider uppercase">
+                Club Media
               </label>
-              <span className="text-[10px] text-gray-500 font-medium">PNG, JPG, WEBP</span>
+              <span className="text-[10px] text-gray-600 font-normal">PNG, JPG, WEBP (Max 5MB)</span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch gap-3 sm:gap-4">
               {/* 1. Club Logo / Avatar (1:1 Square Emblem) */}
-              <div className="w-full sm:w-36 flex flex-col gap-1.5 shrink-0">
+              <div className="w-full sm:w-32 flex flex-col shrink-0">
                 <input
                   type="file"
                   accept="image/*"
@@ -227,8 +226,8 @@ export default function ProfileSetup() {
                 />
                 <label
                   htmlFor="logo-upload"
-                  className="relative w-full sm:w-36 h-36 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-700 hover:border-[#EB712B] bg-[#1a1a1a] hover:bg-[#1f1f1f] flex flex-col items-center justify-center text-center p-3 transition-all duration-300 cursor-pointer overflow-hidden group shadow-md"
-                  title="Upload 1:1 Club Logo or Emblem"
+                  className="relative w-full sm:w-32 h-32 rounded-2xl border border-white/10 hover:border-white/20 bg-[#161616] hover:bg-[#1a1a1a] flex flex-col items-center justify-center text-center p-3 transition-all duration-200 cursor-pointer overflow-hidden group shadow-sm"
+                  title="Upload 1:1 Club Logo"
                 >
                   {logoPreview ? (
                     <>
@@ -237,29 +236,29 @@ export default function ProfileSetup() {
                         alt="Logo Preview"
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-white">
-                        <Camera size={20} className="mb-1 text-[#EB712B]" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Change Logo</span>
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-white">
+                        <Camera size={18} className="mb-1 text-gray-300" />
+                        <span className="text-[9px] font-bold uppercase tracking-wider">Change</span>
                       </div>
                       <button
                         type="button"
                         onClick={handleRemoveLogo}
-                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 hover:bg-rose-600 text-white flex items-center justify-center transition-colors shadow-md z-10 cursor-pointer"
+                        className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-black/80 hover:bg-red-500 text-white flex items-center justify-center transition-colors shadow z-10 cursor-pointer"
                         title="Remove logo"
                       >
-                        <X size={12} />
+                        <X size={10} />
                       </button>
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center space-y-1.5">
-                      <div className="w-10 h-10 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center text-[#EB712B] group-hover:scale-110 transition-transform">
-                        <Camera size={18} />
+                      <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-gray-400 group-hover:text-[#EB712B] transition-colors">
+                        <Camera size={15} />
                       </div>
-                      <div className="space-y-0.5">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-white block">
-                          Upload Logo
+                      <div>
+                        <span className="text-[11px] font-bold text-gray-200 block">
+                          Logo
                         </span>
-                        <span className="text-[9px] font-bold text-[#EB712B] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#EB712B]/10 inline-block">
+                        <span className="text-[9px] text-gray-500 block">
                           1:1 Square
                         </span>
                       </div>
@@ -269,7 +268,7 @@ export default function ProfileSetup() {
               </div>
 
               {/* 2. Club Cover Banner (16:9 Landscape Banner) */}
-              <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+              <div className="flex-1 flex flex-col min-w-0">
                 <input
                   type="file"
                   accept="image/*"
@@ -279,7 +278,7 @@ export default function ProfileSetup() {
                 />
                 <label
                   htmlFor="cover-upload"
-                  className="relative w-full h-36 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-700 hover:border-[#EB712B] bg-[#1a1a1a] hover:bg-[#1f1f1f] flex flex-col items-center justify-center text-center p-4 transition-all duration-300 cursor-pointer overflow-hidden group shadow-md"
+                  className="relative w-full h-32 rounded-2xl border border-white/10 hover:border-white/20 bg-[#161616] hover:bg-[#1a1a1a] flex flex-col items-center justify-center text-center p-4 transition-all duration-200 cursor-pointer overflow-hidden group shadow-sm"
                   title="Upload Wide 16:9 Club Cover Banner"
                 >
                   {coverPreview ? (
@@ -289,35 +288,32 @@ export default function ProfileSetup() {
                         alt="Cover Preview"
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-white">
-                        <ImageIcon size={22} className="mb-1 text-[#EB712B]" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Change Cover Banner</span>
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 text-white">
+                        <ImageIcon size={20} className="mb-1 text-gray-300" />
+                        <span className="text-[9px] font-bold uppercase tracking-wider">Change Banner</span>
                       </div>
                       <button
                         type="button"
                         onClick={handleRemoveCover}
-                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 hover:bg-rose-600 text-white flex items-center justify-center transition-colors shadow-md z-10 cursor-pointer"
-                        title="Remove cover banner"
+                        className="absolute top-2 right-2 w-5 h-5 rounded-full bg-black/80 hover:bg-red-500 text-white flex items-center justify-center transition-colors shadow z-10 cursor-pointer"
+                        title="Remove banner"
                       >
-                        <X size={12} />
+                        <X size={10} />
                       </button>
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center space-y-1.5">
-                      <div className="w-10 h-10 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform">
-                        <ImageIcon size={20} />
+                      <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-gray-400 group-hover:text-[#EB712B] transition-colors">
+                        <ImageIcon size={15} />
                       </div>
-                      <div className="space-y-0.5">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-white block">
-                          Club Cover Banner
+                      <div>
+                        <span className="text-[11px] font-bold text-gray-200 block">
+                          Cover Banner
                         </span>
-                        <span className="text-[9px] font-bold text-orange-400 uppercase tracking-wider px-2 py-0.5 rounded bg-orange-500/10 inline-block">
-                          16:9 Landscape (1200×400px)
+                        <span className="text-[9px] text-gray-500 block">
+                          16:9 Landscape (Recommended: 1200×400)
                         </span>
                       </div>
-                      <span className="text-[10px] text-gray-500 hidden sm:inline">
-                        Header background shown across club profile & cards
-                      </span>
                     </div>
                   )}
                 </label>
