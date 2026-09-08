@@ -26,6 +26,7 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { fetchMyClubs } from '@/features/club/slices/clubSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { ClubSelectionModal } from '@/features/club/components/ClubSelectionModal';
+import { cn } from '@/lib/utils';
 
 /** Derive a human-readable page title from the current pathname. */
 function deriveTitle(pathname: string): string {
@@ -48,6 +49,7 @@ const AppLayout: React.FC = () => {
   const { activeClub, setActiveClub } = useActiveClub();
   const [isModalManuallyOpened, setIsModalManuallyOpened] = useState(false);
   const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
+  const isSupportPage = location.pathname.includes('/support');
 
   // Bootstrap managed clubs so ProtectedRoute club-side guard and Sidebar both work correctly
   useEffect(() => {
@@ -113,8 +115,11 @@ const AppLayout: React.FC = () => {
             {/* Scrollable page content — Outlet renders the matched child route */}
             <main
               ref={contentRef}
-              id="main-content"
-              className="flex-1"
+              id={isSupportPage ? undefined : "main-content"}
+              className={cn(
+                "flex-1",
+                isSupportPage ? "p-0 overflow-hidden h-[calc(100svh-80px)] flex flex-col" : ""
+              )}
             >
               <Outlet />
             </main>

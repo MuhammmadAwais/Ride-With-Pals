@@ -40,47 +40,40 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
 
   return (
     <div
-        style={{
-          top: 0, bottom: 0, left: 0,
-          zIndex: 20,
-          borderRight: '1px solid var(--color-border)',
-          background: 'var(--color-glass-bg)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-        }}
-        className={`absolute w-full flex flex-col md:static md:w-[320px] md:flex-shrink-0 transition-transform duration-300 ${isHiddenOnMobile ? '-translate-x-full' : 'translate-x-0'} md:translate-x-0`}
-      >
-      {/* Header + Search */}
-      <div style={{ padding: '16px', borderBottom: '1px solid var(--color-border)', flexShrink: 0 }}>
-        <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '20px', color: 'var(--color-main-text)', marginBottom: '12px', padding: '0 4px' }}>
-          Messages
-        </h3>
-        <div style={{ position: 'relative' }}>
-          <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-secondary-text)', pointerEvents: 'none' }} />
+      style={{
+        top: 0, bottom: 0, left: 0,
+        zIndex: 20,
+      }}
+      className={`absolute w-full flex flex-col md:static md:w-[320px] lg:w-[340px] md:flex-shrink-0 transition-transform duration-300 ${isHiddenOnMobile ? '-translate-x-full' : 'translate-x-0'} md:translate-x-0 bg-[#161616] border-r border-white/10 h-full select-none`}
+    >
+      {/* 1. Header (Exact 64px h-16 to match ChatWindow Header) */}
+      <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between shrink-0 bg-[#181818]/60 backdrop-blur-md">
+        <div className="flex items-center gap-2">
+          <h3 className="font-poppins font-extrabold text-base text-white tracking-wide">
+            Messages
+          </h3>
+          <span className="px-2 py-0.5 rounded-full bg-[#EB712B]/15 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-extrabold">
+            {users.length}
+          </span>
+        </div>
+      </div>
+
+      {/* 2. Search Toolbar */}
+      <div className="p-3 border-b border-white/10 bg-[#161616] shrink-0">
+        <div className="relative">
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
           <input
             type="search"
-            placeholder="Search messages..."
+            placeholder="Search conversations..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: '100%', padding: '9px 16px 9px 34px',
-              borderRadius: '999px',
-              background: 'var(--color-secondary-bg)',
-              border: '1px solid var(--color-border)',
-              color: 'var(--color-main-text)',
-              fontFamily: 'var(--font-roboto)',
-              fontSize: '13px',
-              outline: 'none',
-              transition: 'all 0.2s',
-            }}
-            onFocus={(e) => { e.target.style.borderColor = 'rgba(235,113,43,0.4)'; e.target.style.boxShadow = '0 0 0 3px rgba(235,113,43,0.08)'; }}
-            onBlur={(e) => { e.target.style.borderColor = 'var(--color-border)'; e.target.style.boxShadow = 'none'; }}
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#1C1C1E] border border-white/10 focus:border-[#EB712B]/60 text-xs font-semibold text-white placeholder:text-text-muted/60 outline-none transition-all"
           />
         </div>
       </div>
 
-      {/* User list */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }} className="custom-scrollbar">
+      {/* 3. User list */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar divide-y divide-white/5">
         {filteredUsers.map((user) => {
           const isActive = user.id === activeUserId;
           return (

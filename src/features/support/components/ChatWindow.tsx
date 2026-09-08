@@ -120,42 +120,20 @@ export function ChatWindow({
   };
 
   return (
-    <div className="relative flex-1 flex overflow-hidden">
+    <div className="relative flex-1 flex overflow-hidden h-full">
       <div
-        style={{
-          top: 0, bottom: 0, right: 0,
-          zIndex: 10,
-          background: 'var(--color-main-bg)',
-        }}
-        className={`absolute w-full flex flex-col md:static md:w-auto md:flex-1 transition-transform duration-300 ${isHiddenOnMobile ? 'translate-x-full' : 'translate-x-0'} md:translate-x-0`}
+        className={`absolute w-full flex flex-col md:static md:w-auto md:flex-1 transition-transform duration-300 ${isHiddenOnMobile ? 'translate-x-full' : 'translate-x-0'} md:translate-x-0 bg-[#121212] h-full overflow-hidden`}
       >
         <ChatBackground />
 
-        {/* Chat header */}
-        <div style={{
-          position: 'relative', zIndex: 10,
-          height: '64px', padding: '8px 16px',
-          borderBottom: '1px solid var(--color-border)',
-          background: 'var(--color-glass-bg)',
-          backdropFilter: 'blur(40px)',
-          WebkitBackdropFilter: 'blur(40px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexShrink: 0,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, flex: 1 }}>
+        {/* Chat header (Exact 64px h-16 to match Sidebar Header) */}
+        <div className="relative z-10 h-16 px-6 border-b border-white/10 bg-[#181818]/60 backdrop-blur-md flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             <button
               onClick={onBack}
-              className="md:hidden"
-              style={{
-                width: '36px', height: '36px', borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'transparent', border: 'none', color: 'var(--color-secondary-text)',
-                marginLeft: '-4px', transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(235,113,43,0.1)'; e.currentTarget.style.color = '#EB712B'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-secondary-text)'; }}
+              className="md:hidden w-9 h-9 rounded-full flex items-center justify-center text-text-muted hover:text-white hover:bg-white/10 -ml-1 transition-all cursor-pointer"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={18} />
             </button>
 
             <div 
@@ -325,27 +303,18 @@ export function ChatWindow({
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input bar */}
-        <div style={{ position: 'relative', zIndex: 10, padding: '12px 16px', background: 'var(--color-glass-bg)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)', borderTop: '1px solid var(--color-border)', flexShrink: 0 }}>
-          <div style={{
-            display: 'flex', alignItems: 'flex-end', gap: '8px',
-            background: 'var(--color-secondary-bg)',
-            border: '1px solid var(--color-border)',
-            borderRadius: '18px', padding: '8px',
-            transition: 'all 0.2s',
-          }}
-            onFocus={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(235,113,43,0.35)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 3px rgba(235,113,43,0.08)'; }}
-            onBlur={(e) => { (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-border)'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}
-          >
+        {/* Input bar (Locked cleanly at bottom without viewport overflow) */}
+        <div className="p-4 border-t border-white/10 bg-[#161616] shrink-0">
+          <div className="flex items-end gap-2.5 bg-[#1C1C1E] border border-white/10 focus-within:border-[#EB712B]/60 focus-within:ring-2 focus-within:ring-[#EB712B]/10 rounded-2xl p-2 transition-all shadow-sm">
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Type a message"
+              placeholder="Type a message..."
               rows={1}
               style={{
                 flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                resize: 'none', maxHeight: '128px', minHeight: '40px', padding: '8px 0',
-                fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'var(--color-main-text)',
+                resize: 'none', maxHeight: '120px', minHeight: '38px', padding: '8px 10px',
+                fontFamily: 'var(--font-roboto)', fontSize: '13px', color: '#FFFFFF',
                 lineHeight: 1.5,
               }}
               className="custom-scrollbar"
@@ -368,28 +337,13 @@ export function ChatWindow({
                 }
               }}
               disabled={!inputText.trim()}
-              style={{
-                width: '40px', height: '40px', borderRadius: '12px',
-                background: inputText.trim() ? '#EB712B' : 'var(--color-secondary-bg)', 
-                color: inputText.trim() ? '#fff' : 'var(--color-border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, border: 'none', marginBottom: '2px', marginRight: '2px',
-                boxShadow: inputText.trim() ? '0 4px 12px rgba(235,113,43,0.30)' : 'none',
-                transition: 'all 0.2s',
-                cursor: inputText.trim() ? 'pointer' : 'default',
-              }}
-              onMouseEnter={(e) => { 
-                if (inputText.trim()) {
-                  e.currentTarget.style.transform = 'scale(1.08)'; 
-                  e.currentTarget.style.filter = 'brightness(1.1)'; 
-                }
-              }}
-              onMouseLeave={(e) => { 
-                e.currentTarget.style.transform = 'scale(1)'; 
-                e.currentTarget.style.filter = 'brightness(1)'; 
-              }}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-0 mb-0.5 mr-0.5 transition-all cursor-pointer ${
+                inputText.trim() 
+                  ? 'bg-[#EB712B] hover:bg-[#d66525] text-white shadow-md hover:scale-105 active:scale-95' 
+                  : 'bg-white/5 text-white/20 cursor-default'
+              }`}
             >
-              <Send size={18} style={{ marginLeft: '2px' }} />
+              <Send size={16} className="translate-x-0.5" />
             </button>
           </div>
         </div>
