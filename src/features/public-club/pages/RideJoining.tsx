@@ -42,6 +42,15 @@ const resolveAvatarUrl = (path?: string | null) => {
   return `https://api.ridewithpals.com/uploads/${path}`;
 };
 
+const resolveGpxUrl = (path?: string | null) => {
+  if (!path || path === "null" || path.trim() === "") return null;
+  const clean = path.trim();
+  if (clean.startsWith("http://") || clean.startsWith("https://") || clean.startsWith("/")) {
+    return clean;
+  }
+  return `https://api.ridewithpals.com/uploads/${clean}`;
+};
+
 const formatDisplayTime = (timeStr?: string) => {
   if (!timeStr) return "";
   const parts = timeStr.trim().split(":");
@@ -102,18 +111,247 @@ const createEndIcon = () => {
   });
 };
 
-// Custom modern map zoom controls placed cleanly at bottom-right (no collision with back button)
-function MapZoomControls() {
+// Multi-strategy GPX parser extracting coordinates, elevation, and length
+const parseGpxText = (text: string) => {
+  try {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "application/xml");
+    
+    let trackPoints: Element[] = Array.from(xml.querySelectorAll("trkpt, rtept, wpt"));
+    if (trackPoints.length === 0) {
+      trackPoints = [
+        ...Array.from(xml.getElementsByTagName("trkpt")),
+        ...Array.from(xml.getElementsByTagName("rtept")),
+        ...Array.from(xml.getElementsByTagName("wpt"))
+      ];
+    }
+    if (trackPoints.length === 0) {
+      trackPoints = [
+        ...Array.from(xml.getElementsByTagNameNS("*", "trkpt")),
+        ...Array.from(xml.getElementsByTagNameNS("*", "rtept")),
+        ...Array.from(xml.getElementsByTagNameNS("*", "wpt"))
+      ];
+    }
+
+    const coords: [number, number][] = [];
+    let totalDistKm = 0;
+    let totalEleGainM = 0;
+    let prevEle: number | null = null;
+
+    trackPoints.forEach((pt) => {
+      const lat = parseFloat(pt.getAttribute("lat") || "0");
+      const lon = parseFloat(pt.getAttribute("lon") || "0");
+      if (!isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0) {
+        coords.push([lat, lon]);
+
+        if (coords.length > 1) {
+          const prev = coords[coords.length - 2];
+          const dLat = (lat - prev[0]) * (Math.PI / 180);
+          const dLon = (lon - prev[1]) * (Math.PI / 180);
+          const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(prev[0] * (Math.PI / 180)) * Math.cos(lat * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          totalDistKm += 6371 * c;
+        }
+
+        const eleNode = pt.querySelector("ele") || pt.getElementsByTagName("ele")[0];
+        if (eleNode && eleNode.textContent) {
+          const ele = parseFloat(eleNode.textContent);
+          if (!isNaN(ele)) {
+            if (prevEle !== null && ele > prevEle) {
+              totalEleGainM += ele - prevEle;
+            }
+            prevEle = ele;
+          }
+        }
+      }
+    });
+
+    return {
+      coords,
+      totalDistKm: totalDistKm > 0 ? totalDistKm.toFixed(1) : null,
+      totalEleGainM: totalEleGainM > 0 ? Math.round(totalEleGainM) : null
+    };
+  } catch (err) {
+    console.error("GPX parse error", err);
+    return { coords: [], totalDistKm: null, totalEleGainM: null };
+  }
+};
+
+// Smart progressive geocoder that handles road codes (e.g., C-148a) and city strings
+const geocodeAddress = async (query: string): Promise<[number, number] | null> => {
+  if (!query || !query.trim()) return null;
+
+  const tryQueries = [
+    query.trim(),
+    query.replace(/^[A-Z0-9-]+\s*,\s*/i, "").trim(),
+    query.split(",").slice(1).join(",").trim(),
+    query.split(",").slice(-3).join(",").trim(),
+    query.split(",").slice(-2).join(",").trim()
+  ].filter((q, idx, arr) => q.length > 2 && arr.indexOf(q) === idx);
+
+  for (const q of tryQueries) {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`,
+        { headers: { Accept: "application/json" } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          if (!isNaN(lat) && !isNaN(lon) && (lat !== 0 || lon !== 0)) {
+            return [lat, lon];
+          }
+        }
+      }
+    } catch {
+      // Continue to next fallback
+    }
+  }
+  return null;
+};
+
+// Reverse geocode coordinate to get exact human-readable street/town name
+const reverseGeocode = async (lat: number, lon: number): Promise<string | null> => {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16`,
+      { headers: { Accept: "application/json" } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.address) {
+        const addr = data.address;
+        const place = addr.road || addr.pedestrian || addr.square || addr.neighbourhood || addr.suburb || "";
+        const city = addr.city || addr.town || addr.village || addr.municipality || addr.county || "";
+        const state = addr.state || addr.province || "";
+        const country = addr.country || "";
+        const parts = [place, city, state, country].filter(Boolean);
+        if (parts.length > 0) {
+          return parts.join(", ");
+        }
+        if (data.display_name) {
+          return data.display_name.split(",").slice(0, 3).join(",");
+        }
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+};
+
+// Generates an attractive route loop if single meeting point is provided
+const generateLoopPolyline = (center: [number, number], radiusKm = 2.0): [number, number][] => {
+  const [cLat, cLon] = center;
+  const latDelta = radiusKm / 111;
+  const lonDelta = radiusKm / (111 * Math.cos(cLat * (Math.PI / 180)));
+  
+  return [
+    [cLat, cLon],
+    [cLat + latDelta * 0.7, cLon + lonDelta * 0.75],
+    [cLat + latDelta * 1.15, cLon + lonDelta * 0.2],
+    [cLat + latDelta * 0.85, cLon - lonDelta * 0.65],
+    [cLat + latDelta * 0.25, cLon - lonDelta * 0.85],
+    [cLat - latDelta * 0.5, cLon - lonDelta * 0.45],
+    [cLat, cLon]
+  ];
+};
+
+// Map auto-fit controller that handles route bounds changes & container resize
+function MapRouteController({ 
+  route, 
+  start, 
+  end 
+}: { 
+  route: [number, number][]; 
+  start: [number, number]; 
+  end: [number, number];
+}) {
   const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+    
+    const timer = setTimeout(() => {
+      try {
+        map.invalidateSize();
+        if (route && route.length >= 2) {
+          const bounds = L.latLngBounds(route);
+          map.fitBounds(bounds, { padding: [45, 45], maxZoom: 15, animate: true });
+        } else if (start && (start[0] !== 0 || start[1] !== 0)) {
+          if (end && (end[0] !== start[0] || end[1] !== start[1])) {
+            const bounds = L.latLngBounds([start, end]);
+            map.fitBounds(bounds, { padding: [45, 45], maxZoom: 15, animate: true });
+          } else {
+            map.setView(start, 13, { animate: true });
+          }
+        }
+      } catch (e) {
+        console.warn("Map fitBounds failed", e);
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [map, route, start, end]);
+
+  return null;
+}
+
+// Custom modern map zoom controls & re-center button placed cleanly at bottom-right
+function MapControls({ 
+  route, 
+  start, 
+  end 
+}: { 
+  route: [number, number][]; 
+  start: [number, number]; 
+  end: [number, number];
+}) {
+  const map = useMap();
+
+  const handleRecenter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      map.invalidateSize();
+      if (route && route.length >= 2) {
+        const bounds = L.latLngBounds(route);
+        map.fitBounds(bounds, { padding: [45, 45], maxZoom: 15, animate: true });
+      } else if (start && (start[0] !== 0 || start[1] !== 0)) {
+        if (end && (end[0] !== start[0] || end[1] !== start[1])) {
+          const bounds = L.latLngBounds([start, end]);
+          map.fitBounds(bounds, { padding: [45, 45], maxZoom: 15, animate: true });
+        } else {
+          map.setView(start, 13, { animate: true });
+        }
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   return (
     <div className="absolute bottom-4 right-4 z-[400] flex flex-col gap-1.5 shadow-xl">
+      <button
+        type="button"
+        onClick={handleRecenter}
+        className="w-9 h-9 rounded-xl bg-black/85 hover:bg-black text-[#EB712B] hover:text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+        title="Fit Route to View"
+        aria-label="Fit Route to View"
+      >
+        <Navigation size={15} />
+      </button>
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
           map.zoomIn();
         }}
-        className="w-9 h-9 rounded-xl bg-black/80 hover:bg-black text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+        className="w-9 h-9 rounded-xl bg-black/85 hover:bg-black text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
         title="Zoom In"
         aria-label="Zoom In"
       >
@@ -125,7 +363,7 @@ function MapZoomControls() {
           e.stopPropagation();
           map.zoomOut();
         }}
-        className="w-9 h-9 rounded-xl bg-black/80 hover:bg-black text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+        className="w-9 h-9 rounded-xl bg-black/85 hover:bg-black text-white border border-white/20 flex items-center justify-center backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95"
         title="Zoom Out"
         aria-label="Zoom Out"
       >
@@ -152,6 +390,8 @@ const RideJoining = () => {
     [33.5680, 73.1550],
     [33.5415, 73.1785]
   ]);
+  const [resolvedStartLocation, setResolvedStartLocation] = useState<string>("");
+  const [resolvedEndLocation, setResolvedEndLocation] = useState<string>("");
 
   const rideIdNum = id ? Number(id) : 0;
   const { data: rideResponse, isLoading: loading, refetch: refetchRide } = useGetRideInfoByIdQuery(
@@ -389,7 +629,7 @@ const RideJoining = () => {
     };
   }, [rideResponse, id, currentUser]);
 
-  // Coordinate resolution
+  // Coordinate & Route Resolution
   useEffect(() => {
     if (!rideDetails) return;
 
@@ -397,54 +637,84 @@ const RideJoining = () => {
 
     const resolveCoordinates = async () => {
       try {
-        if (rideDetails.gpxFile && typeof rideDetails.gpxFile === "string" && (rideDetails.gpxFile.startsWith("http") || rideDetails.gpxFile.startsWith("/"))) {
+        const startLocRaw = rideDetails.startLocation || "Start Point";
+        const endLocRaw = rideDetails.endLocation || startLocRaw;
+
+        // 1. Try resolving and parsing GPX route
+        const gpxUrl = resolveGpxUrl(rideDetails.gpxFile);
+        if (gpxUrl) {
           try {
-            const res = await fetch(rideDetails.gpxFile);
-            const text = await res.text();
-            const parser = new DOMParser();
-            const xml = parser.parseFromString(text, "application/xml");
-            const points = xml.querySelectorAll("trkpt, rtept, wpt");
-            const coords: [number, number][] = [];
-            points.forEach((pt) => {
-              const lat = parseFloat(pt.getAttribute("lat") || "0");
-              const lon = parseFloat(pt.getAttribute("lon") || "0");
-              if (lat && lon) coords.push([lat, lon]);
-            });
-            if (coords.length >= 2 && isMounted) {
-              setRoutePolyline(coords);
-              setStartCoords(coords[0]);
-              setEndCoords(coords[coords.length - 1]);
-              return;
+            const res = await fetch(gpxUrl);
+            if (res.ok) {
+              const text = await res.text();
+              const { coords } = parseGpxText(text);
+
+              if (coords.length >= 2 && isMounted) {
+                setRoutePolyline(coords);
+                setStartCoords(coords[0]);
+                setEndCoords(coords[coords.length - 1]);
+
+                // Calculate distance between start & finish to detect Loop vs Point-to-Point
+                const firstPt = coords[0];
+                const lastPt = coords[coords.length - 1];
+                const dLat = (lastPt[0] - firstPt[0]) * (Math.PI / 180);
+                const dLon = (lastPt[1] - firstPt[1]) * (Math.PI / 180);
+                const a =
+                  Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(firstPt[0] * (Math.PI / 180)) * Math.cos(lastPt[0] * (Math.PI / 180)) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const finishDistKm = 6371 * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+
+                setResolvedStartLocation(startLocRaw);
+
+                if (finishDistKm < 0.25) {
+                  // Loop activity: starts & finishes at the same rendezvous point
+                  setResolvedEndLocation(`${startLocRaw} (Loop Finish)`);
+                } else if (endLocRaw && endLocRaw !== startLocRaw && endLocRaw !== "Meeting Point TBD") {
+                  setResolvedEndLocation(endLocRaw);
+                } else {
+                  // Reverse geocode the finish coordinates to get the true destination name
+                  const revEnd = await reverseGeocode(lastPt[0], lastPt[1]);
+                  if (isMounted) {
+                    setResolvedEndLocation(revEnd || `${startLocRaw} (Destination)`);
+                  }
+                }
+                return;
+              }
             }
           } catch (e) {
-            console.warn("Could not parse GPX file, falling back to Nominatim Geocoding", e);
+            console.warn("Could not fetch/parse GPX file, falling back to Geocoding", e);
           }
         }
 
-        const startRes = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rideDetails.startLocation)}`
-        ).then(r => r.json()).catch(() => []);
-        
-        const endRes = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rideDetails.endLocation)}`
-        ).then(r => r.json()).catch(() => []);
+        // 2. Geocoding Fallback for Start & End Locations
+        const startPt = await geocodeAddress(startLocRaw);
+        const isSameLocation = !endLocRaw || endLocRaw === startLocRaw || endLocRaw === "Meeting Point TBD";
+        const endPt = isSameLocation ? null : await geocodeAddress(endLocRaw);
 
         if (!isMounted) return;
 
-        const startPt: [number, number] = (startRes && startRes.length > 0)
-          ? [parseFloat(startRes[0].lat), parseFloat(startRes[0].lon)]
-          : [33.5935, 73.1381];
+        if (startPt) {
+          setStartCoords(startPt);
+          setResolvedStartLocation(startLocRaw);
 
-        const endPt: [number, number] = (endRes && endRes.length > 0)
-          ? [parseFloat(endRes[0].lat), parseFloat(endRes[0].lon)]
-          : [33.5415, 73.1785];
-
-        setStartCoords(startPt);
-        setEndCoords(endPt);
-
-        const midLat = (startPt[0] + endPt[0]) / 2 + 0.003;
-        const midLon = (startPt[1] + endPt[1]) / 2;
-        setRoutePolyline([startPt, [midLat, midLon], endPt]);
+          if (endPt && (endPt[0] !== startPt[0] || endPt[1] !== startPt[1])) {
+            setEndCoords(endPt);
+            setResolvedEndLocation(endLocRaw);
+            const midLat = (startPt[0] + endPt[0]) / 2 + 0.003;
+            const midLon = (startPt[1] + endPt[1]) / 2;
+            setRoutePolyline([startPt, [midLat, midLon], endPt]);
+          } else {
+            // Loop or Single Point: generate a clean local route loop around the area
+            setEndCoords(startPt);
+            setResolvedEndLocation(`${startLocRaw} (Loop Return)`);
+            setRoutePolyline(generateLoopPolyline(startPt, 2.5));
+          }
+        } else {
+          // If geocoding failed completely, default to fallback
+          setResolvedStartLocation(startLocRaw);
+          setResolvedEndLocation(isSameLocation ? `${startLocRaw} (Loop Finish)` : endLocRaw);
+        }
       } catch (err) {
         console.error("Coordinate resolution error:", err);
       }
@@ -962,20 +1232,31 @@ const RideJoining = () => {
               attribution='&copy; <a href="https://maps.google.com/">Google</a>'
               url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
             />
+            {/* Start Marker */}
             <Marker position={startCoords} icon={createStartIcon()}>
               <Popup className="font-sans text-xs">
-                <span className="font-bold text-[#EB712B]">Start:</span> {rideDetails.startLocation}
+                <span className="font-bold text-[#EB712B]">Start / Meeting Point:</span><br />
+                {resolvedStartLocation || rideDetails.startLocation}
               </Popup>
             </Marker>
+
+            {/* Destination Marker */}
             <Marker position={endCoords} icon={createEndIcon()}>
               <Popup className="font-sans text-xs">
-                <span className="font-bold text-rose-500">Destination:</span> {rideDetails.endLocation}
+                <span className="font-bold text-rose-500">Destination / Finish:</span><br />
+                {resolvedEndLocation || rideDetails.endLocation}
               </Popup>
             </Marker>
-            <Polyline positions={routePolyline} color="#EB712B" weight={5} opacity={0.9} />
+
+            {/* Glowing route outline + crisp main polyline */}
+            <Polyline positions={routePolyline} color="#000000" weight={7} opacity={0.35} />
+            <Polyline positions={routePolyline} color="#EB712B" weight={5} opacity={0.95} />
             
-            {/* Custom bottom-right zoom buttons (eliminates ugly top-left Leaflet widget collision) */}
-            <MapZoomControls />
+            {/* Auto-fits map viewport to the polyline route */}
+            <MapRouteController route={routePolyline} start={startCoords} end={endCoords} />
+
+            {/* Modern bottom-right map controls (Re-center & Zoom) */}
+            <MapControls route={routePolyline} start={startCoords} end={endCoords} />
           </MapContainer>
 
           {/* Top-Left Floating Controls: Back + Activity Context Pill (Completely unhindered) */}
@@ -1008,29 +1289,39 @@ const RideJoining = () => {
             </div>
           </div>
 
-          {/* Top-Right Floating Controls: Group Chat Status Pill & Actions */}
+          {/* Top-Right Floating Controls: Group Chat Status & Actions */}
           <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-[400] flex items-center gap-2 sm:gap-2.5">
-            {/* Live Group Chat Status Pill */}
+            {/* Live Group Chat Status Action */}
             <button
               type="button"
               onClick={handleOpenGroupChat}
-              className={`inline-flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-2xl backdrop-blur-md shadow-xl transition-all cursor-pointer ${
+              className={cn(
+                "h-10 sm:h-11 inline-flex items-center gap-2.5 px-3.5 sm:px-4 rounded-xl sm:rounded-2xl backdrop-blur-xl border shadow-lg transition-all duration-200 cursor-pointer select-none group",
                 isJoined 
-                  ? "bg-emerald-950/85 hover:bg-emerald-900/90 border border-emerald-500/40 text-emerald-300 hover:scale-105" 
-                  : "bg-black/75 hover:bg-black/90 border border-white/15 text-gray-300 hover:text-white"
-              }`}
+                  ? "bg-[#141414]/90 hover:bg-[#1E1E1E] border-white/15 hover:border-[#EB712B]/40 text-text-main hover:shadow-2xl" 
+                  : "bg-black/80 hover:bg-black/95 border-white/10 text-text-muted hover:text-text-main"
+              )}
               title={isJoined ? "Open Activity Group Chat" : "Join activity to unlock group chat room"}
             >
               {isJoined ? (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                  <MessageSquare size={14} className="text-emerald-400 shrink-0" />
-                  <span className="text-[11px] font-extrabold tracking-wide hidden sm:inline">Group Chat Active</span>
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <MessageSquare size={15} className="text-[#EB712B] group-hover:scale-110 transition-transform shrink-0" />
+                  <span className="text-xs font-semibold tracking-wide text-text-main">Group Chat</span>
+                  <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[9px] font-extrabold uppercase tracking-wider hidden sm:inline-flex items-center">
+                    Live
+                  </span>
                 </>
               ) : (
                 <>
-                  <Lock size={13} className="text-amber-400 shrink-0" />
-                  <span className="text-[11px] font-bold tracking-wide hidden sm:inline text-gray-300">Chat Unlocks on Join</span>
+                  <Lock size={13} className="text-text-muted shrink-0" />
+                  <span className="text-xs font-semibold text-text-muted">Group Chat</span>
+                  <span className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[9px] font-bold text-text-muted uppercase tracking-wider hidden sm:inline">
+                    Locked
+                  </span>
                 </>
               )}
             </button>
@@ -1039,26 +1330,27 @@ const RideJoining = () => {
             <button 
               type="button"
               onClick={() => setIsShareModalOpen(true)}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-black/75 hover:bg-black/90 backdrop-blur-md border border-white/15 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer"
+              className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-[#141414]/90 hover:bg-[#1E1E1E] backdrop-blur-xl border border-white/15 hover:border-white/30 text-text-muted hover:text-text-main flex items-center justify-center active:scale-95 transition-all shadow-lg cursor-pointer"
               title="Share Activity"
               aria-label="Share"
             >
-              <Share2 size={16} />
+              <Share2 size={15} />
             </button>
 
             {/* Bookmark */}
             <button 
               type="button"
               onClick={handleToggleSave}
-              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl backdrop-blur-md border transition-all shadow-xl flex items-center justify-center cursor-pointer ${
+              className={cn(
+                "h-10 w-10 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl backdrop-blur-xl border transition-all shadow-lg flex items-center justify-center cursor-pointer active:scale-95",
                 isSaved 
-                  ? "bg-[#EB712B]/20 border-[#EB712B]/40 text-[#EB712B]" 
-                  : "bg-black/75 hover:bg-black/90 border-white/15 text-white hover:scale-105"
-              }`}
+                  ? "bg-[#EB712B]/15 border-[#EB712B]/50 text-[#EB712B] shadow-[#EB712B]/10" 
+                  : "bg-[#141414]/90 hover:bg-[#1E1E1E] border-white/15 hover:border-white/30 text-text-muted hover:text-text-main"
+              )}
               title={isSaved ? "Saved" : "Save Activity"}
               aria-label="Save"
             >
-              <Bookmark size={16} fill={isSaved ? "#EB712B" : "none"} />
+              <Bookmark size={15} fill={isSaved ? "#EB712B" : "none"} />
             </button>
           </div>
 
@@ -1237,7 +1529,7 @@ const RideJoining = () => {
                         <span>Start / Meeting Point</span>
                       </span>
                       <p className="text-xs sm:text-sm font-semibold text-text-main mt-1 leading-relaxed">
-                        {rideDetails.startLocation}
+                        {resolvedStartLocation || rideDetails.startLocation}
                       </p>
                     </div>
                   </div>
@@ -1253,7 +1545,7 @@ const RideJoining = () => {
                         <span>Destination / Finish Point</span>
                       </span>
                       <p className="text-xs sm:text-sm font-semibold text-text-main mt-1 leading-relaxed">
-                        {rideDetails.endLocation}
+                        {resolvedEndLocation || rideDetails.endLocation}
                       </p>
                     </div>
                   </div>
