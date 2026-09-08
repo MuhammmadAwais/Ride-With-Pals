@@ -66,11 +66,11 @@ export function CustomAudioPlayer({ src, duration = 0, isOutgoing }: CustomAudio
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  const iconBg    = isOutgoing ? 'rgba(255,255,255,1)' : 'rgba(235,113,43,0.12)';
+  const iconBg    = isOutgoing ? 'rgba(255,255,255,1)' : 'rgba(235,113,43,0.15)';
   const iconColor = isOutgoing ? '#EB712B' : '#EB712B';
-  const trackBg   = isOutgoing ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.10)';
+  const trackBg   = isOutgoing ? 'rgba(255,255,255,0.35)' : 'var(--color-border)';
   const fillColor = isOutgoing ? '#FFFFFF' : '#EB712B';
-  const textColor = isOutgoing ? 'rgba(255,255,255,0.80)' : 'var(--color-secondary-text)';
+  const textColor = isOutgoing ? 'rgba(255,255,255,0.85)' : 'var(--color-secondary-text)';
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '256px', minWidth: '200px' }}>

@@ -81,28 +81,19 @@ export function ChatWindow({
   if (!activeUser) {
     return (
       <div
-        style={{
-          flex: 1, position: 'relative',
-          background: 'var(--color-main-bg)',
-          alignItems: 'center', justifyContent: 'center',
-        }}
-        className={`md:flex flex-col ${isHiddenOnMobile ? 'hidden' : 'flex'}`}
+        className={`flex-1 relative flex flex-col items-center justify-center bg-main-bg h-full ${isHiddenOnMobile ? 'hidden md:flex' : 'flex'}`}
       >
         <ChatBackground />
-        <div style={{ zIndex: 10, textAlign: 'center', padding: '20px' }}>
-          <div style={{
-            width: '72px', height: '72px', borderRadius: '50%',
-            background: 'var(--color-secondary-bg)',
-            border: '1px solid var(--color-border)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 20px',
-          }}>
-            <img src="/Images/Logo.png" alt="Logo" style={{ width: '40px', height: '40px', objectFit: 'contain', opacity: 0.5 }} />
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '22px', color: 'var(--color-main-text)', marginBottom: '8px' }}>
-            Chat Messages
+        <div className="relative z-10 text-center p-8 max-w-sm flex flex-col items-center animate-in fade-in duration-300">
+          <img 
+            src="/Images/official_logo.png" 
+            alt="Ride With Pals" 
+            className="h-16 w-auto object-contain mb-6 drop-shadow-md select-none" 
+          />
+          <h2 className="font-poppins font-extrabold text-xl text-text-main mb-2 tracking-tight">
+            Ride With Pals Messages
           </h2>
-          <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', color: 'var(--color-secondary-text)', maxWidth: '300px', lineHeight: 1.7 }}>
+          <p className="font-roboto text-xs text-text-muted leading-relaxed max-w-[280px]">
             Select a conversation from the left to start chatting with athletes and activity groups.
           </p>
         </div>
@@ -120,18 +111,18 @@ export function ChatWindow({
   };
 
   return (
-    <div className="relative flex-1 flex overflow-hidden h-full">
+    <div className="relative flex-1 flex overflow-hidden h-full bg-main-bg">
       <div
-        className={`absolute w-full flex flex-col md:static md:w-auto md:flex-1 transition-transform duration-300 ${isHiddenOnMobile ? 'translate-x-full' : 'translate-x-0'} md:translate-x-0 bg-[#121212] h-full overflow-hidden`}
+        className={`absolute w-full flex flex-col md:static md:w-auto md:flex-1 transition-transform duration-300 ${isHiddenOnMobile ? 'translate-x-full' : 'translate-x-0'} md:translate-x-0 bg-main-bg h-full overflow-hidden`}
       >
         <ChatBackground />
 
         {/* Chat header (Exact 64px h-16 to match Sidebar Header) */}
-        <div className="relative z-10 h-16 px-6 border-b border-white/10 bg-[#181818]/60 backdrop-blur-md flex items-center justify-between shrink-0">
+        <div className="relative z-10 h-16 px-6 border-b border-border bg-surface/80 backdrop-blur-md flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <button
               onClick={onBack}
-              className="md:hidden w-9 h-9 rounded-full flex items-center justify-center text-text-muted hover:text-white hover:bg-white/10 -ml-1 transition-all cursor-pointer"
+              className="md:hidden w-9 h-9 rounded-full flex items-center justify-center text-text-muted hover:text-text-main hover:bg-hover -ml-1 transition-all cursor-pointer"
             >
               <ArrowLeft size={18} />
             </button>
@@ -207,7 +198,7 @@ export function ChatWindow({
                 "w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer",
                 isSearchingMessages 
                   ? "bg-[#EB712B]/20 text-[#EB712B] border border-[#EB712B]/40" 
-                  : "bg-transparent text-text-muted hover:text-text-main hover:bg-white/5"
+                  : "bg-transparent text-text-muted hover:text-text-main hover:bg-hover"
               )}
               title="Search messages in conversation"
             >
@@ -223,7 +214,7 @@ export function ChatWindow({
                   "h-9 px-3 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer font-semibold text-xs",
                   isGroupDrawerOpen 
                     ? "bg-[#EB712B] text-white shadow-md" 
-                    : "bg-white/5 hover:bg-white/10 text-text-muted hover:text-text-main border border-white/10"
+                    : "bg-surface hover:bg-hover text-text-muted hover:text-text-main border border-border"
                 )}
                 title="View Group Info & Members"
               >
@@ -234,7 +225,7 @@ export function ChatWindow({
               <button 
                 type="button"
                 onClick={handleHeaderClick}
-                className="w-9 h-9 rounded-xl bg-transparent text-text-muted hover:text-text-main hover:bg-white/5 flex items-center justify-center transition-all cursor-pointer"
+                className="w-9 h-9 rounded-xl bg-transparent text-text-muted hover:text-text-main hover:bg-hover flex items-center justify-center transition-all cursor-pointer"
                 title="View Profile"
               >
                 <Info size={17} />
@@ -245,7 +236,7 @@ export function ChatWindow({
 
         {/* In-Chat Message Search Bar */}
         {isSearchingMessages && (
-          <div className="px-4 py-2.5 bg-[#181818] border-b border-white/10 flex items-center justify-between gap-3 animate-in slide-in-from-top-2 duration-200">
+          <div className="px-4 py-2.5 bg-surface border-b border-border flex items-center justify-between gap-3 animate-in slide-in-from-top-2 duration-200">
             <div className="relative flex-1">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
               <input
@@ -254,7 +245,7 @@ export function ChatWindow({
                 onChange={(e) => setMessageSearchQuery(e.target.value)}
                 placeholder="Search messages in this conversation..."
                 autoFocus
-                className="w-full pl-8 pr-4 py-1.5 rounded-xl bg-white/5 border border-white/10 focus:border-[#EB712B] text-xs text-white outline-none"
+                className="w-full pl-8 pr-4 py-1.5 rounded-xl bg-main-bg border border-border focus:border-[#EB712B] text-xs text-text-main outline-none"
               />
             </div>
             {messageSearchQuery && (
@@ -268,7 +259,7 @@ export function ChatWindow({
                 setIsSearchingMessages(false);
                 setMessageSearchQuery('');
               }}
-              className="p-1 text-text-muted hover:text-white cursor-pointer"
+              className="p-1 text-text-muted hover:text-text-main cursor-pointer"
               title="Close search"
             >
               <X size={15} />
@@ -304,8 +295,8 @@ export function ChatWindow({
         </div>
 
         {/* Input bar (Locked cleanly at bottom without viewport overflow) */}
-        <div className="p-4 border-t border-white/10 bg-[#161616] shrink-0">
-          <div className="flex items-end gap-2.5 bg-[#1C1C1E] border border-white/10 focus-within:border-[#EB712B]/60 focus-within:ring-2 focus-within:ring-[#EB712B]/10 rounded-2xl p-2 transition-all shadow-sm">
+        <div className="p-4 border-t border-border bg-surface shrink-0">
+          <div className="flex items-end gap-2.5 bg-main-bg border border-border focus-within:border-[#EB712B]/60 focus-within:ring-2 focus-within:ring-[#EB712B]/10 rounded-2xl p-2 transition-all shadow-sm">
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -314,7 +305,7 @@ export function ChatWindow({
               style={{
                 flex: 1, background: 'transparent', border: 'none', outline: 'none',
                 resize: 'none', maxHeight: '120px', minHeight: '38px', padding: '8px 10px',
-                fontFamily: 'var(--font-roboto)', fontSize: '13px', color: '#FFFFFF',
+                fontFamily: 'var(--font-roboto)', fontSize: '13px', color: 'var(--color-main-text)',
                 lineHeight: 1.5,
               }}
               className="custom-scrollbar"
@@ -340,7 +331,7 @@ export function ChatWindow({
               className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-0 mb-0.5 mr-0.5 transition-all cursor-pointer ${
                 inputText.trim() 
                   ? 'bg-[#EB712B] hover:bg-[#d66525] text-white shadow-md hover:scale-105 active:scale-95' 
-                  : 'bg-white/5 text-white/20 cursor-default'
+                  : 'bg-border/30 text-text-muted/40 cursor-default'
               }`}
             >
               <Send size={16} className="translate-x-0.5" />

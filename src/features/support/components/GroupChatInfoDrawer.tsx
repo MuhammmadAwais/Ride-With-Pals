@@ -48,7 +48,7 @@ export const MemberAvatar: React.FC<{
   const showImage = Boolean(src && !hasError);
 
   return (
-    <div className={cn(size, "rounded-full overflow-hidden bg-[#1C1C1E] border border-white/15 flex items-center justify-center font-bold text-white shadow-xs relative shrink-0")}>
+    <div className={cn(size, "rounded-full overflow-hidden bg-main-bg border border-border flex items-center justify-center font-bold text-text-main shadow-xs relative shrink-0")}>
       {showImage ? (
         <img
           src={src!}
@@ -345,18 +345,18 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
 
       {/* Drawer Container */}
       <div 
-        className="fixed lg:static top-0 right-0 bottom-0 z-[510] lg:z-10 w-full sm:w-[380px] lg:w-[360px] xl:w-[390px] h-full bg-[#121212] border-l border-white/10 flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-right duration-300 select-none text-left"
+        className="fixed lg:static top-0 right-0 bottom-0 z-[510] lg:z-10 w-full sm:w-[380px] lg:w-[360px] xl:w-[390px] h-full bg-surface border-l border-border flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-right duration-300 select-none text-left"
       >
         {/* Header */}
-        <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between shrink-0 bg-[#161616]">
+        <div className="h-16 px-5 border-b border-border flex items-center justify-between shrink-0 bg-surface/80 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
             <Users size={18} className="text-[#EB712B]" />
-            <h3 className="text-sm font-bold text-white tracking-wide">Group Information</h3>
+            <h3 className="text-sm font-bold text-text-main tracking-wide">Group Information</h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-text-muted hover:text-white flex items-center justify-center transition-all cursor-pointer"
+            className="w-8 h-8 rounded-full bg-surface hover:bg-hover text-text-muted hover:text-text-main flex items-center justify-center transition-all cursor-pointer border border-border"
             title="Close panel"
           >
             <X size={16} />
@@ -369,7 +369,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
           {/* 1. Hero Cover & Avatar */}
           <div className="flex flex-col items-center text-center space-y-3 pt-2">
             <div className="relative group/avatar">
-              <div className="w-24 h-24 rounded-3xl overflow-hidden bg-gradient-to-br from-[#EB712B]/20 to-black border-2 border-white/15 flex items-center justify-center shadow-xl relative">
+              <div className="w-24 h-24 rounded-3xl overflow-hidden bg-gradient-to-br from-[#EB712B]/20 to-black border-2 border-border flex items-center justify-center shadow-xl relative">
                 {activeUser.avatar ? (
                   <img 
                     src={resolveAvatarUrl(activeUser.avatar) || ''} 
@@ -390,7 +390,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(true)}
-                  className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-[#EB712B] hover:bg-[#d66525] text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110 cursor-pointer border-2 border-[#121212]"
+                  className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-[#EB712B] hover:bg-[#d66525] text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110 cursor-pointer border-2 border-surface"
                   title="Edit Group Icon"
                 >
                   <Edit3 size={13} />
@@ -400,7 +400,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
 
             <div className="space-y-1 max-w-full px-2">
               <div className="flex items-center justify-center gap-2">
-                <h2 className="text-lg font-black text-white tracking-tight truncate max-w-[260px]">
+                <h2 className="text-lg font-black text-text-main tracking-tight truncate max-w-[260px]">
                   {activeUser.name}
                 </h2>
                 {isCurrentUserHost && (
@@ -433,7 +433,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
               onClick={() => {
                 if (rideIdNum) navigate(`/view/userside/dashboard/ride/${rideIdNum}`);
               }}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-text-muted hover:text-white transition-all cursor-pointer group"
+              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-surface hover:bg-hover border border-border text-text-muted hover:text-text-main transition-all cursor-pointer group"
               title="View Activity Details"
             >
               <ExternalLink size={16} className="text-[#EB712B] group-hover:scale-110 transition-transform" />
@@ -444,7 +444,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
             <button
               type="button"
               onClick={handleDownloadGpx}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-text-muted hover:text-emerald-400 transition-all cursor-pointer group"
+              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-surface hover:bg-hover border border-border text-text-muted hover:text-emerald-400 transition-all cursor-pointer group"
               title="Download GPX Route"
             >
               <Download size={16} className="text-emerald-400 group-hover:scale-110 transition-transform" />
@@ -455,7 +455,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
             <button
               type="button"
               onClick={() => setIsShareModalOpen(true)}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-text-muted hover:text-white transition-all cursor-pointer group"
+              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-surface hover:bg-hover border border-border text-text-muted hover:text-text-main transition-all cursor-pointer group"
               title="Share Activity Group"
             >
               <Share2 size={16} className="text-sky-400 group-hover:scale-110 transition-transform" />
@@ -470,7 +470,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                 "flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border transition-all cursor-pointer group",
                 isMuted 
                   ? "bg-rose-500/10 border-rose-500/30 text-rose-400" 
-                  : "bg-white/5 hover:bg-white/10 border-white/10 text-text-muted hover:text-white"
+                  : "bg-surface hover:bg-hover border border-border text-text-muted hover:text-text-main"
               )}
               title={isMuted ? "Unmute Notifications" : "Mute Notifications"}
             >
@@ -481,8 +481,8 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
 
           {/* 3. Activity Snapshot Card */}
           {rideDetails && (
-            <div className="bg-[#181818] border border-white/10 rounded-2xl p-4 space-y-3 shadow-sm">
-              <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <div className="bg-main-bg border border-border rounded-2xl p-4 space-y-3 shadow-sm">
+              <div className="flex items-center justify-between pb-2 border-b border-border">
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Activity Snapshot</span>
                 <span className="text-xs font-bold text-[#EB712B]">{rideDetails.distance}</span>
               </div>
@@ -509,7 +509,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
           )}
 
           {/* 4. Guidelines / Notice Board */}
-          <div className="bg-[#181818] border border-white/10 rounded-2xl p-4 space-y-2 text-xs shadow-sm">
+          <div className="bg-main-bg border border-border rounded-2xl p-4 space-y-2 text-xs shadow-sm">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Pinned Notice / Guidelines</span>
               {isCurrentUserHost && (
@@ -532,7 +532,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users size={14} className="text-[#EB712B]" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                <span className="text-xs font-bold text-text-main uppercase tracking-wider">
                   Athletes ({fullRoster.length})
                 </span>
               </div>
@@ -546,7 +546,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                 value={memberSearch}
                 onChange={(e) => setMemberSearch(e.target.value)}
                 placeholder="Search by name or email..."
-                className="w-full pl-8 pr-3 py-2 rounded-xl bg-white/5 border border-white/10 focus:border-[#EB712B] text-xs text-white outline-none placeholder:text-text-muted/60"
+                className="w-full pl-8 pr-3 py-2 rounded-xl bg-main-bg border border-border focus:border-[#EB712B] text-xs text-text-main outline-none placeholder:text-text-muted/60"
               />
             </div>
 
@@ -558,7 +558,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                 return (
                   <div
                     key={member.id}
-                    className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group/member"
+                    className="flex items-center justify-between p-2.5 rounded-xl hover:bg-hover border border-transparent hover:border-border transition-all group/member"
                   >
                     {/* Athlete Avatar & Name */}
                     <div 
@@ -582,13 +582,13 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-white truncate group-hover/member:text-[#EB712B] transition-colors">
+                          <span className="text-xs font-bold text-text-main truncate group-hover/member:text-[#EB712B] transition-colors">
                             {member.name}
                           </span>
                           {isMe && <span className="text-[10px] text-text-muted font-normal">(You)</span>}
                         </div>
                         <div className="flex items-center gap-1.5 text-[11px] text-text-muted">
-                          <span className="truncate max-w-[140px] sm:max-w-[170px] lowercase text-gray-400 font-medium">
+                          <span className="truncate max-w-[140px] sm:max-w-[170px] lowercase text-text-muted font-medium">
                             {member.email}
                           </span>
                           <span>•</span>
@@ -596,7 +596,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                             "font-black uppercase text-[8px] px-1.5 py-0.5 rounded tracking-wider shrink-0",
                             member.role === 'Host' ? "text-amber-400 bg-amber-400/10 border border-amber-400/25" :
                             member.role === 'Leader' ? "text-[#EB712B] bg-[#EB712B]/10 border border-[#EB712B]/25" : 
-                            "text-gray-400 bg-white/5 border border-white/10"
+                            "text-text-muted bg-surface border border-border"
                           )}>
                             {member.role}
                           </span>
@@ -613,7 +613,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                           onStartDirectChat(Number(member.id), member.name, member.avatar || undefined);
                           onClose();
                         }}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-[#EB712B]/20 text-text-muted hover:text-[#EB712B] border border-white/10 hover:border-[#EB712B]/40 transition-all cursor-pointer opacity-0 group-hover/member:opacity-100 shrink-0 shadow-xs"
+                        className="p-2 rounded-xl bg-surface hover:bg-[#EB712B]/20 text-text-muted hover:text-[#EB712B] border border-border hover:border-[#EB712B]/40 transition-all cursor-pointer opacity-0 group-hover/member:opacity-100 shrink-0 shadow-xs"
                         title={`Send private message to ${member.name}`}
                       >
                         <MessageSquare size={13} />
@@ -635,7 +635,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
           {sharedMedia.length > 0 && (
             <div className="space-y-2.5 pt-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                <span className="text-xs font-bold text-text-main uppercase tracking-wider">
                   Shared Media ({sharedMedia.length})
                 </span>
               </div>
@@ -644,7 +644,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
                   <div 
                     key={item.id || idx}
                     onClick={() => window.open(item.content, '_blank')}
-                    className="aspect-square rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-[#EB712B] transition-all cursor-pointer group relative"
+                    className="aspect-square rounded-xl overflow-hidden bg-main-bg border border-border hover:border-[#EB712B] transition-all cursor-pointer group relative"
                   >
                     <img src={item.content} alt="Media" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   </div>
@@ -655,7 +655,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
 
           {/* 7. Leave Activity Group Button */}
           {!isCurrentUserHost && rideIdNum > 0 && (
-            <div className="pt-4 border-t border-white/10">
+            <div className="pt-4 border-t border-border">
               <button
                 type="button"
                 onClick={handleLeaveGroup}

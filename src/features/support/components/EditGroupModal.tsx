@@ -109,26 +109,26 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="w-full max-w-lg bg-[#141414] border border-white/15 rounded-3xl p-6 sm:p-7 shadow-2xl shadow-black relative text-left"
+        className="w-full max-w-lg bg-surface border border-border rounded-3xl p-6 sm:p-7 shadow-2xl relative text-left"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex items-center justify-between pb-4 border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#EB712B]/10 border border-[#EB712B]/30 flex items-center justify-center text-[#EB712B]">
               <Sparkles size={18} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white tracking-tight">Edit Group Information</h3>
+              <h3 className="text-base font-bold text-text-main tracking-tight">Edit Group Information</h3>
               <p className="text-xs text-text-muted">Update activity group title, notice & avatar</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-text-muted hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-surface hover:bg-hover text-text-muted hover:text-text-main flex items-center justify-center transition-colors cursor-pointer border border-border"
           >
             <X size={16} />
           </button>
@@ -138,7 +138,7 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
           {/* Avatar Upload */}
           <div className="flex items-center gap-4">
             <div className="relative group/avatar cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-              <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white/5 border-2 border-dashed border-white/20 group-hover/avatar:border-[#EB712B]/60 flex items-center justify-center transition-all shadow-md">
+              <div className="w-20 h-20 rounded-2xl overflow-hidden bg-main-bg border-2 border-dashed border-border group-hover/avatar:border-[#EB712B]/60 flex items-center justify-center transition-all shadow-md">
                 {avatarPreview ? (
                   <img src={avatarPreview} alt="Group Avatar" className="w-full h-full object-cover" />
                 ) : (
@@ -159,7 +159,7 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
             </div>
 
             <div className="flex-1 space-y-1">
-              <span className="text-xs font-bold text-white">Group Avatar / Icon</span>
+              <span className="text-xs font-bold text-text-main">Group Avatar / Icon</span>
               <p className="text-[11px] text-text-muted leading-relaxed">
                 PNG, JPG or WEBP up to 5MB. Visible to all registered athletes in this activity.
               </p>
@@ -190,7 +190,7 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Sunday Morning Coastal Ride"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] text-white text-sm outline-none transition-all"
+              className="w-full px-4 py-3 rounded-xl bg-main-bg border border-border focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] text-text-main text-sm outline-none transition-all"
               required
             />
           </div>
@@ -205,7 +205,7 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add rendezvous instructions, mandatory equipment, or pace guidelines for the group..."
               rows={3}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] text-white text-sm outline-none transition-all resize-none"
+              className="w-full px-4 py-3 rounded-xl bg-main-bg border border-border focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] text-text-main text-sm outline-none transition-all resize-none"
             />
           </div>
 
@@ -214,7 +214,7 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-white/10 text-text-muted hover:text-white hover:bg-white/5 text-xs font-bold transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-xl border border-border text-text-muted hover:text-text-main hover:bg-hover text-xs font-bold transition-all cursor-pointer"
             >
               Cancel
             </button>
