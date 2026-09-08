@@ -25,14 +25,14 @@
 
 html.dark {
   /* Dark Theme */
-  --color-main-bg:         #202020;
-  --color-secondary-bg:    #282828E5;
+  --color-main-bg:         #121212;
+  --color-secondary-bg:    #181818;
   --color-main-text:       #FFFFFF;
-  --color-secondary-text:  #95908D;
+  --color-secondary-text:  #A1A1AA;
   --color-accent:          #EB712B;
-  --color-border:          rgba(255, 255, 255, 0.05);
+  --color-border:          rgba(255, 255, 255, 0.08);
   --color-hover:           rgba(255, 255, 255, 0.05);
-  --color-glass-bg:        rgba(40, 40, 40, 0.5);
+  --color-glass-bg:        rgba(18, 18, 18, 0.85);
   --color-table-header:    rgba(235, 113, 43, 0.08);
 }
 

@@ -35,11 +35,17 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 const resolveAvatarUrl = (path?: string | null) => {
-  if (!path || path === "null" || path.trim() === "") return null;
-  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("/")) {
-    return path;
+  if (!path || typeof path !== "string" || path === "null" || path === "undefined" || path.trim() === "") return null;
+  const clean = path.trim();
+  if (clean === "null" || clean === "undefined") return null;
+  if (clean.startsWith("http://") || clean.startsWith("https://") || clean.startsWith("data:")) {
+    return clean;
   }
-  return `https://api.ridewithpals.com/uploads/${path}`;
+  if (clean.startsWith("/")) {
+    return clean;
+  }
+  const stripped = clean.replace(/^uploads\//, '');
+  return `https://api.ridewithpals.com/uploads/${stripped}`;
 };
 
 const resolveGpxUrl = (path?: string | null) => {

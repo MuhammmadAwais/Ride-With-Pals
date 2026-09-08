@@ -378,7 +378,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             {roleMenuOpen && (
               <div
-                className="absolute left-0 right-0 mt-2 bg-white dark:bg-[#282828] border border-border rounded-xl shadow-2xl p-1.5 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+                className="absolute left-0 right-0 mt-2 bg-white dark:bg-[#181818] border border-border rounded-xl shadow-2xl p-1.5 z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
               >
                 <button
                   onClick={() => {
