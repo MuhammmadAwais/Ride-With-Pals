@@ -1562,7 +1562,7 @@ const RideJoining = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-5 border-t border-border/60 mt-auto">
                 {/* 1. Distance */}
                 <div className="bg-hover/70 border border-border/80 hover:border-border p-4 sm:p-5 rounded-2xl flex items-center gap-4 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shrink-0 group-hover:scale-105 transition-transform shadow-md">
                     <Navigation size={22} />
                   </div>
                   <div className="min-w-0 space-y-0.5">
@@ -1577,7 +1577,7 @@ const RideJoining = () => {
 
                 {/* 2. Avg Pace */}
                 <div className="bg-hover/70 border border-border/80 hover:border-border p-4 sm:p-5 rounded-2xl flex items-center gap-4 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shrink-0 group-hover:scale-105 transition-transform shadow-md">
                     <Gauge size={22} />
                   </div>
                   <div className="min-w-0 space-y-0.5">
@@ -1592,7 +1592,7 @@ const RideJoining = () => {
 
                 {/* 3. Elevation */}
                 <div className="bg-hover/70 border border-border/80 hover:border-border p-4 sm:p-5 rounded-2xl flex items-center gap-4 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shrink-0 group-hover:scale-105 transition-transform shadow-md">
                     <TrendingUp size={22} />
                   </div>
                   <div className="min-w-0 space-y-0.5">

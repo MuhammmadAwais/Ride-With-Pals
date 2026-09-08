@@ -258,7 +258,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
         >
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-3.5 bg-[#EB712B]/10 text-[#EB712B] rounded-2xl border border-[#EB712B]/20 group-hover:scale-105 transition-transform">
+              <div className="p-3.5 bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] text-[#EB712B] rounded-2xl border border-[#EB712B]/25 group-hover:scale-105 transition-transform shadow-md">
                 <Users size={24} />
               </div>
               <div>
@@ -298,7 +298,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
           onClick={() => navigate('/view/clubside/activities')}
         >
           <div className="flex items-center justify-between">
-            <div className="p-3.5 bg-blue-500/10 text-blue-400 rounded-2xl border border-blue-500/20 group-hover:scale-110 transition-transform">
+            <div className="p-3.5 bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] text-[#EB712B] rounded-2xl border border-[#EB712B]/25 group-hover:scale-110 transition-transform shadow-md">
               <Bike size={24} />
             </div>
             <button 
@@ -322,7 +322,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
           onClick={() => navigate('/view/clubside/joining-requests')}
         >
           <div className="flex items-center justify-between">
-            <div className="p-3.5 bg-purple-500/10 text-purple-400 rounded-2xl border border-purple-500/20 group-hover:scale-110 transition-transform">
+            <div className="p-3.5 bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] text-[#EB712B] rounded-2xl border border-[#EB712B]/25 group-hover:scale-110 transition-transform shadow-md">
               <UserPlus size={24} />
             </div>
             {pendingRequests.length > 0 && (
@@ -346,7 +346,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
           onClick={() => navigate('/view/clubside/discount')}
         >
           <div className="flex items-center justify-between">
-            <div className="p-3.5 bg-amber-500/10 text-amber-400 rounded-2xl border border-amber-500/20 group-hover:scale-110 transition-transform">
+            <div className="p-3.5 bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] text-[#EB712B] rounded-2xl border border-[#EB712B]/25 group-hover:scale-110 transition-transform shadow-md">
               <Percent size={24} />
             </div>
             <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">

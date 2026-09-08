@@ -273,8 +273,8 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
           
           {/* Spec 01: Category */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted shrink-0">
-              <Bike size={18} />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <Bike size={16} className="text-[#EB712B]" />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
               {sportType}
@@ -283,8 +283,8 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
 
           {/* Spec 02: Dynamic Active Roster */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted shrink-0">
-              <Users size={18} />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <Users size={16} className="text-[#EB712B]" />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
               {dynamicMemberCount} {dynamicMemberCount === 1 ? 'Athlete' : 'Athletes'}
@@ -293,8 +293,8 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
 
           {/* Spec 03: Dynamic Admission / Access */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted shrink-0">
-              {isPublic ? <Globe size={18} /> : <Lock size={18} />}
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              {isPublic ? <Globe size={16} className="text-[#EB712B]" /> : <Lock size={16} className="text-[#EB712B]" />}
             </div>
             <span 
               className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap"
@@ -306,8 +306,8 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
 
           {/* Spec 04: Membership Dues */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted shrink-0">
-              <Activity size={18} />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <Activity size={16} className="text-[#EB712B]" />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
               {club.hasMembershipFee || club.restrictUnpaidMembers ? "Member Dues" : "Free Access"}
@@ -320,8 +320,8 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
             className="p-3.5 sm:p-4 lg:p-5 flex items-center justify-between gap-3 col-span-2 md:col-span-1 hover:bg-hover/30 transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-text-main group-hover:border-text-muted/40 shrink-0 transition-colors">
-                <MapPin size={18} />
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 group-hover:border-[#EB712B]/45 flex items-center justify-center shrink-0 shadow-md transition-all">
+                <MapPin size={16} className="text-[#EB712B]" />
               </div>
               <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main truncate group-hover:text-[#EB712B] transition-colors" title={locationText}>
                 {locationText.split(",")[0] || "Global Base"}

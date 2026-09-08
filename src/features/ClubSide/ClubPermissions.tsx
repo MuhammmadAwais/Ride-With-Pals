@@ -435,7 +435,7 @@ const ClubPermissions: React.FC = () => {
             { label: 'Regular Members', value: stats.regular, icon: <UserCheck size={18} /> },
           ].map((stat, i) => (
             <div key={i} className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
-              <div className="text-[#EB712B] shrink-0">{stat.icon}</div>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 text-[#EB712B] shadow-md">{stat.icon}</div>
               <div>
                 <p className="text-xl font-black text-text-main">{stat.value}</p>
                 <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">{stat.label}</p>

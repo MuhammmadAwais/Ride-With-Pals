@@ -173,7 +173,7 @@ const WalletDashboard: React.FC = () => {
       sortable: true,
       render: (t) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-surface border border-border flex items-center justify-center text-[#EB712B]">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shadow-md">
             <Users size={18} />
           </div>
           <div>

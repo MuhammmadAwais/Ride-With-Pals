@@ -258,8 +258,8 @@ const UserWallet: React.FC = () => {
                 <TrendingUp size={11} className="shrink-0" /> Net Expenditures
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-text-main group-hover:border-text-muted/40 transition-all shrink-0 shadow-sm">
-              <DollarSign size={18} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <DollarSign size={18} className="text-[#EB712B]" />
             </div>
           </div>
 
@@ -276,8 +276,8 @@ const UserWallet: React.FC = () => {
                 Recorded Ledger Events
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-text-main group-hover:border-text-muted/40 transition-all shrink-0 shadow-sm">
-              <CreditCard size={18} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <CreditCard size={18} className="text-[#EB712B]" />
             </div>
           </div>
 
@@ -294,8 +294,8 @@ const UserWallet: React.FC = () => {
                 {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}% Settlement Rate
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-all shrink-0 shadow-sm">
-              <CheckCircle2 size={18} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <CheckCircle2 size={18} className="text-[#EB712B]" />
             </div>
           </div>
 
@@ -312,8 +312,8 @@ const UserWallet: React.FC = () => {
                 Awaiting Clearance
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted group-hover:text-amber-400 group-hover:border-amber-500/30 transition-all shrink-0 shadow-sm">
-              <Clock size={18} />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+              <Clock size={18} className="text-[#EB712B]" />
             </div>
           </div>
 

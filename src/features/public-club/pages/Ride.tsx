@@ -574,15 +574,21 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     {/* Info Chips */}
                     <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs text-text-muted">
                       <div className="flex items-center gap-1.5">
-                        <Calendar size={13} className="text-text-muted shrink-0" />
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                          <Calendar size={11} className="text-[#EB712B]" />
+                        </div>
                         <span className="font-medium text-text-main">{ride.date}</span>
                       </div>
                       <div className="flex items-center gap-1.5 max-w-[280px]">
-                        <MapPin size={13} className="text-text-muted shrink-0" />
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                          <MapPin size={11} className="text-[#EB712B]" />
+                        </div>
                         <span className="font-medium text-text-main truncate" title={ride.location}>{ride.location}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Bike size={13} className="text-text-muted shrink-0" />
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                          <Bike size={11} className="text-[#EB712B]" />
+                        </div>
                         <span className="font-medium text-text-main">
                           Sport: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
                         </span>
@@ -851,15 +857,21 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       {/* Info Rows */}
                       <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
                         <div className="flex items-center gap-3 text-xs text-text-muted">
-                          <Calendar size={15} className="text-text-muted shrink-0" />
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                            <Calendar size={13} className="text-[#EB712B]" />
+                          </div>
                           <span className="font-medium truncate text-xs text-text-main">{ride.date}</span>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-text-muted">
-                          <MapPin size={15} className="text-text-muted shrink-0" />
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                            <MapPin size={13} className="text-[#EB712B]" />
+                          </div>
                           <span className="font-medium truncate text-[11px] leading-relaxed text-text-main">{ride.location}</span>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-text-muted">
-                          <Bike size={15} className="text-text-muted shrink-0" />
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                            <Bike size={13} className="text-[#EB712B]" />
+                          </div>
                           <span className="font-medium text-xs text-text-main">
                             Sport Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
                           </span>
