@@ -1,13 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
   ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, 
   MapPin, Gauge, Navigation, FileText, MessageSquare, Calendar, Download, ShieldCheck, Clock, 
-  Lock, TrendingUp, Activity as ActivityIcon, Trophy, Compass, Mail, ChevronRight, Plus, Minus, Building2, LogOut,
+  Lock, TrendingUp, Activity as ActivityIcon, Trophy, Compass, Mail, Plus, Minus, Building2, LogOut,
   CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
+import DataTable, { type Column } from "@/components/ui/DataTable";
+import { cn } from "@/lib/utils";
+
+export interface ParticipantRow {
+  id: number | string;
+  name: string;
+  username: string;
+  email: string;
+  initials: string;
+  role: string;
+  joinedDate: string;
+  verified: boolean;
+  profilePhoto: string | null;
+}
 import { useGetRideInfoByIdQuery, useJoinRideMutation, useLeaveRideMutation, useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import { useSaveRideMutation, useUnsaveRideMutation } from "@/features/club/api/savedRidesApiSlice";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -576,7 +590,7 @@ const RideJoining = () => {
     });
   };
 
-  const handleDirectMessage = (targetUserId?: number | string, targetUserName?: string, targetUserAvatar?: string | null) => {
+  const handleDirectMessage = useCallback((targetUserId?: number | string, targetUserName?: string, targetUserAvatar?: string | null) => {
     if (!targetUserId) {
       navigate("/view/userside/support");
       toast.info("Opening Chat...");
@@ -590,7 +604,7 @@ const RideJoining = () => {
         prefillMessage: `Hey ${targetUserName || ""}! Connecting regarding "${rideDetails?.title || "our activity"}".`
       }
     });
-  };
+  }, [navigate, rideDetails?.title]);
 
   const handleOpenGroupChat = () => {
     if (!isJoined) {
@@ -611,31 +625,154 @@ const RideJoining = () => {
     toast.success(`Opening group chat for ${rideDetails?.title}...`);
   };
 
-  // Enriched active participants list with guaranteed email and athlete profile data
+  // Helper to reliably extract and format an actual registration/joined date (e.g. "Sep 4, 2026")
+  const formatParticipantDate = useCallback((p: any, rideData: any, _index?: number): string => {
+    const candidate = 
+      p?.joinedDate || 
+      p?.joinedAt || 
+      p?.createdAt || 
+      p?.registeredAt || 
+      p?.joinDate || 
+      p?.date || 
+      p?.created_at || 
+      p?.joined_at;
+
+    if (candidate && candidate !== "Active Member" && candidate !== "Just now") {
+      const parsed = new Date(candidate);
+      if (!isNaN(parsed.getTime())) {
+        return parsed.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      }
+      if (typeof candidate === "string" && candidate.trim() !== "") {
+        return candidate;
+      }
+    }
+
+    if (candidate === "Just now") {
+      return new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    // Fall back to activity creation or activity date
+    const fallback = rideData?.createdAt || rideData?.date || rideData?.rawDate;
+    if (fallback) {
+      const parsedFallback = new Date(fallback);
+      if (!isNaN(parsedFallback.getTime())) {
+        return parsedFallback.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      }
+    }
+
+    // Default to current date formatted
+    return new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }, []);
+
+  // Enriched active participants list with accurate Leader/Host roles and formatted dates
   const activeParticipants = useMemo(() => {
-    let list = (rideDetails?.participants || []).map((p: any) => {
+    // 1. Gather all leader IDs and names
+    const leaderList = Array.isArray(rideDetails?.leaders) && rideDetails.leaders.length > 0
+      ? rideDetails.leaders
+      : Array.isArray((rideResponse as any)?.rideLeaders)
+      ? (rideResponse as any).rideLeaders
+      : [];
+
+    const leaderIds = new Set<number>();
+    const leaderNames = new Set<string>();
+
+    leaderList.forEach((l: any) => {
+      const uId = Number(l.id || l.userId);
+      if (uId) leaderIds.add(uId);
+      const lName = (l.name || l.fullName || "").trim().toLowerCase();
+      if (lName) leaderNames.add(lName);
+    });
+
+    const hostIdNum = Number(rideDetails?.hostId || (rideResponse as any)?.userId);
+    const hostName = (rideDetails?.host || "").trim().toLowerCase();
+
+    let list: ParticipantRow[] = (rideDetails?.participants || []).map((p: any, idx: number) => {
       const name = p.name || p.fullName || p.username || (p.email ? p.email.split('@')[0] : "Athlete");
+      const cleanName = name.trim().toLowerCase();
+      const pId = Number(p.id || p.userId);
+
+      const isHost = 
+        (hostIdNum && pId === hostIdNum) ||
+        (hostName && cleanName === hostName) ||
+        p.role?.toLowerCase() === "host" ||
+        p.role?.toLowerCase() === "organizer" ||
+        Boolean(p.isHost);
+
+      const isLeader = 
+        !isHost && (
+          leaderIds.has(pId) ||
+          leaderNames.has(cleanName) ||
+          Boolean(p.isLeader) ||
+          p.role?.toLowerCase()?.includes("leader") ||
+          p.userRole?.toLowerCase()?.includes("leader")
+        );
+
+      let role = "Participant";
+      if (isHost) {
+        role = "Host";
+      } else if (isLeader) {
+        role = "Leader";
+      }
+
       const initials = name ? name.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2) : 'A';
       const username = p.username 
         ? (p.username.startsWith('@') ? p.username : `@${p.username}`) 
-        : (p.name ? `@${p.name.toLowerCase().replace(/[^a-z0-9]/g, '')}` : `@rider${p.id || ''}`);
+        : (p.name ? `@${p.name.toLowerCase().replace(/[^a-z0-9]/g, '')}` : `@rider${pId || ''}`);
       const cleanHandle = username.replace('@', '');
       const email = p.email || `${cleanHandle}@ridewithpals.com`;
       const avatar = resolveAvatarUrl(p.profile || p.profilePhoto || p.profileImage || p.avatar);
-      const isHost = Number(p.id) === Number(rideDetails?.hostId) || p.role?.toLowerCase() === "host";
-      const role = p.role || (isHost ? "Host" : "Participant");
-      const joinedDate = p.joinedDate || (p.createdAt ? new Date(p.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : 'Active Member');
+      const joinedDate = formatParticipantDate(p, rideResponse || rideDetails, idx);
+
       return {
-        id: p.id,
+        id: p.id || pId,
         name,
         username,
         email,
         initials,
         role,
         joinedDate,
-        verified: Boolean(p.verified || p.isVerified || isHost),
+        verified: Boolean(p.verified || p.isVerified || isHost || isLeader),
         profilePhoto: avatar
       };
+    });
+
+    // 2. Ensure any leaders from rideDetails.leaders are present in the active roster
+    leaderList.forEach((l: any, lIdx: number) => {
+      const lId = Number(l.id || l.userId);
+      const lName = l.name || l.fullName || "Ride Leader";
+      const cleanLName = lName.trim().toLowerCase();
+
+      const existingIndex = list.findIndex(
+        (item) => (lId && Number(item.id) === lId) || item.name.trim().toLowerCase() === cleanLName
+      );
+
+      if (existingIndex !== -1) {
+        if (list[existingIndex].role === "Participant") {
+          list[existingIndex].role = "Leader";
+          list[existingIndex].verified = true;
+        }
+        if (l.profilePhoto && !list[existingIndex].profilePhoto) {
+          list[existingIndex].profilePhoto = l.profilePhoto;
+        }
+        if (l.email && list[existingIndex].email.endsWith('@ridewithpals.com')) {
+          list[existingIndex].email = l.email;
+        }
+      } else {
+        const isHost = (hostIdNum && lId === hostIdNum) || (hostName && cleanLName === hostName);
+        const initials = lName.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2);
+        const username = l.username || `@${cleanLName.replace(/[^a-z0-9]/g, '')}`;
+        list.unshift({
+          id: lId || `leader-${lIdx}`,
+          name: lName,
+          username,
+          email: l.email || `${username.replace('@', '')}@ridewithpals.com`,
+          initials,
+          role: isHost ? "Host" : "Leader",
+          joinedDate: formatParticipantDate(l, rideResponse || rideDetails, 0),
+          verified: true,
+          profilePhoto: resolveAvatarUrl(l.profilePhoto || l.profileImage || l.avatar)
+        });
+      }
     });
 
     if (localLeft && currentUser?.id) {
@@ -656,7 +793,7 @@ const RideJoining = () => {
           email: currentUser.email || `${cleanUserHandle}@ridewithpals.com`,
           initials: displayName.substring(0, 2).toUpperCase(),
           role: "Participant",
-          joinedDate: "Just now",
+          joinedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
           verified: true,
           profilePhoto: resolveAvatarUrl(currentAny.profileImage || currentAny.avatar)
         });
@@ -664,7 +801,128 @@ const RideJoining = () => {
     }
 
     return list;
-  }, [rideDetails, localLeft, localJoined, currentUser]);
+  }, [rideDetails, rideResponse, localLeft, localJoined, currentUser, formatParticipantDate]);
+
+  // Participant table filter & search state
+  const [participantRoleFilter, setParticipantRoleFilter] = useState<"all" | "leader" | "participant">("all");
+  const [participantSearch, setParticipantSearch] = useState("");
+
+  const leaderCount = useMemo(() => 
+    activeParticipants.filter((p: any) => p.role === "Leader" || p.role === "Host" || p.role?.toLowerCase()?.includes("leader")).length,
+    [activeParticipants]
+  );
+  const participantCount = useMemo(() => 
+    activeParticipants.filter((p: any) => p.role === "Participant" || (!p.role?.toLowerCase()?.includes("leader") && p.role !== "Host")).length,
+    [activeParticipants]
+  );
+
+  const filteredParticipants = useMemo<ParticipantRow[]>(() => {
+    if (participantRoleFilter === "all") return activeParticipants as ParticipantRow[];
+    if (participantRoleFilter === "leader") {
+      return activeParticipants.filter((p: any) => p.role === "Leader" || p.role === "Host" || p.role?.toLowerCase()?.includes("leader")) as ParticipantRow[];
+    }
+    return activeParticipants.filter((p: any) => p.role === "Participant" || (!p.role?.toLowerCase()?.includes("leader") && p.role !== "Host")) as ParticipantRow[];
+  }, [activeParticipants, participantRoleFilter]);
+
+  const participantColumns: Column<ParticipantRow>[] = useMemo(() => [
+    {
+      key: "name",
+      label: "Athlete",
+      sortable: true,
+      headerClass: "min-w-[220px]",
+      render: (row) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-surface border border-border flex items-center justify-center font-black text-xs text-text-main shrink-0 overflow-hidden shadow-xs">
+            {row.profilePhoto ? (
+              <img
+                src={row.profilePhoto}
+                alt={row.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.display = "none";
+                }}
+              />
+            ) : (
+              <span className="text-[#EB712B] font-extrabold">{row.initials}</span>
+            )}
+          </div>
+          <div className="min-w-0 flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs sm:text-sm font-extrabold text-text-main truncate hover:text-[#EB712B] transition-colors">
+                {row.name}
+              </span>
+              {row.verified && (
+                <span
+                  className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0"
+                  title="Verified Athlete"
+                >
+                  <Check size={8} />
+                </span>
+              )}
+            </div>
+            <span className="text-[11px] text-text-muted truncate max-w-[190px] sm:max-w-[250px]">
+              {row.email}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "role",
+      label: "Role",
+      sortable: true,
+      headerClass: "min-w-[110px]",
+      render: (row) => {
+        const isHost = row.role?.toLowerCase() === "host" || row.role?.toLowerCase() === "organizer";
+        const isLeader = row.role?.toLowerCase()?.includes("leader");
+        return (
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider ${
+              isHost
+                ? "bg-[#EB712B]/15 text-[#EB712B] border border-[#EB712B]/30"
+                : isLeader
+                ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                : "bg-hover border border-border text-text-muted"
+            }`}
+          >
+            {row.role}
+          </span>
+        );
+      },
+    },
+    {
+      key: "joinedDate",
+      label: "Joined",
+      sortable: true,
+      headerClass: "min-w-[130px]",
+      render: (row) => (
+        <div className="flex items-center gap-1.5 text-xs text-text-muted">
+          <Calendar size={12} className="shrink-0 text-text-muted/80" />
+          <span>{row.joinedDate}</span>
+        </div>
+      ),
+    },
+    {
+      key: "actions",
+      label: "Action",
+      sortable: false,
+      headerClass: "text-right min-w-[70px]",
+      cellClass: "text-right",
+      render: (row) => (
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            onClick={() => handleDirectMessage(row.id, row.name, row.profilePhoto)}
+            className="w-8 h-8 rounded-xl bg-surface hover:bg-[#EB712B]/15 border border-border hover:border-[#EB712B]/40 text-text-muted hover:text-[#EB712B] flex items-center justify-center transition-all cursor-pointer shadow-xs"
+            title={`Direct message ${row.name}`}
+            aria-label={`Direct message ${row.name}`}
+          >
+            <MessageSquare size={13} />
+          </button>
+        </div>
+      ),
+    },
+  ], [handleDirectMessage]);
 
   const filteredRoster = activeParticipants.filter((user: any) => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -808,7 +1066,7 @@ const RideJoining = () => {
           <div className="absolute bottom-4 left-4 right-16 sm:left-6 sm:right-auto z-[400]">
             <div className="inline-flex flex-wrap items-center gap-3 sm:gap-4 px-4 py-2.5 rounded-2xl bg-black/85 backdrop-blur-md border border-white/15 text-white shadow-2xl">
               <div className="flex items-center gap-1.5 text-xs font-bold">
-                <Navigation size={13} className="text-[#EB712B] shrink-0" />
+                <Navigation size={13} className="text-main shrink-0" />
                 <span className="text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Dist:</span>
                 <span className="font-extrabold text-white">{rideDetails.distance}</span>
               </div>
@@ -1196,13 +1454,6 @@ const RideJoining = () => {
                       Group Chat
                     </h3>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border ${
-                    isJoined
-                      ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                      : "bg-amber-500/15 border-amber-500/30 text-amber-400"
-                  }`}>
-                    {isJoined ? "Room Active" : "Locked"}
-                  </span>
                 </div>
 
                 <p className="text-xs text-text-muted leading-relaxed font-medium">
@@ -1255,8 +1506,8 @@ const RideJoining = () => {
             {/* Activity Overview & Guidelines (Modern Floating Text Directly on Background) */}
             <div className="space-y-3.5 pt-1">
               <div className="flex items-center gap-2.5 pb-2.5 border-b border-border/60">
-                <FileText size={18} className="text-[#EB712B] shrink-0" />
-                <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-main">
+                <FileText size={17} className="text-[#EB712B] shrink-0" />
+                <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-text-main">
                   Activity Overview & Guidelines
                 </h3>
               </div>
@@ -1265,124 +1516,116 @@ const RideJoining = () => {
               </p>
             </div>
 
-            {/* Card 2: Registered Participants */}
-            <div className="bg-surface border border-border rounded-3xl p-6 sm:p-7 space-y-6 shadow-sm">
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/60">
+            {/* Modern Line Divider between Overview & Participants */}
+            <div className="h-px w-full bg-border/60" />
+
+            {/* Section 2: Registered Participants (Sharp Modern Lines Layout, No Card Wrapper) */}
+            <div className="space-y-4 pt-1">
+              {/* Header with Title and Filter Tabs */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/60">
                 <div className="flex items-center gap-2.5">
-                  <Users size={16} className="text-[#EB712B] shrink-0" />
-                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-main">
+                  <Users size={17} className="text-[#EB712B] shrink-0" />
+                  <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-text-main">
                     Registered Participants
                   </h3>
                   <span className="px-2.5 py-0.5 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-extrabold">
-                    {activeParticipants.length} Joined
+                    {activeParticipants.length} Athletes
                   </span>
                 </div>
 
-                <button 
-                  type="button"
-                  onClick={() => setIsRosterOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-hover hover:bg-border border border-border text-xs font-bold text-text-main transition-all cursor-pointer"
-                >
-                  <Search size={13} />
-                  <span>Search Roster</span>
-                </button>
+                {/* Role Filter Tabs */}
+                <div className="flex items-center gap-1 p-1 bg-surface border border-border/80 rounded-xl shrink-0 self-start sm:self-auto shadow-xs">
+                  <button
+                    type="button"
+                    onClick={() => setParticipantRoleFilter("all")}
+                    className={cn(
+                      "px-3 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer",
+                      participantRoleFilter === "all"
+                        ? "bg-[#EB712B] text-white shadow-xs"
+                        : "text-text-muted hover:text-text-main"
+                    )}
+                  >
+                    All ({activeParticipants.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setParticipantRoleFilter("leader")}
+                    className={cn(
+                      "px-3 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer",
+                      participantRoleFilter === "leader"
+                        ? "bg-[#EB712B] text-white shadow-xs"
+                        : "text-text-muted hover:text-text-main"
+                    )}
+                  >
+                    Leaders ({leaderCount})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setParticipantRoleFilter("participant")}
+                    className={cn(
+                      "px-3 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer",
+                      participantRoleFilter === "participant"
+                        ? "bg-[#EB712B] text-white shadow-xs"
+                        : "text-text-muted hover:text-text-main"
+                    )}
+                  >
+                    Participants ({participantCount})
+                  </button>
+                </div>
               </div>
 
-              {/* Participant Cards Grid */}
-              {activeParticipants.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {activeParticipants.slice(0, 8).map((participant: any, idx: number) => (
-                    <div 
-                      key={idx}
-                      className="bg-hover/50 border border-border hover:border-border/80 p-4 rounded-2xl flex items-center justify-between gap-3.5 transition-all duration-200 hover:shadow-md group"
+              {/* Search Toolbar & Filter Controls */}
+              <div className="flex items-center gap-2.5">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={14} />
+                  <input
+                    type="text"
+                    placeholder="Search roster by athlete name, @handle, or email..."
+                    value={participantSearch}
+                    onChange={(e) => setParticipantSearch(e.target.value)}
+                    className="w-full bg-surface hover:bg-hover border border-border/80 focus:border-[#EB712B]/60 pl-9 pr-9 py-2.5 rounded-xl text-xs font-semibold text-text-main placeholder:text-text-muted placeholder:font-normal focus:outline-none transition-all shadow-xs"
+                  />
+                  {participantSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setParticipantSearch("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
+                      aria-label="Clear search"
                     >
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        {/* Avatar */}
-                        <div className="w-12 h-12 rounded-2xl bg-surface border border-border flex items-center justify-center font-black text-xs text-text-main shrink-0 overflow-hidden shadow-sm">
-                          {participant.profilePhoto ? (
-                            <img 
-                              src={participant.profilePhoto} 
-                              alt={participant.name} 
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                (e.target as HTMLElement).style.display = "none";
-                              }} 
-                            />
-                          ) : (
-                            <span className="text-[#EB712B] font-extrabold">{participant.initials}</span>
-                          )}
-                        </div>
-
-                        {/* User Details */}
-                        <div className="min-w-0 flex flex-col space-y-1">
-                          <div className="flex items-center gap-1.5">
-                            <h4 className="text-xs sm:text-sm font-extrabold text-text-main leading-snug truncate group-hover:text-[#EB712B] transition-colors">
-                              {participant.name}
-                            </h4>
-                            {participant.verified && (
-                              <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0" title="Verified Athlete">
-                                <Check size={8} />
-                              </span>
-                            )}
-                            <span className={`px-2 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider shrink-0 ${
-                              participant.role === "Host" 
-                                ? "bg-[#EB712B]/15 text-[#EB712B] border border-[#EB712B]/30" 
-                                : "bg-hover border border-border text-text-muted"
-                            }`}>
-                              {participant.role}
-                            </span>
-                          </div>
-                          
-                          <div className="flex items-center gap-2 text-[10px] font-semibold text-text-muted truncate">
-                            <span className="text-[#EB712B] font-bold">{participant.username}</span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1 truncate text-text-muted">
-                              <Calendar size={10} className="shrink-0" />
-                              <span>{participant.joinedDate}</span>
-                            </span>
-                          </div>
-
-                          {participant.email && (
-                            <p className="text-[10px] text-text-muted truncate flex items-center gap-1.5">
-                              <Mail size={11} className="shrink-0 text-[#EB712B]/80" />
-                              <span className="truncate">{participant.email}</span>
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Direct Message Action */}
-                      <button
-                        type="button"
-                        onClick={() => handleDirectMessage(participant.id, participant.name, participant.profilePhoto)}
-                        className="w-9 h-9 rounded-xl bg-surface hover:bg-[#EB712B]/15 border border-border hover:border-[#EB712B]/40 text-text-muted hover:text-[#EB712B] flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs"
-                        title={`Message ${participant.name}`}
-                        aria-label={`Message ${participant.name}`}
-                      >
-                        <MessageSquare size={14} />
-                      </button>
-                    </div>
-                  ))}
+                      <X size={13} />
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <div className="p-8 rounded-3xl bg-hover/40 border border-border text-center space-y-2">
-                  <Users size={28} className="text-text-muted mx-auto" />
-                  <h4 className="text-xs font-extrabold text-text-main uppercase">No Registered Participants Yet</h4>
-                  <p className="text-xs text-text-muted">Be the first athlete to register for this activity!</p>
-                </div>
-              )}
 
-              {activeParticipants.length > 8 && (
-                <button
-                  type="button"
-                  onClick={() => setIsRosterOpen(true)}
-                  className="w-full py-3.5 rounded-2xl bg-hover hover:bg-border border border-border text-xs font-extrabold text-text-main flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
-                >
-                  <Users size={14} className="text-[#EB712B]" />
-                  <span>View Full Roster ({activeParticipants.length} Athletes)</span>
-                  <ChevronRight size={14} />
-                </button>
-              )}
+                {(participantSearch || participantRoleFilter !== "all") && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setParticipantSearch("");
+                      setParticipantRoleFilter("all");
+                    }}
+                    className="px-3.5 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border/80 text-text-muted hover:text-text-main text-xs font-bold transition-all cursor-pointer shrink-0 shadow-xs"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+
+              {/* Reusable DataTable with Sharp Modern Lines */}
+              <DataTable<ParticipantRow>
+                data={filteredParticipants}
+                columns={participantColumns}
+                searchQuery={participantSearch}
+                searchableKeys={["name", "username", "email", "role"]}
+                className="!rounded-xl border border-border/80 shadow-xs"
+                emptyMessage={
+                  participantSearch
+                    ? `No participants matched "${participantSearch}".`
+                    : participantRoleFilter !== "all"
+                    ? `No participants found in category "${participantRoleFilter}".`
+                    : "No registered participants yet."
+                }
+              />
             </div>
 
           </div>
