@@ -574,19 +574,19 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     {/* Info Chips */}
                     <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs text-text-muted">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
                           <Calendar size={11} className="text-[#EB712B]" />
                         </div>
                         <span className="font-medium text-text-main">{ride.date}</span>
                       </div>
                       <div className="flex items-center gap-1.5 max-w-[280px]">
-                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
                           <MapPin size={11} className="text-[#EB712B]" />
                         </div>
                         <span className="font-medium text-text-main truncate" title={ride.location}>{ride.location}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
                           <Bike size={11} className="text-[#EB712B]" />
                         </div>
                         <span className="font-medium text-text-main">
@@ -857,19 +857,19 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       {/* Info Rows */}
                       <div className="space-y-2.5 bg-surface p-4 rounded-xl border border-border">
                         <div className="flex items-center gap-3 text-xs text-text-muted">
-                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
                             <Calendar size={13} className="text-[#EB712B]" />
                           </div>
                           <span className="font-medium truncate text-xs text-text-main">{ride.date}</span>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-text-muted">
-                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
                             <MapPin size={13} className="text-[#EB712B]" />
                           </div>
                           <span className="font-medium truncate text-[11px] leading-relaxed text-text-main">{ride.location}</span>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-text-muted">
-                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0">
                             <Bike size={13} className="text-[#EB712B]" />
                           </div>
                           <span className="font-medium text-xs text-text-main">

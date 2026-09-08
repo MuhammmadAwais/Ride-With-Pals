@@ -105,7 +105,7 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
                   />
                 )}
                 <div
-                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/30 flex items-center justify-center text-[#EB712B] font-black text-[14px] font-poppins shadow-md"
+                  className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/30 flex items-center justify-center text-[#EB712B] font-black text-[14px] font-poppins shadow-xs"
                   style={{ display: user.avatar ? 'none' : 'flex', flexShrink: 0 }}
                 >
                   {user.isGroup ? <Users size={17} /> : (user.name || 'U').charAt(0).toUpperCase()}

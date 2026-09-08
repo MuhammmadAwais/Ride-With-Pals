@@ -350,7 +350,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
         {/* Header */}
         <div className="h-16 px-5 border-b border-border flex items-center justify-between shrink-0 bg-surface/80 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shadow-sm">
+            <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shadow-xs">
               <Users size={14} className="text-[#EB712B]" />
             </div>
             <h3 className="text-sm font-bold text-text-main tracking-wide">Group Information</h3>
@@ -435,7 +435,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
               onClick={() => {
                 if (rideIdNum) navigate(`/view/userside/dashboard/ride/${rideIdNum}`);
               }}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] hover:bg-hover border border-[#EB712B]/25 hover:border-[#EB712B]/45 text-text-muted hover:text-text-main transition-all cursor-pointer group"
+              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] hover:bg-hover border border-[#EB712B]/25 hover:border-[#EB712B]/45 text-text-muted hover:text-text-main transition-all cursor-pointer group shadow-xs"
               title="View Activity Details"
             >
               <ExternalLink size={16} className="text-[#EB712B] group-hover:scale-110 transition-transform" />
@@ -446,7 +446,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
             <button
               type="button"
               onClick={handleDownloadGpx}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] hover:bg-hover border border-[#EB712B]/25 hover:border-[#EB712B]/45 text-text-muted hover:text-emerald-400 transition-all cursor-pointer group"
+              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] hover:bg-hover border border-[#EB712B]/25 hover:border-[#EB712B]/45 text-text-muted hover:text-emerald-400 transition-all cursor-pointer group shadow-xs"
               title="Download GPX Route"
             >
               <Download size={16} className="text-emerald-400 group-hover:scale-110 transition-transform" />
@@ -457,7 +457,7 @@ export const GroupChatInfoDrawer: React.FC<GroupChatInfoDrawerProps> = ({
             <button
               type="button"
               onClick={() => setIsShareModalOpen(true)}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] hover:bg-hover border border-[#EB712B]/25 hover:border-[#EB712B]/45 text-text-muted hover:text-text-main transition-all cursor-pointer group"
+              className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] hover:bg-hover border border-[#EB712B]/25 hover:border-[#EB712B]/45 text-text-muted hover:text-text-main transition-all cursor-pointer group shadow-xs"
               title="Share Activity Group"
             >
               <Share2 size={16} className="text-sky-400 group-hover:scale-110 transition-transform" />

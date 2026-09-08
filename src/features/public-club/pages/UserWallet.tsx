@@ -258,7 +258,7 @@ const UserWallet: React.FC = () => {
                 <TrendingUp size={11} className="shrink-0" /> Net Expenditures
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <DollarSign size={18} className="text-[#EB712B]" />
             </div>
           </div>
@@ -276,7 +276,7 @@ const UserWallet: React.FC = () => {
                 Recorded Ledger Events
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <CreditCard size={18} className="text-[#EB712B]" />
             </div>
           </div>
@@ -294,7 +294,7 @@ const UserWallet: React.FC = () => {
                 {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}% Settlement Rate
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <CheckCircle2 size={18} className="text-[#EB712B]" />
             </div>
           </div>
@@ -312,7 +312,7 @@ const UserWallet: React.FC = () => {
                 Awaiting Clearance
               </span>
             </div>
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <Clock size={18} className="text-[#EB712B]" />
             </div>
           </div>

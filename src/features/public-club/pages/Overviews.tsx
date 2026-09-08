@@ -273,7 +273,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
           
           {/* Spec 01: Category */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <Bike size={16} className="text-[#EB712B]" />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
@@ -283,7 +283,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
 
           {/* Spec 02: Dynamic Active Roster */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <Users size={16} className="text-[#EB712B]" />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
@@ -293,7 +293,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
 
           {/* Spec 03: Dynamic Admission / Access */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               {isPublic ? <Globe size={16} className="text-[#EB712B]" /> : <Lock size={16} className="text-[#EB712B]" />}
             </div>
             <span 
@@ -306,7 +306,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
 
           {/* Spec 04: Membership Dues */}
           <div className="p-3.5 sm:p-4 lg:p-5 flex items-center gap-3 hover:bg-hover/20 transition-colors">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
               <Activity size={16} className="text-[#EB712B]" />
             </div>
             <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main whitespace-nowrap">
@@ -320,7 +320,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
             className="p-3.5 sm:p-4 lg:p-5 flex items-center justify-between gap-3 col-span-2 md:col-span-1 hover:bg-hover/30 transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/25 group-hover:border-[#EB712B]/45 flex items-center justify-center shrink-0 shadow-md transition-all">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 group-hover:border-[#EB712B]/45 flex items-center justify-center shrink-0 shadow-xs transition-all">
                 <MapPin size={16} className="text-[#EB712B]" />
               </div>
               <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-text-main truncate group-hover:text-[#EB712B] transition-colors" title={locationText}>

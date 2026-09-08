@@ -1,5 +1,5 @@
 /**
- * @fileoverview Generic DataTable — cinematic redesign.
+ * @fileoverview Generic DataTable — modern, cinematic redesign for Light & Dark mode.
  *
  * Features:
  *  - Generic over T (any row shape)
@@ -7,17 +7,10 @@
  *  - GSAP staggered row entrance animation on data change
  *  - Search text highlight in cells (amber glow mark)
  *  - Sortable column headers with animated sort icons
- *  - Cinematic empty state with animated icon
+ *  - Theme-adaptive empty state with squircle badge
  *  - Rich skeleton rows with shimmer animation
- *  - Frosted glass header, banded rows, amber accent throughout
- *  - 100% design-token driven (bg-surface, text-text-muted, etc.)
- *
- * Usage:
- *   const columns: Column<User>[] = [
- *     { key: 'name', label: 'Name', sortable: true },
- *     { key: 'status', label: 'Status', sortable: true, render: (row) => <Badge>{row.status}</Badge> },
- *   ];
- *   <DataTable data={users} columns={columns} searchQuery={q} searchableKeys={['name','email']} />
+ *  - Theme-aware header and crisp row dividers (Linear/Stripe aesthetic)
+ *  - 100% design-token driven (bg-surface, text-text-muted, border-border, etc.)
  */
 import React, { useRef } from 'react';
 import { ChevronUp, ChevronDown, ChevronsUpDown, SearchX } from 'lucide-react';
@@ -72,12 +65,11 @@ function HighlightText({ text, query }: { text: string; query: string }): React.
           <mark
             key={i}
             style={{
-              background: 'rgba(235,113,43,0.28)',
+              background: 'rgba(235,113,43,0.18)',
               borderRadius: '3px',
-              padding: '0 2px',
+              padding: '0 3px',
               color: '#EB712B',
               fontWeight: 700,
-              boxShadow: '0 0 6px rgba(235,113,43,0.2)',
             }}
           >
             {part}
@@ -98,8 +90,8 @@ function SortIcon<T>({ col, sortConfig }: { col: Column<T>; sortConfig: SortConf
   if (!isActive || sortConfig.direction === null)
     return <ChevronsUpDown size={13} style={{ opacity: 0.35, flexShrink: 0, transition: 'opacity 0.2s' }} />;
   if (sortConfig.direction === 'asc')
-    return <ChevronUp size={13} style={{ color: '#EB712B', flexShrink: 0, filter: 'drop-shadow(0 0 4px rgba(235,113,43,0.7))' }} />;
-  return <ChevronDown size={13} style={{ color: '#EB712B', flexShrink: 0, filter: 'drop-shadow(0 0 4px rgba(235,113,43,0.7))' }} />;
+    return <ChevronUp size={13} style={{ color: '#EB712B', flexShrink: 0, filter: 'drop-shadow(0 0 4px rgba(235,113,43,0.5))' }} />;
+  return <ChevronDown size={13} style={{ color: '#EB712B', flexShrink: 0, filter: 'drop-shadow(0 0 4px rgba(235,113,43,0.5))' }} />;
 }
 
 // ─── Loading Skeleton ─────────────────────────────────────────────────────────
@@ -163,8 +155,8 @@ function DataTable<T extends object>({
       if (!rows.length) return;
       gsap.fromTo(
         rows,
-        { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, duration: 0.35, stagger: 0.035, ease: 'power2.out', clearProps: 'all' },
+        { opacity: 0, y: 6 },
+        { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: 'power2.out', clearProps: 'all' },
       );
     },
     { dependencies: [filteredItems.length, searchQuery], scope: tbodyRef },
@@ -177,8 +169,11 @@ function DataTable<T extends object>({
           0% { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
+        .dt-row {
+          transition: background-color 0.15s ease;
+        }
         .dt-row:hover td {
-          background: rgba(235,113,43,0.035) !important;
+          background-color: var(--color-hover) !important;
         }
         .dt-th-sort:hover {
           color: #EB712B !important;
@@ -189,14 +184,10 @@ function DataTable<T extends object>({
       `}</style>
 
       <div
-        className={cn('w-full', className)}
-        style={{
-          borderRadius: '14px',
-          border: '1px solid var(--color-border)',
-          overflow: 'hidden',
-          background: 'var(--color-secondary-bg)',
-          boxShadow: '0 0 0 1px rgba(0,0,0,0.6), 0 12px 40px rgba(0,0,0,0.5)',
-        }}
+        className={cn(
+          'w-full rounded-2xl border border-border bg-surface shadow-xs dark:shadow-xl overflow-hidden',
+          className
+        )}
       >
         {/* Scrollable table wrapper */}
         <div style={{ overflowX: 'auto' }} className="custom-scrollbar">
@@ -206,7 +197,7 @@ function DataTable<T extends object>({
             <thead>
               <tr
                 style={{
-                  background: 'linear-gradient(180deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.015) 100%)',
+                  background: 'var(--color-hover)',
                   borderBottom: '1px solid var(--color-border)',
                 }}
               >
@@ -216,18 +207,18 @@ function DataTable<T extends object>({
                     onClick={() => col.sortable && requestSort(col.key as keyof T)}
                     className={cn(col.headerClass, col.sortable ? 'dt-th-sort' : '')}
                     style={{
-                      padding: '16px 20px',
+                      padding: '14px 20px',
                       textAlign: 'left',
                       fontFamily: 'var(--font-poppins)',
-                      fontWeight: 600,
-                      fontSize: '11px',
-                      letterSpacing: '0.06em',
+                      fontWeight: 700,
+                      fontSize: '10.5px',
+                      letterSpacing: '0.08em',
                       textTransform: 'uppercase',
                       color: 'var(--color-secondary-text)',
                       cursor: col.sortable ? 'pointer' : 'default',
                       userSelect: 'none',
                       whiteSpace: 'nowrap',
-                      transition: 'color 0.18s, background-color 0.18s',
+                      transition: 'color 0.18s',
                     }}
                     aria-sort={
                       sortConfig.key === col.key
@@ -259,31 +250,19 @@ function DataTable<T extends object>({
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '72px 20px',
-                        gap: '14px',
+                        padding: '64px 20px',
+                        gap: '12px',
                       }}
                     >
-                      {/* Cinematic empty state icon */}
-                      <div
-                        style={{
-                          width: '64px',
-                          height: '64px',
-                          borderRadius: '20px',
-                          background: 'linear-gradient(135deg, #2a170e 0%, #1c1410 50%, #120f0e 100%)',
-                          border: '1px solid rgba(235,113,43,0.2)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: '0 0 28px rgba(235,113,43,0.07)',
-                        }}
-                      >
-                        <SearchX size={26} style={{ color: 'rgba(235,113,43,0.55)' }} />
+                      {/* Theme-adaptive squircle empty state icon */}
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shadow-sm">
+                        <SearchX size={26} className="text-[#EB712B]" />
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <p style={{ fontFamily: 'var(--font-poppins)', fontSize: '14px', fontWeight: 600, color: 'var(--color-main-text)', marginBottom: '4px' }}>
+                        <p style={{ fontFamily: 'var(--font-poppins)', fontSize: '14px', fontWeight: 700, color: 'var(--color-main-text)', marginBottom: '4px' }}>
                           Nothing here yet
                         </p>
-                        <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'var(--color-secondary-text)', opacity: 0.7 }}>
+                        <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '12px', color: 'var(--color-secondary-text)' }}>
                           {emptyMessage}
                         </p>
                       </div>
@@ -297,8 +276,6 @@ function DataTable<T extends object>({
                     className="dt-row"
                     style={{
                       borderBottom: rowIdx < filteredItems.length - 1 ? '1px solid var(--color-border)' : 'none',
-                      background: rowIdx % 2 === 1 ? 'rgba(255,255,255,0.012)' : 'transparent',
-                      transition: 'background 0.18s',
                     }}
                   >
                     {columns.map((col) => {
@@ -316,7 +293,7 @@ function DataTable<T extends object>({
                           style={{
                             padding: '14px 20px',
                             fontFamily: 'var(--font-roboto)',
-                            fontSize: '13.5px',
+                            fontSize: '13px',
                             color: 'var(--color-main-text)',
                             verticalAlign: 'middle',
                           }}

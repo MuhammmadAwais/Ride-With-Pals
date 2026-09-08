@@ -147,7 +147,7 @@ export function ChatWindow({
                   />
                 )}
                 <div
-                  className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2a170e] via-[#1c1410] to-[#120f0e] border border-[#EB712B]/30 text-[#EB712B] font-bold font-poppins text-[13px] shadow-md items-center justify-center"
+                  className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/30 text-[#EB712B] font-bold font-poppins text-[13px] shadow-xs items-center justify-center"
                   style={{ display: activeUser.avatar ? 'none' : 'flex', flexShrink: 0 }}
                 >
                   {activeUser.isGroup ? <Users size={17} /> : (activeUser.name || 'U').charAt(0).toUpperCase()}
