@@ -141,6 +141,13 @@ export const useChat = (
         });
 
         if (initialThreadId) {
+          if (initialRideId) {
+            const matchingRideThread = mappedThreads.find(t => t.rideId === initialRideId || t.id === initialThreadId);
+            if (matchingRideThread) {
+              initialThreadId = matchingRideThread.id;
+            }
+          }
+
           const exists = mappedThreads.some(t => t.id === initialThreadId);
           if (!exists) {
             if (initialRideId) {
@@ -211,6 +218,13 @@ export const useChat = (
         
         const msgs: ChatMessage[] = rows.map((row: any) => {
           const isMe = row.senderId === user?.id;
+          const senderObj = row.sender || row.user || row.senderUser;
+          const sName = senderObj?.fullName || senderObj?.name || row.senderName || '';
+          const rawAvatar = senderObj?.profileImage || senderObj?.avatar || row.senderAvatar || '';
+          const sAvatar = rawAvatar
+            ? (rawAvatar.startsWith('http') || rawAvatar.startsWith('data:') ? rawAvatar : `https://api.ridewithpals.com/uploads/${rawAvatar}`)
+            : undefined;
+
           return {
             id: row.id.toString(),
             senderId: isMe ? 'me' : row.senderId.toString(),
@@ -218,6 +232,8 @@ export const useChat = (
             content: row.message || '',
             timestamp: new Date(row.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             status: row.isRead ? 'read' : 'delivered',
+            senderName: sName,
+            senderAvatar: sAvatar,
           };
         }).reverse(); // Reverse to get chronological order for chat UI
 
@@ -253,6 +269,13 @@ export const useChat = (
 
       if (!threadId || !msgNode) return;
 
+      const senderObj = msgNode.sender || msgNode.user || msgNode.senderUser;
+      const sName = senderObj?.fullName || senderObj?.name || msgNode.senderName || '';
+      const rawAvatar = senderObj?.profileImage || senderObj?.avatar || msgNode.senderAvatar || '';
+      const sAvatar = rawAvatar
+        ? (rawAvatar.startsWith('http') || rawAvatar.startsWith('data:') ? rawAvatar : `https://api.ridewithpals.com/uploads/${rawAvatar}`)
+        : undefined;
+
       const incomingMsg: ChatMessage = {
         id: msgNode.id.toString(),
         senderId: msgNode.senderId === user?.id ? 'me' : msgNode.senderId.toString(),
@@ -260,6 +283,8 @@ export const useChat = (
         content: msgNode.message || '',
         timestamp: new Date(msgNode.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         status: msgNode.isRead ? 'read' : 'delivered',
+        senderName: sName,
+        senderAvatar: sAvatar,
       };
 
       setMessagesMap((prev) => {

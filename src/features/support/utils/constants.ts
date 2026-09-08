@@ -26,6 +26,8 @@ export interface ChatMessage {
   timestamp: string;
   status: 'sent' | 'delivered' | 'read';
   duration?: number; // For audio/video in seconds
+  senderName?: string;
+  senderAvatar?: string;
 }
 
 export const MOCK_CHAT_USERS: ChatUser[] = [

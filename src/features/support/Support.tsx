@@ -6,7 +6,7 @@
  *  - Mobile: Fullscreen Sidebar OR Fullscreen Window based on selection
  *  - No page scroll (h-[calc(100svh-80px)])
  */
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { APP_NAME } from '@/Constants';
 import { ChatSidebar } from './components/ChatSidebar';
@@ -26,6 +26,11 @@ const Support = () => {
   const rideTitle = location.state?.rideTitle as string | undefined;
 
   const [viewProfileUserId, setViewProfileUserId] = useState<number | string | null>(null);
+
+  // Guarantee window scroll is reset to top so Navbar remains cleanly docked
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { 
     threads, 
@@ -51,7 +56,7 @@ const Support = () => {
   return (
     <>
       <Helmet>
-        <title>Chat Support — {APP_NAME}</title>
+        <title>Messages & Group Chat — {APP_NAME}</title>
       </Helmet>
 
       <div

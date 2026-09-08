@@ -25,7 +25,7 @@ export const DashboardLayout: React.FC = () => {
     { label: 'Home', path: '/dashboard/home', icon: <LayoutDashboard size={18} /> },
     { label: 'Activities', path: '/dashboard/activities', icon: <Users size={18} /> },
     { label: 'Calendar', path: '/dashboard/calendar', icon: <Calendar size={18} /> },
-    { label: 'Chat', path: '/dashboard/chat', icon: <MessageSquare size={18} /> },
+    { label: 'Chat', path: '/view/userside/support', icon: <MessageSquare size={18} /> },
     { label: 'Profile', path: '/dashboard/profile', icon: <User size={18} /> },
   ];
 

@@ -16,25 +16,14 @@ interface ChatWindowProps {
   isHiddenOnMobile: boolean;
 }
 
-/** SVG hexagon tiling wallpaper — identical to admin panel */
-function HexWallpaper(): React.ReactElement {
+/** SVG ambient wallpaper */
+function ChatBackground(): React.ReactElement {
   return (
-    <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden', opacity: 0.06 }}
-      className="dark:opacity-[0.10]"
-    >
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="hex-wp" width="50" height="43.4" patternUnits="userSpaceOnUse" patternTransform="scale(1.5)">
-            <path
-              d="M25,0 L50,14.5 L50,43.4 L25,57.9 L0,43.4 L0,14.5 Z"
-              stroke="currentColor"
-              strokeWidth="1"
-              fill="none"
-            />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#hex-wp)" style={{ color: 'var(--color-main-text)' }} />
-      </svg>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
+      <div 
+        className="absolute -top-24 -right-24 w-96 h-96 rounded-full opacity-[0.03] dark:opacity-[0.06] blur-3xl pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #EB712B 0%, transparent 70%)' }}
+      />
     </div>
   );
 }
@@ -45,9 +34,11 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef   = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll on new messages
+  // Auto-scroll on new messages (container scroll only, prevents jumping/scrolling parent window)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
   }, [messages, activeUser]);
 
   // GSAP bubble entrance when switching users
@@ -75,7 +66,7 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
         }}
         className={`md:flex flex-col ${isHiddenOnMobile ? 'hidden' : 'flex'}`}
       >
-        <HexWallpaper />
+        <ChatBackground />
         <div style={{ zIndex: 10, textAlign: 'center', padding: '20px' }}>
           <div style={{
             width: '72px', height: '72px', borderRadius: '50%',
@@ -106,7 +97,7 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
         }}
         className={`absolute w-full flex flex-col md:static md:w-auto md:flex-1 transition-transform duration-300 ${isHiddenOnMobile ? 'translate-x-full' : 'translate-x-0'} md:translate-x-0`}
       >
-      <HexWallpaper />
+      <ChatBackground />
 
       {/* Chat header */}
       <div style={{
@@ -223,7 +214,7 @@ export function ChatWindow({ activeUser, messages, onSendMessage, onBack, onOpen
 
         {messages.map((msg) => (
           <div key={msg.id} className="message-bubble-wrapper">
-            <MessageBubble message={msg} />
+            <MessageBubble message={msg} isGroup={activeUser?.isGroup} />
           </div>
         ))}
         <div ref={messagesEndRef} />

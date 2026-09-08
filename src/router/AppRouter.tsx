@@ -6,7 +6,7 @@
  * - Protected routes are wrapped in <ProtectedRoute> which checks Redux auth.
  * - Shell routes (Dashboard, Activities, etc.) are nested inside <AppLayout>.
  */
-import { createBrowserRouter, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 // ── Layouts & Guards ──
@@ -95,6 +95,11 @@ const LegacyRideRedirect = () => {
   return <Navigate to={`/view/userside/dashboard/ride/${id}`} replace />;
 };
 
+const LegacyChatRedirect = () => {
+  const location = useLocation();
+  return <Navigate to="/view/userside/support" state={location.state} replace />;
+};
+
 const LandingOrDashboard = () => {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const user = useAppSelector((s) => s.auth.user);
@@ -145,7 +150,7 @@ export const router = createBrowserRouter(
         <Route path="activities" element={<Activities />} />
         <Route path="calendar" element={<DashboardCalendar />} />
         <Route path="rides/create" element={<CreateRide />} />
-        <Route path="chat" element={<Support />} />
+        <Route path="chat" element={<LegacyChatRedirect />} />
         <Route path="profile" element={<ProfileAccount />} />
       </Route>
 
@@ -262,6 +267,8 @@ export const router = createBrowserRouter(
         <Route path="/support/athlete" element={<Navigate to="/view/userside/support" replace />} />
         <Route path="/clubs/Ride" element={<Navigate to="/view/userside/clubs/Ride" replace />} />
         <Route path="/dashboard/ride/:id" element={<LegacyRideRedirect />} />
+        <Route path="/dashboard/chat" element={<LegacyChatRedirect />} />
+        <Route path="/chat" element={<LegacyChatRedirect />} />
       </Route>
 
       {/* ── Other Standalone Routes ── */}

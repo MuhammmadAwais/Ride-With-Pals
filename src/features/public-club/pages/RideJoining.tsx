@@ -578,11 +578,11 @@ const RideJoining = () => {
 
   const handleDirectMessage = (targetUserId?: number | string, targetUserName?: string, targetUserAvatar?: string | null) => {
     if (!targetUserId) {
-      navigate("/dashboard/chat");
-      toast.info("Opening Chat Support...");
+      navigate("/view/userside/support");
+      toast.info("Opening Chat...");
       return;
     }
-    navigate("/dashboard/chat", {
+    navigate("/view/userside/support", {
       state: {
         targetUserId: Number(targetUserId),
         targetUserName: targetUserName || "Athlete",
@@ -598,7 +598,7 @@ const RideJoining = () => {
       return;
     }
     const hostUserId = rideDetails?.hostId || (rideResponse as any)?.userId;
-    navigate("/dashboard/chat", {
+    navigate("/view/userside/support", {
       state: {
         rideId: Number(rideDetails?.id || id),
         isGroup: true,
@@ -606,7 +606,6 @@ const RideJoining = () => {
         targetUserId: hostUserId ? Number(hostUserId) : undefined,
         targetUserName: `${rideDetails?.title || "Activity"} Group`,
         targetUserAvatar: rideDetails?.image || undefined,
-        prefillMessage: `Hello everyone! I've joined "${rideDetails?.title}". Looking forward to the ride!`
       }
     });
     toast.success(`Opening group chat for ${rideDetails?.title}...`);
