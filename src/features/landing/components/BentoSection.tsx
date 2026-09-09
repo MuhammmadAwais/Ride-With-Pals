@@ -370,10 +370,10 @@ export const BentoSection: React.FC = () => {
       <div className="rwp-bento-container">
         <div className="rwp-bento-header">
           <h2 className="rwp-bento-title">
-            See your rides in real time, <span style={{ color: "#EB712B" }}>clearly.</span>
+            Take your club to the <span style={{ color: "#EB712B" }}>next level</span>
           </h2>
           <p className="rwp-bento-subtitle">
-            Ride with Pals shows your events, members, and club progress in simple visuals you can act on — right away.
+            The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes.
           </p>
         </div>
 

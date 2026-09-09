@@ -56,7 +56,7 @@ export const HeroSection: React.FC = () => {
                       } as any
                     }
                   >
-                    All-in-One Finance Toolkit
+                    All-in-One Sports Club Platform
                   </p>
                 </div>
               </div>
@@ -78,7 +78,7 @@ export const HeroSection: React.FC = () => {
                   } as any
                 }
               >
-                Take control of your finances — with clarity
+                The app for managing sport clubs and ride squads
               </h1>
             </div>
             <div
@@ -97,8 +97,7 @@ export const HeroSection: React.FC = () => {
                   } as any
                 }
               >
-                All your money insights, finally in one place — track income,
-                spending, and reach your goals with ease.
+                Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free.
               </p>
             </div>
           </div>

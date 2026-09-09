@@ -50,69 +50,73 @@ const EliteIcon = () => (
 
 const PLANS = [
   {
-    id: "rider",
+    id: "free",
     Icon: RiderIcon,
-    name: "Rider",
-    tagline: "For solo explorers",
-    description: "Start discovering rides and connect with your local cycling scene — completely free.",
+    name: "Free Limited Plan",
+    tagline: "Basic Tier",
+    description: "Essential access to browse activities, join clubs, and connect with your community.",
     monthlyPrice: 0,
     yearlyPrice: 0,
-    cta: "Start for free",
+    cta: "Start for Free",
     ctaHref: "/signup",
     highlight: false,
     features: [
-      { text: "Browse & join public rides", ok: true },
-      { text: "View club calendars & events", ok: true },
-      { text: "Activity feed & ride history", ok: true },
-      { text: "Up to 2 club memberships", ok: true },
-      { text: "In-app marketplace", ok: false },
-      { text: "Saved routes & itineraries", ok: false },
-      { text: "Performance analytics", ok: false },
-      { text: "Club management tools", ok: false },
+      { text: "Browse & join public activities", ok: true },
+      { text: "Up to 2 items in Marketplace", ok: true },
+      { text: "Basic ride & activity tracking", ok: true },
+      { text: "Public club access & group chats", ok: true },
+      { text: "Create a club (up to 15 members)", ok: true },
+      { text: "Unlimited marketplace listings", ok: false },
+      { text: "Advanced Performance Analytics", ok: false },
+      { text: "Club shop & membership fee management", ok: false },
     ],
   },
   {
-    id: "pro",
+    id: "premium-athlete",
     Icon: ProIcon,
-    name: "Pro",
+    name: "Premium Athlete",
     tagline: "Most popular",
-    description: "Everything you need to run a serious club and unlock the full power of the platform.",
-    monthlyPrice: 9,
-    yearlyPrice: 7,
-    cta: "Get Pro",
+    description: "Designed for athletes who want unlimited access to activities, marketplace, and analytics.",
+    monthlyPrice: "9.99",
+    yearlyPrice: "4.16",
+    intervalLabel: (b: string) => b === "yearly" ? "/ mo ($49.99/yr)" : "/ month",
+    saveText: "Save over 58% with annual billing ($49.99/year)",
+    cta: "Get Premium Athlete",
     ctaHref: "/signup",
     highlight: true,
     features: [
-      { text: "Everything in Rider", ok: true },
-      { text: "Unlimited club memberships", ok: true },
-      { text: "Marketplace — buy & sell gear", ok: true },
-      { text: "Saved routes & itineraries", ok: true },
-      { text: "Performance analytics dashboard", ok: true },
-      { text: "Manage 1 club (up to 50 members)", ok: true },
-      { text: "Club news & promo tools", ok: false },
-      { text: "Multi-admin permissions", ok: false },
+      { text: "Everything in Free Limited Plan", ok: true },
+      { text: "Unlimited Marketplace Listings", ok: true },
+      { text: "Unlimited Group Rides & Activities", ok: true },
+      { text: "Strava & GPS Route Syncing", ok: true },
+      { text: "Advanced Performance Analytics", ok: true },
+      { text: "Verified Pro Athlete Badge", ok: true },
+      { text: "Priority member chat support", ok: true },
+      { text: "Club shop & fee collection", ok: false },
     ],
   },
   {
-    id: "elite",
+    id: "gold-club",
     Icon: EliteIcon,
-    name: "Elite Club",
+    name: "Gold Club Plan",
     tagline: "For club owners",
-    description: "The complete ops toolkit for clubs that mean business — from subscriptions to leaderboards.",
-    monthlyPrice: 29,
-    yearlyPrice: 22,
-    cta: "Go Elite",
+    description: "The complete club operating system — collect member fees, run your club shop, and grow.",
+    monthlyPrice: "40",
+    yearlyPrice: "40",
+    intervalLabel: () => "/ year",
+    saveText: "Flat yearly rate — no member limits",
+    cta: "Start Gold Club",
     ctaHref: "/signup",
     highlight: false,
     features: [
-      { text: "Everything in Pro", ok: true },
-      { text: "Unlimited club members", ok: true },
-      { text: "Club news & media publishing", ok: true },
-      { text: "Discount & promo engine", ok: true },
-      { text: "Subscription & wallet management", ok: true },
-      { text: "Advanced leaderboards & ranking", ok: true },
-      { text: "Multi-admin role permissions", ok: true },
-      { text: "Priority support + onboarding", ok: true },
+      { text: "Unlimited Club Members (beyond 15)", ok: true },
+      { text: "Stripe Automated Fee Collection", ok: true },
+      { text: "Manual Payment Tracking & Cash Updates", ok: true },
+      { text: "Online Club Merchandise Shop", ok: true },
+      { text: "Paid Activities & Event Ticketing", ok: true },
+      { text: "Strava & GPX Route Syncing", ok: true },
+      { text: "Multiple Admins & Co-Owner Roles", ok: true },
+      { text: "Verified Gold Club Crown Badge", ok: true },
     ],
   },
 ];
@@ -120,8 +124,9 @@ const PLANS = [
 // ── Pricing Card ──────────────────────────────────────────────────────────────
 
 const PricingCard = ({ plan, billing }) => {
-  const { id, Icon, name, tagline, description, monthlyPrice, yearlyPrice, cta, ctaHref, highlight, features } = plan;
+  const { id, Icon, name, tagline, description, monthlyPrice, yearlyPrice, intervalLabel, saveText, cta, ctaHref, highlight, features } = plan;
   const price = billing === "monthly" ? monthlyPrice : yearlyPrice;
+  const isFree = price === 0 || price === "0";
 
   return (
     <div className={`rwp-pc ${highlight ? "rwp-pc--highlight" : ""}`}>
@@ -141,18 +146,20 @@ const PricingCard = ({ plan, billing }) => {
 
       {/* Price */}
       <div className="rwp-pc-price-block">
-        {price === 0 ? (
+        {isFree ? (
           <span className="rwp-pc-price-free">Free</span>
         ) : (
           <div className="rwp-pc-price-row">
             <span className="rwp-pc-currency">$</span>
             <span className="rwp-pc-amount">{price}</span>
-            <span className="rwp-pc-per">/ mo{billing === "yearly" ? ", billed yearly" : ""}</span>
+            <span className="rwp-pc-per">
+              {intervalLabel ? intervalLabel(billing) : `/ mo${billing === "yearly" ? ", billed yearly" : ""}`}
+            </span>
           </div>
         )}
-        {billing === "yearly" && price > 0 && (
+        {billing === "yearly" && saveText && (
           <div className="rwp-pc-save-note">
-            Save ${(monthlyPrice - yearlyPrice) * 12}/yr vs monthly
+            {saveText}
           </div>
         )}
       </div>
@@ -597,10 +604,10 @@ export const PricingSection: React.FC = () => {
             </div>
             <h2 className="rwp-pricing-heading">
               One platform.<br />
-              <em>Three paths</em> forward.
+              <em>Real plans</em> for athletes &amp; clubs.
             </h2>
             <p className="rwp-pricing-sub">
-              Whether you are a weekend rider or running a 500-member club — there is a plan that fits. Start free, upgrade as you grow. No contracts.
+              Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees.
             </p>
 
             {/* Billing toggle */}
@@ -616,7 +623,7 @@ export const PricingSection: React.FC = () => {
                 >Yearly</button>
               </div>
               {billing === "yearly" && (
-                <span className="rwp-pricing-save-pill">Save up to 25%</span>
+                <span className="rwp-pricing-save-pill">Save up to 58%</span>
               )}
             </div>
           </div>
@@ -654,7 +661,7 @@ export const PricingSection: React.FC = () => {
 
         {/* ─── Footer ─── */}
         <div className="rwp-pricing-footer">
-          All plans include a 14-day free trial &nbsp;·&nbsp; No credit card required &nbsp;·&nbsp;
+          Start for free on web &amp; mobile &nbsp;·&nbsp; Transparent pricing &nbsp;·&nbsp;
           <a href="/contact">Questions? Talk to us →</a>
         </div>
 

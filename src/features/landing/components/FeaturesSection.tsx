@@ -609,9 +609,8 @@ export const FeaturesSection: React.FC = () => {
             {/* Headline with swirl decoration */}
             <div className="rwp-fs-headline-wrap">
               <h2 className="rwp-fs-h1">
-                One app.<br/>
-                <span className="rwp-fs-h1-ghost">Two roles.</span><br/>
-                Zero&nbsp;<span className="rwp-fs-h1-accent">compromise</span>.
+                Designed for clubs.<br/>
+                <span className="rwp-fs-h1-accent">Perfect for athletes</span>.
               </h2>
               {/* Swirl arrow pointing down-right toward the content */}
               <span className="rwp-fs-swirl" aria-hidden="true">
@@ -622,10 +621,7 @@ export const FeaturesSection: React.FC = () => {
             {/* Sub-copy + stats */}
             <div className="rwp-fs-sub-row">
               <p className="rwp-fs-sub">
-                Ride With Pals is built for two distinct roles{" "}
-                <span className="rwp-fs-sub-icon"><ArrowRight size={13} color="rgba(235,113,43,0.7)"/></span>{" "}
-                the rider who wants to push limits, and the club owner who wants to build something lasting.
-                Both on mobile. Both on web.
+                Two ways to use it, one shared philosophy: simple, visual, and useful.
               </p>
               <div className="rwp-fs-stats">
                 <div className="rwp-fs-stat">
@@ -659,16 +655,16 @@ export const FeaturesSection: React.FC = () => {
                 <span className="rwp-fb-tag-arrow"><ArrowRight size={11}/></span>
                 For Athletes &amp; Riders
               </div>
-              <h3 className="rwp-fb-headline">Discover rides.<br/>Climb the ranks.</h3>
+              <h3 className="rwp-fb-headline">Discover clubs. Join activities.<br/>Climb the ranks.</h3>
               <p className="rwp-fb-copy">
-                Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard and earn your crown.
+                Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard.
               </p>
               <ul className="rwp-fb-list">
                 {[
                   ["Browse & Join Rides", "Upcoming rides with pace, distance and ride type"],
                   ["Monthly Leaderboards", "Compete by rides attended or total km covered"],
                   ["GPX & Strava Sync", "Download route files and sync with Strava classification"],
-                  ["Ride Leaders & Support Cars", "See who's leading and follow the support crew"],
+                  ["Multisport activities", "Cycling, running and swimming"],
                 ].map(([title, desc]) => (
                   <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
@@ -717,7 +713,7 @@ export const FeaturesSection: React.FC = () => {
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  ["Group & Direct Chat", "Real-time messaging inside every club"],
+                  ["A chat for every ride.", "Say goodbye to endless WhatsApp chats."],
                   ["Club Marketplace", "Buy and sell gear with riders you already know"],
                   ["In-App Wallet", "Deposit, withdraw, and pay without leaving the app"],
                   ["Member Discounts", "Exclusive discount codes on gear and club events"],
@@ -743,13 +739,13 @@ export const FeaturesSection: React.FC = () => {
                 <span className="rwp-fb-tag-arrow"><ArrowRight size={11} color="rgba(255,255,255,0.35)"/></span>
                 For Club Owners &amp; Managers
               </div>
-              <h3 className="rwp-fb-headline">Build your club.<br/>Your way.</h3>
+              <h3 className="rwp-fb-headline">Build your club.<br/>Create community.</h3>
               <p className="rwp-fb-copy">
                 Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel.
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  ["Multi-Club Dashboard", "Create and manage multiple clubs from one account"],
+                  ["Club Calendar", "Keep every ride, event, and activity organized in one place"],
                   ["Join Request Control", "Accept or reject applications with one tap"],
                   ["Member Management", "View all members, assign roles, message directly"],
                   ["News & Announcements", "Post updates and records for members to engage with"],
@@ -777,7 +773,7 @@ export const FeaturesSection: React.FC = () => {
           ───────────────────────────────────────── */}
           <div className="rwp-fb rwp-fb--rider rwp-fb--rev">
             <div className="rwp-fb-meta">
-              <span className="rwp-fb-num">04 — INSIGHTS</span>
+              <span className="rwp-fb-num">04 — MEMBERSHIP FEES</span>
             </div>
 
             <div className="rwp-fb-screens">
@@ -795,16 +791,16 @@ export const FeaturesSection: React.FC = () => {
                 <span className="rwp-fb-tag-arrow"><ArrowRight size={11} color="rgba(255,255,255,0.35)"/></span>
                 For Club Owners
               </div>
-              <h3 className="rwp-fb-headline">Full visibility.<br/>Real insights.</h3>
+              <h3 className="rwp-fb-headline">Membership fees.<br/>Made simple.</h3>
               <p className="rwp-fb-copy">
-                Track participation trends with visual analytics. Get a full overview of your club's location, administrator structure, active members, and subscription status.
+                Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard.
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  ["Participation Analytics", "Visual charts of ride activity and member engagement over time"],
-                  ["Club Overview Dashboard", "Location, admins, member count, subscription status at a glance"],
-                  ["Free & Paid Clubs", "Run free open clubs or gated paid-subscription clubs"],
-                  ["Admin Role Control", "Assign multiple admins with granular permission levels"],
+                  ["Flexible Fee Setup", "Define the amount and membership validity period."],
+                  ["Payment Tracking", "See who has paid, who needs to renew, and who is not up to date."],
+                  ["Stripe Payments", "Send secure payment requests directly through Stripe."],
+                  ["Manual Payment Updates", "Mark members as paid when they pay outside the app."],
                 ].map(([title, desc]) => (
                   <li key={title}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
                 ))}

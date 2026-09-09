@@ -536,7 +536,7 @@ const LandingPage: React.FC = () => {
               <BentoSection />
               <FeaturesSection />
               <ComparisonSection />
-              <TestimonialsSection />
+              {/* <TestimonialsSection /> - Hidden until real feedback and comments are ready */}
               <PricingSection />
               <FAQSection />
               <BlogSection />

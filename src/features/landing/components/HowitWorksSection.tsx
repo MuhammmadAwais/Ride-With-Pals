@@ -273,9 +273,9 @@ export const HowitWorksSection: React.FC = () => {
             </svg>
             Watch Video
           </div>
-          <h2 className="rwp-hiw-title">How <span style={{color: '#EB712B'}}>Ride with Pals</span> works</h2>
+          <h2 className="rwp-hiw-title">Create and build community with <span style={{color: '#EB712B'}}>Ride With Pals</span> -</h2>
           <p className="rwp-hiw-subtitle">
-            From discovering new routes to managing massive club events, getting started takes just minutes.
+            Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes.
           </p>
         </div>
 
