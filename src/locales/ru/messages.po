@@ -1540,7 +1540,7 @@ msgstr ""
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "in"
-msgstr ""
+msgstr "в"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "In-App Wallet"
@@ -1556,11 +1556,11 @@ msgstr "Встроенный кошелек, автосбор взносов и 
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Integration"
-msgstr ""
+msgstr "Интеграция"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Irreversible Action"
-msgstr ""
+msgstr "Необратимое действие"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Is it a social app or a management tool?"
@@ -1590,24 +1590,24 @@ msgstr ""
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Item"
-msgstr ""
+msgstr "Элемент"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "items found"
-msgstr ""
+msgstr "найденные предметы"
 
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Join Activity"
-msgstr ""
+msgstr "Присоединиться к активности"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Join Activity to Chat"
-msgstr ""
+msgstr "Присоединяйтесь к активности в чате"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Join activity to unlock group chat room"
-msgstr ""
+msgstr "Присоединяйтесь к активности, чтобы разблокировать групповой чат."
 
 #: src/features/landing/components/CTASection.tsx
 msgid "Join athletes and club leaders building the ultimate sports community."
@@ -1617,7 +1617,7 @@ msgstr ""
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join Club"
-msgstr ""
+msgstr "Вступить в клуб"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Join Request Control"
@@ -1637,29 +1637,29 @@ msgstr ""
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join this club to view its {activeTab}."
-msgstr ""
+msgstr "Присоединяйтесь к этому клубу, чтобы просмотреть его {activeTab}."
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join Verification"
-msgstr ""
+msgstr "Присоединиться к проверке"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join with Code"
-msgstr ""
+msgstr "Присоединяйтесь с кодом"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Joined"
-msgstr ""
+msgstr "Присоединился"
 
 #: src/components/Sidebar.tsx
 msgid "Joining Requests"
-msgstr ""
+msgstr "Запросы на присоединение"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Joining..."
-msgstr ""
+msgstr "Присоединяюсь..."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep every ride, event, and activity organized in one place"
@@ -1667,24 +1667,24 @@ msgstr "Сохраняйте все тренировки, гонки и клуб
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Kilometers (km)"
-msgstr ""
+msgstr "Километры (км)"
 
 #. placeholder {0}: activeUser.lastSeen
 #: src/features/support/components/ChatWindow.tsx
 msgid "Last seen {0}"
-msgstr ""
+msgstr "Последний раз видели {0}"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leader"
-msgstr ""
+msgstr "Лидер"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "Leaderboard"
-msgstr ""
+msgstr "Таблица лидеров"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leaders"
-msgstr ""
+msgstr "Лидеры"
 
 #: src/features/landing/components/BlogSection.tsx
 msgid ""
@@ -1697,19 +1697,19 @@ msgstr ""
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leave Activity"
-msgstr ""
+msgstr "Выйти из активности"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Leave Club"
-msgstr ""
+msgstr "Покинуть клуб"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Leave this Club?"
-msgstr ""
+msgstr "Покинуть этот клуб?"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Leaving..."
-msgstr ""
+msgstr "Уход..."
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Legal"
@@ -1717,60 +1717,60 @@ msgstr "Правовая информация"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Light Mode"
-msgstr ""
+msgstr "Светлый режим"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Limited items in Marketplace"
-msgstr ""
+msgstr "Ограниченное количество товаров на торговой площадке"
 
 #: src/features/public-club/pages/Marketplace.tsx
 #: src/features/public-club/pages/Ride.tsx
 msgid "List View"
-msgstr ""
+msgstr "Просмотр списка"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listed by"
-msgstr ""
+msgstr "Внесено"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listing created successfully!"
-msgstr ""
+msgstr "Листинг успешно создан!"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listing deleted successfully!"
-msgstr ""
+msgstr "Объявление успешно удалено!"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listing Price"
-msgstr ""
+msgstr "Цена по прейскуранту"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Live"
-msgstr ""
+msgstr "В реальном времени"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Loading Activity Details..."
-msgstr ""
+msgstr "Загрузка сведений о деятельности..."
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Loading Subscription Details..."
-msgstr ""
+msgstr "Загрузка сведений о подписке..."
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Loading wallet ledger..."
-msgstr ""
+msgstr "Загрузка книги кошелька..."
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Location not specified"
-msgstr ""
+msgstr "Местоположение не указано"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Locked"
-msgstr ""
+msgstr "Заблокировано"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Logged out successfully."
-msgstr ""
+msgstr "Вы успешно вышли из системы."
 
 #: src/features/landing/components/Navigation.tsx
 msgid "Login"
@@ -1778,7 +1778,7 @@ msgstr "Войти"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Logout"
-msgstr ""
+msgstr "Выход"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Made simple."
@@ -1786,24 +1786,24 @@ msgstr "Просто и понятно."
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Manage"
-msgstr ""
+msgstr "Управление"
 
 #. placeholder {0}: myClubs.length
 #: src/components/Sidebar.tsx
 msgid "Manage {0} clubs"
-msgstr ""
+msgstr "Управление {0} клубами"
 
 #: src/components/Sidebar.tsx
 msgid "Manage 1 club"
-msgstr ""
+msgstr "Управление 1 клубом"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Manage active members"
-msgstr ""
+msgstr "Управление активными участниками"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Manage Club"
-msgstr ""
+msgstr "Управление клубом"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid ""
@@ -1816,21 +1816,23 @@ msgstr ""
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Manage on Stripe"
-msgstr ""
+msgstr "Управление на Stripe"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid ""
 "Manage your personal hubs or discover training communities around the "
 "region."
 msgstr ""
+"Управляйте своими личными центрами или открывайте обучающие сообщества по "
+"всему региону."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Manage your personal information and application preferences"
-msgstr ""
+msgstr "Управление личной информацией и настройками приложений"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Management Tools"
-msgstr ""
+msgstr "Инструменты управления"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Manual member tracking & paper waivers"
@@ -1846,15 +1848,15 @@ msgstr "Ручное подтверждение оплат"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Map View"
-msgstr ""
+msgstr "Просмотр карты"
 
 #: src/components/layout/Navbar.tsx
 msgid "Mark all read"
-msgstr ""
+msgstr "Отметить все как прочитанные"
 
 #: src/features/notifications/Notifications.tsx
 msgid "Mark as read"
-msgstr ""
+msgstr "Отметить как прочитанное"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Mark members as paid when they pay outside the app."
@@ -1871,23 +1873,23 @@ msgstr "Маркетплейс"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Marketplace Filters"
-msgstr ""
+msgstr "Фильтры торговой площадки"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "match"
-msgstr ""
+msgstr "соответствовать"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "matches"
-msgstr ""
+msgstr "спички"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "matching search"
-msgstr ""
+msgstr "соответствующий поиск"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Max"
-msgstr ""
+msgstr "Макс"
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Maximising Ride Analytics to Boost Performance"
@@ -1895,7 +1897,7 @@ msgstr "Как использовать аналитику тренировок 
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Member"
-msgstr ""
+msgstr "Член"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Member Discounts"
@@ -1907,7 +1909,7 @@ msgstr "Управление Участниками"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "Members"
-msgstr ""
+msgstr "Члены"
 
 #: src/features/landing/components/FAQSection.tsx
 #: src/features/public-club/pages/ClubDetails.tsx
@@ -1916,7 +1918,7 @@ msgstr "Членство"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Membership fee payment reminders"
-msgstr ""
+msgstr "Напоминания об оплате членских взносов"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Membership fees."
@@ -1924,42 +1926,42 @@ msgstr "Клубные взносы."
 
 #: src/components/Sidebar.tsx
 msgid "Membership Plans"
-msgstr ""
+msgstr "Планы членства"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 #. placeholder {0}: leader.name
 #. placeholder {0}: user.name
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message {0}"
-msgstr ""
+msgstr "Сообщение {0}"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message Host"
-msgstr ""
+msgstr "Хост сообщений"
 
 #: src/features/support/components/ChatSidebar.tsx
 msgid "Messages"
-msgstr ""
+msgstr "Сообщения"
 
 #: src/features/support/Support.tsx
 msgid "Messages & Group Chat"
-msgstr ""
+msgstr "Сообщения и групповой чат"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Miles (mi)"
-msgstr ""
+msgstr "Майлз (ми)"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Min"
-msgstr ""
+msgstr "Мин"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Moderate"
-msgstr ""
+msgstr "Умеренный"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Moderation"
@@ -1967,11 +1969,11 @@ msgstr "Модерация"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Mon"
-msgstr ""
+msgstr "Пн."
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "month"
-msgstr ""
+msgstr "месяц"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Monthly"
@@ -1987,7 +1989,7 @@ msgstr "Самый популярный"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Most Popular"
-msgstr ""
+msgstr "Самый популярный"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Multiple Admins & Co-Owner Roles"
@@ -1999,63 +2001,63 @@ msgstr "Мультиспортивные события"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "My Clubs"
-msgstr ""
+msgstr "Мои клубы"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "My Financial Overview"
-msgstr ""
+msgstr "Мой финансовый обзор"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "My Listings"
-msgstr ""
+msgstr "Мои объявления"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/MyPurchases.tsx
 msgid "My Purchases"
-msgstr ""
+msgstr "Мои покупки"
 
 #: src/components/Sidebar.tsx
 msgid "My Wallet"
-msgstr ""
+msgstr "Мой кошелек"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Net Expenditures"
-msgstr ""
+msgstr "Чистые расходы"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "New"
-msgstr ""
+msgstr "Новый"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "New Condition"
-msgstr ""
+msgstr "Новое состояние"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New member join applications"
-msgstr ""
+msgstr "Заявки на присоединение новых участников"
 
 #: src/features/notifications/Notifications.tsx
 msgid "New Notification"
-msgstr ""
+msgstr "Новое уведомление"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New Password (min. 6 characters)"
-msgstr ""
+msgstr "Новый пароль (минимум 6 символов)"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New password is required"
-msgstr ""
+msgstr "Требуется новый пароль"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New Rides & Activities"
-msgstr ""
+msgstr "Новые аттракционы и развлечения"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Newest Listings First"
-msgstr ""
+msgstr "Сначала самые новые объявления"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "News"
-msgstr ""
+msgstr "Новости"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "News & Announcements"
@@ -2063,7 +2065,7 @@ msgstr "Новости и Объявления"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "Next"
-msgstr ""
+msgstr "Следующий"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "next level"
@@ -2071,31 +2073,31 @@ msgstr "новый уровень"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Next Month"
-msgstr ""
+msgstr "В следующем месяце"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "No activities found"
-msgstr ""
+msgstr "Действия не найдены"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No activities match your search"
-msgstr ""
+msgstr "Нет мероприятий, соответствующих вашему запросу"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No category spending recorded yet."
-msgstr ""
+msgstr "Расходы по категориям пока не зафиксированы."
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No club spending recorded yet."
-msgstr ""
+msgstr "Расходы клуба пока не зафиксированы."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "No equipment found"
-msgstr ""
+msgstr "Оборудование не найдено"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "No equipment found matching your search"
-msgstr ""
+msgstr "Оборудование, соответствующее вашему запросу, не найдено"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No integrated marketplace, sub-accounts, or event wallet"
@@ -2104,6 +2106,7 @@ msgstr "Нет маркетплейса, субсчетов и клубного 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "No listings match your selected search or filter criteria."
 msgstr ""
+"Нет объявлений, соответствующих выбранным критериям поиска или фильтра."
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No live leaderboards, badges, or Strava sync"
@@ -2111,23 +2114,23 @@ msgstr "Нет живых рейтингов, наград и связи со St
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No managed clubs yet"
-msgstr ""
+msgstr "Управляемых клубов пока нет"
 
 #: src/features/support/components/ChatSidebar.tsx
 msgid "No matches found."
-msgstr ""
+msgstr "Совпадений не найдено."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No matching athletes found"
-msgstr ""
+msgstr "Подходящих спортсменов не найдено"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No matching clubs found"
-msgstr ""
+msgstr "Подходящих клубов не найдено"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No matching managed clubs"
-msgstr ""
+msgstr "Нет подходящих управляемых клубов."
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "No messages found matching \"{messageSearchQuery}\""

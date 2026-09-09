@@ -1719,56 +1719,56 @@ msgstr "Modo claro"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Limited items in Marketplace"
-msgstr ""
+msgstr "Itens limitados no Marketplace"
 
 #: src/features/public-club/pages/Marketplace.tsx
 #: src/features/public-club/pages/Ride.tsx
 msgid "List View"
-msgstr ""
+msgstr "Visualização de lista"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listed by"
-msgstr ""
+msgstr "Listado por"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listing created successfully!"
-msgstr ""
+msgstr "Listagem criada com sucesso!"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listing deleted successfully!"
-msgstr ""
+msgstr "Listagem excluída com sucesso!"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Listing Price"
-msgstr ""
+msgstr "Preço de listagem"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Live"
-msgstr ""
+msgstr "Ao vivo"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Loading Activity Details..."
-msgstr ""
+msgstr "Carregando detalhes da atividade..."
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Loading Subscription Details..."
-msgstr ""
+msgstr "Carregando detalhes da assinatura..."
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Loading wallet ledger..."
-msgstr ""
+msgstr "Carregando o livro-razão da carteira..."
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Location not specified"
-msgstr ""
+msgstr "Local não especificado"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Locked"
-msgstr ""
+msgstr "Bloqueado"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Logged out successfully."
-msgstr ""
+msgstr "Desconectado com sucesso."
 
 #: src/features/landing/components/Navigation.tsx
 msgid "Login"
@@ -1776,7 +1776,7 @@ msgstr "Entrar"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Logout"
-msgstr ""
+msgstr "Sair"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Made simple."
@@ -1784,24 +1784,24 @@ msgstr "De forma simples."
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Manage"
-msgstr ""
+msgstr "Gerenciar"
 
 #. placeholder {0}: myClubs.length
 #: src/components/Sidebar.tsx
 msgid "Manage {0} clubs"
-msgstr ""
+msgstr "Gerenciar {0} clubes"
 
 #: src/components/Sidebar.tsx
 msgid "Manage 1 club"
-msgstr ""
+msgstr "Gerenciar 1 clube"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Manage active members"
-msgstr ""
+msgstr "Gerenciar membros ativos"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Manage Club"
-msgstr ""
+msgstr "Gerenciar clube"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid ""
@@ -1814,21 +1814,23 @@ msgstr ""
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Manage on Stripe"
-msgstr ""
+msgstr "Gerencie no Stripe"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid ""
 "Manage your personal hubs or discover training communities around the "
 "region."
 msgstr ""
+"Gerencie seus centros pessoais ou descubra comunidades de treinamento na "
+"região."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Manage your personal information and application preferences"
-msgstr ""
+msgstr "Gerencie suas informações pessoais e preferências de aplicativos"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Management Tools"
-msgstr ""
+msgstr "Ferramentas de gestão"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Manual member tracking & paper waivers"
@@ -1844,15 +1846,15 @@ msgstr "Atualização manual de pagamentos"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Map View"
-msgstr ""
+msgstr "Visualização do mapa"
 
 #: src/components/layout/Navbar.tsx
 msgid "Mark all read"
-msgstr ""
+msgstr "Marcar tudo como lido"
 
 #: src/features/notifications/Notifications.tsx
 msgid "Mark as read"
-msgstr ""
+msgstr "Marcar como lido"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Mark members as paid when they pay outside the app."
@@ -1870,23 +1872,23 @@ msgstr "Classificados"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Marketplace Filters"
-msgstr ""
+msgstr "Filtros de mercado"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "match"
-msgstr ""
+msgstr "corresponder"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "matches"
-msgstr ""
+msgstr "partidas"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "matching search"
-msgstr ""
+msgstr "pesquisa correspondente"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Max"
-msgstr ""
+msgstr "Máx."
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Maximising Ride Analytics to Boost Performance"
@@ -1894,7 +1896,7 @@ msgstr "Aproveitando dados dos treinos para evoluir seu rendimento"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Member"
-msgstr ""
+msgstr "Membro"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Member Discounts"
@@ -1906,7 +1908,7 @@ msgstr "Gestão de Atletas"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "Members"
-msgstr ""
+msgstr "Membros"
 
 #: src/features/landing/components/FAQSection.tsx
 #: src/features/public-club/pages/ClubDetails.tsx
@@ -1915,7 +1917,7 @@ msgstr "Associação"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Membership fee payment reminders"
-msgstr ""
+msgstr "Lembretes de pagamento de taxa de adesão"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Membership fees."
@@ -1923,42 +1925,42 @@ msgstr "Mensalidades."
 
 #: src/components/Sidebar.tsx
 msgid "Membership Plans"
-msgstr ""
+msgstr "Planos de Sócios"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message"
-msgstr ""
+msgstr "Mensagem"
 
 #. placeholder {0}: leader.name
 #. placeholder {0}: user.name
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message {0}"
-msgstr ""
+msgstr "Mensagem {0}"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message Host"
-msgstr ""
+msgstr "Anfitrião de mensagens"
 
 #: src/features/support/components/ChatSidebar.tsx
 msgid "Messages"
-msgstr ""
+msgstr "Mensagens"
 
 #: src/features/support/Support.tsx
 msgid "Messages & Group Chat"
-msgstr ""
+msgstr "Mensagens e bate-papo em grupo"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Miles (mi)"
-msgstr ""
+msgstr "Milhas (mi)"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Min"
-msgstr ""
+msgstr "Mínimo"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Moderate"
-msgstr ""
+msgstr "Moderado"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Moderation"
@@ -1966,11 +1968,11 @@ msgstr "Moderação"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Mon"
-msgstr ""
+msgstr "seg"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "month"
-msgstr ""
+msgstr "mês"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Monthly"
@@ -1986,7 +1988,7 @@ msgstr "Mais popular"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Most Popular"
-msgstr ""
+msgstr "Mais populares"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Multiple Admins & Co-Owner Roles"
@@ -1998,63 +2000,63 @@ msgstr "Modalidades multiesportivas"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "My Clubs"
-msgstr ""
+msgstr "Meus clubes"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "My Financial Overview"
-msgstr ""
+msgstr "Minha visão geral financeira"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "My Listings"
-msgstr ""
+msgstr "Minhas listagens"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/MyPurchases.tsx
 msgid "My Purchases"
-msgstr ""
+msgstr "Minhas compras"
 
 #: src/components/Sidebar.tsx
 msgid "My Wallet"
-msgstr ""
+msgstr "Minha carteira"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Net Expenditures"
-msgstr ""
+msgstr "Despesas Líquidas"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "New"
-msgstr ""
+msgstr "Novo"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "New Condition"
-msgstr ""
+msgstr "Nova Condição"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New member join applications"
-msgstr ""
+msgstr "Inscrições para adesão de novos membros"
 
 #: src/features/notifications/Notifications.tsx
 msgid "New Notification"
-msgstr ""
+msgstr "Nova notificação"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New Password (min. 6 characters)"
-msgstr ""
+msgstr "Nova senha (mín. 6 caracteres)"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New password is required"
-msgstr ""
+msgstr "Nova senha é necessária"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New Rides & Activities"
-msgstr ""
+msgstr "Novos passeios e atividades"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Newest Listings First"
-msgstr ""
+msgstr "Listagens mais recentes primeiro"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "News"
-msgstr ""
+msgstr "Notícias"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "News & Announcements"
@@ -2062,7 +2064,7 @@ msgstr "Notícias e Comunicados"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "Next"
-msgstr ""
+msgstr "Próximo"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "next level"
@@ -2070,31 +2072,31 @@ msgstr "próximo nível"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Next Month"
-msgstr ""
+msgstr "Próximo mês"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "No activities found"
-msgstr ""
+msgstr "Nenhuma atividade encontrada"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No activities match your search"
-msgstr ""
+msgstr "Nenhuma atividade corresponde à sua pesquisa"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No category spending recorded yet."
-msgstr ""
+msgstr "Nenhum gasto da categoria registrado ainda."
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No club spending recorded yet."
-msgstr ""
+msgstr "Nenhum gasto do clube registrado ainda."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "No equipment found"
-msgstr ""
+msgstr "Nenhum equipamento encontrado"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "No equipment found matching your search"
-msgstr ""
+msgstr "Nenhum equipamento encontrado correspondente à sua pesquisa"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No integrated marketplace, sub-accounts, or event wallet"
@@ -2104,6 +2106,8 @@ msgstr ""
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "No listings match your selected search or filter criteria."
 msgstr ""
+"Nenhuma listagem corresponde aos critérios de pesquisa ou filtro "
+"selecionados."
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No live leaderboards, badges, or Strava sync"
@@ -2111,23 +2115,23 @@ msgstr "Sem rankings dinâmicos, insígnias ou integração com o Strava"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No managed clubs yet"
-msgstr ""
+msgstr "Nenhum clube gerenciado ainda"
 
 #: src/features/support/components/ChatSidebar.tsx
 msgid "No matches found."
-msgstr ""
+msgstr "Nenhuma correspondência encontrada."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No matching athletes found"
-msgstr ""
+msgstr "Nenhum atleta correspondente encontrado"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No matching clubs found"
-msgstr ""
+msgstr "Nenhum clube correspondente encontrado"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No matching managed clubs"
-msgstr ""
+msgstr "Nenhum clube gerenciado correspondente"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "No messages found matching \"{messageSearchQuery}\""
