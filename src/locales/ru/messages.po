@@ -2134,40 +2134,40 @@ msgstr "Нет подходящих управляемых клубов."
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "No messages found matching \"{messageSearchQuery}\""
-msgstr ""
+msgstr "Не найдено сообщений, соответствующих запросу \"{messageSearchQuery}\""
 
 #: src/components/layout/Navbar.tsx
 #: src/features/notifications/Notifications.tsx
 msgid "No notifications yet"
-msgstr ""
+msgstr "Уведомлений пока нет"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No participants found in this category."
-msgstr ""
+msgstr "В этой категории участников не найдено."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No participants matched \"{participantSearch}\"."
-msgstr ""
+msgstr "Нет участников, соответствующих запросу \"{participantSearch}\"."
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "No purchases found"
-msgstr ""
+msgstr "Покупки не найдены"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No registered participants yet."
-msgstr ""
+msgstr "Зарегистрированных участников пока нет."
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "No Rides on this Date"
-msgstr ""
+msgstr "Нет поездок в этот день"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No Saved Activities Yet"
-msgstr ""
+msgstr "Пока нет сохраненных действий"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No wallet transactions found matching your filters."
-msgstr ""
+msgstr "Не найдено транзакций кошелька, соответствующих вашим фильтрам."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid ""
@@ -2198,20 +2198,20 @@ msgstr ""
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Not provided"
-msgstr ""
+msgstr "Не предусмотрено"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Notice:"
-msgstr ""
+msgstr "Уведомление:"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Notification settings updated successfully!"
-msgstr ""
+msgstr "Настройки уведомлений успешно обновлены!"
 
 #: src/components/layout/Navbar.tsx src/components/Sidebar.tsx
 #: src/features/notifications/Notifications.tsx
 msgid "Notifications"
-msgstr ""
+msgstr "Уведомления"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid ""
@@ -2234,6 +2234,8 @@ msgid ""
 "Online payment required. Processed securely via Stripe Checkout. Spot "
 "confirmed instantly upon completion."
 msgstr ""
+"Требуется онлайн-оплата. Безопасная обработка через Stripe Checkout. Место "
+"подтвердилось сразу после завершения."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Online Shop"
@@ -2241,40 +2243,40 @@ msgstr "Онлайн-Магазин"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Open Activity Group Chat"
-msgstr ""
+msgstr "Открыть групповой чат активности"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Open Distance"
-msgstr ""
+msgstr "Открытая дистанция"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Open Group Chat"
-msgstr ""
+msgstr "Открыть групповой чат"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Opened Google Calendar template!"
-msgstr ""
+msgstr "Открыт шаблон Календаря Google!"
 
 #: src/components/Sidebar.tsx
 msgid "Order"
-msgstr ""
+msgstr "Заказ"
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Order cancelled successfully."
-msgstr ""
+msgstr "Заказ успешно отменен."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Order confirmation & delivery alerts"
-msgstr ""
+msgstr "Подтверждение заказа и уведомления о доставке"
 
 #: src/features/public-club/pages/Marketplace.tsx
 #: src/features/public-club/pages/Shop.tsx
 msgid "Order Confirmed!"
-msgstr ""
+msgstr "Заказ подтвержден!"
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Order ID"
-msgstr ""
+msgstr "Идентификатор заказа"
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Organise rides & events"
@@ -2282,7 +2284,7 @@ msgstr "Организуйте заезды и события"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Organizer"
-msgstr ""
+msgstr "Организатор"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Other Sports"
@@ -2299,7 +2301,7 @@ msgstr "Обзор"
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Owned"
-msgstr ""
+msgstr "В собственности"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Pace:"

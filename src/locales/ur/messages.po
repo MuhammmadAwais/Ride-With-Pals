@@ -1531,7 +1531,7 @@ msgstr ""
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "in"
-msgstr ""
+msgstr "میں"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "In-App Wallet"
@@ -1547,11 +1547,11 @@ msgstr "ڈیجیٹل والیٹ، فیس کا خودکار نظام اور ای�
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Integration"
-msgstr ""
+msgstr "انضمام"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Irreversible Action"
-msgstr ""
+msgstr "ناقابل واپسی عمل"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Is it a social app or a management tool?"
@@ -1581,24 +1581,24 @@ msgstr ""
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Item"
-msgstr ""
+msgstr "آئٹم"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "items found"
-msgstr ""
+msgstr "اشیاء ملے"
 
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Join Activity"
-msgstr ""
+msgstr "سرگرمی میں شامل ہوں۔"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Join Activity to Chat"
-msgstr ""
+msgstr "چیٹ کے لیے سرگرمی میں شامل ہوں۔"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Join activity to unlock group chat room"
-msgstr ""
+msgstr "گروپ چیٹ روم کو غیر مقفل کرنے کے لیے سرگرمی میں شامل ہوں۔"
 
 #: src/features/landing/components/CTASection.tsx
 msgid "Join athletes and club leaders building the ultimate sports community."
@@ -1608,7 +1608,7 @@ msgstr ""
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join Club"
-msgstr ""
+msgstr "کلب میں شامل ہوں۔"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Join Request Control"
@@ -1628,29 +1628,29 @@ msgstr ""
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join this club to view its {activeTab}."
-msgstr ""
+msgstr "اس کلب کا {activeTab} دیکھنے کے لیے اس میں شامل ہوں۔"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join Verification"
-msgstr ""
+msgstr "تصدیق میں شامل ہوں۔"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Join with Code"
-msgstr ""
+msgstr "کوڈ کے ساتھ شامل ہوں۔"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Joined"
-msgstr ""
+msgstr "شامل ہو گئے۔"
 
 #: src/components/Sidebar.tsx
 msgid "Joining Requests"
-msgstr ""
+msgstr "شمولیت کی درخواستیں"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Joining..."
-msgstr ""
+msgstr "شامل ہو رہا ہے..."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep every ride, event, and activity organized in one place"
@@ -1658,24 +1658,24 @@ msgstr "ہر رائڈ، مقابلے اور مشق کو ایک منظم جگہ �
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Kilometers (km)"
-msgstr ""
+msgstr "کلومیٹر (کلومیٹر)"
 
 #. placeholder {0}: activeUser.lastSeen
 #: src/features/support/components/ChatWindow.tsx
 msgid "Last seen {0}"
-msgstr ""
+msgstr "آخری بار دیکھا گیا {0}"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leader"
-msgstr ""
+msgstr "لیڈر"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "Leaderboard"
-msgstr ""
+msgstr "لیڈر بورڈ"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leaders"
-msgstr ""
+msgstr "قائدین"
 
 #: src/features/landing/components/BlogSection.tsx
 msgid ""
@@ -1689,19 +1689,19 @@ msgstr ""
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leave Activity"
-msgstr ""
+msgstr "سرگرمی چھوڑ دیں۔"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Leave Club"
-msgstr ""
+msgstr "کلب چھوڑ دو"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Leave this Club?"
-msgstr ""
+msgstr "اس کلب کو چھوڑیں؟"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Leaving..."
-msgstr ""
+msgstr "چھوڑ رہا ہے..."
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Legal"
@@ -1709,7 +1709,7 @@ msgstr "قانونی معلومات"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Light Mode"
-msgstr ""
+msgstr "لائٹ موڈ"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Limited items in Marketplace"

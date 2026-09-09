@@ -2135,40 +2135,41 @@ msgstr "Nenhum clube gerenciado correspondente"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "No messages found matching \"{messageSearchQuery}\""
-msgstr ""
+msgstr "Nenhuma mensagem encontrada correspondente a \"{messageSearchQuery}\""
 
 #: src/components/layout/Navbar.tsx
 #: src/features/notifications/Notifications.tsx
 msgid "No notifications yet"
-msgstr ""
+msgstr "Nenhuma notificação ainda"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No participants found in this category."
-msgstr ""
+msgstr "Nenhum participante encontrado nesta categoria."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No participants matched \"{participantSearch}\"."
-msgstr ""
+msgstr "Nenhum participante correspondeu a \"{participantSearch}\"."
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "No purchases found"
-msgstr ""
+msgstr "Nenhuma compra encontrada"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No registered participants yet."
-msgstr ""
+msgstr "Nenhum participante registrado ainda."
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "No Rides on this Date"
-msgstr ""
+msgstr "Não há viagens nesta data"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No Saved Activities Yet"
-msgstr ""
+msgstr "Nenhuma atividade salva ainda"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No wallet transactions found matching your filters."
 msgstr ""
+"Nenhuma transação de carteira encontrada que corresponda aos seus filtros."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid ""
@@ -2199,20 +2200,20 @@ msgstr ""
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Not provided"
-msgstr ""
+msgstr "Não fornecido"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Notice:"
-msgstr ""
+msgstr "Perceber:"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Notification settings updated successfully!"
-msgstr ""
+msgstr "Configurações de notificação atualizadas com sucesso!"
 
 #: src/components/layout/Navbar.tsx src/components/Sidebar.tsx
 #: src/features/notifications/Notifications.tsx
 msgid "Notifications"
-msgstr ""
+msgstr "Notificações"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid ""
@@ -2235,6 +2236,8 @@ msgid ""
 "Online payment required. Processed securely via Stripe Checkout. Spot "
 "confirmed instantly upon completion."
 msgstr ""
+"É necessário pagamento on-line. Processado com segurança via Stripe "
+"Checkout. Spot confirmado instantaneamente após a conclusão."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Online Shop"
@@ -2242,40 +2245,40 @@ msgstr "Loja Online"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Open Activity Group Chat"
-msgstr ""
+msgstr "Abrir bate-papo em grupo de atividades"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Open Distance"
-msgstr ""
+msgstr "Distância aberta"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Open Group Chat"
-msgstr ""
+msgstr "Abrir bate-papo em grupo"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Opened Google Calendar template!"
-msgstr ""
+msgstr "Modelo do Google Agenda aberto!"
 
 #: src/components/Sidebar.tsx
 msgid "Order"
-msgstr ""
+msgstr "Ordem"
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Order cancelled successfully."
-msgstr ""
+msgstr "Pedido cancelado com sucesso."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Order confirmation & delivery alerts"
-msgstr ""
+msgstr "Confirmação de pedido e alertas de entrega"
 
 #: src/features/public-club/pages/Marketplace.tsx
 #: src/features/public-club/pages/Shop.tsx
 msgid "Order Confirmed!"
-msgstr ""
+msgstr "Pedido confirmado!"
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Order ID"
-msgstr ""
+msgstr "ID do pedido"
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Organise rides & events"
@@ -2283,7 +2286,7 @@ msgstr "Organize treinos e eventos"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Organizer"
-msgstr ""
+msgstr "Organizador"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Other Sports"
@@ -2300,16 +2303,16 @@ msgstr "Visão Geral"
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Owned"
-msgstr ""
+msgstr "Controlado"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Pace:"
-msgstr ""
+msgstr "Ritmo:"
 
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Paid"
-msgstr ""
+msgstr "Pago"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Paid Activities"
@@ -2321,52 +2324,52 @@ msgstr "Atividades pagas e venda de ingressos"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Paid Activities & Ticketing"
-msgstr ""
+msgstr "Atividades pagas e emissão de ingressos"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Paid Entry"
-msgstr ""
+msgstr "Entrada paga"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participant"
-msgstr ""
+msgstr "Participante"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "participants"
-msgstr ""
+msgstr "participantes"
 
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participants"
-msgstr ""
+msgstr "Participantes"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participation"
-msgstr ""
+msgstr "Participação"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Password must be at least 6 characters"
-msgstr ""
+msgstr "A senha deve ter pelo menos 6 caracteres"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Password updated successfully!"
-msgstr ""
+msgstr "Senha atualizada com sucesso!"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Passwords do not match"
-msgstr ""
+msgstr "As senhas não correspondem"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Pay & Join"
-msgstr ""
+msgstr "Pagar e aderir"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Pay & Join Activity"
-msgstr ""
+msgstr "Atividade de pagar e aderir"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Pay Securely"
-msgstr ""
+msgstr "Pagar com segurança"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Payment Options"
@@ -2374,7 +2377,7 @@ msgstr "Formas de Pagamento"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Payment Successful!"
-msgstr ""
+msgstr "Pagamento realizado com sucesso!"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Payment Tracking"
@@ -2382,11 +2385,11 @@ msgstr "Acompanhamento de Pagamentos"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Pending"
-msgstr ""
+msgstr "Pendente"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "Per page:"
-msgstr ""
+msgstr "Por página:"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Perfect for athletes"
@@ -2397,6 +2400,8 @@ msgid ""
 "Permanently delete your account and all associated data. This action cannot "
 "be undone."
 msgstr ""
+"Exclua permanentemente sua conta e todos os dados associados. Esta ação não "
+"pode ser desfeita."
 
 #: src/components/Sidebar.tsx src/features/landing/components/FAQSection.tsx
 msgid "Permissions"
@@ -2405,19 +2410,19 @@ msgstr "Permissões"
 #: src/features/ClubSide/ProfileAccount.tsx
 #: src/features/public-club/pages/Shop.tsx
 msgid "Phone"
-msgstr ""
+msgstr "Telefone"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Pickup"
-msgstr ""
+msgstr "Retirada"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Placing Order..."
-msgstr ""
+msgstr "Fazendo pedido..."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Plans & billing"
-msgstr ""
+msgstr "Planos e cobrança"
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Platform"
@@ -2433,15 +2438,15 @@ msgstr "Plataformas"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Please authorize Strava in the popup window."
-msgstr ""
+msgstr "Autorize o Strava na janela pop-up."
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "Please check your connection and try again."
-msgstr ""
+msgstr "Verifique sua conexão e tente novamente."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Please enter a product name."
-msgstr ""
+msgstr "Insira um nome de produto."
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Please enter a valid name and price."

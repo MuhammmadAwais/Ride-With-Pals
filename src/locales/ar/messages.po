@@ -1864,7 +1864,7 @@ msgstr "matching search"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Max"
-msgstr ""
+msgstr "الأعلى"
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Maximising Ride Analytics to Boost Performance"
@@ -1872,7 +1872,7 @@ msgstr "كيفية استثمار تحليلات الجولات لتطوير ا�
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Member"
-msgstr ""
+msgstr "عضو"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Member Discounts"
@@ -1884,7 +1884,7 @@ msgstr "إدارة الأعضاء"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "Members"
-msgstr ""
+msgstr "أعضاء"
 
 #: src/features/landing/components/FAQSection.tsx
 #: src/features/public-club/pages/ClubDetails.tsx
@@ -1893,7 +1893,7 @@ msgstr "العضوية"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Membership fee payment reminders"
-msgstr ""
+msgstr "تذكير بدفع رسوم العضوية"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Membership fees."
@@ -1901,42 +1901,42 @@ msgstr "رسوم العضوية."
 
 #: src/components/Sidebar.tsx
 msgid "Membership Plans"
-msgstr ""
+msgstr "خطط العضوية"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message"
-msgstr ""
+msgstr "رسالة"
 
 #. placeholder {0}: leader.name
 #. placeholder {0}: user.name
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message {0}"
-msgstr ""
+msgstr "الرسالة {0}"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Message Host"
-msgstr ""
+msgstr "مضيف الرسالة"
 
 #: src/features/support/components/ChatSidebar.tsx
 msgid "Messages"
-msgstr ""
+msgstr "رسائل"
 
 #: src/features/support/Support.tsx
 msgid "Messages & Group Chat"
-msgstr ""
+msgstr "الرسائل والدردشة الجماعية"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Miles (mi)"
-msgstr ""
+msgstr "الأميال (ميل)"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Min"
-msgstr ""
+msgstr "دقيقة"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Moderate"
-msgstr ""
+msgstr "معتدل"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Moderation"
@@ -1944,11 +1944,11 @@ msgstr "الإشراف والرقابة"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Mon"
-msgstr ""
+msgstr "الاثنين"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "month"
-msgstr ""
+msgstr "شهر"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Monthly"
@@ -1964,7 +1964,7 @@ msgstr "الأكثر طلباً"
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Most Popular"
-msgstr ""
+msgstr "الأكثر شعبية"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Multiple Admins & Co-Owner Roles"
@@ -1976,63 +1976,63 @@ msgstr "أنشطة رياضية متعددة"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "My Clubs"
-msgstr ""
+msgstr "الأندية الخاصة بي"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "My Financial Overview"
-msgstr ""
+msgstr "لمحة عامة عن مالي"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "My Listings"
-msgstr ""
+msgstr "قوائمي"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/MyPurchases.tsx
 msgid "My Purchases"
-msgstr ""
+msgstr "مشترياتي"
 
 #: src/components/Sidebar.tsx
 msgid "My Wallet"
-msgstr ""
+msgstr "محفظتي"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Net Expenditures"
-msgstr ""
+msgstr "صافي النفقات"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "New"
-msgstr ""
+msgstr "جديد"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "New Condition"
-msgstr ""
+msgstr "حالة جديدة"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New member join applications"
-msgstr ""
+msgstr "طلبات انضمام أعضاء جدد"
 
 #: src/features/notifications/Notifications.tsx
 msgid "New Notification"
-msgstr ""
+msgstr "إشعار جديد"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New Password (min. 6 characters)"
-msgstr ""
+msgstr "كلمة مرور جديدة (6 أحرف على الأقل)"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New password is required"
-msgstr ""
+msgstr "مطلوب كلمة مرور جديدة"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "New Rides & Activities"
-msgstr ""
+msgstr "رحلات وأنشطة جديدة"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Newest Listings First"
-msgstr ""
+msgstr "أحدث القوائم أولاً"
 
 #: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
 msgid "News"
-msgstr ""
+msgstr "أخبار"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "News & Announcements"
@@ -2040,7 +2040,7 @@ msgstr "الأخبار والإعلانات"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "Next"
-msgstr ""
+msgstr "التالي"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "next level"
@@ -2048,31 +2048,31 @@ msgstr "المستوى التالي"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Next Month"
-msgstr ""
+msgstr "الشهر القادم"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "No activities found"
-msgstr ""
+msgstr "لم يتم العثور على أنشطة"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No activities match your search"
-msgstr ""
+msgstr "لا توجد أنشطة تطابق بحثك"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No category spending recorded yet."
-msgstr ""
+msgstr "لم يتم تسجيل إنفاق فئة بعد."
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No club spending recorded yet."
-msgstr ""
+msgstr "لم يتم تسجيل أي إنفاق للأندية حتى الآن."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "No equipment found"
-msgstr ""
+msgstr "لم يتم العثور على معدات"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "No equipment found matching your search"
-msgstr ""
+msgstr "لم يتم العثور على معدات مطابقة لبحثك"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No integrated marketplace, sub-accounts, or event wallet"
@@ -2080,7 +2080,7 @@ msgstr "انعدام السوق الداخلي أو المحافظ الرقمي�
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "No listings match your selected search or filter criteria."
-msgstr ""
+msgstr "لم يتم العثور على قوائم تطابق البحث أو معايير التصفية التي حددتها."
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No live leaderboards, badges, or Strava sync"
@@ -2088,60 +2088,60 @@ msgstr "غياب لوحات التنافس الحية والشارات والر�
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No managed clubs yet"
-msgstr ""
+msgstr "لم يتم العثور على أندية مُدارة بعد"
 
 #: src/features/support/components/ChatSidebar.tsx
 msgid "No matches found."
-msgstr ""
+msgstr "لم يتم العثور على أي مباريات."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No matching athletes found"
-msgstr ""
+msgstr "لم يتم العثور على رياضيين متطابقين"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No matching clubs found"
-msgstr ""
+msgstr "لم يتم العثور على أندية متطابقة"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "No matching managed clubs"
-msgstr ""
+msgstr "لم يتم العثور على أندية مُدارة متطابقة"
 
 #: src/features/support/components/ChatWindow.tsx
 msgid "No messages found matching \"{messageSearchQuery}\""
-msgstr ""
+msgstr "لم يتم العثور على رسائل مطابقة \"{messageSearchQuery}\""
 
 #: src/components/layout/Navbar.tsx
 #: src/features/notifications/Notifications.tsx
 msgid "No notifications yet"
-msgstr ""
+msgstr "لم يتم العثور على إشعارات حتى الآن"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No participants found in this category."
-msgstr ""
+msgstr "لم يتم العثور على مشاركين في هذه الفئة."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No participants matched \"{participantSearch}\"."
-msgstr ""
+msgstr "لا يوجد مشاركين مطابقين لـ \"{participantSearch}\"."
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "No purchases found"
-msgstr ""
+msgstr "لم يتم العثور على مشتريات"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "No registered participants yet."
-msgstr ""
+msgstr "لا يوجد مشاركين مسجلين حتى الآن."
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "No Rides on this Date"
-msgstr ""
+msgstr "لا توجد رحلات في هذا التاريخ"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No Saved Activities Yet"
-msgstr ""
+msgstr "لا توجد أنشطة محفوظة بعد"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "No wallet transactions found matching your filters."
-msgstr ""
+msgstr "لم يتم العثور على معاملات المحفظة المطابقة لمرشحاتك."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid ""
@@ -2172,20 +2172,20 @@ msgstr ""
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Not provided"
-msgstr ""
+msgstr "غير متوفر"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Notice:"
-msgstr ""
+msgstr "إشعار:"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Notification settings updated successfully!"
-msgstr ""
+msgstr "تم تحديث إعدادات الإشعارات بنجاح!"
 
 #: src/components/layout/Navbar.tsx src/components/Sidebar.tsx
 #: src/features/notifications/Notifications.tsx
 msgid "Notifications"
-msgstr ""
+msgstr "الإخطارات"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid ""
@@ -2208,6 +2208,8 @@ msgid ""
 "Online payment required. Processed securely via Stripe Checkout. Spot "
 "confirmed instantly upon completion."
 msgstr ""
+"مطلوب الدفع عبر الإنترنت. تتم معالجتها بشكل آمن عبر Stripe Checkout. تم "
+"تأكيد البقعة فور الانتهاء."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Online Shop"
@@ -2215,40 +2217,40 @@ msgstr "المتجر الإلكتروني"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Open Activity Group Chat"
-msgstr ""
+msgstr "افتح الدردشة الجماعية للأنشطة"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Open Distance"
-msgstr ""
+msgstr "افتح المسافة"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Open Group Chat"
-msgstr ""
+msgstr "افتح الدردشة الجماعية"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Opened Google Calendar template!"
-msgstr ""
+msgstr "افتح قالب تقويم Google!"
 
 #: src/components/Sidebar.tsx
 msgid "Order"
-msgstr ""
+msgstr "تم إلغاء الطلب"
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Order cancelled successfully."
-msgstr ""
+msgstr "بنجاح."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Order confirmation & delivery alerts"
-msgstr ""
+msgstr "تأكيد الطلب وتنبيهات التسليم"
 
 #: src/features/public-club/pages/Marketplace.tsx
 #: src/features/public-club/pages/Shop.tsx
 msgid "Order Confirmed!"
-msgstr ""
+msgstr "تم تأكيد الطلب!"
 
 #: src/features/public-club/pages/MyPurchases.tsx
 msgid "Order ID"
-msgstr ""
+msgstr "معرف الطلب"
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Organise rides & events"
@@ -2256,7 +2258,7 @@ msgstr "تنظيم الجولات والفعاليات"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Organizer"
-msgstr ""
+msgstr "المنظم"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Other Sports"
@@ -2273,16 +2275,16 @@ msgstr "نظرة عامة"
 
 #: src/features/public-club/components/ClubCard.tsx
 msgid "Owned"
-msgstr ""
+msgstr "مملوك"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Pace:"
-msgstr ""
+msgstr "السرعة:"
 
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Paid"
-msgstr ""
+msgstr "مدفوعة"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Paid Activities"
@@ -2294,52 +2296,52 @@ msgstr "أنشطة مدفوعة وتذاكر للمناسبات والسباقا
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Paid Activities & Ticketing"
-msgstr ""
+msgstr "الأنشطة المدفوعة وحجز التذاكر"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Paid Entry"
-msgstr ""
+msgstr "دخول مدفوع"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participant"
-msgstr ""
+msgstr "مشارك"
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "participants"
-msgstr ""
+msgstr "المشاركون"
 
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participants"
-msgstr ""
+msgstr "المشاركون"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participation"
-msgstr ""
+msgstr "المشاركة"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Password must be at least 6 characters"
-msgstr ""
+msgstr "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Password updated successfully!"
-msgstr ""
+msgstr "تم تحديث كلمة المرور بنجاح!"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Passwords do not match"
-msgstr ""
+msgstr "كلمات المرور غير متطابقة"
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Pay & Join"
-msgstr ""
+msgstr "الدفع والانضمام"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Pay & Join Activity"
-msgstr ""
+msgstr "نشاط الدفع والانضمام"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Pay Securely"
-msgstr ""
+msgstr "الدفع بشكل آمن"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Payment Options"
@@ -2347,7 +2349,7 @@ msgstr "خيارات الدفع"
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Payment Successful!"
-msgstr ""
+msgstr "تم الدفع بنجاح!"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Payment Tracking"
@@ -2355,11 +2357,11 @@ msgstr "متابعة المدفوعات"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Pending"
-msgstr ""
+msgstr "معلق"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "Per page:"
-msgstr ""
+msgstr "لكل صفحة:"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Perfect for athletes"
@@ -2370,6 +2372,8 @@ msgid ""
 "Permanently delete your account and all associated data. This action cannot "
 "be undone."
 msgstr ""
+"احذف حسابك وجميع البيانات المرتبطة به نهائيًا. لا يمكن التراجع عن هذا "
+"الإجراء."
 
 #: src/components/Sidebar.tsx src/features/landing/components/FAQSection.tsx
 msgid "Permissions"
@@ -2378,19 +2382,19 @@ msgstr "الصلاحيات"
 #: src/features/ClubSide/ProfileAccount.tsx
 #: src/features/public-club/pages/Shop.tsx
 msgid "Phone"
-msgstr ""
+msgstr "الهاتف"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Pickup"
-msgstr ""
+msgstr "الاستلام"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Placing Order..."
-msgstr ""
+msgstr "تقديم الطلب..."
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Plans & billing"
-msgstr ""
+msgstr "الخطط والفواتير"
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Platform"
@@ -2406,35 +2410,35 @@ msgstr "المنصات المدعومة"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Please authorize Strava in the popup window."
-msgstr ""
+msgstr "يرجى تفويض Strava في النافذة المنبثقة."
 
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "Please check your connection and try again."
-msgstr ""
+msgstr "الرجاء التحقق من الاتصال والمحاولة مرة أخرى."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Please enter a product name."
-msgstr ""
+msgstr "الرجاء إدخال اسم المنتج."
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Please enter a valid name and price."
-msgstr ""
+msgstr "الرجاء إدخال اسم وسعر صالحين."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Please enter a valid price."
-msgstr ""
+msgstr "الرجاء إدخال سعر صالح."
 
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Please enter the club join code (Hint: 111)"
-msgstr ""
+msgstr "يرجى إدخال رمز الانضمام إلى النادي (تلميح: 111)"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Please fill in your delivery address."
-msgstr ""
+msgstr "يرجى ملء عنوان التسليم الخاص بك."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Please log in to purchase items."
-msgstr ""
+msgstr "الرجاء تسجيل الدخول لشراء العناصر."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Please read and accept the Terms & Safety Guidelines before joining."
