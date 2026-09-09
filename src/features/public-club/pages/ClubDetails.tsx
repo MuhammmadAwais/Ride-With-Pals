@@ -10,6 +10,7 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { ClubMembershipModal } from '../components/ClubMembershipModal';
 import { resolveImageUrl } from '../services/clubGeocoding';
 import AvatarLightboxModal from '@/components/ui/AvatarLightboxModal';
+import { Trans } from '@lingui/react/macro';
 
 
 // Import refactored tab components
@@ -97,20 +98,20 @@ const renderSportBadge = (typeId?: any, rawName?: string) => {
   if (sport === "Running") {
     return (
       <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
-        <Activity size={12} className="shrink-0 text-amber-500" /> RUNNING
+        <Activity size={12} className="shrink-0 text-amber-500" /> <Trans>RUNNING</Trans>
       </span>
     );
   }
   if (sport === "Triathlon") {
     return (
       <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
-        <Trophy size={12} className="shrink-0 text-purple-400" /> TRIATHLON
+        <Trophy size={12} className="shrink-0 text-purple-400" /> <Trans>TRIATHLON</Trans>
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/25 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
-      <Bike size={12} className="shrink-0 text-[#EB712B]" /> CYCLING
+      <Bike size={12} className="shrink-0 text-[#EB712B]" /> <Trans>CYCLING</Trans>
     </span>
   );
 };
@@ -383,7 +384,7 @@ export default function ClubDetails() {
             title="Back to clubs"
           >
             <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
-            <span className="hidden sm:inline">Back to Clubs</span>
+            <span className="hidden sm:inline"><Trans>Back to Clubs</Trans></span>
           </button>
 
           {/* Top-Right Sport Pill on Banner */}
@@ -445,14 +446,14 @@ export default function ClubDetails() {
                 >
                   <MapPin size={13} className="text-[#EB712B] shrink-0" />
                   <span className="truncate max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px]">
-                    {club.location || "Global"}
+                    {club.location || <Trans>Global</Trans>}
                   </span>
                 </div>
 
                 {/* Members Chip */}
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface/90 border border-border rounded-xl text-xs font-bold text-text-muted whitespace-nowrap">
                   <Users size={13} className="text-[#EB712B] shrink-0" />
-                  <span>{dynamicMemberCount} {dynamicMemberCount === 1 ? 'Member' : 'Members'}</span>
+                  <span>{dynamicMemberCount} {dynamicMemberCount === 1 ? <Trans>Member</Trans> : <Trans>Members</Trans>}</span>
                 </div>
 
                 {/* Privacy Chip */}
@@ -462,7 +463,7 @@ export default function ClubDetails() {
                     : "bg-rose-500/10 text-rose-400 border-rose-500/20"
                 }`}>
                   {club.clubPrivacyId === 1 ? <Globe size={12} /> : <Lock size={12} />}
-                  <span>{club.clubPrivacyId === 1 ? "Public Club" : "Private Club"}</span>
+                  <span>{club.clubPrivacyId === 1 ? <Trans>Public Club</Trans> : <Trans>Private Club</Trans>}</span>
                 </div>
               </div>
             </div>
@@ -483,7 +484,7 @@ export default function ClubDetails() {
                 }`}
               >
                 <Crown size={16} className={hasActiveMembership ? "text-emerald-400" : "text-amber-400"} />
-                <span>{hasActiveMembership ? ((myMembershipInfo as any)?.feeName || myMembershipInfo?.plan?.name || 'Active Member') : 'Membership'}</span>
+                <span>{hasActiveMembership ? ((myMembershipInfo as any)?.feeName || myMembershipInfo?.plan?.name || <Trans>Active Member</Trans>) : <Trans>Membership</Trans>}</span>
               </button>
             )}
 
@@ -496,14 +497,14 @@ export default function ClubDetails() {
                     disabled={isJoining}
                     className="inline-flex items-center justify-center px-6 sm:px-7 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                   >
-                    {isJoining ? "Requesting..." : "Request Membership"}
+                    {isJoining ? <Trans>Requesting...</Trans> : <Trans>Request Membership</Trans>}
                   </button>
                   <button 
                     onClick={handleJoinClubClick}
                     disabled={isJoining}
                     className="inline-flex items-center justify-center px-5 py-3 bg-surface border border-border hover:bg-hover text-text-main text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer hover:border-white/20"
                   >
-                    Join with Code
+                    <Trans>Join with Code</Trans>
                   </button>
                 </>
               ) : (
@@ -512,7 +513,7 @@ export default function ClubDetails() {
                   disabled={isJoining}
                   className="inline-flex items-center justify-center px-7 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                 >
-                  {isJoining ? "Joining..." : "Join Club"}
+                  {isJoining ? <Trans>Joining...</Trans> : <Trans>Join Club</Trans>}
                 </button>
               )
             )}
@@ -525,7 +526,7 @@ export default function ClubDetails() {
                 className="inline-flex items-center justify-center px-6 py-3 bg-hover hover:bg-red-500/10 border border-border hover:border-red-500/30 text-text-muted hover:text-red-500 transition-colors text-xs font-black uppercase tracking-wider rounded-2xl cursor-pointer disabled:opacity-50"
                 title="Click to leave club"
               >
-                {isLeaving ? "Leaving..." : "✓ Joined (Leave)"}
+                {isLeaving ? <Trans>Leaving...</Trans> : <Trans>✓ Joined (Leave)</Trans>}
               </button>
             )}
 
@@ -536,7 +537,7 @@ export default function ClubDetails() {
                 className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-surface border border-border hover:bg-hover text-text-main hover:text-[#EB712B] hover:border-[#EB712B]/30 text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer"
               >
                 <MessageSquare size={15} />
-                <span>Message</span>
+                <span><Trans>Message</Trans></span>
               </button>
             )}
           </div>
@@ -556,7 +557,14 @@ export default function ClubDetails() {
                     : 'text-text-muted hover:text-text-main'
                 }`}
               >
-                {tab}
+                {tab === 'Overview' ? <Trans>Overview</Trans> :
+                 tab === 'Rides' ? <Trans>Rides</Trans> :
+                 tab === 'News' ? <Trans>News</Trans> :
+                 tab === 'Leaderboard' ? <Trans>Leaderboard</Trans> :
+                 tab === 'Marketplace' ? <Trans>Marketplace</Trans> :
+                 tab === 'Shop' ? <Trans>Shop</Trans> :
+                 tab === 'Discounts' ? <Trans>Discounts</Trans> :
+                 <Trans>Members</Trans>}
                 {activeTab === tab && (
                   <div className="absolute bottom-0 left-0 w-full h-1 bg-[#EB712B] rounded-t-full" />
                 )}
@@ -569,7 +577,7 @@ export default function ClubDetails() {
         <div className="min-h-[400px]">
           {activeTab === 'Overview' ? renderTabContent() : isMember ? renderTabContent() : (
             <div className="bg-surface border border-border rounded-3xl p-12 text-center text-text-muted text-xs font-bold tracking-wider mt-8">
-              Join this club to view its {activeTab}.
+              <Trans>Join this club to view its {activeTab}.</Trans>
             </div>
           )}
         </div>
@@ -581,8 +589,8 @@ export default function ClubDetails() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-main-bg/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-surface border border-border p-8 rounded-3xl w-full max-w-sm space-y-6 shadow-2xl relative">
             <div className="text-center">
-              <h3 className="text-xl font-black uppercase tracking-tight">Join Verification</h3>
-              <p className="text-text-muted text-[10px] mt-1 tracking-wider">Please enter the club join code (Hint: 111)</p>
+              <h3 className="text-xl font-black uppercase tracking-tight"><Trans>Join Verification</Trans></h3>
+              <p className="text-text-muted text-[10px] mt-1 tracking-wider"><Trans>Please enter the club join code (Hint: 111)</Trans></p>
             </div>
             <form onSubmit={handleVerifyCode} className="space-y-4">
               <input
@@ -605,13 +613,13 @@ export default function ClubDetails() {
                   onClick={() => setShowCodeScreen(false)}
                   className="flex-1 py-4 bg-hover hover:bg-border text-text-muted rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-border"
                 >
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </button>
                 <button
                   type="submit"
                   className="flex-1 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/10"
                 >
-                  Verify
+                  <Trans>Verify</Trans>
                 </button>
               </div>
             </form>
@@ -628,19 +636,19 @@ export default function ClubDetails() {
                   <ShieldCheck size={48} className="animate-bounce" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black uppercase tracking-tight text-text-main">Payment Successful!</h3>
-                  <p className="text-text-muted text-[10px] mt-1 tracking-wider">Adding you to the club...</p>
+                  <h3 className="text-lg font-black uppercase tracking-tight text-text-main"><Trans>Payment Successful!</Trans></h3>
+                  <p className="text-text-muted text-[10px] mt-1 tracking-wider"><Trans>Adding you to the club...</Trans></p>
                 </div>
               </div>
             ) : (
               <>
                 <div className="text-center">
-                  <h3 className="text-xl font-black uppercase tracking-tight">Secure Checkout</h3>
-                  <p className="text-text-muted text-[10px] mt-1 tracking-wider">Club entry fee: <span className="text-[#EB712B] font-bold">${club.price || 50}</span></p>
+                  <h3 className="text-xl font-black uppercase tracking-tight"><Trans>Secure Checkout</Trans></h3>
+                  <p className="text-text-muted text-[10px] mt-1 tracking-wider"><Trans>Club entry fee:</Trans> <span className="text-[#EB712B] font-bold">${club.price || 50}</span></p>
                 </div>
                 <form onSubmit={handleDepositConfirm} className="space-y-4 text-xs font-bold tracking-wider">
                   <div>
-                    <label className="block text-[10px] text-text-muted uppercase mb-1">Card number</label>
+                    <label className="block text-[10px] text-text-muted uppercase mb-1"><Trans>Card number</Trans></label>
                     <input
                       type="text"
                       placeholder="1111 1111 1111 1111"
@@ -652,7 +660,7 @@ export default function ClubDetails() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[10px] text-text-muted uppercase mb-1">Expiry Date</label>
+                      <label className="block text-[10px] text-text-muted uppercase mb-1"><Trans>Expiry Date</Trans></label>
                       <input
                         type="text"
                         placeholder="12/26"
@@ -663,7 +671,7 @@ export default function ClubDetails() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] text-text-muted uppercase mb-1">CVV</label>
+                      <label className="block text-[10px] text-text-muted uppercase mb-1"><Trans>CVV</Trans></label>
                       <input
                         type="text"
                         placeholder="XXX"
@@ -675,7 +683,7 @@ export default function ClubDetails() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] text-text-muted uppercase mb-1">Account holder</label>
+                    <label className="block text-[10px] text-text-muted uppercase mb-1"><Trans>Account holder</Trans></label>
                     <input
                       type="text"
                       placeholder="Full name on card"
@@ -690,7 +698,7 @@ export default function ClubDetails() {
                       onClick={() => setShowDepositScreen(false)}
                       className="w-full py-4 bg-hover hover:bg-border text-text-muted rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all border border-border"
                     >
-                      Cancel
+                      <Trans>Cancel</Trans>
                     </button>
                     <button
                       type="submit"
@@ -701,7 +709,7 @@ export default function ClubDetails() {
                           : "bg-hover text-text-muted border-border cursor-not-allowed shadow-none"
                       }`}
                     >
-                      Pay Securely
+                      <Trans>Pay Securely</Trans>
                     </button>
                   </div>
                 </form>
@@ -737,10 +745,10 @@ export default function ClubDetails() {
               </div>
               <div className="pr-6">
                 <span className="text-[10px] font-black uppercase tracking-widest text-red-400 block">
-                  Club Membership
+                  <Trans>Club Membership</Trans>
                 </span>
                 <h3 className="text-xl font-black text-text-main tracking-tight mt-0.5">
-                  Leave this Club?
+                  <Trans>Leave this Club?</Trans>
                 </h3>
               </div>
             </div>
@@ -769,11 +777,11 @@ export default function ClubDetails() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h4 className="text-sm sm:text-base font-black text-white truncate tracking-tight">
-                    {club.clubName || club.name || 'This Club'}
+                    {club.clubName || club.name || <Trans>This Club</Trans>}
                   </h4>
                   <p className="text-[11px] text-gray-300 font-medium truncate mt-0.5 flex items-center gap-1.5">
                     <MapPin size={11} className="text-[#EB712B] shrink-0" />
-                    <span>{club.location || club.city || 'Community Club'}</span>
+                    <span>{club.location || club.city || <Trans>Community Club</Trans>}</span>
                   </p>
                 </div>
               </div>
@@ -781,7 +789,7 @@ export default function ClubDetails() {
 
             {/* Explanation Notice */}
             <p className="text-xs text-text-muted font-medium leading-relaxed">
-              Are you sure you want to leave <span className="font-bold text-text-main">{club.clubName || club.name || 'this club'}</span>? You will lose access to member-only scheduled rides, club leaderboards, and exclusive activity perks.
+              <Trans>Are you sure you want to leave <span className="font-bold text-text-main">{club.clubName || club.name || 'this club'}</span>? You will lose access to member-only scheduled rides, club leaderboards, and exclusive activity perks.</Trans>
             </p>
 
             {/* Action Buttons */}
@@ -792,7 +800,7 @@ export default function ClubDetails() {
                 disabled={isLeaving}
                 className="flex-1 py-3.5 px-4 bg-hover hover:bg-border text-text-main rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-all border border-border outline-none disabled:opacity-50"
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </button>
               <button
                 type="button"
@@ -803,10 +811,10 @@ export default function ClubDetails() {
                 {isLeaving ? (
                   <>
                     <Loader2 size={14} className="animate-spin" />
-                    <span>Leaving...</span>
+                    <span><Trans>Leaving...</Trans></span>
                   </>
                 ) : (
-                  <span>Leave Club</span>
+                  <span><Trans>Leave Club</Trans></span>
                 )}
               </button>
             </div>

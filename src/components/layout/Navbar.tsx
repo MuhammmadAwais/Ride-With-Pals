@@ -22,6 +22,8 @@ import { cn } from '@/lib/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { Trans } from '@lingui/react/macro';
 import {
   useGetUserNotificationQuery,
   useGetClubNotificationsQuery,
@@ -107,7 +109,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
         <div className="flex items-center gap-2">
           <Bell size={14} className="text-[#EB712B]" />
           <span className="text-xs font-bold uppercase tracking-wider text-text-main">
-            {isClubSide ? "Club Alerts" : "Notifications"}
+            {isClubSide ? <Trans>Club Alerts</Trans> : <Trans>Notifications</Trans>}
           </span>
           {unreadNotifs.length > 0 && (
             <span className="px-1.5 py-0.5 bg-[#EB712B] text-white text-[9px] font-black rounded-full">
@@ -127,7 +129,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
               ) : (
                 <CheckCheck size={10} />
               )}
-              Mark all read
+              <Trans>Mark all read</Trans>
             </button>
           )}
           <button
@@ -152,12 +154,12 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
               className="text-text-muted mx-auto mb-2 opacity-40"
             />
             <p className="text-xs text-text-muted font-bold uppercase tracking-wider">
-              No notifications yet
+              <Trans>No notifications yet</Trans>
             </p>
             <p className="text-[10px] text-text-muted mt-1">
               {isClubSide
-                ? "Club activity will appear here."
-                : "Your activity will appear here."}
+                ? <Trans>Club activity will appear here.</Trans>
+                : <Trans>Your activity will appear here.</Trans>}
             </p>
           </div>
         ) : (
@@ -219,8 +221,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
       {notifications.length > 0 && (
         <div className="px-4 py-2.5 border-t border-border bg-hover/50 flex items-center justify-between">
           <p className="text-[9px] text-text-muted uppercase tracking-wider font-bold">
-            Showing {Math.min(notifications.length, 15)} of{" "}
-            {notifications.length} notifications
+            <Trans>Showing {Math.min(notifications.length, 15)} of {notifications.length} notifications</Trans>
           </p>
           <button
             className="text-[10px] font-bold text-[#EB712B] uppercase hover:underline"
@@ -232,7 +233,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
               onClose();
             }}
           >
-            See All
+            <Trans>See All</Trans>
           </button>
         </div>
       )}
@@ -354,9 +355,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard', o
             onClick={onSwitchClubClick}
             className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#EB712B]/10 text-[#EB712B] hover:bg-[#EB712B]/20 transition-colors whitespace-nowrap mr-2 border border-[#EB712B]/20 hidden sm:block"
           >
-            Switch Club
+            <Trans>Switch Club</Trans>
           </button>
         )}
+
+        {/* Language Switcher for Webapp */}
+        <LanguageSwitcher variant="light" className="mr-1" />
 
         {/* Theme Toggle — GSAP icon flip on swap */}
         <button

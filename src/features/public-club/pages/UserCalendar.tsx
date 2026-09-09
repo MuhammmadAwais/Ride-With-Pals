@@ -27,6 +27,8 @@ import {
   useGetSavedRidesListQuery
 } from '@/features/club/api/savedRidesApiSlice';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { resolveImageUrl } from '../services/clubGeocoding';
 
 const MONTH_NAMES = [
@@ -231,13 +233,13 @@ export default function UserCalendar() {
     try {
       if (isRideSaved(rideId)) {
         await unsaveRide({ rideId }).unwrap();
-        toast.success('Ride removed from saved list.');
+        toast.success(t`Ride removed from saved list.`);
       } else {
         await saveRide({ rideId }).unwrap();
-        toast.success('Ride saved successfully!');
+        toast.success(t`Ride saved successfully!`);
       }
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || 'Failed to update saved rides.');
+      toast.error(err?.data?.message || err?.message || t`Failed to update saved rides.`);
     }
   };
 
@@ -246,9 +248,9 @@ export default function UserCalendar() {
     const url = `${window.location.origin}/view/userside/dashboard/ride/${ride.id}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url);
-      toast.success('Ride link copied to clipboard!');
+      toast.success(t`Ride link copied to clipboard!`);
     } else {
-      toast.info(`Share link: ${url}`);
+      toast.info(t`Share link: ${url}`);
     }
   };
 
@@ -276,7 +278,7 @@ export default function UserCalendar() {
 
     const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startTimeString}/${endTimeString}`;
     window.open(googleCalUrl, '_blank', 'noopener,noreferrer');
-    toast.success('Opened Google Calendar template!');
+    toast.success(t`Opened Google Calendar template!`);
   };
 
   // Calendar month calculation
@@ -371,14 +373,14 @@ export default function UserCalendar() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
               <span className="text-[11px] font-mono tracking-widest uppercase text-[#EB712B] font-bold">
-                RIDE SCHEDULE & AGENDA
+                <Trans>RIDE SCHEDULE & AGENDA</Trans>
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight uppercase text-text-main">
-              Calendar
+              <Trans>Calendar</Trans>
             </h1>
             <p className="text-text-muted text-xs font-medium max-w-xl leading-relaxed">
-              Explore scheduled rides across clubs. Select any calendar date to view the daily briefing, meeting points, and export directly to Google Calendar.
+              <Trans>Explore scheduled rides across clubs. Select any calendar date to view the daily briefing, meeting points, and export directly to Google Calendar.</Trans>
             </p>
           </div>
 
@@ -388,14 +390,14 @@ export default function UserCalendar() {
               className="flex items-center justify-center gap-2 px-5 py-2.5 bg-surface border border-border hover:bg-hover text-text-main rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors"
             >
               <Compass size={14} className="text-[#EB712B]" />
-              Explore All Rides
+              <Trans>Explore All Rides</Trans>
             </button>
             <button
               onClick={() => navigate('/view/userside/rides?create=true')}
               className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-colors shadow-sm"
             >
               <Plus size={15} />
-              Create Ride
+              <Trans>Create Ride</Trans>
             </button>
           </div>
         </div>
@@ -421,7 +423,7 @@ export default function UserCalendar() {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={handlePrevMonth}
-                  aria-label="Previous Month"
+                  aria-label={t`Previous Month`}
                   className="w-8 h-8 flex items-center justify-center bg-hover hover:bg-surface border border-border rounded-xl transition-colors cursor-pointer text-text-main hover:text-[#EB712B]"
                 >
                   <ChevronLeft size={16} />
@@ -434,11 +436,11 @@ export default function UserCalendar() {
                   }}
                   className="px-2.5 py-1.5 bg-hover hover:bg-[#EB712B] hover:text-white border border-border rounded-xl transition-colors cursor-pointer text-[10px] font-bold uppercase tracking-wider text-text-muted"
                 >
-                  Today
+                  <Trans>Today</Trans>
                 </button>
                 <button
                   onClick={handleNextMonth}
-                  aria-label="Next Month"
+                  aria-label={t`Next Month`}
                   className="w-8 h-8 flex items-center justify-center bg-hover hover:bg-surface border border-border rounded-xl transition-colors cursor-pointer text-text-main hover:text-[#EB712B]"
                 >
                   <ChevronRight size={16} />
@@ -450,7 +452,7 @@ export default function UserCalendar() {
             <div className="grid grid-cols-7 gap-1 text-center py-1.5">
               {DAYS_OF_WEEK.map((d) => (
                 <div key={d} className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
-                  {d}
+                  {d === 'Sun' ? <Trans>Sun</Trans> : d === 'Mon' ? <Trans>Mon</Trans> : d === 'Tue' ? <Trans>Tue</Trans> : d === 'Wed' ? <Trans>Wed</Trans> : d === 'Thu' ? <Trans>Thu</Trans> : d === 'Fri' ? <Trans>Fri</Trans> : <Trans>Sat</Trans>}
                 </div>
               ))}
             </div>
@@ -510,16 +512,16 @@ export default function UserCalendar() {
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
-                  <span>Scheduled Ride</span>
+                  <span><Trans>Scheduled Ride</Trans></span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full border border-[#EB712B]" />
-                  <span>Today</span>
+                  <span><Trans>Today</Trans></span>
                 </div>
               </div>
 
               <span className="text-text-muted font-bold">
-                {currentMonthRideCount} {currentMonthRideCount === 1 ? 'ride' : 'rides'} in {MONTH_NAMES[currentMonth].slice(0, 3)}
+                {currentMonthRideCount} {currentMonthRideCount === 1 ? <Trans>ride</Trans> : <Trans>rides</Trans>} <Trans>in</Trans> {MONTH_NAMES[currentMonth].slice(0, 3)}
               </span>
             </div>
 
@@ -534,7 +536,7 @@ export default function UserCalendar() {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
                   <span className="text-[11px] font-mono tracking-widest uppercase text-[#EB712B] font-bold">
-                    {isSelectedDateToday ? 'TODAY’S SCHEDULE' : 'SELECTED DATE'}
+                    {isSelectedDateToday ? <Trans>TODAY’S SCHEDULE</Trans> : <Trans>SELECTED DATE</Trans>}
                   </span>
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-black text-text-main uppercase tracking-tight leading-tight">
@@ -544,7 +546,7 @@ export default function UserCalendar() {
 
               <div className="self-start sm:self-auto shrink-0">
                 <span className="inline-flex items-center px-3 py-1.5 bg-surface border border-border text-text-muted rounded-xl text-[11px] font-mono font-bold uppercase tracking-wider">
-                  {selectedDateRides.length} {selectedDateRides.length === 1 ? 'Ride Scheduled' : 'Rides Scheduled'}
+                  {selectedDateRides.length} {selectedDateRides.length === 1 ? <Trans>Ride Scheduled</Trans> : <Trans>Rides Scheduled</Trans>}
                 </span>
               </div>
             </div>
@@ -553,7 +555,7 @@ export default function UserCalendar() {
             {isLoadingAll || (isLoadingByDate && isFetchingByDate) ? (
               <div className="py-12 text-center text-text-muted space-y-3">
                 <div className="w-7 h-7 border-2 border-[#EB712B] border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-xs font-bold uppercase tracking-wider">Syncing schedule...</p>
+                <p className="text-xs font-bold uppercase tracking-wider"><Trans>Syncing schedule...</Trans></p>
               </div>
             ) : selectedDateRides.length === 0 ? (
               <div className="py-12 sm:py-16 text-center text-text-muted space-y-4">
@@ -561,9 +563,9 @@ export default function UserCalendar() {
                   <Bike size={24} />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-lg font-black uppercase text-text-main">No Rides on this Date</h4>
+                  <h4 className="text-lg font-black uppercase text-text-main"><Trans>No Rides on this Date</Trans></h4>
                   <p className="text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
-                    There are no club rides scheduled for {formattedSelectedDateLabel}. You can choose another marked date on the calendar or create a new ride for the club.
+                    <Trans>There are no club rides scheduled for this date. You can choose another marked date on the calendar or create a new ride for the club.</Trans>
                   </p>
                 </div>
                 <div className="flex items-center justify-center gap-3 pt-2">
@@ -571,13 +573,13 @@ export default function UserCalendar() {
                     onClick={() => navigate('/view/userside/rides?create=true')}
                     className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
                   >
-                    Create Ride
+                    <Trans>Create Ride</Trans>
                   </button>
                   <button
                     onClick={() => navigate('/view/userside/rides')}
                     className="px-5 py-2.5 bg-surface border border-border hover:bg-hover text-text-main text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
                   >
-                    Browse All Rides
+                    <Trans>Browse All Rides</Trans>
                   </button>
                 </div>
               </div>
@@ -599,8 +601,8 @@ export default function UserCalendar() {
                   const rideTitle = ride.rideName || ride.title || 'Club Ride';
                   const rideLocation = ride.meetingPoint || ride.location || 'Meeting point specified upon joining';
                   const formattedTime = formatHumanTime(ride.time);
-                  const rideDistance = ride.distance ? `${ride.distance} km` : 'Open Distance';
-                  const ridePace = ride.pace ? `${ride.pace} min/km` : (ride.speed ? `${ride.speed} km/h` : 'Moderate');
+                  const rideDistance = ride.distance ? `${ride.distance} km` : <Trans>Open Distance</Trans>;
+                  const ridePace = ride.pace ? `${ride.pace} min/km` : (ride.speed ? `${ride.speed} km/h` : <Trans>Moderate</Trans>);
                   const rideParticipants =
                     ride.participantCount ||
                     ride.joinedParticipantsCount ||
@@ -667,23 +669,23 @@ export default function UserCalendar() {
                           {/* Top Row: Activity Tag & Quick Action Buttons */}
                           <div className="flex justify-between items-center pointer-events-auto">
                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-widest text-white/90 uppercase">
-                              {rideSport} Activity
+                              {rideSport === 'Cycling' ? <Trans>Cycling Activity</Trans> : rideSport === 'Running' ? <Trans>Running Activity</Trans> : <Trans>Triathlon Activity</Trans>}
                             </span>
 
                             {/* Quick Action Icons */}
                             <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={(e) => handleAddToGoogleCalendar(ride, e)}
-                                title="Add to Google Calendar"
+                                title={t`Add to Google Calendar`}
                                 className="px-2.5 py-1.5 rounded-lg bg-black/70 hover:bg-[#EB712B] text-white backdrop-blur-md border border-white/15 transition-colors flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                               >
                                 <CalendarIcon size={12} />
-                                <span>Google Cal</span>
+                                <span><Trans>Google Cal</Trans></span>
                               </button>
 
                               <button
                                 onClick={(e) => handleToggleSave(ride.id, e)}
-                                title={isSaved ? 'Unsave Ride' : 'Save Ride'}
+                                title={isSaved ? t`Unsave Ride` : t`Save Ride`}
                                 className={`p-1.5 rounded-lg bg-black/70 backdrop-blur-md border transition-colors cursor-pointer ${
                                   isSaved
                                     ? 'border-[#EB712B] text-[#EB712B]'
@@ -695,7 +697,7 @@ export default function UserCalendar() {
 
                               <button
                                 onClick={(e) => handleShareRide(ride, e)}
-                                title="Share Ride"
+                                title={t`Share Ride`}
                                 className="p-1.5 rounded-lg bg-black/70 hover:bg-white/20 text-white/80 hover:text-white backdrop-blur-md border border-white/15 transition-colors cursor-pointer"
                               >
                                 <Share2 size={13} />
@@ -719,7 +721,7 @@ export default function UserCalendar() {
 
                               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/15 text-xs font-semibold text-white shadow-sm">
                                 <Users size={13} className="text-[#EB712B] shrink-0" />
-                                <span>{rideParticipants} Riders</span>
+                                <span>{rideParticipants} <Trans>Riders</Trans></span>
                               </div>
                             </div>
 
@@ -738,7 +740,7 @@ export default function UserCalendar() {
                                 }}
                                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-[#EB712B] text-black hover:text-white font-black text-xs uppercase tracking-wider transition-colors active:scale-95 cursor-pointer shadow-md"
                               >
-                                <span>View Ride</span>
+                                <span><Trans>View Ride</Trans></span>
                                 <ArrowRight size={13} />
                               </button>
                             </div>

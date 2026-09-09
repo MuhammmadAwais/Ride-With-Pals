@@ -1,11 +1,38 @@
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-09 19:10+0500\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
 "X-Generator: @lingui/cli\n"
-"Language: pt\n"
+
+#. placeholder {0}: categoryBreakdown.length
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "{0} Categories"
+msgstr "{0} Categorias"
+
+#. placeholder {0}: clubSpending.length
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "{0} Clubs"
+msgstr "{0} Clubes"
+
+#. placeholder {0}: transactions.length > 0 ? Math.round((completedTx.length /
+#. transactions.length) * 100) : 0
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "{0}% Settlement Rate"
+msgstr "{0}% Taxa de liquidação"
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "{count} Pals joined"
+msgstr "{count} amigos entraram"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "/ mo ($49.99/yr)"
@@ -18,6 +45,22 @@ msgstr "/ mês"
 #: src/features/landing/components/PricingSection.tsx
 msgid "/ year"
 msgstr "/ ano"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "+ Create Club"
+msgstr "+ Criar Clube"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "✓ Joined (Leave)"
+msgstr "✓ Entrou (sair)"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "$200+"
+msgstr "$ 200 +"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "$50 - $200"
+msgstr "US$ 50 - US$ 200"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "01 — FOR RIDERS"
@@ -35,45 +78,289 @@ msgstr "03 — PARA CLUBES"
 msgid "04 — MEMBERSHIP FEES"
 msgstr "04 — MENSALIDADES E TAXAS"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "1. Mandatory Safety & Gear Policy"
+msgstr "1. Política obrigatória de segurança e equipamentos"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "12-hour (1:30 PM)"
+msgstr "12 horas (13h30)"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "2. Traffic Laws & Environmental Respect"
+msgstr "2. Leis de Trânsito e Respeito Ambiental"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "24-hour (13:30)"
+msgstr "24 horas (13:30)"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "3. Risk Awareness & Personal Responsibility"
+msgstr "3. Conscientização sobre riscos e responsabilidade pessoal"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "4. Community Code of Conduct"
+msgstr "4. Código de Conduta da Comunidade"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "A chat for every ride."
 msgstr "Um chat para cada treino."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
-msgstr "Com certeza. Na verdade, o Ride with Pals foi criado para melhorar a comunicação em grupos de treino como o nosso e acabar de vez com os grupos caóticos do WhatsApp."
+msgid ""
+"Absolutely. In fact, Ride with Pals was created to improve communication "
+"within riding groups like ours and put an end to endless, chaotic WhatsApp "
+"chats."
+msgstr ""
+"Com certeza. Na verdade, o Ride with Pals foi criado para melhorar a "
+"comunicação em grupos de treino como o nosso e acabar de vez com os grupos "
+"caóticos do WhatsApp."
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Accept & Continue"
+msgstr "Aceitar e continuar"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Accept or reject applications with one tap"
 msgstr "Aceite ou recuse pedidos de adesão com um toque"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"Account deletion requests are processed manually to verify account ownership"
+" and prevent unauthorized removals."
+msgstr ""
+"As solicitações de exclusão de conta são processadas manualmente para "
+"verificar a propriedade da conta e evitar remoções não autorizadas."
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Account holder"
+msgstr "Titular da conta"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Action"
+msgstr "Ação"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Active Filters:"
+msgstr "Filtros ativos:"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Active Member"
+msgstr "Membro Ativo"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Active Subscription"
+msgstr "Assinatura Ativa"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Active:"
+msgstr "Ativo:"
+
+#: src/components/Sidebar.tsx
+msgid "Activities"
+msgstr "Atividades"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Activity"
+msgstr "Atividade"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity Fee"
+msgstr "Taxa de atividade"
+
+#. placeholder {0}: activeUser.participantCount
+#: src/features/support/components/ChatWindow.tsx
+msgid "Activity Group • {0} athletes"
+msgstr "Grupo de atividades • {0} atletas"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Activity Group • View members & info"
+msgstr "Grupo de atividades • Ver membros e informações"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity Organizer"
+msgstr "Organizador de atividades"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity Overview & Guidelines"
+msgstr "Visão geral e diretrizes da atividade"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity roster"
+msgstr "Lista de atividades"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Add Listing"
+msgstr "Adicionar listagem"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Add Product"
+msgstr "Adicionar produto"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Add to Google Calendar"
+msgstr "Adicionar ao Google Agenda"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Add to Shop"
+msgstr "Adicionar à loja"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Adding you to the club..."
+msgstr "Adicionando você ao clube..."
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Adding..."
+msgstr "Adicionando..."
+
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Advanced Performance Analytics"
 msgstr "Estatísticas avançadas de desempenho"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "All"
+msgstr "Todos"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "ALL"
+msgstr "TODOS"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "All Categories"
+msgstr "Todas as categorias"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "All Gear"
+msgstr "Todos os equipamentos"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"All riders and runners must follow traffic signs, signal properly, and "
+"respect local pedestrians and trail etiquette at all times."
+msgstr ""
+"Todos os ciclistas e corredores devem seguir os sinais de trânsito, "
+"sinalizar adequadamente e respeitar os pedestres locais e a etiqueta da "
+"trilha em todos os momentos."
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "All rights reserved."
 msgstr "Todos os direitos reservados."
 
+#: src/features/public-club/pages/UserClub.tsx
+msgid "All Sports"
+msgstr "Todos os esportes"
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "All-in-one club dashboard with real-time ride tracking"
-msgstr "Painel completo para clubes com acompanhamento de treinos em tempo real"
+msgstr ""
+"Painel completo para clubes com acompanhamento de treinos em tempo real"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "All-in-One Sports Club Platform"
 msgstr "Plataforma completa para clubes esportivos"
 
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Amount"
+msgstr "Quantidade"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "App Preferences"
+msgstr "Preferências do aplicativo"
+
 #: src/features/landing/components/BentoSection.tsx
-msgid "Approve members, handle roles, and keep your community engaged and organised effortlessly."
-msgstr "Aprove membros, atribua funções e mantenha sua comunidade engajada e organizada sem complicação."
+msgid ""
+"Approve members, handle roles, and keep your community engaged and organised"
+" effortlessly."
+msgstr ""
+"Aprove membros, atribua funções e mantenha sua comunidade engajada e "
+"organizada sem complicação."
+
+#. placeholder {0}: club.clubName || club.name || 'this club'
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid ""
+"Are you sure you want to leave <0>{0}</0>? You will lose access to member-"
+"only scheduled rides, club leaderboards, and exclusive activity perks."
+msgstr ""
+"Tem certeza de que deseja sair de <0>{0}</0>? Você perderá o acesso a "
+"passeios programados apenas para membros, tabelas de classificação de clubes"
+" e benefícios de atividades exclusivas."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "As a club administrator, what permissions can I grant to club members?"
-msgstr "Como administrador do clube, quais permissões posso conceder aos membros?"
+msgstr ""
+"Como administrador do clube, quais permissões posso conceder aos membros?"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Athlete"
+msgstr "Atleta"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Athlete ID:"
+msgstr "ID do Atleta:"
+
+#: src/components/Sidebar.tsx
+msgid "Athlete Interface"
+msgstr "Interface do Atleta"
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Athlete Library"
+msgstr "Biblioteca do Atleta"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Athletes"
+msgstr "Atletas"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Athletic Clubs"
+msgstr "Clubes Atléticos"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid ""
+"Authentic gear listed by community member. Inquire with seller directly for "
+"specifications, sizing, and pickup options."
+msgstr ""
+"Equipamento autêntico listado pelo membro da comunidade. Consulte "
+"diretamente o vendedor para obter especificações, tamanhos e opções de "
+"coleta."
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Automated monthly leaderboards, distance metrics & badges"
 msgstr "Rankings mensais automáticos, métricas de quilometragem e emblemas"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Avatar Preview"
+msgstr "Visualização do avatar"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Avg Pace"
+msgstr "Ritmo médio"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Awaiting Clearance"
+msgstr "Aguardando autorização"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Back"
+msgstr "Voltar"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Back to Activities"
+msgstr "Voltar às atividades"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Back to Clubs"
+msgstr "Voltar aos clubes"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Basic feature set"
+msgstr "Conjunto de recursos básicos"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Basic ride & activity tracking"
@@ -83,9 +370,23 @@ msgstr "Monitoramento básico de pedaladas e atividades"
 msgid "Basic Tier"
 msgstr "Nível Básico"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Billing & plan renewal alerts"
+msgstr "Alertas de faturamento e renovação de plano"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Bio"
+msgstr "Bio"
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app."
-msgstr "Ambas as opções estão disponíveis: você pode gerenciar pagamentos manualmente (registrando dinheiro ou transferências) ou usar o Stripe para automatizar e receber com segurança pelo aplicativo."
+msgid ""
+"Both options are available: you can manage payments manually (recording "
+"outside payments like cash or bank transfer), or you can use Stripe to "
+"automate and collect them securely inside the app."
+msgstr ""
+"Ambas as opções estão disponíveis: você pode gerenciar pagamentos "
+"manualmente (registrando dinheiro ou transferências) ou usar o Stripe para "
+"automatizar e receber com segurança pelo aplicativo."
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Browse & join public activities"
@@ -95,9 +396,28 @@ msgstr "Explore e participe de atividades públicas"
 msgid "Browse & Join Rides"
 msgstr "Explorar e participar de treinos"
 
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Browse Activities"
+msgstr "Navegar pelas atividades"
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Browse activities and tap the bookmark icon to save them for later."
+msgstr ""
+"Navegue pelas atividades e toque no ícone de marcador para salvá-las para "
+"mais tarde."
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Browse All Rides"
+msgstr "Procurar todos os passeios"
+
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
-msgstr "Confira os próximos treinos em grupo com ritmo, distância e trajeto rapidamente. Deslize para participar em segundos e dispute o ranking todo mês."
+msgid ""
+"Browse upcoming group rides with pace, distance, and ride type at a glance. "
+"Swipe to join in seconds — then compete monthly on the leaderboard."
+msgstr ""
+"Confira os próximos treinos em grupo com ritmo, distância e trajeto "
+"rapidamente. Deslize para participar em segundos e dispute o ranking todo "
+"mês."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Build your club."
@@ -109,11 +429,34 @@ msgstr "Promovendo confiança e segurança em treinos em grupo"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Built-in club chat, announcement board & gear marketplace"
-msgstr "Chat integrado da equipe, mural de avisos e classificados de equipamentos"
+msgstr ""
+"Chat integrado da equipe, mural de avisos e classificados de equipamentos"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Buy and sell gear with riders you already know"
 msgstr "Compre e venda equipamentos com atletas da sua confiança"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Buy Now"
+msgstr "Comprar agora"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "By"
+msgstr "Até"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"By registering for this event, you understand the aerobic and environmental "
+"challenges of outdoor activity and assume personal responsibility."
+msgstr ""
+"Ao se inscrever neste evento, você entende os desafios aeróbicos e "
+"ambientais da atividade ao ar livre e assume responsabilidade pessoal."
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Calendar"
+msgstr "Calendário"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Can I create activities without belonging to a club?"
@@ -139,37 +482,193 @@ msgstr "Posso usar o aplicativo sem conectar o Strava?"
 msgid "Can users be banned?"
 msgstr "Os administradores podem banir ou remover usuários?"
 
+#: src/components/Sidebar.tsx src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Cancelling..."
+msgstr "Cancelando..."
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Card number"
+msgstr "Número do cartão"
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Casual Groups"
 msgstr "Grupos de amigos"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Category"
+msgstr "Categoria"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Category Breakdown"
+msgstr "Divisão de categorias"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Change Password"
+msgstr "Alterar senha"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Change Photo"
+msgstr "Alterar foto"
+
+#: src/components/Sidebar.tsx
+msgid "Chat"
+msgstr "Bate-papo"
+
+#: src/components/Sidebar.tsx
+msgid "Chat Support"
+msgstr "Suporte por bate-papo"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Chat. Trade."
 msgstr "Converse. Compartilhe."
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Choose which events trigger instant email notifications to your inbox."
+msgstr ""
+"Escolher quais eventos acionam notificações instantâneas por e-mail em sua "
+"caixa de entrada."
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "City"
+msgstr "Cidade"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Clear all"
+msgstr "Limpar tudo"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Clear Filter"
+msgstr "Limpar filtro"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Clear search"
+msgstr "Limpar pesquisa"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Clear Search & Filters"
+msgstr "Limpar pesquisa e filtros"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Click to Join Activity"
+msgstr "Clique para ingressar na atividade"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Click to view full image"
+msgstr "Clique para ver a imagem completa"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Click to view group details & member roster"
+msgstr "Clique para ver os detalhes do grupo e a lista de membros"
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Click to view message center overview"
+msgstr "Clique para ver a visão geral do centro de mensagens"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Click to view profile"
+msgstr "Clique para ver o perfil"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Climb the ranks."
 msgstr "Suba no ranking."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Close"
+msgstr "Fechar"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Close Directory"
+msgstr "Fechar diretório"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Close modal"
+msgstr "Fechar modal"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Close roster"
+msgstr "Fechar lista"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Close search"
+msgstr "Fechar pesquisa"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Club"
+msgstr "Clube"
 
 #: src/features/landing/components/CTASection.tsx
 msgid "club & rides?"
 msgstr "clube e treinos?"
 
+#: src/components/layout/Navbar.tsx
+msgid "Club activity will appear here."
+msgstr "Clube a atividade aparecerá aqui."
+
+#: src/components/layout/Navbar.tsx
+msgid "Club Alerts"
+msgstr "Alertas do clube"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Club Calendar"
 msgstr "Calendário do Clube"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Club entry fee:"
+msgstr "Taxa de inscrição no clube:"
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "CLUB GROWTH"
 msgstr "CRESCIMENTO DO CLUBE"
 
-#: src/features/landing/components/BentoSection.tsx
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Join Requests"
+msgstr "Solicitações de adesão ao clube"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Join Response"
+msgstr "Resposta de adesão ao clube"
+
+#: src/components/Sidebar.tsx src/features/landing/components/BentoSection.tsx
 msgid "Club Management"
 msgstr "Gestão de Clubes"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Club Marketplace"
 msgstr "Mercado do Clube"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Members"
+msgstr "Membros do clube"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Club Membership"
+msgstr "Afiliação ao clube"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club overview & settings"
+msgstr "Visão geral e configurações do clube"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Club Payment"
+msgstr "Pagamento do clube"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Permissions"
+msgstr "Permissões do clube"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Club shop & fee collection"
@@ -179,9 +678,41 @@ msgstr "Loja oficial e cobrança de mensalidades"
 msgid "Club shop & membership fee management"
 msgstr "Loja do clube e gestão de mensalidades"
 
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Club Spending Distribution"
+msgstr "Distribuição de gastos do clube"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Club Store"
+msgstr "Loja do Clube"
+
+#: src/components/Sidebar.tsx
+msgid "Club Subscription"
+msgstr "Assinatura do Clube"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Club Type"
+msgstr "Tipo de Clube"
+
+#: src/components/Sidebar.tsx
+msgid "Club Wallet"
+msgstr "Carteira do Clube"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Club:"
+msgstr "Clube:"
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
-msgstr "Clubes com assinatura Gold podem conectar sua conta do Stripe e ativar uma loja virtual para vender uniformes e produtos aos membros."
+msgid ""
+"Clubs with a Gold subscription can connect their Stripe payment account and "
+"activate an online shop to sell merchandise and products to their members."
+msgstr ""
+"Clubes com assinatura Gold podem conectar sua conta do Stripe e ativar uma "
+"loja virtual para vender uniformes e produtos aos membros."
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Clubs you manage or create will appear here."
+msgstr "Os clubes que você gerencia ou cria aparecerão aqui."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Collect Fees"
@@ -190,6 +721,18 @@ msgstr "Cobrança de mensalidades"
 #: src/features/landing/components/FAQSection.tsx
 msgid "Commission"
 msgstr "Comissão"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "communities"
+msgstr "comunidades"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Communities you interact and transact with"
+msgstr "Comunidades com as quais você interage e realiza transações"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "community"
+msgstr "comunidade"
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Community"
@@ -204,6 +747,10 @@ msgstr "COMUNIDADE"
 msgid "Community & Updates"
 msgstr "Comunidade e Novidades"
 
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Community Club"
+msgstr "Community Club"
+
 #: src/features/landing/components/FooterSection.tsx
 msgid "Company"
 msgstr "Empresa"
@@ -212,17 +759,82 @@ msgstr "Empresa"
 msgid "Compete by rides attended or total km covered"
 msgstr "Dispute posições por presenças em treinos ou quilometragem acumulada"
 
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Complete historical record of all verified activities"
+msgstr "Registro histórico completo de todas as atividades verificadas"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Complete Purchase"
+msgstr "Concluir compra"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Completed"
+msgstr "Concluída"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Condition"
+msgstr "Condição"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Confirm New Password"
+msgstr "Confirmar nova senha"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Connect Account"
+msgstr "Conectar conta"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Connect in real-time with the organizer and fellow participants to "
+"coordinate rendezvous point, pace, and equipment."
+msgstr ""
+"Conectar em tempo real com o organizador e outros participantes para "
+"coordenar o ponto de encontro, o ritmo e o equipamento."
+
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes."
-msgstr "Conecte-se com sua galera, agende treinos e mantenha a comunidade ativa — começar leva apenas alguns minutos."
+msgid ""
+"Connect with your squad, organize rides, and keep your community engaged - "
+"getting started takes just minutes."
+msgstr ""
+"Conecte-se com sua galera, agende treinos e mantenha a comunidade ativa — "
+"começar leva apenas alguns minutos."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Connected"
+msgstr "Conectado"
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Contact"
 msgstr "Contato"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Contact Details"
+msgstr "Detalhes de contato"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Contact Support"
+msgstr "Contate o suporte"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Core Features"
 msgstr "Recursos Principais"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Could not initiate checkout."
+msgstr "Não foi possível iniciar a finalização da compra."
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Could not open billing portal."
+msgstr "Não foi possível abrir o portal de cobrança."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Country"
+msgstr "País"
+
+#: src/components/Sidebar.tsx
+msgid "Create a Club"
+msgstr "Criar um clube"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Create a club (up to 15 members)"
@@ -233,8 +845,13 @@ msgid "Create and build community with "
 msgstr "Crie e fortaleça sua comunidade com "
 
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel."
-msgstr "Crie e gerencie vários clubes em um único painel. Publique notícias, aprove solicitações, gerencie atletas e mantenha tudo organizado."
+msgid ""
+"Create and manage multiple clubs from one dashboard. Post news, control who "
+"joins, manage members, and keep your community organised — all from your "
+"admin panel."
+msgstr ""
+"Crie e gerencie vários clubes em um único painel. Publique notícias, aprove "
+"solicitações, gerencie atletas e mantenha tudo organizado."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Create Club"
@@ -244,41 +861,217 @@ msgstr "Criar Clube"
 msgid "Create community."
 msgstr "Crie comunidade."
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Create Listing"
+msgstr "Criar listagem"
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/UserCalendar.tsx
+msgid "Create Ride"
+msgstr "Criar passeio"
+
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Create your profile"
 msgstr "Crie seu perfil"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "CREDIT"
+msgstr "CRÉDITO"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Cross-Club"
 msgstr "Inter-Clubes"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Cross-post Listing"
+msgstr "Listagem de postagem cruzada"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Current Password"
+msgstr "Senha atual"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Current password is required"
+msgstr "A senha atual é necessária"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Current period ends:"
+msgstr "O período atual termina:"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Current Plan"
+msgstr "Plano atual"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "CVV"
+msgstr "CVV"
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Cycling"
+msgstr "Ciclismo"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "CYCLING"
+msgstr "CICLISMO"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Cycling Activity"
+msgstr "Atividade de ciclismo"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Cycling, running and swimming"
 msgstr "Ciclismo, corrida e natação"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Danger Zone"
+msgstr "Zona de perigo"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Dark Mode"
+msgstr "Modo escuro"
+
+#: src/components/Sidebar.tsx
+msgid "Dashboard"
+msgstr "Painel"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Date"
+msgstr "Data"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Date of Birth"
+msgstr "Data de Nascimento"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "DEBIT"
+msgstr "DÉBITO"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Define the amount and membership validity period."
 msgstr "Defina o valor da contribuição e o período de validade do plano."
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Delegate roles & rights"
+msgstr "Delegar funções e direitos"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Delete Account"
+msgstr "Excluir conta"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Delete listing"
+msgstr "Excluir listagem"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Delivered"
+msgstr "Entregue"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Delivery"
+msgstr "Entrega"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Delivery Address"
+msgstr "Endereço de entrega"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Delivery Method"
+msgstr "Método de entrega"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Deposit, withdraw, and pay without leaving the app"
 msgstr "Deposite, transfira e pague diretamente no app"
 
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Description"
+msgstr "Descrição"
+
 #: src/features/landing/components/PricingSection.tsx
-msgid "Designed for athletes who want unlimited access to activities, marketplace, and analytics."
-msgstr "Feito para atletas que buscam acesso ilimitado a atividades, classificados e métricas."
+msgid ""
+"Designed for athletes who want unlimited access to activities, marketplace, "
+"and analytics."
+msgstr ""
+"Feito para atletas que buscam acesso ilimitado a atividades, classificados e"
+" métricas."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Designed for clubs."
 msgstr "Feito para clubes."
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Destination / Finish Point"
+msgstr "Destino / Ponto final"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Destination / Finish:"
+msgstr "Destino / Concluir:"
+
+#. placeholder {0}: row.name
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Direct message {0}"
+msgstr "Mensagem direta {0}"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Disconnect Strava"
+msgstr "Desconectar Strava"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Disconnected"
+msgstr "Desconectado"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Disconnected from Strava."
+msgstr "Desconectado do Strava."
+
+#: src/components/Sidebar.tsx
+msgid "Discount"
+msgstr "Desconto"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Discounts"
+msgstr "Descontos"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Discover All Clubs"
+msgstr "Descubra todos os clubes"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Discover and join scheduled group activities in your region."
+msgstr ""
+"Descubra e participe de atividades de grupo programadas em sua região."
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Discover clubs. Join activities."
 msgstr "Descubra clubes. Participe de treinos."
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Dismiss"
+msgstr "Liberar"
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Disorganized WhatsApp groups & lost ride details"
 msgstr "Grupos desorganizados no WhatsApp e dados de treinos perdidos"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Dist:"
+msgstr "Dist:"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Distance"
+msgstr "Distância"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Distance Unit"
+msgstr "Unidade de distância"
+
+#. placeholder {0}: val === 'mile' ? 'Miles' : 'Kilometers'
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Distance unit updated to {0}."
+msgstr "Unidade de distância atualizada para {0}."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Do I need to be a Premium user to create a club?"
@@ -300,13 +1093,78 @@ msgstr "O Ride with Pals processa os pagamentos ou apenas faz o registro?"
 msgid "Does the app charge a commission on each payment made through the app?"
 msgstr "O aplicativo cobra taxa em cada transação efetuada?"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Done"
+msgstr "Feito"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Downgrade via Customer Portal"
+msgstr "Downgrade via Portal do Cliente"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Download GPX"
+msgstr "BaixarGPX"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Download GPX route"
+msgstr "Baixar rota GPX"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Download GPX Route"
+msgstr "Baixar rota GPX"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Download route files and sync with Strava classification"
 msgstr "Baixe trajetos GPX e sincronize os dados com o ranking do Strava"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "e.g. 150"
+msgstr "por exemplo 150"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "e.g. Carbon Helmet"
+msgstr "por exemplo Capacete de carbono"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Edit"
+msgstr "Editar"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Elevation & Slope"
+msgstr "Elevação e Inclinação"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Elite Seller"
+msgstr "Vendedor Elite"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Email Notification Preferences"
+msgstr "Preferências de notificação por e-mail"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Ensure your account is protected with a strong password."
+msgstr "Certifique-se de que sua conta esteja protegida com uma senha forte."
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Equipment Condition"
+msgstr "Condição do equipamento"
+
 #: src/features/landing/components/PricingSection.tsx
-msgid "Essential access to browse activities, join clubs, and connect with your community."
-msgstr "Acesso essencial para encontrar treinos, entrar em clubes e interagir com outros esportistas."
+msgid ""
+"Essential access to browse activities, join clubs, and connect with your "
+"community."
+msgstr ""
+"Acesso essencial para encontrar treinos, entrar em clubes e interagir com "
+"outros esportistas."
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Essentials for getting started."
+msgstr "Fundamentos para começar."
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Event Operated By"
+msgstr "Evento operado por"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Everything in Free Limited Plan"
@@ -316,11 +1174,134 @@ msgstr "Tudo o que está incluído no Plano Gratuito"
 msgid "Exclusive discount codes on gear and club events"
 msgstr "Cupons de desconto exclusivos em equipamentos e inscrições"
 
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Expiry Date"
+msgstr "Data de validade"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Explore All Rides"
+msgstr "Explorar todos os passeios"
+
+#: src/components/Sidebar.tsx
+msgid "Explore Clubs"
+msgstr "Explorar clubes"
+
+#: src/components/Sidebar.tsx
+msgid "Explore clubs & rides"
+msgstr "Explore clubes e atrações"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid ""
+"Explore scheduled rides across clubs. Select any calendar date to view the "
+"daily briefing, meeting points, and export directly to Google Calendar."
+msgstr ""
+"Explore passeios programados em clubes. Selecione qualquer data do "
+"calendário para visualizar o briefing diário, pontos de encontro e exportar "
+"diretamente para o Google Agenda."
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Failed to add product."
+msgstr "Falha ao adicionar produto."
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Failed to cancel order."
+msgstr "Falha ao cancelar o pedido."
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to create listing."
+msgstr "Falha ao criar listagem."
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to delete listing."
+msgstr "Falha ao excluir listagem."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to disconnect Strava."
+msgstr "Falha ao desconectar o Strava."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to initiate Strava connection."
+msgstr "Falha ao iniciar a conexão do Strava."
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to load marketplace listings. Please try again."
+msgstr "Falha ao carregar listagens do mercado. Por favor, tente novamente."
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Failed to load purchases"
+msgstr "Falha ao carregar compras"
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Failed to load saved activities."
+msgstr "Falha ao carregar atividades salvas."
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Failed to load shop items. Please try again."
+msgstr "Falha ao carregar itens da loja. Por favor, tente novamente."
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Failed to load subscription data."
+msgstr "Falha ao carregar dados de assinatura."
+
+#: src/features/notifications/Notifications.tsx
+msgid "Failed to mark notification as read"
+msgstr "Falha ao marcar a notificação como lida"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Failed to open billing portal"
+msgstr "Falha ao abrir o portal de faturamento"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Failed to place order. Please try again."
+msgstr "Falha ao fazer o pedido. Por favor, tente novamente."
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Failed to remove ride."
+msgstr "Falha ao remover passeio."
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to share listing."
+msgstr "Falha ao compartilhar listagem."
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Failed to start checkout"
+msgstr "Falha ao iniciar a finalização da compra"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update notification settings."
+msgstr "Falha ao atualizar as configurações de notificação."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update password."
+msgstr "Falha ao atualizar a senha."
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Failed to update saved rides."
+msgstr "Falha ao atualizar viagens salvas."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update scale unit."
+msgstr "Falha ao atualizar a unidade de escala."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update time format."
+msgstr "Falha ao atualizar o formato da hora."
+
 #: src/features/landing/components/FeaturesSection.tsx
 #: src/features/landing/components/FooterSection.tsx
 #: src/features/landing/components/Navigation.tsx
 msgid "Features"
 msgstr "Recursos"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Fee Payment Requests"
+msgstr "Solicitações de pagamento de taxas"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Filter"
+msgstr "Filtro"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Flat yearly rate — no member limits"
@@ -354,6 +1335,10 @@ msgstr "Para Gestores e Presidentes de Clubes"
 msgid "For Riders"
 msgstr "Para Atletas e Ciclistas"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "forever"
+msgstr "para sempre"
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Forum & News"
 msgstr "Fórum e Notícias"
@@ -363,12 +1348,44 @@ msgid "Fragmented member chats & missing announcement hub"
 msgstr "Conversas dispersas e falta de um canal oficial de comunicados"
 
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Free"
 msgstr "Grátis"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Free Entry"
+msgstr "Entrada gratuita"
+
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Free Limited Plan"
 msgstr "Plano Gratuito Limitado"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Fri"
+msgstr "Sex"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Full Name"
+msgstr "Nome completo"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Gear"
+msgstr "Equipamento"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Gear Item"
+msgstr "Item de equipamento"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "General"
+msgstr "Geral"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Get assistance"
+msgstr "Obtenha assistência"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Get Premium Athlete"
@@ -382,9 +1399,21 @@ msgstr "Comece grátis"
 msgid "Get Started Free"
 msgstr "Comece Gratuitamente"
 
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Global"
+msgstr "Global"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Global Marketplace"
+msgstr "Global Marketplace"
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Gold Club Plan"
 msgstr "Plano Club Gold"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Google Cal"
+msgstr "Google Cal"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Got questions?"
@@ -394,13 +1423,64 @@ msgstr "Dúvidas?"
 msgid "GPX & Strava Sync"
 msgstr "Sincronização GPX e Strava"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "GPX Route"
+msgstr "GPX Route"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Ride.tsx
+msgid "Grid View"
+msgstr "Grid View"
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Group"
+msgstr "Grupo"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Group Chat"
+msgstr "Chat em grupo"
+
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides."
-msgstr "Chat em grupo, mensagens privadas, classificados internos e carteira digital: tudo o que fortalece sua equipe fora dos treinos."
+msgid ""
+"Group chat, direct messages, a built-in marketplace, and an in-app wallet — "
+"everything that keeps your club community alive between rides."
+msgstr ""
+"Chat em grupo, mensagens privadas, classificados internos e carteira "
+"digital: tudo o que fortalece sua equipe fora dos treinos."
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Group discussion is reserved for registered athletes. Join this activity to "
+"unlock the conversation room."
+msgstr ""
+"A discussão em grupo é reservada para atletas inscritos. Participe desta "
+"atividade para desbloquear a sala de conversação."
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Group Info"
+msgstr "Informações do Grupo"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Helmets and proper sports apparel are required for all cycling and high-"
+"velocity activities. Participants must inspect their gear prior to "
+"departure."
+msgstr ""
+"Capacetes e roupas esportivas adequadas são necessárias para todas as "
+"atividades de ciclismo e alta velocidade. Os participantes devem inspecionar"
+" seus equipamentos antes da partida."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Here's everything you need to know before getting started. If you have more questions, feel free to reach out to our team."
-msgstr "Confira os pontos essenciais antes de começar. Se precisar de apoio adicional, nossa equipe está pronta para ajudar."
+msgid ""
+"Here's everything you need to know before getting started. If you have more "
+"questions, feel free to reach out to our team."
+msgstr ""
+"Confira os pontos essenciais antes de começar. Se precisar de apoio "
+"adicional, nossa equipe está pronta para ajudar."
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Host"
+msgstr "Anfitrião"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "How are transactions carried out through the marketplace?"
@@ -435,13 +1515,29 @@ msgstr "Como o Metro CC dobrou o número de integrantes"
 msgid "How to Launch Your Club and Attract More Riders"
 msgstr "Como inaugurar seu clube e engajar novos participantes"
 
-#: src/features/landing/components/FAQSection.tsx
-msgid "I'm not part of an official club, but my friends and I ride together. Can we use the app?"
-msgstr "Não faço parte de uma federação, mas treino com amigos. Podemos usar o app?"
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "I acknowledge and accept the"
+msgstr "Reconheço e aceito o"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard."
-msgstr "Com o plano Gold para clubes, você configura as mensalidades, marca pagamentos recebidos e envia cobranças pelo Stripe direto no painel."
+msgid ""
+"I'm not part of an official club, but my friends and I ride together. Can we"
+" use the app?"
+msgstr ""
+"Não faço parte de uma federação, mas treino com amigos. Podemos usar o app?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid ""
+"If you have a Gold club subscription, you can define membership fees, mark "
+"payments as completed, and send payment requests through Stripe from your "
+"club dashboard."
+msgstr ""
+"Com o plano Gold para clubes, você configura as mensalidades, marca "
+"pagamentos recebidos e envia cobranças pelo Stripe direto no painel."
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "in"
+msgstr "em"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "In-App Wallet"
@@ -453,7 +1549,16 @@ msgstr "Loja Integrada"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Integrated wallet, automated member dues & permissions"
-msgstr "Carteira digital, cobrança automática e níveis de acesso personalizados"
+msgstr ""
+"Carteira digital, cobrança automática e níveis de acesso personalizados"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Integration"
+msgstr "Integração"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Irreversible Action"
+msgstr "Ação irreversível"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Is it a social app or a management tool?"
@@ -472,12 +1577,45 @@ msgid "Is there a forum-style interaction feature?"
 msgstr "Existe espaço de discussão no formato de fórum?"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation."
-msgstr "É os dois. O Ride with Pals une o espírito comunitário (conversas, treinos e classificados) a ferramentas de gestão profissional: cobranças, loja, permissões e calendário."
+msgid ""
+"It's both. Ride with Pals combines community features — chats, marketplace, "
+"and activities — with real club management tools, including membership fees,"
+" a club shop, permissions, and organisation."
+msgstr ""
+"É os dois. O Ride with Pals une o espírito comunitário (conversas, treinos e"
+" classificados) a ferramentas de gestão profissional: cobranças, loja, "
+"permissões e calendário."
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Item"
+msgstr "Item"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "items found"
+msgstr "itens encontrados"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Join Activity"
+msgstr "Junte-se à atividade"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Join Activity to Chat"
+msgstr "Junte-se à atividade para conversar"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Join activity to unlock group chat room"
+msgstr "Participe da atividade para desbloquear a sala de bate-papo em grupo"
 
 #: src/features/landing/components/CTASection.tsx
 msgid "Join athletes and club leaders building the ultimate sports community."
-msgstr "Una-se a atletas e gestores que estão construindo a melhor comunidade esportiva."
+msgstr ""
+"Una-se a atletas e gestores que estão construindo a melhor comunidade "
+"esportiva."
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join Club"
+msgstr "Junte-se ao clube"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Join Request Control"
@@ -488,32 +1626,209 @@ msgid "Join the Club"
 msgstr "Entre no Clube"
 
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Join the ride, track your progress, build connections, and share your experiences with the community."
-msgstr "Pedale junto, monitore seus avanços, crie laços e compartilhe seus momentos esportivos."
+msgid ""
+"Join the ride, track your progress, build connections, and share your "
+"experiences with the community."
+msgstr ""
+"Pedale junto, monitore seus avanços, crie laços e compartilhe seus momentos "
+"esportivos."
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join this club to view its {activeTab}."
+msgstr "Junte-se a este clube para ver seu {activeTab}."
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join Verification"
+msgstr "Verificação de adesão"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join with Code"
+msgstr "Junte-se com código"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Joined"
+msgstr "Ingressou"
+
+#: src/components/Sidebar.tsx
+msgid "Joining Requests"
+msgstr "Solicitações de adesão"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Joining..."
+msgstr "Juntando-se..."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep every ride, event, and activity organized in one place"
 msgstr "Reúna todos os treinos, eventos e provas em um único lugar"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Kilometers (km)"
+msgstr "Quilômetros (km)"
+
+#. placeholder {0}: activeUser.lastSeen
+#: src/features/support/components/ChatWindow.tsx
+msgid "Last seen {0}"
+msgstr "Visto pela última vez {0}"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Leader"
+msgstr "Líder"
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
+msgid "Leaderboard"
+msgstr "Tabela de classificação"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Leaders"
+msgstr "Líderes"
+
 #: src/features/landing/components/BlogSection.tsx
-msgid "Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff."
-msgstr "Aprenda a transformar um pelotão de amigos em uma grande comunidade. Organização, engajamento e automação das burocracias com o Ride with Pals."
+msgid ""
+"Learn how to go from a small group of friends to a massive local community. "
+"We cover events, member engagement, and using Ride with Pals to automate the"
+" boring stuff."
+msgstr ""
+"Aprenda a transformar um pelotão de amigos em uma grande comunidade. "
+"Organização, engajamento e automação das burocracias com o Ride with Pals."
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Leave Activity"
+msgstr "Sair da atividade"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Leave Club"
+msgstr "Sair do clube"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Leave this Club?"
+msgstr "Sair deste clube?"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Leaving..."
+msgstr "Saindo..."
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Legal"
 msgstr "Termos Legais"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Light Mode"
+msgstr "Modo claro"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Limited items in Marketplace"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Ride.tsx
+msgid "List View"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listed by"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listing created successfully!"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listing deleted successfully!"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listing Price"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Live"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Loading Activity Details..."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Loading Subscription Details..."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Loading wallet ledger..."
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "Location not specified"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Locked"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Logged out successfully."
+msgstr ""
+
 #: src/features/landing/components/Navigation.tsx
 msgid "Login"
 msgstr "Entrar"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Logout"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Made simple."
 msgstr "De forma simples."
 
+#: src/features/public-club/components/ClubCard.tsx
+msgid "Manage"
+msgstr ""
+
+#. placeholder {0}: myClubs.length
+#: src/components/Sidebar.tsx
+msgid "Manage {0} clubs"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Manage 1 club"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Manage active members"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Manage Club"
+msgstr ""
+
 #: src/features/landing/components/HeroSection.tsx
-msgid "Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free."
-msgstr "Centralize tudo em um único ponto: treinos agendados, comunicados, loja, classificados, taxas e mensagens. Sem a bagunça do WhatsApp. E é grátis."
+msgid ""
+"Manage everything in one place: upcoming rides, news, online shop, "
+"marketplace, membership fees and messaging. No more endless WhatsApp chats. "
+"And it’s free."
+msgstr ""
+"Centralize tudo em um único ponto: treinos agendados, comunicados, loja, "
+"classificados, taxas e mensagens. Sem a bagunça do WhatsApp. E é grátis."
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Manage on Stripe"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid ""
+"Manage your personal hubs or discover training communities around the "
+"region."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Manage your personal information and application preferences"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Management Tools"
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Manual member tracking & paper waivers"
@@ -527,21 +1842,59 @@ msgstr "Controle de dinheiro e acertos manuais"
 msgid "Manual Payment Updates"
 msgstr "Atualização manual de pagamentos"
 
+#: src/features/public-club/pages/Ride.tsx
+msgid "Map View"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Mark all read"
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "Mark as read"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Mark members as paid when they pay outside the app."
-msgstr "Marque os atletas como em dia ao receber pagamentos fora do aplicativo."
+msgstr ""
+"Marque os atletas como em dia ao receber pagamentos fora do aplicativo."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Market Trades"
 msgstr "Negociações no Mercado"
 
 #: src/features/landing/components/FAQSection.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
 msgid "Marketplace"
 msgstr "Classificados"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Marketplace Filters"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "match"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "matches"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "matching search"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Max"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Maximising Ride Analytics to Boost Performance"
 msgstr "Aproveitando dados dos treinos para evoluir seu rendimento"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Member"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Member Discounts"
@@ -551,17 +1904,73 @@ msgstr "Descontos para Membros"
 msgid "Member Management"
 msgstr "Gestão de Atletas"
 
+#: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
+msgid "Members"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
 msgid "Membership"
 msgstr "Associação"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Membership fee payment reminders"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Membership fees."
 msgstr "Mensalidades."
 
+#: src/components/Sidebar.tsx
+msgid "Membership Plans"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Message"
+msgstr ""
+
+#. placeholder {0}: leader.name
+#. placeholder {0}: user.name
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Message {0}"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Message Host"
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Messages"
+msgstr ""
+
+#: src/features/support/Support.tsx
+msgid "Messages & Group Chat"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Miles (mi)"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Min"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Moderate"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Moderation"
 msgstr "Moderação"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Mon"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "month"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Monthly"
@@ -575,6 +1984,10 @@ msgstr "Rankings Mensais"
 msgid "Most popular"
 msgstr "Mais popular"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Most Popular"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Multiple Admins & Co-Owner Roles"
 msgstr "Múltiplos administradores e papéis de liderança compartilhada"
@@ -583,37 +1996,227 @@ msgstr "Múltiplos administradores e papéis de liderança compartilhada"
 msgid "Multisport activities"
 msgstr "Modalidades multiesportivas"
 
+#: src/features/public-club/pages/UserClub.tsx
+msgid "My Clubs"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "My Financial Overview"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "My Listings"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/MyPurchases.tsx
+msgid "My Purchases"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "My Wallet"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Net Expenditures"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "New"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "New Condition"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New member join applications"
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "New Notification"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New Password (min. 6 characters)"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New password is required"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New Rides & Activities"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Newest Listings First"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
+msgid "News"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "News & Announcements"
 msgstr "Notícias e Comunicados"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Next"
+msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "next level"
 msgstr "próximo nível"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Next Month"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "No activities found"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "No activities match your search"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "No category spending recorded yet."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "No club spending recorded yet."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "No equipment found"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "No equipment found matching your search"
+msgstr ""
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No integrated marketplace, sub-accounts, or event wallet"
-msgstr "Sem classificados internos, contas secundárias ou carteira para eventos"
+msgstr ""
+"Sem classificados internos, contas secundárias ou carteira para eventos"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "No listings match your selected search or filter criteria."
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No live leaderboards, badges, or Strava sync"
 msgstr "Sem rankings dinâmicos, insígnias ou integração com o Strava"
 
-#: src/features/landing/components/FAQSection.tsx
-msgid "No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water)."
-msgstr "Não. O Ride with Pals foi pensado para clubes de ciclismo, corrida e triatlo. Por isso usamos o termo “Atividades”, englobando ciclismo (speed, gravel, MTB), corrida (rua, trilha) ou natação (piscina ou águas abertas)."
+#: src/features/public-club/pages/UserClub.tsx
+msgid "No managed clubs yet"
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "No matches found."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No matching athletes found"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "No matching clubs found"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "No matching managed clubs"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "No messages found matching \"{messageSearchQuery}\""
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+#: src/features/notifications/Notifications.tsx
+msgid "No notifications yet"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No participants found in this category."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No participants matched \"{participantSearch}\"."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "No purchases found"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No registered participants yet."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "No Rides on this Date"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "No Saved Activities Yet"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "No wallet transactions found matching your filters."
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan."
-msgstr "Não. Basta cadastrar-se gratuitamente como atleta. Em seguida, você poderá fundar seu clube e optar pelo plano Gratuito ou Gold."
+msgid ""
+"No. Ride with Pals is designed for cycling, running, and triathlon clubs. "
+"That's why we use the term “Activities,” which can include cycling (gravel, "
+"road, and MTB), running (road and trail), or swimming (pool or open water)."
+msgstr ""
+"Não. O Ride with Pals foi pensado para clubes de ciclismo, corrida e "
+"triatlo. Por isso usamos o termo “Atividades”, englobando ciclismo (speed, "
+"gravel, MTB), corrida (rua, trilha) ou natação (piscina ou águas abertas)."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "No. You can use it as an individual athlete, join clubs, or take part in public activities."
-msgstr "Não. Você pode usá-lo individualmente, entrar em clubes existentes ou participar de atividades abertas ao público."
+msgid ""
+"No. To create a club, you just need to register as an athlete first on the "
+"Free plan. You can then create a club and choose between the Free or Gold "
+"club plan."
+msgstr ""
+"Não. Basta cadastrar-se gratuitamente como atleta. Em seguida, você poderá "
+"fundar seu clube e optar pelo plano Gratuito ou Gold."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid ""
+"No. You can use it as an individual athlete, join clubs, or take part in "
+"public activities."
+msgstr ""
+"Não. Você pode usá-lo individualmente, entrar em clubes existentes ou "
+"participar de atividades abertas ao público."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Not provided"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Notice:"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Notification settings updated successfully!"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx src/components/Sidebar.tsx
+#: src/features/notifications/Notifications.tsx
+msgid "Notifications"
+msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
-msgid "Offer club merch, event tickets, and gear directly to your members without external tools."
-msgstr "Disponibilize uniformes oficiais, ingressos e acessórios diretamente aos membros sem depender de terceiros."
+msgid ""
+"Offer club merch, event tickets, and gear directly to your members without "
+"external tools."
+msgstr ""
+"Disponibilize uniformes oficiais, ingressos e acessórios diretamente aos "
+"membros sem depender de terceiros."
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "One platform."
@@ -623,13 +2226,60 @@ msgstr "Uma única plataforma."
 msgid "Online Club Merchandise Shop"
 msgstr "Loja virtual de vestuário e produtos do clube"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Online payment required. Processed securely via Stripe Checkout. Spot "
+"confirmed instantly upon completion."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Online Shop"
 msgstr "Loja Online"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Open Activity Group Chat"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Open Distance"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Open Group Chat"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Opened Google Calendar template!"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Order"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Order cancelled successfully."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Order confirmation & delivery alerts"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Order Confirmed!"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Order ID"
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Organise rides & events"
 msgstr "Organize treinos e eventos"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Organizer"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Other Sports"
@@ -640,8 +2290,22 @@ msgid "Other Tools"
 msgstr "Outras Ferramentas"
 
 #: src/features/landing/components/FAQSection.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
 msgid "Overview"
 msgstr "Visão Geral"
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "Owned"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Pace:"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Paid"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Paid Activities"
@@ -651,21 +2315,105 @@ msgstr "Atividades Pagas"
 msgid "Paid Activities & Event Ticketing"
 msgstr "Atividades pagas e venda de ingressos"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Paid Activities & Ticketing"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Paid Entry"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Participant"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "participants"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Participants"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Participation"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Password must be at least 6 characters"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Password updated successfully!"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Passwords do not match"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Pay & Join"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Pay & Join Activity"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Pay Securely"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Payment Options"
 msgstr "Formas de Pagamento"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Payment Successful!"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Payment Tracking"
 msgstr "Acompanhamento de Pagamentos"
 
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Pending"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Per page:"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Perfect for athletes"
 msgstr "Ideal para atletas"
 
-#: src/features/landing/components/FAQSection.tsx
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"Permanently delete your account and all associated data. This action cannot "
+"be undone."
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/landing/components/FAQSection.tsx
 msgid "Permissions"
 msgstr "Permissões"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Phone"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Pickup"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Placing Order..."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Plans & billing"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Platform"
@@ -679,13 +2427,108 @@ msgstr "Tipo de Plataforma"
 msgid "Platforms"
 msgstr "Plataformas"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Please authorize Strava in the popup window."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Please check your connection and try again."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Please enter a product name."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Please enter a valid name and price."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Please enter a valid price."
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Please enter the club join code (Hint: 111)"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Please fill in your delivery address."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Please log in to purchase items."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Please read and accept the Terms & Safety Guidelines before joining."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Please try again later."
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Post updates and records for members to engage with"
 msgstr "Divulgue recordes e novidades para inspirar o grupo"
 
+#: src/features/public-club/pages/Shop.tsx
+msgid "Postal Code"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Pre-Owned"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Premium Athlete"
 msgstr "Atleta Premium"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Premium Equipment"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Premium Gear"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Premium Marketplace"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Premium Membership"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Prev"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Preview"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Previous Month"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Price (USD)"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Price Range (USD)"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Price: High to Low"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Price: Low to High"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 #: src/features/landing/components/Navigation.tsx
@@ -697,9 +2540,68 @@ msgstr "Planos"
 msgid "Priority member chat support"
 msgstr "Suporte prioritário via chat"
 
+#: src/components/Sidebar.tsx
+msgid "Privacy Policy"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Private"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "PRIVATE"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Private Club"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Problems Solved"
 msgstr "Dores Resolvidas"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Processing"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Product"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Product added to shop!"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Product Name"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Profile"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Profile <0>&</0> Account"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Provide a detailed description of the gear condition, sizing, etc."
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Public"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "PUBLIC"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Public Club"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Public club access & group chats"
@@ -709,9 +2611,26 @@ msgstr "Acesso a clubes abertos e conversas em grupo"
 msgid "Public Rides"
 msgstr "Treinos Abertos"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Publish Listing"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Publishing..."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Quantity"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Questions? Talk to us →"
 msgstr "Dúvidas? Fale com a gente →"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Race"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Read more"
@@ -729,6 +2648,76 @@ msgstr "Pronto para elevar seu "
 msgid "Real plans"
 msgstr "Planos sob medida"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Recently"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Recorded Ledger Events"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Redirecting you back..."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Refresh Data"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "registered"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Registered Athletes"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Registered Participants"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Remove from saved"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Request Membership"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Requesting..."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Reset"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Reset Filters & Search"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Return to App"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Return to Marketplace"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Review your order and checkout"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "ride"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Ride & Activity Updates"
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Ride Analytics"
 msgstr "Análise de Treinos"
@@ -741,29 +2730,170 @@ msgstr "Treine e conecte-se"
 msgid "Ride Chat"
 msgstr "Chat do Treino"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Ride Leaders"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride link copied to clipboard!"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride removed from saved list."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride saved successfully!"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "RIDE SCHEDULE & AGENDA"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride Scheduled"
+msgstr ""
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Ride With Pals"
 msgstr "Ride With Pals"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management."
-msgstr "O Ride with Pals acaba com passeios desordenados, conversas espalhadas em aplicativos de mensagem, dores de cabeça para encomendar uniformes, falta de um classificado seguro e o caos nas mensalidades da equipe."
+msgid ""
+"Ride with Pals eliminates disorganized activities, scattered communication "
+"across messaging apps, headaches with selling club merchandise to members, "
+"lack of a trusted marketplace for second-hand gear, and manual chaos in "
+"member and membership fee management."
+msgstr ""
+"O Ride with Pals acaba com passeios desordenados, conversas espalhadas em "
+"aplicativos de mensagem, dores de cabeça para encomendar uniformes, falta de"
+" um classificado seguro e o caos nas mensalidades da equipe."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
-msgstr "O Ride with Pals é a plataforma definitiva para equipes de ciclismo, corrida e triatlo organizarem treinos, gerenciarem membros, arrecadarem mensalidades e construírem comunidade."
+msgid ""
+"Ride with Pals is an all-in-one platform for cycling, running, and triathlon"
+" clubs that lets you organize activities, manage members, collect membership"
+" fees, sell products, and build a community - all in one place."
+msgstr ""
+"O Ride with Pals é a plataforma definitiva para equipes de ciclismo, corrida"
+" e triatlo organizarem treinos, gerenciarem membros, arrecadarem "
+"mensalidades e construírem comunidade."
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Ride With Pals maintains a zero-tolerance policy for unsportsmanlike "
+"behavior, harassment, or unsafe reckless maneuvers."
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Ride With Pals Messages"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "RIDE?"
 msgstr "A TREINAR?"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Riders"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "rides"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Rides"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Rides Scheduled"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Road"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Role"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Rolling Terrain"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Route & Waypoints"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Running"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "RUNNING"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Running Activity"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Safety guidelines accepted!"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Sat"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Save"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Save activity"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Save Activity"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Save Changes"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Save over 58% with annual billing ($49.99/year)"
 msgstr "Economize mais de 58% no faturamento anual ($49.99/ano)"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Save Ride"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Save up to 58%"
 msgstr "Economize até 58%"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Saved"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "saved activities"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/SavedRides.tsx
+msgid "Saved Activities"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Saving..."
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Say goodbye to endless WhatsApp chats."
@@ -773,49 +2903,269 @@ msgstr "Esqueça as notificações sem fim do WhatsApp."
 msgid "Schedule"
 msgstr "Programação"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Schedule changes & cancellations"
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates."
-msgstr "Agende treinos em equipe, gerencie confirmações e avise a todos com notificações automáticas."
+msgid ""
+"Schedule group rides, manage RSVPs seamlessly, and keep all your members "
+"informed with automated updates."
+msgstr ""
+"Agende treinos em equipe, gerencie confirmações e avise a todos com "
+"notificações automáticas."
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Scheduled Ride"
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Seamless ride creation with GPX routes & leader controls"
-msgstr "Criação simples de trajetos com arquivos GPX e funções de capitão de equipe"
+msgstr ""
+"Criação simples de trajetos com arquivos GPX e funções de capitão de equipe"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Search athlete by name or @username..."
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Search by activity title, club, or location..."
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Search communities by name or sport..."
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Search conversations..."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Search gear or location..."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Search gear, brand, or club..."
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Search messages in conversation"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Search messages in this conversation..."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Search purchases..."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Search roster by athlete name, @handle, or email..."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Search saved activities..."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Search transactions..."
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Secure Checkout"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Security & Workspace"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "See All"
+msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
-msgid "See all your active events, clubs, and tasks in one unified view — no more toggling between apps."
-msgstr "Visualize eventos programados, equipes e tarefas em uma única tela: sem precisar alternar entre vários apps."
+msgid ""
+"See all your active events, clubs, and tasks in one unified view — no more "
+"toggling between apps."
+msgstr ""
+"Visualize eventos programados, equipes e tarefas em uma única tela: sem "
+"precisar alternar entre vários apps."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "See who has paid, who needs to renew, and who is not up to date."
-msgstr "Identifique rapidamente quem já quitou, quem precisa renovar e pendências em aberto."
+msgstr ""
+"Identifique rapidamente quem já quitou, quem precisa renovar e pendências em"
+" aberto."
+
+#: src/features/support/components/ChatWindow.tsx
+msgid ""
+"Select a conversation from the left to start chatting with athletes and "
+"activity groups."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid ""
+"Select one of your joined clubs to share this listing onto their marketplace"
+" stream."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "SELECTED DATE"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Send secure payment requests directly through Stripe."
 msgstr "Envie links e cobranças protegidas via Stripe em instantes."
 
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
-msgstr "Defina o valor da associação, controle os recebimentos, emita faturas via Stripe e mantenha a situação dos membros sempre em dia."
+msgid ""
+"Set up your club's membership fees, track payments, send Stripe payment "
+"requests, and keep every member's status up to date - all from one simple "
+"dashboard."
+msgstr ""
+"Defina o valor da associação, controle os recebimentos, emita faturas via "
+"Stripe e mantenha a situação dos membros sempre em dia."
+
+#: src/components/Sidebar.tsx
+msgid "Set up your first club"
+msgstr ""
 
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll."
-msgstr "Preencha seu cadastro esportivo ou crie seu clube. Cadastre suas bicicletas, ajuste seus gostos e pronto para o asfalto."
+msgid ""
+"Set up your rider profile or create a club. Add your bikes, configure your "
+"preferences, and you're ready to roll."
+msgstr ""
+"Preencha seu cadastro esportivo ou crie seu clube. Cadastre suas bicicletas,"
+" ajuste seus gostos e pronto para o asfalto."
+
+#: src/components/Sidebar.tsx
+msgid "Settings"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Share"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Share Activity"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Share link: {url}"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Share Ride"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Shared successfully to the club bulletin board!"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Shop"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Shop Items"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Shop Order Status"
+msgstr ""
+
+#. placeholder {0}: filteredProducts.length
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Showing {0} items from elite verified riders & clubs"
+msgstr ""
+
+#. placeholder {0}: filteredProducts.length
+#: src/features/public-club/pages/Shop.tsx
+msgid "Showing {0} items from elite verified sellers"
+msgstr ""
+
+#. placeholder {0}: Math.min(notifications.length, 15)
+#. placeholder {1}: notifications.length
+#: src/components/layout/Navbar.tsx
+msgid "Showing {0} of {1} notifications"
+msgstr ""
+
+#. placeholder {0}: (discoverPage - 1) * itemsPerPage + 1
+#. placeholder {1}: Math.min(discoverPage * itemsPerPage,
+#. filteredDiscoverClubs.length)
+#. placeholder {2}: filteredDiscoverClubs.length
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Showing <0>{0}</0> to <1>{1}</1> of <2>{2}</2> clubs"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Sign Out"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Sign Out?"
+msgstr ""
 
 #: src/features/landing/components/Navigation.tsx
 msgid "Sign up"
 msgstr "Cadastrar-se"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Slope"
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Smart Dashboard"
 msgstr "Painel Inteligente"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Social"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Sort Order"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Speed"
+msgstr ""
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "sport clubs and ride squads"
 msgstr "clubes esportivos e pelotões de treino"
 
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Sport Type"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Sport Type:"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Sport:"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Sports"
 msgstr "Esportes"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Standard Route Tracking"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Start / Meeting Point"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Start / Meeting Point:"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Start for Free"
@@ -829,9 +3179,22 @@ msgstr "Comece grátis no computador e no celular"
 msgid "Start Gold Club"
 msgstr "Ativar Club Gold"
 
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Status"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Status updates for club join requests"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Stay connected."
 msgstr "Fique conectado."
+
+#: src/features/notifications/Notifications.tsx
+msgid "Stay updated with your latest activity"
+msgstr ""
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Step 1"
@@ -846,6 +3209,7 @@ msgid "Step 3"
 msgstr "Etapa 3"
 
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Strava & GPS Route Syncing"
 msgstr "Sincronização de percursos GPS e Strava"
 
@@ -853,53 +3217,180 @@ msgstr "Sincronização de percursos GPS e Strava"
 msgid "Strava & GPX Route Syncing"
 msgstr "Sincronização GPX e Strava"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Strava authentication initiated."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
-msgstr "O Strava é uma rede social focada nas métricas do indivíduo. O Ride with Pals foi desenhado para administrar clubes esportivos por completo: treinos, atletas, finanças, cargos, loja e diálogo interno."
+msgid ""
+"Strava is a sports social network focused on individual performance. Ride "
+"with Pals is designed to manage entire clubs — activities, members, "
+"payments, permissions, club shop, and internal communication."
+msgstr ""
+"O Strava é uma rede social focada nas métricas do indivíduo. O Ride with "
+"Pals foi desenhado para administrar clubes esportivos por completo: treinos,"
+" atletas, finanças, cargos, loja e diálogo interno."
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Strava status refreshed!"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Strava Sync"
 msgstr "Conexão com Strava"
 
+#: src/features/public-club/pages/Shop.tsx
+msgid "Street & Number"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Stripe Automated Fee Collection"
 msgstr "Cobrança automática via Stripe"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Stripe Direct Payout Integrations"
+msgstr ""
+
+#: src/components/Sidebar.tsx
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Stripe Payments"
 msgstr "Pagamentos com Stripe"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Subscribe Now"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/ClubSide/ProfileAccount.tsx
+msgid "Subscription"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Subscription Active!"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Subscription Status"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "SUCCESS STORY"
 msgstr "HISTÓRIA DE SUCESSO"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Sun"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Support & Help"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Swimming"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Switch Club"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Synced:"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Syncing schedule..."
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Take your club to the "
 msgstr "Leve seu clube para o "
+
+#: src/components/Sidebar.tsx
+msgid "Terms & Conditions"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Terms & Safety Guidelines"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Thank you for purchasing"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Thank you for your purchase of the"
+msgstr ""
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "The app for managing"
 msgstr "O app para liderar"
 
 #: src/features/landing/components/PricingSection.tsx
-msgid "The complete club operating system — collect member fees, run your club shop, and grow."
-msgstr "O sistema completo para clubes: receba mensalidades, administre uniformes e expanda sua equipe."
+msgid ""
+"The complete club operating system — collect member fees, run your club "
+"shop, and grow."
+msgstr ""
+"O sistema completo para clubes: receba mensalidades, administre uniformes e "
+"expanda sua equipe."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
-msgstr "O mercado destina-se a negociações diretas e seguras entre membros. Não processa cartões no app: a entrega do item e o acerto financeiro são feitos em mãos entre os participantes."
+msgid ""
+"The marketplace is a space for exchanges between members. It does not "
+"support card payments. The exchange of goods and money takes place outside "
+"the app, in person."
+msgstr ""
+"O mercado destina-se a negociações diretas e seguras entre membros. Não "
+"processa cartões no app: a entrega do item e o acerto financeiro são feitos "
+"em mãos entre os participantes."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission."
-msgstr "O mercado é um mural exclusivo para membros do clube. Venda sua bike ou peças para quem você conhece sem nenhuma retenção de taxa."
+msgid ""
+"The marketplace is an internal classifieds section for club members. It "
+"allows you to sell your sports equipment to people you trust. Neither the "
+"club nor the app charges any commission."
+msgstr ""
+"O mercado é um mural exclusivo para membros do clube. Venda sua bike ou "
+"peças para quem você conhece sem nenhuma retenção de taxa."
 
 #: src/features/landing/components/BentoSection.tsx
-msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
-msgstr "O ecossistema definitivo para equipes de ciclismo, corrida e triatlo. Controle treinos, atletas e financeiro em uma plataforma criada por esportistas, para esportistas."
+msgid ""
+"The ultimate ecosystem for cycling, running, and triathlon clubs. Manage "
+"activities, members, and finances in a single platform built by athletes, "
+"for athletes."
+msgstr ""
+"O ecossistema definitivo para equipes de ciclismo, corrida e triatlo. "
+"Controle treinos, atletas e financeiro em uma plataforma criada por "
+"esportistas, para esportistas."
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "There are currently no listings available in this category."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid ""
+"There are no club rides scheduled for this date. You can choose another "
+"marked date on the calendar or create a new ride for the club."
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "There’s a smarter way to manage your club"
 msgstr "Existe um jeito mais inteligente de gerenciar seu clube"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "This Club"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Thu"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Time Format"
+msgstr ""
+
+#. placeholder {0}: newFormat === '12h' ? '12-hour' : '24-hour'
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Time format set to {0}."
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "TIPS & TRICKS"
@@ -909,17 +3400,134 @@ msgstr "DICAS E MACETES"
 msgid "TO "
 msgstr "PARA O "
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"To permanently delete your account, remove your club memberships, and clear "
+"all personal data, please contact our support team."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Today"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "TODAY"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "TODAY’S SCHEDULE"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Total Distance"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Total Spent"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Total Transactions"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid ""
+"Track your memberships, gear acquisitions, activity fees, and complete "
+"multi-club transaction history."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Track your orders, view receipts, and manage your gear acquisitions."
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
-msgid "Track your personal bests and club statistics to understand your performance flow over time."
-msgstr "Acompanhe seus recordes pessoais e dados do grupo para avaliar sua evolução ao longo da temporada."
+msgid ""
+"Track your personal bests and club statistics to understand your performance"
+" flow over time."
+msgstr ""
+"Acompanhe seus recordes pessoais e dados do grupo para avaliar sua evolução "
+"ao longo da temporada."
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Trail"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Transaction & Club"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Transaction Ledger"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Transparent pricing"
 msgstr "Preços transparentes"
 
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Triathlon"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "TRIATHLON"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Triathlon Activity"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Try adjusting your search query or sport filter."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Try adjusting your search query."
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Try clearing your search query or sport filter."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Tue"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Two ways to use it, one shared philosophy: simple, visual, and useful."
 msgstr "Duas formas de usar, uma única essência: direto, visual e eficiente."
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Type"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Type a message..."
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Type:"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Under $50"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Unknown"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Unknown Item"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Unlimited Club Members"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Unlimited Club Members (beyond 15)"
@@ -929,29 +3537,97 @@ msgstr "Membros ilimitados no clube (acima de 15)"
 msgid "Unlimited Group Rides & Activities"
 msgstr "Treinos coletivos e eventos sem restrições"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Unlimited Group Rides & Events"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Unlimited marketplace listings"
 msgstr "Anúncios ilimitados no mercado"
 
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Unlimited Marketplace Listings"
 msgstr "Anúncios ilimitados no mercado"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Unsave Ride"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Untitled Transaction"
+msgstr ""
+
+#. placeholder {0}: plan.config.numberOfRides
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Up to {0} Group Rides & Events"
+msgstr ""
+
+#. placeholder {0}: plan.config.marketplaceItems
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Up to {0} Marketplace Items"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Up to 2 items in Marketplace"
 msgstr "Até 2 anúncios no mercado"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Up to 50 Club Members"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Upcoming Activities"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Upcoming rides with pace, distance and ride type"
 msgstr "Próximos treinos com média, distância e altimetria"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Update security keys"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Upgrade"
 msgstr "Mudar de plano"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid ""
+"Upgrade your account to unlock premium features, including full access to "
+"the marketplace and unlimited rides."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Upload Product Image"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Uploading..."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"Use at least 6 characters, including a mix of letters, numbers, and symbols."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Used"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "User Profile"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "User Roles"
 msgstr "Níveis de Acesso"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Verified Athlete"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Verified Gold Club Crown Badge"
@@ -961,6 +3637,22 @@ msgstr "Selo Coroa Club Gold Verificado"
 msgid "Verified Pro Athlete Badge"
 msgstr "Selo Atleta Pro Verificado"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Verified Pro Badge"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Verified Rider Gear"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Verify"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "View"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "View all members, assign roles, message directly"
 msgstr "Veja a lista de membros, delegue funções e envie mensagens"
@@ -968,6 +3660,19 @@ msgstr "Veja a lista de membros, delegue funções e envie mensagens"
 #: src/features/landing/components/BlogSection.tsx
 msgid "View all posts"
 msgstr "Ver todos os artigos"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "View Group Info & Members"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "View Profile"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "View Ride"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "vs Strava"
@@ -977,12 +3682,29 @@ msgstr "vs Strava"
 msgid "Watch Video"
 msgstr "Assistir ao Vídeo"
 
+#: src/features/public-club/pages/Ride.tsx
+msgid ""
+"We couldn't find any activities matching your search filters. Try resetting "
+"or adjusting your search parameters."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "We've got answers."
 msgstr "Nós temos as respostas."
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Wed"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid ""
+"Welcome to the Premium Plan! You now have full access to marketplace "
+"listings, unlimited rides, and all premium features."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "What do I need to create paid activities or manage membership fee payments?"
+msgid ""
+"What do I need to create paid activities or manage membership fee payments?"
 msgstr "O que é necessário para criar treinos pagos ou cobrar mensalidades?"
 
 #: src/features/landing/components/FAQSection.tsx
@@ -993,9 +3715,25 @@ msgstr "O que é o Ride with Pals?"
 msgid "What problems does it solve?"
 msgstr "Quais dificuldades o app soluciona?"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "When new club rides are published"
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "When you get notifications, they'll show up here."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Where your wallet expenditures are allocated"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
-msgid "Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees."
-msgstr "Seja você um atleta dedicado ou o gestor de uma assessoria esportiva: descubra a opção ideal. Valores transparentes, sem custos adicionais."
+msgid ""
+"Whether you are an individual athlete or running a growing sports club — "
+"find the real plan that fits. Transparent pricing with no hidden fees."
+msgstr ""
+"Seja você um atleta dedicado ou o gestor de uma assessoria esportiva: "
+"descubra a opção ideal. Valores transparentes, sem custos adicionais."
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Why Ride With Pals?"
@@ -1010,45 +3748,124 @@ msgid "Yes, absolutely. Strava is optional."
 msgstr "Sim, com certeza. A integração com o Strava é totalmente opcional."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app."
-msgstr "Sim, funciona perfeitamente. Embora os destaques sejam Ciclismo, Corrida e Triatlo, qualquer modalidade em grupo que envolva rotas GPS, altimetria e metas de distância encontrará a ferramenta ideal aqui."
+msgid ""
+"Yes, it works perfectly well for them. Although the main categories "
+"currently available are Cycling, Running, and Triathlon, any sport where "
+"groups meet to follow a route, use a GPS track, and track their progress by "
+"distance and time can find the perfect club management tool in our app."
+msgstr ""
+"Sim, funciona perfeitamente. Embora os destaques sejam Ciclismo, Corrida e "
+"Triatlo, qualquer modalidade em grupo que envolva rotas GPS, altimetria e "
+"metas de distância encontrará a ferramenta ideal aqui."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club."
-msgstr "Sim. É criado um canal de conversa próprio para cada treino, além da troca de mensagens individuais entre membros do mesmo clube."
+msgid ""
+"Yes. A chat is created for every activity, allowing participants to discuss "
+"topics related specifically to that activity. You can also chat privately "
+"with members of your club."
+msgstr ""
+"Sim. É criado um canal de conversa próprio para cada treino, além da troca "
+"de mensagens individuais entre membros do mesmo clube."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Yes. Administrators can accept or remove members."
-msgstr "Sim. Os administradores têm autonomia para aceitar novos pedidos ou desvincular membros."
+msgstr ""
+"Sim. Os administradores têm autonomia para aceitar novos pedidos ou "
+"desvincular membros."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. Ride with Pals charges a small 4% management fee on each transaction."
-msgstr "Sim. O Ride with Pals cobra uma taxa administrativa reduzida de 4% por transação."
+msgid ""
+"Yes. Ride with Pals charges a small 4% management fee on each transaction."
+msgstr ""
+"Sim. O Ride with Pals cobra uma taxa administrativa reduzida de 4% por "
+"transação."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format."
-msgstr "Sim. A aba de Notícias possibilita que os membros comentem as publicações em formato de tópicos de fórum."
+msgid ""
+"Yes. The club's News section allows users to comment on each post, with all "
+"the conversation kept together in a forum-style format."
+msgstr ""
+"Sim. A aba de Notícias possibilita que os membros comentem as publicações em"
+" formato de tópicos de fórum."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Yes. You can create public activities."
 msgstr "Sim. É possível criar treinos abertos à comunidade geral."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join."
-msgstr "Sim. Você pode compartilhar um mesmo treino em todos os clubes em que participa ou abri-lo publicamente para outros atletas."
+msgid ""
+"Yes. You can publish the same activity in as many clubs as you belong to. "
+"You can also make it public so that people outside your clubs can join."
+msgstr ""
+"Sim. Você pode compartilhar um mesmo treino em todos os clubes em que "
+"participa ou abri-lo publicamente para outros atletas."
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
+msgid ""
+"Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
 msgstr "Sim. Você pode programar atividades semanais, quinzenais ou mensais."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Yes. You can upgrade at any time."
 msgstr "Sim. Você pode migrar de plano quando desejar."
 
-#: src/features/landing/components/FAQSection.tsx
-msgid "You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish."
-msgstr "Você decide as atribuições de cada usuário (postar comunicados, criar treinos, compartilhar benefícios) e pode nomear quantos administradores desejar."
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "You are Registered"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "You are registered for this activity"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "You need a Gold club subscription, a free Stripe account, and you must connect it to the app."
-msgstr "É necessário ter o plano Club Gold, uma conta gratuita no Stripe e fazer a vinculação no aplicativo."
+msgid ""
+"You can define the permissions available to administrators and members, such"
+" as creating news posts, creating activities, and sharing discounts. You can"
+" appoint as many administrators as you wish."
+msgstr ""
+"Você decide as atribuições de cada usuário (postar comunicados, criar "
+"treinos, compartilhar benefícios) e pode nomear quantos administradores "
+"desejar."
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "You don't have permission to add items to this shop."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "You haven't bought any items yet."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "You haven't joined any other clubs yet."
+msgstr ""
+
+#: src/features/landing/components/FAQSection.tsx
+msgid ""
+"You need a Gold club subscription, a free Stripe account, and you must "
+"connect it to the app."
+msgstr ""
+"É necessário ter o plano Club Gold, uma conta gratuita no Stripe e fazer a "
+"vinculação no aplicativo."
+
+#: src/components/Sidebar.tsx
+msgid ""
+"You'll be returned to the login screen. Any unsaved changes will be lost."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Your <0>Subscription Plan</0>"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Your activity will appear here."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Your personal collection of bookmarked group activities."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid ""
+"Your transaction is successful, and a confirmation email has been sent. Your"
+" professional gear will ship soon!"
+msgstr ""

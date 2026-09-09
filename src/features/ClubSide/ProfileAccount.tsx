@@ -47,6 +47,8 @@ import {
   useUpdateEmailNotificationSettingsMutation, 
   type EmailNotificationSettings 
 } from "@/features/notifications/api/notificationApiSlice";
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 interface ProfileAccountProps {
   role?: 'organizer' | 'athlete';
@@ -174,11 +176,11 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
     try {
       await updateEmailSettings(nextSettings).unwrap();
-      toast.success("Notification settings updated successfully!");
+      toast.success(t`Notification settings updated successfully!`);
     } catch (err: any) {
       // Revert on error
       setLocalEmailSettings(previousState);
-      toast.error(err?.data?.message || err?.message || "Failed to update notification settings.");
+      toast.error(err?.data?.message || err?.message || t`Failed to update notification settings.`);
     }
   };
 
@@ -204,38 +206,38 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           return;
         }
 
-        toast.info("Please authorize Strava in the popup window.");
+        toast.info(t`Please authorize Strava in the popup window.`);
 
         const timer = setInterval(() => {
           if (popup.closed) {
             clearInterval(timer);
             refetchUserInfo();
             refetchStravaStatus();
-            toast.success("Strava status refreshed!");
+            toast.success(t`Strava status refreshed!`);
           }
         }, 1000);
       } else {
-        toast.info("Strava authentication initiated.");
+        toast.info(t`Strava authentication initiated.`);
       }
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to initiate Strava connection.");
+      toast.error(err?.data?.message || t`Failed to initiate Strava connection.`);
     }
   };
 
   const handleDisconnectStrava = async () => {
     try {
       await disconnectStrava().unwrap();
-      toast.success("Disconnected from Strava.");
+      toast.success(t`Disconnected from Strava.`);
       refetchUserInfo();
       refetchStravaStatus();
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to disconnect Strava.");
+      toast.error(err?.data?.message || t`Failed to disconnect Strava.`);
     }
   };
   
   const handleLogout = () => {
     dispatch(logout());
-    toast.success("Logged out successfully.");
+    toast.success(t`Logged out successfully.`);
     navigate("/login");
   };
 
@@ -243,18 +245,18 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
     const newErrors = { current: "", new: "", confirm: "" };
     let isValid = true;
     if (!passwordData.current) {
-      newErrors.current = "Current password is required";
+      newErrors.current = t`Current password is required`;
       isValid = false;
     }
     if (!passwordData.new) {
-      newErrors.new = "New password is required";
+      newErrors.new = t`New password is required`;
       isValid = false;
     } else if (passwordData.new.length < 6) {
-      newErrors.new = "Password must be at least 6 characters";
+      newErrors.new = t`Password must be at least 6 characters`;
       isValid = false;
     }
     if (passwordData.new !== passwordData.confirm) {
-      newErrors.confirm = "Passwords do not match";
+      newErrors.confirm = t`Passwords do not match`;
       isValid = false;
     }
     setErrors(newErrors);
@@ -264,11 +266,11 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           password: passwordData.current,
           newPassword: passwordData.new,
         }).unwrap();
-        toast.success("Password updated successfully!");
+        toast.success(t`Password updated successfully!`);
         setIsPasswordModalOpen(false);
         setPasswordData({ current: "", new: "", confirm: "" });
       } catch (err: any) {
-        toast.error(err?.data?.message || "Failed to update password.");
+        toast.error(err?.data?.message || t`Failed to update password.`);
       }
     }
   };
@@ -289,10 +291,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
         timeFormat: newFormat,
       }).unwrap();
       refetchUserInfo();
-      toast.success(`Time format set to ${newFormat === '12h' ? '12-hour' : '24-hour'}.`);
+      toast.success(t`Time format set to ${newFormat === '12h' ? '12-hour' : '24-hour'}.`);
     } catch (err: any) {
       setSelectedTimeFormat(previousFormat);
-      toast.error(err?.data?.message || err?.message || "Failed to update time format.");
+      toast.error(err?.data?.message || err?.message || t`Failed to update time format.`);
     }
   };
 
@@ -305,10 +307,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
         <div className="flex justify-between items-start mb-10">
           <div>
             <h1 className="text-3xl md:text-4xl font-black mb-2 tracking-tight uppercase text-text-main">
-              Profile <span className="text-[#EB712B]">&</span> Account
+              <Trans>Profile <span className="text-[#EB712B]">&</span> Account</Trans>
             </h1>
             <p className="text-text-muted text-xs font-bold tracking-widest uppercase mt-2">
-              Manage your personal information and application preferences
+              <Trans>Manage your personal information and application preferences</Trans>
             </p>
           </div>
           <button
@@ -320,7 +322,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             ) : (
               <Moon size={16} className="text-[#EB712B]" />
             )}
-            {isDark ? "Light Mode" : "Dark Mode"}
+            {isDark ? <Trans>Light Mode</Trans> : <Trans>Dark Mode</Trans>}
           </button>
         </div>
 
@@ -341,7 +343,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                       setIsAvatarPreviewOpen(true);
                     }
                   }}
-                  title="Click to view full image"
+                  title={t`Click to view full image`}
                   className="w-24 h-24 rounded-3xl bg-surface border-2 border-border hover:border-[#EB712B] overflow-hidden shadow-xl shrink-0 flex items-center justify-center relative cursor-pointer group/avatar transition-all duration-300 hover:scale-105 active:scale-95"
                 >
                   {!imageError && resolveProfileImageUrl(userProfileData?.profileImage) ? (
@@ -370,14 +372,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   {/* Hover indicator overlay */}
                   <div className="absolute inset-0 bg-black/45 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-1 text-white backdrop-blur-[2px]">
                     <Eye size={18} className="drop-shadow" />
-                    <span className="text-[8px] font-black uppercase tracking-wider text-white/90">Preview</span>
+                    <span className="text-[8px] font-black uppercase tracking-wider text-white/90"><Trans>Preview</Trans></span>
                   </div>
                 </div>
                 <div>
-                  <h2 className="text-3xl font-black tracking-tight text-text-main">{userProfileData?.fullName || "User Profile"}</h2>
+                  <h2 className="text-3xl font-black tracking-tight text-text-main">{userProfileData?.fullName || t`User Profile`}</h2>
                   <p className="text-[#EB712B] font-bold text-sm tracking-wide mt-1">{userProfileData?.email}</p>
                   <p className="text-xs text-text-muted font-medium mt-3 flex items-center gap-2">
-                    <Calendar size={14} /> Joined {userProfileData?.createdAt ? new Date(userProfileData.createdAt).toLocaleDateString() : "Recently"}
+                    <Calendar size={14} /> <Trans>Joined</Trans> {userProfileData?.createdAt ? new Date(userProfileData.createdAt).toLocaleDateString() : t`Recently`}
                   </p>
                 </div>
               </div>
@@ -387,20 +389,20 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   state={{ isEditing: true }}
                   className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#EB712B]/10 hover:bg-[#EB712B] border border-[#EB712B]/30 hover:border-[#EB712B] px-5 py-3 rounded-2xl text-sm font-bold text-[#EB712B] hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
                 >
-                  <Edit3 size={15} /> Edit
+                  <Edit3 size={15} /> <Trans>Edit</Trans>
                 </Link>
                 <button 
                   onClick={handleLogout}
                   className="flex-1 sm:flex-initial bg-red-500/10 hover:bg-red-500 border border-red-500/20 hover:border-red-500 px-6 py-3 rounded-2xl text-sm font-bold text-red-500 hover:text-white transition-all cursor-pointer active:scale-95 shadow-lg whitespace-nowrap"
                 >
-                  Logout
+                  <Trans>Logout</Trans>
                 </button>
               </div>
             </div>
             {userProfileData?.description && (
               <div className="mt-8 pt-6 border-t border-border relative z-10">
                 <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <FileText size={12} /> Bio
+                  <FileText size={12} /> <Trans>Bio</Trans>
                 </h3>
                 <p className="text-sm text-text-main leading-relaxed font-semibold">
                   "{userProfileData.description}"
@@ -412,28 +414,28 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           {/* CARD 2: Personal Info */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl relative overflow-hidden flex flex-col">
             <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Info size={12} /> Contact Details
+              <Info size={12} /> <Trans>Contact Details</Trans>
             </h3>
             <div className="space-y-6 flex-1">
               <div className="flex items-start gap-4">
                 <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B]"><Phone size={18} /></div>
                 <div>
-                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5">Phone</p>
-                  <p className="font-bold text-sm text-text-main">{userProfileData?.phone || "Not provided"}</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5"><Trans>Phone</Trans></p>
+                  <p className="font-bold text-sm text-text-main">{userProfileData?.phone || t`Not provided`}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B]"><MapPin size={18} /></div>
                 <div>
-                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5">Country</p>
-                  <p className="font-bold text-sm text-text-main">{userProfileData?.country || "Not provided"}</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5"><Trans>Country</Trans></p>
+                  <p className="font-bold text-sm text-text-main">{userProfileData?.country || t`Not provided`}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B]"><Calendar size={18} /></div>
                 <div>
-                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5">Date of Birth</p>
-                  <p className="font-bold text-sm text-text-main">{userProfileData?.dob || "Not provided"}</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-0.5"><Trans>Date of Birth</Trans></p>
+                  <p className="font-bold text-sm text-text-main">{userProfileData?.dob || t`Not provided`}</p>
                 </div>
               </div>
             </div>
@@ -445,7 +447,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               <Activity size={150} />
             </div>
             <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2 relative z-10">
-              <Activity size={12} className="text-[#FC4C02]" /> Integration
+              <Activity size={12} className="text-[#FC4C02]" /> <Trans>Integration</Trans>
             </h3>
             <div className="flex-1 flex flex-col relative z-10">
               <div className="flex items-center gap-3 mb-4">
@@ -460,7 +462,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                       <span className={`relative inline-flex rounded-full h-2 w-2 ${userProfileData?.stravaAthleteId ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
-                      {userProfileData?.stravaAthleteId ? "Connected" : "Disconnected"}
+                      {userProfileData?.stravaAthleteId ? <Trans>Connected</Trans> : <Trans>Disconnected</Trans>}
                     </span>
                   </div>
                 </div>
@@ -468,9 +470,9 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               
               {userProfileData?.stravaAthleteId && (
                 <div className="mb-6 space-y-2">
-                  <p className="text-xs text-text-muted font-medium"><span className="text-text-main font-bold">Athlete ID:</span> {userProfileData.stravaAthleteId}</p>
+                  <p className="text-xs text-text-muted font-medium"><span className="text-text-main font-bold"><Trans>Athlete ID:</Trans></span> {userProfileData.stravaAthleteId}</p>
                   {userProfileData?.stravaConnectedAt && (
-                    <p className="text-xs text-text-muted font-medium"><span className="text-text-main font-bold">Synced:</span> {new Date(userProfileData.stravaConnectedAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-text-muted font-medium"><span className="text-text-main font-bold"><Trans>Synced:</Trans></span> {new Date(userProfileData.stravaConnectedAt).toLocaleDateString()}</p>
                   )}
                 </div>
               )}
@@ -482,7 +484,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                     disabled={isDisconnectingStrava}
                     className="w-full py-3.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center"
                   >
-                    {isDisconnectingStrava ? <Loader2 size={16} className="animate-spin" /> : "Disconnect Strava"}
+                    {isDisconnectingStrava ? <Loader2 size={16} className="animate-spin" /> : <Trans>Disconnect Strava</Trans>}
                   </button>
                 ) : (
                   <button
@@ -490,7 +492,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                     disabled={isConnectingStrava}
                     className="w-full py-3.5 bg-[#FC4C02] hover:bg-[#e04300] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 shadow-lg flex items-center justify-center gap-2"
                   >
-                    {isConnectingStrava ? <Loader2 size={16} className="animate-spin" /> : "Connect Account"}
+                    {isConnectingStrava ? <Loader2 size={16} className="animate-spin" /> : <Trans>Connect Account</Trans>}
                   </button>
                 )}
               </div>
@@ -500,13 +502,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           {/* CARD 4: Preferences (Spans 2 columns) */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-2 relative overflow-hidden">
              <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Globe size={12} /> App Preferences
+              <Globe size={12} /> <Trans>App Preferences</Trans>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-main-bg p-5 rounded-2xl border border-border">
                 <div className="flex items-center gap-3 mb-3">
                   <MapPin size={16} className="text-[#EB712B]" />
-                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Distance Unit</p>
+                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Distance Unit</Trans></p>
                 </div>
                 <select
                   value={userProfileData?.scale || selectedScale}
@@ -515,23 +517,23 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                     setSelectedScale(val);
                     try {
                       await updateScaleUnit({ scale: val }).unwrap();
-                      toast.success(`Distance unit updated to ${val === 'mile' ? 'Miles' : 'Kilometers'}.`);
+                      toast.success(t`Distance unit updated to ${val === 'mile' ? 'Miles' : 'Kilometers'}.`);
                     } catch (err: any) {
-                      toast.error(err?.data?.message || "Failed to update scale unit.");
+                      toast.error(err?.data?.message || t`Failed to update scale unit.`);
                     }
                   }}
                   disabled={isUpdatingScale}
                   className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
                 >
-                  <option value="kilometer">Kilometers (km)</option>
-                  <option value="mile">Miles (mi)</option>
+                  <option value="kilometer">{t`Kilometers (km)`}</option>
+                  <option value="mile">{t`Miles (mi)`}</option>
                 </select>
               </div>
 
               <div className="bg-main-bg p-5 rounded-2xl border border-border">
                 <div className="flex items-center gap-3 mb-3">
                   <Clock size={16} className="text-[#EB712B]" />
-                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Time Format</p>
+                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Time Format</Trans></p>
                 </div>
                 <select
                   value={userProfileData?.timeFormat || selectedTimeFormat}
@@ -539,8 +541,8 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   disabled={isUpdatingTimeFormat}
                   className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
                 >
-                  <option value="12h">12-hour (1:30 PM)</option>
-                  <option value="24h">24-hour (13:30)</option>
+                  <option value="12h">{t`12-hour (1:30 PM)`}</option>
+                  <option value="24h">{t`24-hour (13:30)`}</option>
                 </select>
               </div>
             </div>
@@ -549,7 +551,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           {/* CARD 5: Account Management & Security (Spans 2 columns) */}
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-2 relative overflow-hidden flex flex-col">
             <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
-              <ShieldCheck size={12} /> Security & Workspace
+              <ShieldCheck size={12} /> <Trans>Security & Workspace</Trans>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
               <div 
@@ -557,15 +559,15 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all group flex flex-col justify-center"
               >
                 <Lock className="text-[#EB712B] mb-3 group-hover:scale-110 transition-transform" size={24} />
-                <h4 className="font-bold text-sm text-text-main mb-1">Change Password</h4>
-                <p className="text-[10px] text-text-muted uppercase tracking-wider">Update security keys</p>
+                <h4 className="font-bold text-sm text-text-main mb-1"><Trans>Change Password</Trans></h4>
+                <p className="text-[10px] text-text-muted uppercase tracking-wider"><Trans>Update security keys</Trans></p>
               </div>
               
               <Link to={role === 'athlete' ? "/view/userside/support" : "/view/clubside/support"} className="block">
                 <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full group flex flex-col justify-center">
                   <HelpCircle className="text-[#EB712B] mb-3 group-hover:scale-110 transition-transform" size={24} />
-                  <h4 className="font-bold text-sm text-text-main mb-1">Support & Help</h4>
-                  <p className="text-[10px] text-text-muted uppercase tracking-wider">Get assistance</p>
+                  <h4 className="font-bold text-sm text-text-main mb-1"><Trans>Support & Help</Trans></h4>
+                  <p className="text-[10px] text-text-muted uppercase tracking-wider"><Trans>Get assistance</Trans></p>
                 </div>
               </Link>
             </div>
@@ -575,16 +577,16 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 relative overflow-hidden flex flex-col">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-2">
-                <Bell size={12} className="text-[#EB712B]" /> Email Notification Preferences
+                <Bell size={12} className="text-[#EB712B]" /> <Trans>Email Notification Preferences</Trans>
               </h3>
               {isUpdatingEmailSettings && (
                 <span className="text-xs text-[#EB712B] flex items-center gap-1 font-bold">
-                  <Loader2 size={12} className="animate-spin" /> Saving...
+                  <Loader2 size={12} className="animate-spin" /> <Trans>Saving...</Trans>
                 </span>
               )}
             </div>
             <p className="text-xs text-text-muted mb-6 font-medium">
-              Choose which events trigger instant email notifications to your inbox.
+              <Trans>Choose which events trigger instant email notifications to your inbox.</Trans>
             </p>
             {isEmailSettingsLoading ? (
               <div className="py-8 flex justify-center items-center">
@@ -593,13 +595,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { key: "feePaymentRequests" as const, title: "Fee Payment Requests", desc: "Membership fee payment reminders" },
-                  { key: "newRide" as const, title: "New Rides & Activities", desc: "When new club rides are published" },
-                  { key: "clubJoinResponse" as const, title: "Club Join Response", desc: "Status updates for club join requests" },
-                  { key: "rideUpdates" as const, title: "Ride & Activity Updates", desc: "Schedule changes & cancellations" },
-                  { key: "orderStatus" as const, title: "Shop Order Status", desc: "Order confirmation & delivery alerts" },
-                  { key: "subscriptionStatus" as const, title: "Subscription Status", desc: "Billing & plan renewal alerts" },
-                  { key: "clubJoinRequest" as const, title: "Club Join Requests", desc: "New member join applications" },
+                  { key: "feePaymentRequests" as const, title: t`Fee Payment Requests`, desc: t`Membership fee payment reminders` },
+                  { key: "newRide" as const, title: t`New Rides & Activities`, desc: t`When new club rides are published` },
+                  { key: "clubJoinResponse" as const, title: t`Club Join Response`, desc: t`Status updates for club join requests` },
+                  { key: "rideUpdates" as const, title: t`Ride & Activity Updates`, desc: t`Schedule changes & cancellations` },
+                  { key: "orderStatus" as const, title: t`Shop Order Status`, desc: t`Order confirmation & delivery alerts` },
+                  { key: "subscriptionStatus" as const, title: t`Subscription Status`, desc: t`Billing & plan renewal alerts` },
+                  { key: "clubJoinRequest" as const, title: t`Club Join Requests`, desc: t`New member join applications` },
                 ].map((item) => {
                   const isChecked = Boolean(localEmailSettings[item.key]);
                   return (
@@ -636,35 +638,35 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           {role === 'organizer' && (
             <div className="bg-surface p-8 rounded-[2rem] border border-border shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 relative overflow-hidden">
                <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
-                <Users size={12} /> Management Tools
+                <Users size={12} /> <Trans>Management Tools</Trans>
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <Link to="/manage-club" className="block">
                   <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
                     <div className="p-3 bg-[#EB712B]/10 rounded-xl mb-3 text-[#EB712B] group-hover:bg-[#EB712B] group-hover:text-white transition-colors"><Users size={20} /></div>
-                    <h4 className="font-bold text-sm text-text-main">Manage Club</h4>
-                    <p className="text-[10px] text-text-muted mt-1">Club overview & settings</p>
+                    <h4 className="font-bold text-sm text-text-main"><Trans>Manage Club</Trans></h4>
+                    <p className="text-[10px] text-text-muted mt-1"><Trans>Club overview & settings</Trans></p>
                   </div>
                 </Link>
                 <Link to="/view/clubside/permissions" className="block">
                   <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
                     <div className="p-3 bg-purple-500/10 rounded-xl mb-3 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors"><ShieldCheck size={20} /></div>
-                    <h4 className="font-bold text-sm text-text-main">Club Permissions</h4>
-                    <p className="text-[10px] text-text-muted mt-1">Delegate roles & rights</p>
+                    <h4 className="font-bold text-sm text-text-main"><Trans>Club Permissions</Trans></h4>
+                    <p className="text-[10px] text-text-muted mt-1"><Trans>Delegate roles & rights</Trans></p>
                   </div>
                 </Link>
                 <Link to="/view/clubside/members" className="block">
                   <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
                     <div className="p-3 bg-emerald-500/10 rounded-xl mb-3 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors"><Users size={20} /></div>
-                    <h4 className="font-bold text-sm text-text-main">Club Members</h4>
-                    <p className="text-[10px] text-text-muted mt-1">Manage active members</p>
+                    <h4 className="font-bold text-sm text-text-main"><Trans>Club Members</Trans></h4>
+                    <p className="text-[10px] text-text-muted mt-1"><Trans>Manage active members</Trans></p>
                   </div>
                 </Link>
                 <Link to="/view/clubside/subscription" className="block">
                   <div className="bg-main-bg hover:bg-hover p-5 rounded-2xl border border-border hover:border-[#EB712B]/40 cursor-pointer transition-all h-full flex flex-col items-center text-center group">
                     <div className="p-3 bg-blue-500/10 rounded-xl mb-3 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors"><CreditCard size={20} /></div>
-                    <h4 className="font-bold text-sm text-text-main">Subscription</h4>
-                    <p className="text-[10px] text-text-muted mt-1">Plans & billing</p>
+                    <h4 className="font-bold text-sm text-text-main"><Trans>Subscription</Trans></h4>
+                    <p className="text-[10px] text-text-muted mt-1"><Trans>Plans & billing</Trans></p>
                   </div>
                 </Link>
               </div>
@@ -675,15 +677,15 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
           <div className="bg-red-500/5 p-8 rounded-[2rem] border border-red-500/20 shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
               <h3 className="text-sm text-red-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                <AlertTriangle size={16} /> Danger Zone
+                <AlertTriangle size={16} /> <Trans>Danger Zone</Trans>
               </h3>
-              <p className="text-xs text-red-500/70 font-medium">Permanently delete your account and all associated data. This action cannot be undone.</p>
+              <p className="text-xs text-red-500/70 font-medium"><Trans>Permanently delete your account and all associated data. This action cannot be undone.</Trans></p>
             </div>
             <button 
               onClick={() => setIsDeleteModalOpen(true)}
               className="bg-transparent border-2 border-red-500/50 hover:bg-red-500/10 text-red-500 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg whitespace-nowrap cursor-pointer"
             >
-              Delete Account
+              <Trans>Delete Account</Trans>
             </button>
           </div>
 
@@ -697,10 +699,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-xl font-bold text-text-main">
-                  Change Password
+                  <Trans>Change Password</Trans>
                 </h2>
                 <p className="text-text-muted text-sm mt-1">
-                  Ensure your account is protected with a strong password.
+                  <Trans>Ensure your account is protected with a strong password.</Trans>
                 </p>
               </div>
               <button
@@ -718,7 +720,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Current Password"
+                    placeholder={t`Current Password`}
                     value={passwordData.current}
                     className={`w-full bg-surface p-3.5 rounded-xl border ${errors.current ? "border-red-500" : "border-border"} text-text-main outline-none focus:border-[#EB712B] transition-all`}
                     onChange={(e) => {
@@ -749,7 +751,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="New Password (min. 6 characters)"
+                    placeholder={t`New Password (min. 6 characters)`}
                     value={passwordData.new}
                     className={`w-full bg-surface p-3.5 rounded-xl border ${errors.new ? "border-red-500" : "border-border"} text-text-main outline-none focus:border-[#EB712B] transition-all`}
                     onChange={(e) => {
@@ -777,7 +779,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Confirm New Password"
+                    placeholder={t`Confirm New Password`}
                     value={passwordData.confirm}
                     className={`w-full bg-surface p-3.5 rounded-xl border ${errors.confirm ? "border-red-500" : "border-border"} text-text-main outline-none focus:border-[#EB712B] transition-all`}
                     onChange={(e) => {
@@ -808,7 +810,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             <div className="flex gap-3 bg-main-bg p-4 rounded-xl mt-6 border border-border text-text-muted text-xs">
               <AlertCircle size={20} className="text-[#EB712B] shrink-0" />
               <p>
-                Use at least 6 characters, including a mix of letters, numbers, and symbols.
+                <Trans>Use at least 6 characters, including a mix of letters, numbers, and symbols.</Trans>
               </p>
             </div>
 
@@ -818,14 +820,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 onClick={() => setIsPasswordModalOpen(false)}
                 className="px-5 py-2.5 rounded-xl border border-border text-text-muted font-bold hover:text-text-main hover:border-text-muted transition-all cursor-pointer text-xs uppercase"
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </button>
               <button
                 onClick={handleSavePassword}
                 disabled={isUpdatingPassword}
                 className="px-6 py-2.5 bg-[#EB712B] rounded-xl font-bold text-white hover:bg-[#d66525] transition-all cursor-pointer flex items-center gap-2 text-xs uppercase shadow-lg disabled:opacity-50"
               >
-                {isUpdatingPassword ? <Loader2 size={16} className="animate-spin" /> : "Save Changes"}
+                {isUpdatingPassword ? <Loader2 size={16} className="animate-spin" /> : <Trans>Save Changes</Trans>}
               </button>
             </div>
           </div>
@@ -843,10 +845,10 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-text-main">
-                    Delete Account
+                    <Trans>Delete Account</Trans>
                   </h2>
                   <p className="text-red-500 text-xs font-semibold mt-0.5">
-                    Irreversible Action
+                    <Trans>Irreversible Action</Trans>
                   </p>
                 </div>
               </div>
@@ -860,12 +862,12 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
 
             <div className="space-y-4 text-sm text-text-muted">
               <p>
-                To permanently delete your account, remove your club memberships, and clear all personal data, please contact our support team.
+                <Trans>To permanently delete your account, remove your club memberships, and clear all personal data, please contact our support team.</Trans>
               </p>
               <div className="bg-red-500/5 p-4 rounded-xl border border-red-500/20 text-xs text-red-400 space-y-1">
-                <p className="font-bold">⚠️ Notice:</p>
+                <p className="font-bold">⚠️ <Trans>Notice:</Trans></p>
                 <p>
-                  Account deletion requests are processed manually to verify account ownership and prevent unauthorized removals.
+                  <Trans>Account deletion requests are processed manually to verify account ownership and prevent unauthorized removals.</Trans>
                 </p>
               </div>
             </div>
@@ -875,7 +877,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 onClick={() => setIsDeleteModalOpen(false)}
                 className="px-5 py-2.5 rounded-xl border border-border text-text-muted font-bold hover:text-text-main transition-all cursor-pointer text-xs uppercase"
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </button>
               <button
                 onClick={() => {
@@ -884,7 +886,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 }}
                 className="px-6 py-2.5 bg-red-500 hover:bg-red-600 rounded-xl font-bold text-white transition-all cursor-pointer flex items-center gap-2 text-xs uppercase shadow-lg shadow-red-500/20"
               >
-                <MessageSquare size={14} /> Contact Support
+                <MessageSquare size={14} /> <Trans>Contact Support</Trans>
               </button>
             </div>
           </div>
@@ -905,13 +907,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#EB712B]" />
                 <span className="text-xs font-black uppercase tracking-widest text-[#EB712B]">
-                  Avatar Preview
+                  <Trans>Avatar Preview</Trans>
                 </span>
               </div>
               <button
                 onClick={() => setIsAvatarPreviewOpen(false)}
                 className="w-8 h-8 rounded-full bg-main-bg border border-border hover:border-[#EB712B]/40 flex items-center justify-center text-text-muted hover:text-text-main transition-colors cursor-pointer"
-                title="Close"
+                title={t`Close`}
               >
                 <X size={16} />
               </button>
@@ -928,16 +930,16 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-[#EB712B]/10 text-[#EB712B] font-black text-6xl uppercase tracking-wider select-none">
                   {userProfileData?.fullName ? (
-                    userProfileData.fullName
-                      .split(" ")
-                      .filter(Boolean)
-                      .map((n: string) => n[0])
-                      .join("")
-                      .slice(0, 2)
-                      .toUpperCase()
-                  ) : (
-                    <UserIcon size={64} className="text-[#EB712B]" />
-                  )}
+                        userProfileData.fullName
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n: string) => n[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()
+                      ) : (
+                        <UserIcon size={64} className="text-[#EB712B]" />
+                      )}
                 </div>
               )}
             </div>
@@ -945,14 +947,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             {/* Details */}
             <div className="text-center space-y-1 w-full px-2">
               <h3 className="text-lg font-black tracking-tight text-text-main uppercase truncate">
-                {userProfileData?.fullName || "User Profile"}
+                {userProfileData?.fullName || t`User Profile`}
               </h3>
               <p className="text-xs font-bold text-[#EB712B] truncate">
                 {userProfileData?.email}
               </p>
               {userProfileData?.createdAt && (
                 <p className="text-[11px] text-text-muted font-medium pt-1">
-                  Joined {new Date(userProfileData.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                  <Trans>Joined</Trans> {new Date(userProfileData.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
               )}
             </div>
@@ -965,13 +967,13 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                 onClick={() => setIsAvatarPreviewOpen(false)}
                 className="flex-1 flex items-center justify-center gap-2 bg-[#EB712B] hover:bg-[#d66525] text-white py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#EB712B]/20"
               >
-                <Edit3 size={14} /> Change Photo
+                <Edit3 size={14} /> <Trans>Change Photo</Trans>
               </Link>
               <button
                 onClick={() => setIsAvatarPreviewOpen(false)}
                 className="px-5 py-3 rounded-xl border border-border text-text-muted hover:text-text-main hover:border-text-muted bg-main-bg font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
               >
-                Close
+                <Trans>Close</Trans>
               </button>
             </div>
           </div>

@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Search, Users } from 'lucide-react';
 import { type ChatUser } from '../utils/constants';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 interface ChatSidebarProps {
   users: ChatUser[];
@@ -50,11 +52,11 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
       <div 
         onClick={() => onSelectUser(null)}
         className="h-16 px-5 border-b border-border flex items-center justify-between shrink-0 bg-surface/80 backdrop-blur-md cursor-pointer hover:bg-hover transition-colors group/hdr"
-        title="Click to view message center overview"
+        title={t`Click to view message center overview`}
       >
         <div className="flex items-center gap-2">
           <h3 className="font-poppins font-extrabold text-base text-text-main tracking-wide group-hover/hdr:text-[#EB712B] transition-colors">
-            Messages
+            <Trans>Messages</Trans>
           </h3>
           <span className="px-2 py-0.5 rounded-full bg-[#EB712B]/15 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-extrabold">
             {users.length}
@@ -68,7 +70,7 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
           <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
           <input
             type="search"
-            placeholder="Search conversations..."
+            placeholder={t`Search conversations...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-xl bg-main-bg border border-border focus:border-[#EB712B]/60 text-xs font-semibold text-text-main placeholder:text-text-muted outline-none transition-all"
@@ -136,7 +138,7 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
                         flexShrink: 0 
                       }}>
                         <Users size={9} />
-                        Group
+                        <Trans>Group</Trans>
                       </span>
                     )}
                     <h4 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 600, fontSize: '14px', color: 'var(--color-main-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -166,7 +168,7 @@ export function ChatSidebar({ users, activeUserId, onSelectUser, isHiddenOnMobil
 
         {filteredUsers.length === 0 && (
           <p style={{ textAlign: 'center', padding: '32px 16px', fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'var(--color-secondary-text)' }}>
-            No matches found.
+            <Trans>No matches found.</Trans>
           </p>
         )}
       </div>

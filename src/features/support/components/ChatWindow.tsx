@@ -7,6 +7,8 @@ import { GroupChatInfoDrawer } from './GroupChatInfoDrawer';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { cn } from '@/lib/utils';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 interface ChatWindowProps {
   activeUser: ChatUser | null;
@@ -91,10 +93,10 @@ export function ChatWindow({
             className="h-16 w-auto object-contain mb-6 drop-shadow-md select-none" 
           />
           <h2 className="font-poppins font-extrabold text-xl text-text-main mb-2 tracking-tight">
-            Ride With Pals Messages
+            <Trans>Ride With Pals Messages</Trans>
           </h2>
           <p className="font-roboto text-xs text-text-muted leading-relaxed max-w-[280px]">
-            Select a conversation from the left to start chatting with athletes and activity groups.
+            <Trans>Select a conversation from the left to start chatting with athletes and activity groups.</Trans>
           </p>
         </div>
       </div>
@@ -130,7 +132,7 @@ export function ChatWindow({
             <div 
               onClick={handleHeaderClick}
               className="flex items-center gap-3 cursor-pointer group hover:opacity-90 transition-opacity min-w-0"
-              title={activeUser.isGroup ? "Click to view group details & member roster" : "Click to view profile"}
+              title={activeUser.isGroup ? t`Click to view group details & member roster` : t`Click to view profile`}
             >
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 {activeUser.avatar && (
@@ -161,14 +163,14 @@ export function ChatWindow({
                   </h3>
                   {activeUser.isGroup && (
                     <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#EB712B]/15 text-[#EB712B] border border-[#EB712B]/30 shrink-0">
-                      Activity
+                      <Trans>Activity</Trans>
                     </span>
                   )}
                 </div>
                 <span style={{ fontFamily: 'var(--font-roboto)', fontSize: '11px', color: 'var(--color-secondary-text)' }} className="truncate block">
                   {activeUser.isGroup 
-                    ? `Activity Group • ${activeUser.participantCount ? `${activeUser.participantCount} athletes` : 'View members & info'}`
-                    : (activeUser.lastSeen ? `Last seen ${activeUser.lastSeen}` : 'Click to view profile')}
+                    ? (activeUser.participantCount ? t`Activity Group • ${activeUser.participantCount} athletes` : t`Activity Group • View members & info`)
+                    : (activeUser.lastSeen ? t`Last seen ${activeUser.lastSeen}` : t`Click to view profile`)}
                 </span>
               </div>
             </div>
@@ -189,7 +191,7 @@ export function ChatWindow({
                   ? "bg-[#EB712B]/20 text-[#EB712B] border border-[#EB712B]/40" 
                   : "bg-transparent text-text-muted hover:text-text-main hover:bg-hover"
               )}
-              title="Search messages in conversation"
+              title={t`Search messages in conversation`}
             >
               <Search size={17} />
             </button>
@@ -205,17 +207,17 @@ export function ChatWindow({
                     ? "bg-[#EB712B] text-white shadow-md" 
                     : "bg-surface hover:bg-hover text-text-muted hover:text-text-main border border-border"
                 )}
-                title="View Group Info & Members"
+                title={t`View Group Info & Members`}
               >
                 <Users size={15} />
-                <span className="hidden sm:inline">Group Info</span>
+                <span className="hidden sm:inline"><Trans>Group Info</Trans></span>
               </button>
             ) : (
               <button 
                 type="button"
                 onClick={handleHeaderClick}
                 className="w-9 h-9 rounded-xl bg-transparent text-text-muted hover:text-text-main hover:bg-hover flex items-center justify-center transition-all cursor-pointer"
-                title="View Profile"
+                title={t`View Profile`}
               >
                 <Info size={17} />
               </button>
@@ -232,14 +234,14 @@ export function ChatWindow({
                 type="text"
                 value={messageSearchQuery}
                 onChange={(e) => setMessageSearchQuery(e.target.value)}
-                placeholder="Search messages in this conversation..."
+                placeholder={t`Search messages in this conversation...`}
                 autoFocus
                 className="w-full pl-8 pr-4 py-1.5 rounded-xl bg-main-bg border border-border focus:border-[#EB712B] text-xs text-text-main outline-none"
               />
             </div>
             {messageSearchQuery && (
               <span className="text-[11px] font-bold text-[#EB712B] shrink-0">
-                {displayedMessages.length} match{displayedMessages.length !== 1 ? 'es' : ''}
+                {displayedMessages.length} {displayedMessages.length !== 1 ? t`matches` : t`match`}
               </span>
             )}
             <button
@@ -249,7 +251,7 @@ export function ChatWindow({
                 setMessageSearchQuery('');
               }}
               className="p-1 text-text-muted hover:text-text-main cursor-pointer"
-              title="Close search"
+              title={t`Close search`}
             >
               <X size={15} />
             </button>
@@ -264,7 +266,7 @@ export function ChatWindow({
         >
           <div style={{ textAlign: 'center', marginBottom: '16px' }}>
             <span style={{ display: 'inline-block', padding: '4px 14px', borderRadius: '8px', fontFamily: 'var(--font-roboto)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', color: 'var(--color-secondary-text)', background: 'var(--color-secondary-bg)', border: '1px solid var(--color-border)' }}>
-              TODAY
+              <Trans>TODAY</Trans>
             </span>
           </div>
 
@@ -276,7 +278,7 @@ export function ChatWindow({
 
           {displayedMessages.length === 0 && messageSearchQuery && (
             <div className="text-center py-12 text-text-muted text-xs font-medium">
-              No messages found matching "{messageSearchQuery}"
+              <Trans>No messages found matching "{messageSearchQuery}"</Trans>
             </div>
           )}
 
@@ -289,7 +291,7 @@ export function ChatWindow({
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Type a message..."
+              placeholder={t`Type a message...`}
               rows={1}
               style={{
                 flex: 1, background: 'transparent', border: 'none', outline: 'none',

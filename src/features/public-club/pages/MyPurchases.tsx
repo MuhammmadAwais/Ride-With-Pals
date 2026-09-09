@@ -4,6 +4,8 @@ import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetMyPurchasesListQuery, useUpdateShopOrderStatusMutation } from '@/features/club/api/shopOrderApiSlice';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 const formatItemImage = (img?: string | null): string => {
   if (!img || img === 'null' || img.trim() === '') return '/Images/HelmetImage4.jpg';
@@ -50,9 +52,9 @@ const MyPurchases = () => {
     setCancellingId(orderId);
     try {
       await updateShopOrderStatus({ orderId: Number(orderId) }).unwrap();
-      toast.success('Order cancelled successfully.');
+      toast.success(t`Order cancelled successfully.`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to cancel order.');
+      toast.error(err?.data?.message || t`Failed to cancel order.`);
     } finally {
       setCancellingId(null);
     }
@@ -64,11 +66,11 @@ const MyPurchases = () => {
       const rawImg = item.shop?.image || (item as any).shopItem?.image || (item as any).image;
       return {
         id: item.id?.toString() || Math.random().toString(),
-        product: item.shop?.name || (item as any).shopItem?.name || 'Gear Item',
-        category: item.shop?.size || (item as any).shopItem?.size || 'Gear',
+        product: item.shop?.name || (item as any).shopItem?.name || t`Gear Item`,
+        category: item.shop?.size || (item as any).shopItem?.size || t`Gear`,
         price: item.totalPrice ? `$${parseFloat(item.totalPrice).toFixed(2)}` : '$0.00',
         date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
-        status: item.statusName || 'Processing',
+        status: item.statusName || t`Processing`,
         img: formatItemImage(rawImg),
         canCancel: !['Delivered', 'Cancelled'].includes(item.statusName || ''),
       };
@@ -87,7 +89,7 @@ const MyPurchases = () => {
   const columns: Column<any>[] = [
     {
       key: 'product',
-      label: 'Item',
+      label: t`Item`,
       sortable: true,
       render: (item) => (
         <div className="flex items-center gap-4">
@@ -108,35 +110,35 @@ const MyPurchases = () => {
     },
     {
       key: 'id',
-      label: 'Order ID',
+      label: t`Order ID`,
       sortable: true,
       render: (item) => <span className="font-mono text-xs text-text-muted">#{item.id}</span>
     },
     {
       key: 'date',
-      label: 'Date',
+      label: t`Date`,
       sortable: true,
       render: (item) => <span className="text-xs font-medium text-text-main">{item.date}</span>
     },
     {
       key: 'price',
-      label: 'Amount',
+      label: t`Amount`,
       sortable: true,
       render: (item) => <span className="text-sm font-bold text-text-main">{item.price}</span>
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (item) => (
         <div className="flex items-center gap-2">
           {item.status === 'Delivered' ? (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center gap-1">
-              <CheckCircle2 size={12} /> Delivered
+              <CheckCircle2 size={12} /> <Trans>Delivered</Trans>
             </span>
           ) : item.status === 'Cancelled' ? (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1">
-              <XCircle size={12} /> Cancelled
+              <XCircle size={12} /> <Trans>Cancelled</Trans>
             </span>
           ) : (
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20">
@@ -158,14 +160,12 @@ const MyPurchases = () => {
             className="px-3 py-1.5 rounded-lg text-[10px] font-bold text-red-400 border border-red-500/20 bg-red-500/5 hover:bg-red-500/15 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
           >
             {cancellingId === item.id ? <Loader2 size={11} className="animate-spin" /> : <XCircle size={11} />}
-            {cancellingId === item.id ? 'Cancelling...' : 'Cancel'}
+            {cancellingId === item.id ? <Trans>Cancelling...</Trans> : <Trans>Cancel</Trans>}
           </button>
         ) : null
       )
     }
   ];
-
-
 
   return (
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8">
@@ -173,16 +173,16 @@ const MyPurchases = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 border-b border-border pb-6">
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-text-main flex items-center gap-3 tracking-tight">
-              <ShoppingBag className="text-[#EB712B]" size={28} /> My Purchases
+              <ShoppingBag className="text-[#EB712B]" size={28} /> <Trans>My Purchases</Trans>
             </h1>
-            <p className="text-sm text-text-muted mt-2 max-w-lg">Track your orders, view receipts, and manage your gear acquisitions.</p>
+            <p className="text-sm text-text-muted mt-2 max-w-lg"><Trans>Track your orders, view receipts, and manage your gear acquisitions.</Trans></p>
           </div>
 
           <div className="relative w-full md:w-72">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
             <input 
               type="text" 
-              placeholder="Search purchases..." 
+              placeholder={t`Search purchases...`} 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-3 text-xs font-bold focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] outline-none transition-all"
@@ -194,8 +194,8 @@ const MyPurchases = () => {
           <TableSkeleton />
         ) : isError ? (
           <div className="py-20 flex flex-col items-center justify-center text-center px-4 bg-surface border border-border rounded-3xl">
-            <h3 className="text-lg font-bold text-red-500">Failed to load purchases</h3>
-            <p className="text-sm text-text-muted mt-2">Please try again later.</p>
+            <h3 className="text-lg font-bold text-red-500"><Trans>Failed to load purchases</Trans></h3>
+            <p className="text-sm text-text-muted mt-2"><Trans>Please try again later.</Trans></p>
           </div>
         ) : purchases.length > 0 ? (
           <div className="bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden">
@@ -204,8 +204,8 @@ const MyPurchases = () => {
         ) : (
           <div className="py-20 flex flex-col items-center justify-center text-center px-4 bg-surface border border-border rounded-3xl">
             <ShoppingBag size={48} className="text-border mb-4" />
-            <h3 className="text-lg font-bold text-text-main">No purchases found</h3>
-            <p className="text-sm text-text-muted">You haven't bought any items yet.</p>
+            <h3 className="text-lg font-bold text-text-main"><Trans>No purchases found</Trans></h3>
+            <p className="text-sm text-text-muted"><Trans>You haven't bought any items yet.</Trans></p>
           </div>
         )}
       </div>

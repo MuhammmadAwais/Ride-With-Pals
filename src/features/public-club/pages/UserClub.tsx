@@ -10,6 +10,8 @@ import { useActiveClub } from "@/hooks/useActiveClub";
 import { ClubMapView } from "../components/ClubMapView";
 import { ClubCard, getClubTypeName } from "../components/ClubCard";
 import { cn } from "@/lib/utils";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 
 export default function UserClub() {
   const navigate = useNavigate();
@@ -154,10 +156,10 @@ export default function UserClub() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 pb-2">
           <div className="space-y-1">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase text-text-main">
-              Athletic Clubs
+              <Trans>Athletic Clubs</Trans>
             </h1>
             <p className="text-text-muted text-xs sm:text-sm font-medium">
-              Manage your personal hubs or discover training communities around the region.
+              <Trans>Manage your personal hubs or discover training communities around the region.</Trans>
             </p>
           </div>
 
@@ -173,7 +175,7 @@ export default function UserClub() {
             }}
             className="w-full sm:w-auto px-5 py-3 sm:px-6 sm:py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-bold tracking-wider uppercase cursor-pointer shadow-sm transition-all duration-200 active:scale-[0.98] text-center shrink-0"
           >
-            + Create Club
+            <Trans>+ Create Club</Trans>
           </button>
         </div>
 
@@ -193,7 +195,7 @@ export default function UserClub() {
               />
               <input
                 type="text"
-                placeholder="Search communities by name or sport..."
+                placeholder={t`Search communities by name or sport...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-surface border border-border rounded-xl py-3 sm:py-3.5 pl-11 pr-9 text-xs sm:text-sm focus:outline-none focus:border-[#EB712B] transition-colors text-text-main placeholder:text-text-muted/60"
@@ -223,20 +225,20 @@ export default function UserClub() {
               }`}
             >
               <Filter size={16} />
-              <span className="hidden xs:inline sm:inline">Filter</span>
+              <span className="hidden xs:inline sm:inline"><Trans>Filter</Trans></span>
               {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               )}
             </button>
           </div>
 
-          {/* Minimalist Sport Filter Pills (Fast 1-click toggling, NO EMOJIS) */}
+          {/* Minimalist Sport Filter Pills */}
           <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
             {[
-              { id: "ALL", label: "All Sports", icon: null },
-              { id: "CYCLING", label: "Cycling", icon: Bike },
-              { id: "RUNNING", label: "Running", icon: Activity },
-              { id: "TRIATHLON", label: "Triathlon", icon: Trophy },
+              { id: "ALL", label: <Trans>All Sports</Trans>, icon: null },
+              { id: "CYCLING", label: <Trans>Cycling</Trans>, icon: Bike },
+              { id: "RUNNING", label: <Trans>Running</Trans>, icon: Activity },
+              { id: "TRIATHLON", label: <Trans>Triathlon</Trans>, icon: Trophy },
             ].map((sport) => {
               const Icon = sport.icon;
               const active = sportTypeFilter === sport.id;
@@ -258,7 +260,7 @@ export default function UserClub() {
             })}
 
             <span className="text-[11px] text-text-muted font-medium ml-auto pl-2 hidden sm:inline whitespace-nowrap">
-              {filteredMyClubs.length + filteredDiscoverClubs.length} {filteredMyClubs.length + filteredDiscoverClubs.length === 1 ? "community" : "communities"}
+              {filteredMyClubs.length + filteredDiscoverClubs.length} {filteredMyClubs.length + filteredDiscoverClubs.length === 1 ? <Trans>community</Trans> : <Trans>communities</Trans>}
             </span>
           </div>
         </div>
@@ -267,11 +269,11 @@ export default function UserClub() {
         {(clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL") && (
           <div className="flex flex-wrap items-center gap-2 -mt-4">
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-1">
-              Active:
+              <Trans>Active:</Trans>
             </span>
             {clubTypeFilter !== "ALL" && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-bold uppercase tracking-wider">
-                Type: {clubTypeFilter}
+                <Trans>Type:</Trans> {clubTypeFilter}
                 <X
                   size={12}
                   className="cursor-pointer hover:text-white"
@@ -281,7 +283,7 @@ export default function UserClub() {
             )}
             {sportTypeFilter !== "ALL" && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-bold uppercase tracking-wider">
-                Sport: {sportTypeFilter}
+                <Trans>Sport:</Trans> {sportTypeFilter}
                 <X
                   size={12}
                   className="cursor-pointer hover:text-white"
@@ -296,7 +298,7 @@ export default function UserClub() {
               }}
               className="text-[10px] font-bold text-text-muted hover:text-text-main underline cursor-pointer ml-1"
             >
-              Reset
+              <Trans>Reset</Trans>
             </button>
           </div>
         )}
@@ -314,7 +316,7 @@ export default function UserClub() {
               >
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <h3 className="text-base font-black uppercase tracking-wider text-white">
-                    Filter
+                    <Trans>Filter</Trans>
                   </h3>
                   <button
                     type="button"
@@ -328,7 +330,7 @@ export default function UserClub() {
                 {/* Club Type Section */}
                 <div className="space-y-3">
                   <label className="text-xs font-black uppercase tracking-wider text-text-muted block">
-                    Club Type
+                    <Trans>Club Type</Trans>
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {(["ALL", "PUBLIC", "PRIVATE"] as const).map((type) => (
@@ -342,7 +344,7 @@ export default function UserClub() {
                             : "bg-surface/60 text-text-muted border-white/5 hover:border-white/20 hover:text-white"
                         }`}
                       >
-                        {type}
+                        {type === "ALL" ? <Trans>ALL</Trans> : type === "PUBLIC" ? <Trans>PUBLIC</Trans> : <Trans>PRIVATE</Trans>}
                       </button>
                     ))}
                   </div>
@@ -351,7 +353,7 @@ export default function UserClub() {
                 {/* Sport Type Section */}
                 <div className="space-y-3">
                   <label className="text-xs font-black uppercase tracking-wider text-text-muted block">
-                    Sport Type
+                    <Trans>Sport Type</Trans>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {(["ALL", "CYCLING", "RUNNING", "TRIATHLON"] as const).map((sport) => (
@@ -368,7 +370,7 @@ export default function UserClub() {
                         {sport === "CYCLING" && <Bike size={14} />}
                         {sport === "RUNNING" && <Activity size={14} />}
                         {sport === "TRIATHLON" && <Trophy size={14} />}
-                        <span>{sport}</span>
+                        <span>{sport === "ALL" ? <Trans>ALL</Trans> : sport === "CYCLING" ? <Trans>CYCLING</Trans> : sport === "RUNNING" ? <Trans>RUNNING</Trans> : <Trans>TRIATHLON</Trans>}</span>
                       </button>
                     ))}
                   </div>
@@ -385,7 +387,7 @@ export default function UserClub() {
                     }}
                     className="w-full py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-[#EB712B]/20 transition-all active:scale-95 cursor-pointer"
                   >
-                    Save
+                    <Trans>Save</Trans>
                   </button>
                   <button
                     type="button"
@@ -396,7 +398,7 @@ export default function UserClub() {
                     }}
                     className="w-full py-2.5 text-text-muted hover:text-white font-bold text-xs underline uppercase tracking-wider transition-colors text-center cursor-pointer"
                   >
-                    Clear Filter
+                    <Trans>Clear Filter</Trans>
                   </button>
                 </div>
               </div>
@@ -409,7 +411,7 @@ export default function UserClub() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <h2 className="text-base sm:text-lg font-black tracking-wide uppercase text-text-main">
-                My Clubs
+                <Trans>My Clubs</Trans>
               </h2>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface border border-border text-text-muted">
                 {filteredMyClubs.length}
@@ -474,13 +476,13 @@ export default function UserClub() {
               <div className="space-y-0.5 max-w-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-text-main">
                   {searchQuery || clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
-                    ? "No matching managed clubs"
-                    : "No managed clubs yet"}
+                    ? <Trans>No matching managed clubs</Trans>
+                    : <Trans>No managed clubs yet</Trans>}
                 </p>
                 <p className="text-[11px] text-text-muted">
                   {searchQuery || clubTypeFilter !== "ALL" || sportTypeFilter !== "ALL"
-                    ? "Try clearing your search query or sport filter."
-                    : "Clubs you manage or create will appear here."}
+                    ? <Trans>Try clearing your search query or sport filter.</Trans>
+                    : <Trans>Clubs you manage or create will appear here.</Trans>}
                 </p>
               </div>
             </div>
@@ -521,7 +523,7 @@ export default function UserClub() {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <h2 className="text-base sm:text-lg font-black tracking-wide uppercase text-text-main">
-                Discover All Clubs
+                <Trans>Discover All Clubs</Trans>
               </h2>
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-surface border border-border text-text-muted">
                 {filteredDiscoverClubs.length}
@@ -584,10 +586,10 @@ export default function UserClub() {
               </div>
               <div className="space-y-0.5 max-w-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-text-main">
-                  No matching clubs found
+                  <Trans>No matching clubs found</Trans>
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  Try adjusting your search query or sport filter.
+                  <Trans>Try adjusting your search query or sport filter.</Trans>
                 </p>
               </div>
             </div>
@@ -624,12 +626,12 @@ export default function UserClub() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
               <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
                 <p className="text-xs text-text-muted font-medium">
-                  Showing <span className="text-text-main font-bold">{(discoverPage - 1) * itemsPerPage + 1}</span> to <span className="text-text-main font-bold">{Math.min(discoverPage * itemsPerPage, filteredDiscoverClubs.length)}</span> of <span className="text-text-main font-bold">{filteredDiscoverClubs.length}</span> clubs
+                  <Trans>Showing <span className="text-text-main font-bold">{(discoverPage - 1) * itemsPerPage + 1}</span> to <span className="text-text-main font-bold">{Math.min(discoverPage * itemsPerPage, filteredDiscoverClubs.length)}</span> of <span className="text-text-main font-bold">{filteredDiscoverClubs.length}</span> clubs</Trans>
                 </p>
 
                 {filteredDiscoverClubs.length > 8 && (
                   <div className="flex items-center gap-1.5 text-xs text-text-muted pl-2 border-l border-border/60">
-                    <span className="text-[11px] uppercase font-semibold">Per page:</span>
+                    <span className="text-[11px] uppercase font-semibold"><Trans>Per page:</Trans></span>
                     {[8, 16, 24].map((size) => (
                       <button
                         key={size}
@@ -660,7 +662,7 @@ export default function UserClub() {
                   className="px-3 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-hover transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <ChevronLeft size={14} />
-                  <span className="hidden sm:inline">Prev</span>
+                  <span className="hidden sm:inline"><Trans>Prev</Trans></span>
                 </button>
 
                 {/* Page Number Buttons */}
@@ -708,7 +710,7 @@ export default function UserClub() {
                   disabled={discoverPage === totalPages}
                   className="px-3 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-text-main disabled:opacity-40 disabled:cursor-not-allowed hover:bg-hover transition-colors cursor-pointer flex items-center gap-1"
                 >
-                  <span className="hidden sm:inline">Next</span>
+                  <span className="hidden sm:inline"><Trans>Next</Trans></span>
                   <ChevronRight size={14} />
                 </button>
               </div>

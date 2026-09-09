@@ -1,11 +1,38 @@
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-09 19:10+0500\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ur\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
 "X-Generator: @lingui/cli\n"
-"Language: ur\n"
+
+#. placeholder {0}: categoryBreakdown.length
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "{0} Categories"
+msgstr "{0} زمرہ جات"
+
+#. placeholder {0}: clubSpending.length
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "{0} Clubs"
+msgstr "{0} کلب"
+
+#. placeholder {0}: transactions.length > 0 ? Math.round((completedTx.length /
+#. transactions.length) * 100) : 0
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "{0}% Settlement Rate"
+msgstr "{0}% تصفیہ کی شرح"
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "{count} Pals joined"
+msgstr "{count} دوست شامل ہوئے۔"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "/ mo ($49.99/yr)"
@@ -18,6 +45,22 @@ msgstr "/ ماہ"
 #: src/features/landing/components/PricingSection.tsx
 msgid "/ year"
 msgstr "/ سال"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "+ Create Club"
+msgstr "+ کلب بنائیں"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "✓ Joined (Leave)"
+msgstr "✓ شامل ہوئے (چھوڑیں)"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "$200+"
+msgstr "$200+"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "$50 - $200"
+msgstr "$50 - $200"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "01 — FOR RIDERS"
@@ -35,25 +78,182 @@ msgstr "03 — اسپورٹس کلبوں کے لیے"
 msgid "04 — MEMBERSHIP FEES"
 msgstr "04 — کلب ممبرشپ فیس"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "1. Mandatory Safety & Gear Policy"
+msgstr "1. لازمی حفاظت اور سامان کی پالیسی"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "12-hour (1:30 PM)"
+msgstr "12 گھنٹے (1:30 PM)"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "2. Traffic Laws & Environmental Respect"
+msgstr "2. ٹریفک قوانین اور ماحولیاتی احترام"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "24-hour (13:30)"
+msgstr "24 گھنٹے (13:30)"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "3. Risk Awareness & Personal Responsibility"
+msgstr "3. خطرے سے آگاہی اور ذاتی ذمہ داری"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "4. Community Code of Conduct"
+msgstr "4. کمیونٹی کوڈ آف کنڈکٹ"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "A chat for every ride."
 msgstr "ہر رائڈ اور ایکٹیوٹی کے لیے وقف چیٹ۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
-msgstr "بالکل۔ درحقیقت، Ride with Pals کو ہمارے جیسے اسپورٹس گروپس میں باہمی رابطے کو بہتر بنانے اور واٹس ایپ چیٹس کی بے ترتیبی اور انتشار کو ختم کرنے کے لیے ہی بنایا گیا ہے۔"
+msgid ""
+"Absolutely. In fact, Ride with Pals was created to improve communication "
+"within riding groups like ours and put an end to endless, chaotic WhatsApp "
+"chats."
+msgstr ""
+"بالکل۔ درحقیقت، Ride with Pals کو ہمارے جیسے اسپورٹس گروپس میں باہمی رابطے "
+"کو بہتر بنانے اور واٹس ایپ چیٹس کی بے ترتیبی اور انتشار کو ختم کرنے کے لیے "
+"ہی بنایا گیا ہے۔"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Accept & Continue"
+msgstr "قبول کریں اور جاری رکھیں"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Accept or reject applications with one tap"
 msgstr "ایک کلک میں ممبرشپ درخواستیں منظور یا مسترد کریں"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"Account deletion requests are processed manually to verify account ownership"
+" and prevent unauthorized removals."
+msgstr ""
+"اکاؤنٹ کو حذف کرنے کی درخواستوں پر دستی طور پر کارروائی کی جاتی ہے تاکہ "
+"اکاؤنٹ کی ملکیت کی تصدیق کی جا سکے اور غیر مجاز ہٹانے کو روکا جا سکے۔"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Account holder"
+msgstr "اکاؤنٹ ہولڈر"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Action"
+msgstr "ایکشن"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Active Filters:"
+msgstr "فعال فلٹرز:"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Active Member"
+msgstr "ایکٹو ممبر"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Active Subscription"
+msgstr "فعال رکنیت"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Active:"
+msgstr "فعال:"
+
+#: src/components/Sidebar.tsx
+msgid "Activities"
+msgstr "سرگرمیاں"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Activity"
+msgstr "سرگرمی"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity Fee"
+msgstr "سرگرمی کی فیس"
+
+#. placeholder {0}: activeUser.participantCount
+#: src/features/support/components/ChatWindow.tsx
+msgid "Activity Group • {0} athletes"
+msgstr "سرگرمی گروپ • {0} کھلاڑی"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Activity Group • View members & info"
+msgstr "سرگرمی گروپ • ممبران اور معلومات دیکھیں"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity Organizer"
+msgstr "سرگرمی آرگنائزر"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity Overview & Guidelines"
+msgstr "سرگرمی کا جائزہ اور رہنما خطوط"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Activity roster"
+msgstr "سرگرمی روسٹر"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Add Listing"
+msgstr "فہرست شامل کریں۔"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Add Product"
+msgstr "پروڈکٹ شامل کریں۔"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Add to Google Calendar"
+msgstr "گوگل کیلنڈر میں شامل کریں۔"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Add to Shop"
+msgstr "دکان میں شامل کریں۔"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Adding you to the club..."
+msgstr "آپ کو کلب میں شامل کیا جا رہا ہے..."
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Adding..."
+msgstr "شامل کیا جا رہا ہے..."
+
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Advanced Performance Analytics"
 msgstr "پرفارمنس کے جدید ترین تجزیاتی اعداد و شمار"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "All"
+msgstr "تمام"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "ALL"
+msgstr "تمام"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "All Categories"
+msgstr "تمام زمرے"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "All Gear"
+msgstr "تمام گیئر"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"All riders and runners must follow traffic signs, signal properly, and "
+"respect local pedestrians and trail etiquette at all times."
+msgstr ""
+"تمام سواروں اور دوڑنے والوں کو ٹریفک کے اشاروں پر عمل کرنا چاہیے، صحیح طریقے"
+" سے سگنل دینا چاہیے، اور مقامی پیدل چلنے والوں کا ہر وقت احترام کرنا چاہیے۔"
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "All rights reserved."
 msgstr "جملہ حقوق محفوظ ہیں۔"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "All Sports"
+msgstr "تمام کھیل"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "All-in-one club dashboard with real-time ride tracking"
@@ -63,17 +263,100 @@ msgstr "ریئل ٹائم رائڈ ٹریکنگ کے ساتھ ہمہ جہت کل
 msgid "All-in-One Sports Club Platform"
 msgstr "اسپورٹس کلبوں کے لیے آل ان ون پلیٹ فارم"
 
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Amount"
+msgstr "رقم"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "App Preferences"
+msgstr "ایپ کی ترجیحات"
+
 #: src/features/landing/components/BentoSection.tsx
-msgid "Approve members, handle roles, and keep your community engaged and organised effortlessly."
-msgstr "ممبران کو منظور کریں، ذمہ داریاں سونپیں اور اپنی کمیونٹی کو بغیر کسی پریشانی کے منظم اور فعال رکھیں۔"
+msgid ""
+"Approve members, handle roles, and keep your community engaged and organised"
+" effortlessly."
+msgstr ""
+"ممبران کو منظور کریں، ذمہ داریاں سونپیں اور اپنی کمیونٹی کو بغیر کسی پریشانی"
+" کے منظم اور فعال رکھیں۔"
+
+#. placeholder {0}: club.clubName || club.name || 'this club'
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid ""
+"Are you sure you want to leave <0>{0}</0>? You will lose access to member-"
+"only scheduled rides, club leaderboards, and exclusive activity perks."
+msgstr ""
+"کیا آپ واقعی <0>{0}</0> کو چھوڑنا چاہتے ہیں؟ آپ صرف اراکین کے لیے طے شدہ "
+"سواریوں، کلب لیڈر بورڈز اور خصوصی سرگرمی کے فوائد تک رسائی سے محروم ہو جائیں"
+" گے۔"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "As a club administrator, what permissions can I grant to club members?"
 msgstr "بطور کلب ایڈمنسٹریٹر، میں اراکین کو کون سے اختیارات دے سکتا ہوں؟"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Athlete"
+msgstr "ایتھلیٹ"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Athlete ID:"
+msgstr "ایتھلیٹ ID:"
+
+#: src/components/Sidebar.tsx
+msgid "Athlete Interface"
+msgstr "ایتھلیٹ انٹرفیس"
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Athlete Library"
+msgstr "ایتھلیٹ لائبریری"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Athletes"
+msgstr "ایتھلیٹس"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Athletic Clubs"
+msgstr "ایتھلیٹک کلب"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid ""
+"Authentic gear listed by community member. Inquire with seller directly for "
+"specifications, sizing, and pickup options."
+msgstr ""
+"کمیونٹی ممبر کے ذریعہ درج مستند گیئر۔ وضاحتیں، سائز اور پک اپ کے اختیارات کے"
+" لیے براہ راست بیچنے والے سے پوچھ گچھ کریں۔"
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Automated monthly leaderboards, distance metrics & badges"
 msgstr "خودکار ماہانہ لیڈر بورڈ، طے شدہ فاصلے کے ریکارڈز اور بیجز"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Avatar Preview"
+msgstr "اوتار کا پیش نظارہ"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Avg Pace"
+msgstr "اوسط رفتار"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Awaiting Clearance"
+msgstr "کلیئرنس کا انتظار ہے۔"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Back"
+msgstr "پیچھے"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Back to Activities"
+msgstr "سرگرمیاں پر واپس جائیں۔"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Back to Clubs"
+msgstr "واپس کلبوں پر"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Basic feature set"
+msgstr "بنیادی فیچر سیٹ"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Basic ride & activity tracking"
@@ -83,9 +366,23 @@ msgstr "بنیادی رائڈ اور ایکٹیوٹی ٹریکنگ"
 msgid "Basic Tier"
 msgstr "بنیادی پلان"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Billing & plan renewal alerts"
+msgstr "بلنگ اور پلان کی تجدید کے انتباہات"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Bio"
+msgstr "بایو"
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app."
-msgstr "دونوں سہولیات موجود ہیں: آپ نقد یا بینک ٹرانسفر کے ذریعے دستی طور پر ادائیگیاں درج کر سکتے ہیں، یا اسٹرائپ (Stripe) کے ذریعے ایپ میں محفوظ اور خودکار طریقے سے فیس وصول کر سکتے ہیں۔"
+msgid ""
+"Both options are available: you can manage payments manually (recording "
+"outside payments like cash or bank transfer), or you can use Stripe to "
+"automate and collect them securely inside the app."
+msgstr ""
+"دونوں سہولیات موجود ہیں: آپ نقد یا بینک ٹرانسفر کے ذریعے دستی طور پر "
+"ادائیگیاں درج کر سکتے ہیں، یا اسٹرائپ (Stripe) کے ذریعے ایپ میں محفوظ اور "
+"خودکار طریقے سے فیس وصول کر سکتے ہیں۔"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Browse & join public activities"
@@ -95,9 +392,27 @@ msgstr "پبلک ایکٹیوٹیز دیکھیں اور شامل ہوں"
 msgid "Browse & Join Rides"
 msgstr "رائڈز تلاش کریں اور شرکت کریں"
 
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Browse Activities"
+msgstr "سرگرمیاں براؤز کریں۔"
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Browse activities and tap the bookmark icon to save them for later."
+msgstr ""
+"سرگرمیوں کو براؤز کریں اور انہیں بعد میں محفوظ کرنے کے لیے بک مارک آئیکن پر "
+"ٹیپ کریں۔"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Browse All Rides"
+msgstr "تمام سواریوں کو براؤز کریں۔"
+
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
-msgstr "آنے والی گروپ رائڈز، رفتار، فاصلہ اور روٹ ایک نظر میں دیکھیں۔ سیکنڈوں میں شامل ہوں اور ماہانہ لیڈر بورڈ پر مقابلہ کریں۔"
+msgid ""
+"Browse upcoming group rides with pace, distance, and ride type at a glance. "
+"Swipe to join in seconds — then compete monthly on the leaderboard."
+msgstr ""
+"آنے والی گروپ رائڈز، رفتار، فاصلہ اور روٹ ایک نظر میں دیکھیں۔ سیکنڈوں میں "
+"شامل ہوں اور ماہانہ لیڈر بورڈ پر مقابلہ کریں۔"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Build your club."
@@ -114,6 +429,28 @@ msgstr "کلب چیٹ، اہم اعلانات کا بورڈ اور کھیلوں 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Buy and sell gear with riders you already know"
 msgstr "قابل اعتماد کھلاڑیوں اور رائڈرز سے اسپورٹس گیئر کی خرید و فروخت کریں"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Buy Now"
+msgstr "ابھی خریدیں۔"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "By"
+msgstr "کی طرف سے"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"By registering for this event, you understand the aerobic and environmental "
+"challenges of outdoor activity and assume personal responsibility."
+msgstr ""
+"اس ایونٹ کے لیے رجسٹر کر کے، آپ بیرونی سرگرمیوں کے ایروبک اور ماحولیاتی "
+"چیلنجوں کو سمجھتے ہیں اور ذاتی ذمہ داری قبول کرتے ہیں۔"
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Calendar"
+msgstr "کیلنڈر"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Can I create activities without belonging to a club?"
@@ -139,37 +476,193 @@ msgstr "کیا اسٹریوا (Strava) منسلک کیے بغیر ایپ است�
 msgid "Can users be banned?"
 msgstr "کیا کسی صارف کو بلاک یا خارج کیا جا سکتا ہے؟"
 
+#: src/components/Sidebar.tsx src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Cancel"
+msgstr "منسوخ کریں۔"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Cancelled"
+msgstr "منسوخ"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Cancelling..."
+msgstr "منسوخ ہو رہا ہے..."
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Card number"
+msgstr "کارڈ نمبر"
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Casual Groups"
 msgstr "دوستوں کے گروپس"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Category"
+msgstr "زمرہ"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Category Breakdown"
+msgstr "زمرہ کی خرابی"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Change Password"
+msgstr "پاس ورڈ تبدیل کریں۔"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Change Photo"
+msgstr "تصویر تبدیل کریں۔"
+
+#: src/components/Sidebar.tsx
+msgid "Chat"
+msgstr "گپ شپ"
+
+#: src/components/Sidebar.tsx
+msgid "Chat Support"
+msgstr "چیٹ سپورٹ"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Chat. Trade."
 msgstr "چیٹ کریں۔ گیئر شیئر کریں۔"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Choose which events trigger instant email notifications to your inbox."
+msgstr ""
+"منتخب کریں کہ کون سے واقعات آپ کے ان باکس میں فوری ای میل اطلاعات کو متحرک "
+"کرتے ہیں۔"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "City"
+msgstr "شہر"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Clear all"
+msgstr "سب صاف کریں۔"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Clear Filter"
+msgstr "فلٹر صاف کریں۔"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Clear search"
+msgstr "تلاش صاف کریں۔"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Clear Search & Filters"
+msgstr "تلاش اور فلٹرز صاف کریں۔"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Click to Join Activity"
+msgstr "سرگرمی میں شامل ہونے کے لیے کلک کریں۔"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Click to view full image"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Click to view group details & member roster"
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Click to view message center overview"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Click to view profile"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Climb the ranks."
 msgstr "رینکنگ میں آگے بڑھیں۔"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Close"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Close Directory"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Close modal"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Close roster"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Close search"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Club"
+msgstr ""
 
 #: src/features/landing/components/CTASection.tsx
 msgid "club & rides?"
 msgstr "اپنے کلب اور رائڈز کو؟"
 
+#: src/components/layout/Navbar.tsx
+msgid "Club activity will appear here."
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Club Alerts"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Club Calendar"
 msgstr "کلب کا کیلنڈر"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Club entry fee:"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "CLUB GROWTH"
 msgstr "کلب کی ترقی"
 
-#: src/features/landing/components/BentoSection.tsx
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Join Requests"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Join Response"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/landing/components/BentoSection.tsx
 msgid "Club Management"
 msgstr "کلب مینجمنٹ"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Club Marketplace"
 msgstr "کلب مارکیٹ پلیس"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Members"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Club Membership"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club overview & settings"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Club Payment"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Club Permissions"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Club shop & fee collection"
@@ -179,9 +672,41 @@ msgstr "کلب شاپ اور ممبرشپ فیس کی وصولی"
 msgid "Club shop & membership fee management"
 msgstr "کلب کی آن لائن دکان اور ممبرشپ فیس کا نظام"
 
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Club Spending Distribution"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Club Store"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Club Subscription"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Club Type"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Club Wallet"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Club:"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
-msgstr "گولڈ سبسکرپشن والے کلب اپنا اسٹرائپ اکاؤنٹ جوڑ کر اپنے ممبران کو کلب کی کٹس، جرسیاں اور سامان فروخت کرنے کے لیے آن لائن شاپ فعال کر سکتے ہیں۔"
+msgid ""
+"Clubs with a Gold subscription can connect their Stripe payment account and "
+"activate an online shop to sell merchandise and products to their members."
+msgstr ""
+"گولڈ سبسکرپشن والے کلب اپنا اسٹرائپ اکاؤنٹ جوڑ کر اپنے ممبران کو کلب کی کٹس،"
+" جرسیاں اور سامان فروخت کرنے کے لیے آن لائن شاپ فعال کر سکتے ہیں۔"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Clubs you manage or create will appear here."
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Collect Fees"
@@ -190,6 +715,18 @@ msgstr "فیس وصول کریں"
 #: src/features/landing/components/FAQSection.tsx
 msgid "Commission"
 msgstr "کمیشن"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "communities"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Communities you interact and transact with"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "community"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Community"
@@ -204,6 +741,10 @@ msgstr "کمیونٹی"
 msgid "Community & Updates"
 msgstr "کمیونٹی اور تازہ ترین خبریں"
 
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Community Club"
+msgstr ""
+
 #: src/features/landing/components/FooterSection.tsx
 msgid "Company"
 msgstr "کمپنی"
@@ -212,17 +753,80 @@ msgstr "کمپنی"
 msgid "Compete by rides attended or total km covered"
 msgstr "مکمل کردہ رائڈز یا طے شدہ کلومیٹرز کی بنیاد پر برتری حاصل کریں"
 
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Complete historical record of all verified activities"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Complete Purchase"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Completed"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Condition"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Confirm New Password"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Connect Account"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Connect in real-time with the organizer and fellow participants to "
+"coordinate rendezvous point, pace, and equipment."
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes."
-msgstr "اپنے ساتھیوں سے جڑیں، رائڈز پلان کریں اور اپنی کمیونٹی کو متحرک رکھیں — آغاز میں محض چند منٹ لگتے ہیں۔"
+msgid ""
+"Connect with your squad, organize rides, and keep your community engaged - "
+"getting started takes just minutes."
+msgstr ""
+"اپنے ساتھیوں سے جڑیں، رائڈز پلان کریں اور اپنی کمیونٹی کو متحرک رکھیں — آغاز"
+" میں محض چند منٹ لگتے ہیں۔"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Connected"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Contact"
 msgstr "رابطہ کریں"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Contact Details"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Contact Support"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Core Features"
 msgstr "اہم ترین خصوصیات"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Could not initiate checkout."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Could not open billing portal."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Country"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Create a Club"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Create a club (up to 15 members)"
@@ -233,8 +837,13 @@ msgid "Create and build community with "
 msgstr "کمیونٹی بنائیں اور پروان چڑھائیں بذریعہ "
 
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel."
-msgstr "ایک ہی ڈیش بورڈ سے کئی کلب بنائیں۔ خبریں پوسٹ کریں، ممبران کی منظوری دیں اور اپنی اسپورٹس کمیونٹی کو ہمیشہ منظم رکھیں۔"
+msgid ""
+"Create and manage multiple clubs from one dashboard. Post news, control who "
+"joins, manage members, and keep your community organised — all from your "
+"admin panel."
+msgstr ""
+"ایک ہی ڈیش بورڈ سے کئی کلب بنائیں۔ خبریں پوسٹ کریں، ممبران کی منظوری دیں اور"
+" اپنی اسپورٹس کمیونٹی کو ہمیشہ منظم رکھیں۔"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Create Club"
@@ -244,41 +853,216 @@ msgstr "کلب بنائیں"
 msgid "Create community."
 msgstr "کمیونٹی کو منظم کریں۔"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Create Listing"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/UserCalendar.tsx
+msgid "Create Ride"
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Create your profile"
 msgstr "اپنا پروفائل بنائیں"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "CREDIT"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Cross-Club"
 msgstr "بین الکلب سرگرمیاں"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Cross-post Listing"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Current Password"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Current password is required"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Current period ends:"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Current Plan"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "CVV"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Cycling"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "CYCLING"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Cycling Activity"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Cycling, running and swimming"
 msgstr "سائیکلنگ، رننگ اور تیراکی"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Danger Zone"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Dark Mode"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Dashboard"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Date"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Date of Birth"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "DEBIT"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Define the amount and membership validity period."
 msgstr "فیس کی رقم اور ممبرشپ کی مدت کا خود تعین کریں۔"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Delegate roles & rights"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Delete Account"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Delete listing"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Delivered"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Delivery"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Delivery Address"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Delivery Method"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Deposit, withdraw, and pay without leaving the app"
 msgstr "ایپ کے اندر ہی رقم جمع، ٹرانسفر اور ادا کریں"
 
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Description"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
-msgid "Designed for athletes who want unlimited access to activities, marketplace, and analytics."
-msgstr "ان ایتھلیٹس کے لیے جو لامحدود رائڈز، مارکیٹ پلیس اور کارکردگی کی تفصیلی رپورٹ چاہتے ہیں۔"
+msgid ""
+"Designed for athletes who want unlimited access to activities, marketplace, "
+"and analytics."
+msgstr ""
+"ان ایتھلیٹس کے لیے جو لامحدود رائڈز، مارکیٹ پلیس اور کارکردگی کی تفصیلی "
+"رپورٹ چاہتے ہیں۔"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Designed for clubs."
 msgstr "کلبوں کی ضروریات کے مطابق تیار کردہ۔"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Destination / Finish Point"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Destination / Finish:"
+msgstr ""
+
+#. placeholder {0}: row.name
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Direct message {0}"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Disconnect Strava"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Disconnected"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Disconnected from Strava."
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Discount"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Discounts"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Discover All Clubs"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Discover and join scheduled group activities in your region."
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Discover clubs. Join activities."
 msgstr "کلب دریافت کریں۔ سرگرمیوں میں حصہ لیں۔"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Dismiss"
+msgstr ""
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Disorganized WhatsApp groups & lost ride details"
 msgstr "بے ہنگم واٹس ایپ گروپس اور ضائع ہونے والی روٹ معلومات"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Dist:"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Distance"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Distance Unit"
+msgstr ""
+
+#. placeholder {0}: val === 'mile' ? 'Miles' : 'Kilometers'
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Distance unit updated to {0}."
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Do I need to be a Premium user to create a club?"
@@ -300,13 +1084,77 @@ msgstr "کیا Ride with Pals خود فیس پروسیس کرتا ہے یا صر
 msgid "Does the app charge a commission on each payment made through the app?"
 msgstr "کیا ایپ کے ذریعے ہونے والی ادائیگیوں پر کوئی کمیشن کٹتا ہے؟"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Done"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Downgrade via Customer Portal"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Download GPX"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Download GPX route"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Download GPX Route"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Download route files and sync with Strava classification"
 msgstr "GPX روٹ فائلز ڈاؤن لوڈ کریں اور اسٹریوا رینکنگ کے ساتھ ہم آہنگ کریں"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "e.g. 150"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "e.g. Carbon Helmet"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Edit"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Elevation & Slope"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Elite Seller"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Email Notification Preferences"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Ensure your account is protected with a strong password."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Equipment Condition"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
-msgid "Essential access to browse activities, join clubs, and connect with your community."
-msgstr "ایونٹس دیکھنے، کلبوں میں شامل ہونے اور کمیونٹی سے جڑنے کی بنیادی مفت رسائی۔"
+msgid ""
+"Essential access to browse activities, join clubs, and connect with your "
+"community."
+msgstr ""
+"ایونٹس دیکھنے، کلبوں میں شامل ہونے اور کمیونٹی سے جڑنے کی بنیادی مفت رسائی۔"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Essentials for getting started."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Event Operated By"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Everything in Free Limited Plan"
@@ -316,11 +1164,131 @@ msgstr "مفت بنیادی پلان کی تمام سہولیات"
 msgid "Exclusive discount codes on gear and club events"
 msgstr "اسپورٹس گیئر اور کلب ایونٹس پر خصوصی ڈسکاؤنٹ کوڈز"
 
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Expiry Date"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Explore All Rides"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Explore Clubs"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Explore clubs & rides"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid ""
+"Explore scheduled rides across clubs. Select any calendar date to view the "
+"daily briefing, meeting points, and export directly to Google Calendar."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Failed to add product."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Failed to cancel order."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to create listing."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to delete listing."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to disconnect Strava."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to initiate Strava connection."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to load marketplace listings. Please try again."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Failed to load purchases"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Failed to load saved activities."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Failed to load shop items. Please try again."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Failed to load subscription data."
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "Failed to mark notification as read"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Failed to open billing portal"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Failed to place order. Please try again."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Failed to remove ride."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Failed to share listing."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Failed to start checkout"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update notification settings."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update password."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Failed to update saved rides."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update scale unit."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Failed to update time format."
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 #: src/features/landing/components/FooterSection.tsx
 #: src/features/landing/components/Navigation.tsx
 msgid "Features"
 msgstr "خصوصیات"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Fee Payment Requests"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Filter"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Flat yearly rate — no member limits"
@@ -354,6 +1322,10 @@ msgstr "کلب مالکان اور کوچز کے لیے"
 msgid "For Riders"
 msgstr "رائڈرز اور ایتھلیٹس کے لیے"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "forever"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Forum & News"
 msgstr "فورم اور اعلانات"
@@ -363,12 +1335,44 @@ msgid "Fragmented member chats & missing announcement hub"
 msgstr "بکھری ہوئی بات چیت اور کسی مرکزی معلوماتی چینل کا فقدان"
 
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Free"
 msgstr "مفت"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Free Entry"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Free Limited Plan"
 msgstr "مفت بنیادی پلان"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Fri"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Full Name"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Gear"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Gear Item"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "General"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Get assistance"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Get Premium Athlete"
@@ -382,9 +1386,21 @@ msgstr "مفت آغاز کریں"
 msgid "Get Started Free"
 msgstr "ابھی مفت شروع کریں"
 
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Global"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Global Marketplace"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Gold Club Plan"
 msgstr "گولڈ کلب پلان"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Google Cal"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Got questions?"
@@ -394,13 +1410,59 @@ msgstr "کوئی سوال ہے؟"
 msgid "GPX & Strava Sync"
 msgstr "GPX اور اسٹریوا سنک"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "GPX Route"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Ride.tsx
+msgid "Grid View"
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Group"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Group Chat"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides."
-msgstr "گروپ چیٹ، پرائیویٹ میسجز، داخلی مارکیٹ پلیس اور ڈیجیٹل والیٹ — وہ سب کچھ جو ٹیم کو رائڈز کے درمیان باہم جوڑے رکھتا ہے۔"
+msgid ""
+"Group chat, direct messages, a built-in marketplace, and an in-app wallet — "
+"everything that keeps your club community alive between rides."
+msgstr ""
+"گروپ چیٹ، پرائیویٹ میسجز، داخلی مارکیٹ پلیس اور ڈیجیٹل والیٹ — وہ سب کچھ جو "
+"ٹیم کو رائڈز کے درمیان باہم جوڑے رکھتا ہے۔"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Group discussion is reserved for registered athletes. Join this activity to "
+"unlock the conversation room."
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Group Info"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Helmets and proper sports apparel are required for all cycling and high-"
+"velocity activities. Participants must inspect their gear prior to "
+"departure."
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Here's everything you need to know before getting started. If you have more questions, feel free to reach out to our team."
-msgstr "شروع کرنے سے پہلے جاننے کے لیے تمام معلومات یہاں موجود ہیں۔ مزید رہنمائی کے لیے ہماری ٹیم ہمہ وقت حاضر ہے۔"
+msgid ""
+"Here's everything you need to know before getting started. If you have more "
+"questions, feel free to reach out to our team."
+msgstr ""
+"شروع کرنے سے پہلے جاننے کے لیے تمام معلومات یہاں موجود ہیں۔ مزید رہنمائی کے "
+"لیے ہماری ٹیم ہمہ وقت حاضر ہے۔"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Host"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "How are transactions carried out through the marketplace?"
@@ -435,13 +1497,30 @@ msgstr "میٹرو سی سی نے اپنے اراکین کی تعداد کیسے
 msgid "How to Launch Your Club and Attract More Riders"
 msgstr "نیا کلب کیسے شروع کریں اور مزید کھلاڑیوں کو متوجہ کریں"
 
-#: src/features/landing/components/FAQSection.tsx
-msgid "I'm not part of an official club, but my friends and I ride together. Can we use the app?"
-msgstr "ہم کسی باضابطہ کلب کا حصہ نہیں مگر دوست اکٹھے ٹریننگ کرتے ہیں۔ کیا ہم اسے استعمال کر سکتے ہیں؟"
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "I acknowledge and accept the"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard."
-msgstr "گولڈ سبسکرپشن کے ساتھ آپ ممبرشپ فیس مقرر کر سکتے ہیں، موصولہ رقوم کی تصدیق کر سکتے ہیں اور ڈیش بورڈ سے اسٹرائپ کے ذریعے براہ راست چالان بھیج سکتے ہیں۔"
+msgid ""
+"I'm not part of an official club, but my friends and I ride together. Can we"
+" use the app?"
+msgstr ""
+"ہم کسی باضابطہ کلب کا حصہ نہیں مگر دوست اکٹھے ٹریننگ کرتے ہیں۔ کیا ہم اسے "
+"استعمال کر سکتے ہیں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid ""
+"If you have a Gold club subscription, you can define membership fees, mark "
+"payments as completed, and send payment requests through Stripe from your "
+"club dashboard."
+msgstr ""
+"گولڈ سبسکرپشن کے ساتھ آپ ممبرشپ فیس مقرر کر سکتے ہیں، موصولہ رقوم کی تصدیق "
+"کر سکتے ہیں اور ڈیش بورڈ سے اسٹرائپ کے ذریعے براہ راست چالان بھیج سکتے ہیں۔"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "in"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "In-App Wallet"
@@ -454,6 +1533,14 @@ msgstr "ان بلٹ آن لائن شاپ"
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Integrated wallet, automated member dues & permissions"
 msgstr "ڈیجیٹل والیٹ، فیس کا خودکار نظام اور ایڈوانسڈ اختیارات"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Integration"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Irreversible Action"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Is it a social app or a management tool?"
@@ -472,12 +1559,45 @@ msgid "Is there a forum-style interaction feature?"
 msgstr "کیا فورم کی طرز پر تبادلہ خیال کی سہولت ہے؟"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation."
-msgstr "یہ دونوں کا بہترین امتزاج ہے۔ Ride with Pals کمیونٹی خصوصیات (چیٹ، گیئر اور ایونٹس) کو پیشہ ورانہ انتظامی ٹولز (فیس، شاپ، اختیارات اور شیڈولنگ) کے ساتھ یکجا کرتا ہے۔"
+msgid ""
+"It's both. Ride with Pals combines community features — chats, marketplace, "
+"and activities — with real club management tools, including membership fees,"
+" a club shop, permissions, and organisation."
+msgstr ""
+"یہ دونوں کا بہترین امتزاج ہے۔ Ride with Pals کمیونٹی خصوصیات (چیٹ، گیئر اور "
+"ایونٹس) کو پیشہ ورانہ انتظامی ٹولز (فیس، شاپ، اختیارات اور شیڈولنگ) کے ساتھ "
+"یکجا کرتا ہے۔"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Item"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "items found"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Join Activity"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Join Activity to Chat"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Join activity to unlock group chat room"
+msgstr ""
 
 #: src/features/landing/components/CTASection.tsx
 msgid "Join athletes and club leaders building the ultimate sports community."
-msgstr "ان کھلاڑیوں اور منتظمین میں شامل ہوں جو کھیلوں کی بہترین کمیونٹی تعمیر کر رہے ہیں۔"
+msgstr ""
+"ان کھلاڑیوں اور منتظمین میں شامل ہوں جو کھیلوں کی بہترین کمیونٹی تعمیر کر "
+"رہے ہیں۔"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join Club"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Join Request Control"
@@ -488,32 +1608,210 @@ msgid "Join the Club"
 msgstr "کلب میں شامل ہوں"
 
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Join the ride, track your progress, build connections, and share your experiences with the community."
-msgstr "رائڈ کا حصہ بنیں، اپنی کارکردگی جانچیں، نئے دوست بنائیں اور تجربات شیئر کریں۔"
+msgid ""
+"Join the ride, track your progress, build connections, and share your "
+"experiences with the community."
+msgstr ""
+"رائڈ کا حصہ بنیں، اپنی کارکردگی جانچیں، نئے دوست بنائیں اور تجربات شیئر "
+"کریں۔"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join this club to view its {activeTab}."
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join Verification"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Join with Code"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Joined"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Joining Requests"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Joining..."
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep every ride, event, and activity organized in one place"
 msgstr "ہر رائڈ، مقابلے اور مشق کو ایک منظم جگہ پر رکھیں"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Kilometers (km)"
+msgstr ""
+
+#. placeholder {0}: activeUser.lastSeen
+#: src/features/support/components/ChatWindow.tsx
+msgid "Last seen {0}"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Leader"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
+msgid "Leaderboard"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Leaders"
+msgstr ""
+
 #: src/features/landing/components/BlogSection.tsx
-msgid "Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff."
-msgstr "جانیں کہ دوستوں کے چھوٹے گروپ کو بڑی اسپورٹس کمیونٹی میں کیسے بدلا جائے۔ ایونٹس، جوش و خروش اور انتظامی امور کو Ride with Pals کے ذریعے خودکار بنانے کا طریقہ۔"
+msgid ""
+"Learn how to go from a small group of friends to a massive local community. "
+"We cover events, member engagement, and using Ride with Pals to automate the"
+" boring stuff."
+msgstr ""
+"جانیں کہ دوستوں کے چھوٹے گروپ کو بڑی اسپورٹس کمیونٹی میں کیسے بدلا جائے۔ "
+"ایونٹس، جوش و خروش اور انتظامی امور کو Ride with Pals کے ذریعے خودکار بنانے "
+"کا طریقہ۔"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Leave Activity"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Leave Club"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Leave this Club?"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Leaving..."
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Legal"
 msgstr "قانونی معلومات"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Light Mode"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Limited items in Marketplace"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Ride.tsx
+msgid "List View"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listed by"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listing created successfully!"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listing deleted successfully!"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Listing Price"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Live"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Loading Activity Details..."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Loading Subscription Details..."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Loading wallet ledger..."
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "Location not specified"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Locked"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Logged out successfully."
+msgstr ""
+
 #: src/features/landing/components/Navigation.tsx
 msgid "Login"
 msgstr "لاگ اِن"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Logout"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Made simple."
 msgstr "نہایت آسان اور واضح۔"
 
+#: src/features/public-club/components/ClubCard.tsx
+msgid "Manage"
+msgstr ""
+
+#. placeholder {0}: myClubs.length
+#: src/components/Sidebar.tsx
+msgid "Manage {0} clubs"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Manage 1 club"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Manage active members"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Manage Club"
+msgstr ""
+
 #: src/features/landing/components/HeroSection.tsx
-msgid "Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free."
-msgstr "ہر چیز ایک ہی ایپ میں سنبھالیں: آنے والی رائڈز، خبریں، کلب شاپ، مارکیٹ پلیس، فیسیں اور پیغامات۔ واٹس ایپ کی الجھنوں کو خیرباد کہیں۔ اور یہ بالکل مفت ہے۔"
+msgid ""
+"Manage everything in one place: upcoming rides, news, online shop, "
+"marketplace, membership fees and messaging. No more endless WhatsApp chats. "
+"And it’s free."
+msgstr ""
+"ہر چیز ایک ہی ایپ میں سنبھالیں: آنے والی رائڈز، خبریں، کلب شاپ، مارکیٹ پلیس،"
+" فیسیں اور پیغامات۔ واٹس ایپ کی الجھنوں کو خیرباد کہیں۔ اور یہ بالکل مفت ہے۔"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Manage on Stripe"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid ""
+"Manage your personal hubs or discover training communities around the "
+"region."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Manage your personal information and application preferences"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Management Tools"
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Manual member tracking & paper waivers"
@@ -527,6 +1825,18 @@ msgstr "نقد رقم اور کیش ادائیگیوں کا دستی اندرا�
 msgid "Manual Payment Updates"
 msgstr "فیس کا دستی اندراج"
 
+#: src/features/public-club/pages/Ride.tsx
+msgid "Map View"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Mark all read"
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "Mark as read"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Mark members as paid when they pay outside the app."
 msgstr "ایپ سے باہر براہ راست نقد رقم ملنے پر ممبر کو 'ادا شدہ' مارک کریں۔"
@@ -536,12 +1846,37 @@ msgid "Market Trades"
 msgstr "مارکیٹ سودے"
 
 #: src/features/landing/components/FAQSection.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
 msgid "Marketplace"
 msgstr "مارکیٹ پلیس"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Marketplace Filters"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "match"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "matches"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "matching search"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Max"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Maximising Ride Analytics to Boost Performance"
 msgstr "بہترین کارکردگی کے لیے رائڈ کے اعداد و شمار کا دانشمندانہ استعمال"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Member"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Member Discounts"
@@ -551,17 +1886,73 @@ msgstr "ممبر ڈسکاؤنٹس"
 msgid "Member Management"
 msgstr "ممبران کا انتظام"
 
+#: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
+msgid "Members"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
 msgid "Membership"
 msgstr "ممبرشپ"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Membership fee payment reminders"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Membership fees."
 msgstr "کلب ممبرشپ فیس۔"
 
+#: src/components/Sidebar.tsx
+msgid "Membership Plans"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Message"
+msgstr ""
+
+#. placeholder {0}: leader.name
+#. placeholder {0}: user.name
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Message {0}"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Message Host"
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Messages"
+msgstr ""
+
+#: src/features/support/Support.tsx
+msgid "Messages & Group Chat"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Miles (mi)"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Min"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Moderate"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Moderation"
 msgstr "نگرانی و کنٹرول"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Mon"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "month"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Monthly"
@@ -575,6 +1966,10 @@ msgstr "ماہانہ لیڈر بورڈز"
 msgid "Most popular"
 msgstr "سب سے مقبول"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Most Popular"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Multiple Admins & Co-Owner Roles"
 msgstr "متعدد ایڈمنز اور نائب منتظمین کے اختیارات"
@@ -583,37 +1978,226 @@ msgstr "متعدد ایڈمنز اور نائب منتظمین کے اختیار
 msgid "Multisport activities"
 msgstr "ملٹی اسپورٹس ایونٹس"
 
+#: src/features/public-club/pages/UserClub.tsx
+msgid "My Clubs"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "My Financial Overview"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "My Listings"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/MyPurchases.tsx
+msgid "My Purchases"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "My Wallet"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Net Expenditures"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "New"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "New Condition"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New member join applications"
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "New Notification"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New Password (min. 6 characters)"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New password is required"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "New Rides & Activities"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Newest Listings First"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/ClubDetails.tsx
+msgid "News"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "News & Announcements"
 msgstr "خبریں اور اعلانات"
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Next"
+msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "next level"
 msgstr "اگلی سطح"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Next Month"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "No activities found"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "No activities match your search"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "No category spending recorded yet."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "No club spending recorded yet."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "No equipment found"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "No equipment found matching your search"
+msgstr ""
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No integrated marketplace, sub-accounts, or event wallet"
 msgstr "نہ مارکیٹ پلیس، نہ داخلی اکاؤنٹس اور نہ ایونٹ والیٹ"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "No listings match your selected search or filter criteria."
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "No live leaderboards, badges, or Strava sync"
 msgstr "نہ لائیو رینکنگ، نہ تعریفی بیجز اور نہ اسٹریوا لنک"
 
-#: src/features/landing/components/FAQSection.tsx
-msgid "No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water)."
-msgstr "جی نہیں۔ Ride with Pals سائیکلنگ، رننگ اور ٹرائیتھلون کلبوں کے لیے بنایا گیا ہے۔ اسی لیے ہم 'ایکٹیوٹیز' کی اصطلاح استعمال کرتے ہیں جس میں سائیکلنگ (روڈ، بجری، ماؤنٹین)، رننگ اور تیراکی شامل ہیں۔"
+#: src/features/public-club/pages/UserClub.tsx
+msgid "No managed clubs yet"
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "No matches found."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No matching athletes found"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "No matching clubs found"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "No matching managed clubs"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "No messages found matching \"{messageSearchQuery}\""
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+#: src/features/notifications/Notifications.tsx
+msgid "No notifications yet"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No participants found in this category."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No participants matched \"{participantSearch}\"."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "No purchases found"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "No registered participants yet."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "No Rides on this Date"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "No Saved Activities Yet"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "No wallet transactions found matching your filters."
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan."
-msgstr "جی نہیں۔ کلب بنانے کے لیے پہلے فری پلان پر بطور کھلاڑی اکاؤنٹ بنائیں، جس کے بعد آپ فری یا گولڈ پلان چن کر اپنا کلب بنا سکتے ہیں۔"
+msgid ""
+"No. Ride with Pals is designed for cycling, running, and triathlon clubs. "
+"That's why we use the term “Activities,” which can include cycling (gravel, "
+"road, and MTB), running (road and trail), or swimming (pool or open water)."
+msgstr ""
+"جی نہیں۔ Ride with Pals سائیکلنگ، رننگ اور ٹرائیتھلون کلبوں کے لیے بنایا گیا"
+" ہے۔ اسی لیے ہم 'ایکٹیوٹیز' کی اصطلاح استعمال کرتے ہیں جس میں سائیکلنگ (روڈ،"
+" بجری، ماؤنٹین)، رننگ اور تیراکی شامل ہیں۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "No. You can use it as an individual athlete, join clubs, or take part in public activities."
-msgstr "جی نہیں۔ آپ اسے انفرادی کھلاڑی کے طور پر بھی چلا سکتے ہیں، کلبوں میں شامل ہو سکتے ہیں اور عوامی رائڈز کا حصہ بن سکتے ہیں۔"
+msgid ""
+"No. To create a club, you just need to register as an athlete first on the "
+"Free plan. You can then create a club and choose between the Free or Gold "
+"club plan."
+msgstr ""
+"جی نہیں۔ کلب بنانے کے لیے پہلے فری پلان پر بطور کھلاڑی اکاؤنٹ بنائیں، جس کے "
+"بعد آپ فری یا گولڈ پلان چن کر اپنا کلب بنا سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid ""
+"No. You can use it as an individual athlete, join clubs, or take part in "
+"public activities."
+msgstr ""
+"جی نہیں۔ آپ اسے انفرادی کھلاڑی کے طور پر بھی چلا سکتے ہیں، کلبوں میں شامل ہو"
+" سکتے ہیں اور عوامی رائڈز کا حصہ بن سکتے ہیں۔"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Not provided"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Notice:"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Notification settings updated successfully!"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx src/components/Sidebar.tsx
+#: src/features/notifications/Notifications.tsx
+msgid "Notifications"
+msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
-msgid "Offer club merch, event tickets, and gear directly to your members without external tools."
-msgstr "بغیر کسی بیرونی ویب سائٹ کے اپنی کٹس، جرسیاں اور ٹکٹ براہ راست ممبران کو فروخت کریں۔"
+msgid ""
+"Offer club merch, event tickets, and gear directly to your members without "
+"external tools."
+msgstr ""
+"بغیر کسی بیرونی ویب سائٹ کے اپنی کٹس، جرسیاں اور ٹکٹ براہ راست ممبران کو "
+"فروخت کریں۔"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "One platform."
@@ -623,13 +2207,60 @@ msgstr "ایک ہی مکمل پلیٹ فارم۔"
 msgid "Online Club Merchandise Shop"
 msgstr "کلب کی کٹس اور ساز و سامان کی آن لائن شاپ"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Online payment required. Processed securely via Stripe Checkout. Spot "
+"confirmed instantly upon completion."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Online Shop"
 msgstr "آن لائن شاپ"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Open Activity Group Chat"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Open Distance"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Open Group Chat"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Opened Google Calendar template!"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Order"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Order cancelled successfully."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Order confirmation & delivery alerts"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Order Confirmed!"
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Order ID"
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Organise rides & events"
 msgstr "رائڈز اور مقابلے منعقد کریں"
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Organizer"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Other Sports"
@@ -640,8 +2271,22 @@ msgid "Other Tools"
 msgstr "دیگر روایتی طریقے"
 
 #: src/features/landing/components/FAQSection.tsx
+#: src/features/public-club/pages/ClubDetails.tsx
 msgid "Overview"
 msgstr "جائزہ"
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "Owned"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Pace:"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Paid"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Paid Activities"
@@ -651,21 +2296,105 @@ msgstr "بامعاوضہ ایکٹیوٹیز"
 msgid "Paid Activities & Event Ticketing"
 msgstr "بامعاوضہ ایونٹس اور ٹورنامنٹ ٹکٹنگ"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Paid Activities & Ticketing"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Paid Entry"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Participant"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "participants"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Participants"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Participation"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Password must be at least 6 characters"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Password updated successfully!"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Passwords do not match"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Pay & Join"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Pay & Join Activity"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Pay Securely"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Payment Options"
 msgstr "ادائیگی کے طریقے"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Payment Successful!"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Payment Tracking"
 msgstr "ادائیگیوں کی صورتحال"
 
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Pending"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Per page:"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Perfect for athletes"
 msgstr "ایتھلیٹس کے لیے شاندار"
 
-#: src/features/landing/components/FAQSection.tsx
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"Permanently delete your account and all associated data. This action cannot "
+"be undone."
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/landing/components/FAQSection.tsx
 msgid "Permissions"
 msgstr "صلاحیتیں اور اختیارات"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Phone"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Pickup"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Placing Order..."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Plans & billing"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "Platform"
@@ -679,13 +2408,108 @@ msgstr "پلیٹ فارم کی نوعیت"
 msgid "Platforms"
 msgstr "تعاون یافتہ پلیٹ فارمز"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Please authorize Strava in the popup window."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Please check your connection and try again."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Please enter a product name."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Please enter a valid name and price."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Please enter a valid price."
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Please enter the club join code (Hint: 111)"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Please fill in your delivery address."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Please log in to purchase items."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Please read and accept the Terms & Safety Guidelines before joining."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Please try again later."
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Post updates and records for members to engage with"
 msgstr "نئی اپڈیٹس اور ریکارڈز شیئر کریں تاکہ کھلاڑی متحرک رہیں"
 
+#: src/features/public-club/pages/Shop.tsx
+msgid "Postal Code"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Pre-Owned"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Premium Athlete"
 msgstr "پریمیم ایتھلیٹ"
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Premium Equipment"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Premium Gear"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Premium Marketplace"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Premium Membership"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Prev"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Preview"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Previous Month"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Price (USD)"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Price Range (USD)"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Price: High to Low"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Price: Low to High"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 #: src/features/landing/components/Navigation.tsx
@@ -697,9 +2521,68 @@ msgstr "پلانز اور قیمتیں"
 msgid "Priority member chat support"
 msgstr "ترجیحی چیٹ سپورٹ"
 
+#: src/components/Sidebar.tsx
+msgid "Privacy Policy"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Private"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "PRIVATE"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Private Club"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Problems Solved"
 msgstr "مسائل کا حل"
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Processing"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Product"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Product added to shop!"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Product Name"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Profile"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Profile <0>&</0> Account"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Provide a detailed description of the gear condition, sizing, etc."
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Public"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "PUBLIC"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Public Club"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Public club access & group chats"
@@ -709,9 +2592,26 @@ msgstr "عوامی کلبوں تک رسائی اور ٹیم چیٹس"
 msgid "Public Rides"
 msgstr "عوامی رائڈز"
 
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Publish Listing"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Publishing..."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Quantity"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Questions? Talk to us →"
 msgstr "کوئی سوال؟ ہم سے بات کریں ←"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Race"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "Read more"
@@ -729,6 +2629,76 @@ msgstr "کیا آپ آگے بڑھانے کے لیے تیار ہیں اپنے "
 msgid "Real plans"
 msgstr "حقیقی اور موزوں پلانز"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Recently"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Recorded Ledger Events"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Redirecting you back..."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Refresh Data"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "registered"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Registered Athletes"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Registered Participants"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Remove from saved"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Request Membership"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Requesting..."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Reset"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Reset Filters & Search"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Return to App"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Return to Marketplace"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Review your order and checkout"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "ride"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Ride & Activity Updates"
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Ride Analytics"
 msgstr "رائڈ اور پرفارمنس کا تجزیہ"
@@ -741,29 +2711,170 @@ msgstr "سائیکل چلائیں اور دوست بنائیں"
 msgid "Ride Chat"
 msgstr "رائڈ چیٹ"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Ride Leaders"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride link copied to clipboard!"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride removed from saved list."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride saved successfully!"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "RIDE SCHEDULE & AGENDA"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Ride Scheduled"
+msgstr ""
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Ride With Pals"
 msgstr "Ride With Pals"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management."
-msgstr "Ride with Pals غیر منظم رائڈز، مختلف ایپس پر پیغامات کا بکھراؤ، کلب کٹس کی فروخت کی الجھنوں، پرانے سامان کے لیے محفوظ پلیٹ فارم کی عدم دستیابی اور فیسوں کے دستی حساب کتاب کی پریشانیوں کو جڑ سے ختم کرتا ہے۔"
+msgid ""
+"Ride with Pals eliminates disorganized activities, scattered communication "
+"across messaging apps, headaches with selling club merchandise to members, "
+"lack of a trusted marketplace for second-hand gear, and manual chaos in "
+"member and membership fee management."
+msgstr ""
+"Ride with Pals غیر منظم رائڈز، مختلف ایپس پر پیغامات کا بکھراؤ، کلب کٹس کی "
+"فروخت کی الجھنوں، پرانے سامان کے لیے محفوظ پلیٹ فارم کی عدم دستیابی اور "
+"فیسوں کے دستی حساب کتاب کی پریشانیوں کو جڑ سے ختم کرتا ہے۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
-msgstr "Ride with Pals سائیکلنگ، رننگ اور ٹرائیتھلون کلبوں کے لیے ایک ہمہ جہت پلیٹ فارم ہے جہاں آپ رائڈز منعقد کر سکتے ہیں، ممبران کو منظم کر سکتے ہیں، فیس وصول کر سکتے ہیں اور باہمی کمیونٹی کو فروغ دے سکتے ہیں۔"
+msgid ""
+"Ride with Pals is an all-in-one platform for cycling, running, and triathlon"
+" clubs that lets you organize activities, manage members, collect membership"
+" fees, sell products, and build a community - all in one place."
+msgstr ""
+"Ride with Pals سائیکلنگ، رننگ اور ٹرائیتھلون کلبوں کے لیے ایک ہمہ جہت پلیٹ "
+"فارم ہے جہاں آپ رائڈز منعقد کر سکتے ہیں، ممبران کو منظم کر سکتے ہیں، فیس "
+"وصول کر سکتے ہیں اور باہمی کمیونٹی کو فروغ دے سکتے ہیں۔"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid ""
+"Ride With Pals maintains a zero-tolerance policy for unsportsmanlike "
+"behavior, harassment, or unsafe reckless maneuvers."
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Ride With Pals Messages"
+msgstr ""
 
 #: src/features/landing/components/FooterSection.tsx
 msgid "RIDE?"
 msgstr "رائڈ کے لیے؟"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Riders"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "rides"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Rides"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Rides Scheduled"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Road"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Role"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Rolling Terrain"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Route & Waypoints"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Running"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "RUNNING"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Running Activity"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Safety guidelines accepted!"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Sat"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Save"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Save activity"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Save Activity"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Save Changes"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Save over 58% with annual billing ($49.99/year)"
 msgstr "سالانہ ادائیگی پر 58 فیصد سے زائد بچت کریں ($49.99/سال)"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Save Ride"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Save up to 58%"
 msgstr "58 فیصد تک بچائیں"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Saved"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "saved activities"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/public-club/pages/SavedRides.tsx
+msgid "Saved Activities"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Saving..."
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Say goodbye to endless WhatsApp chats."
@@ -773,49 +2884,268 @@ msgstr "واٹس ایپ کی لامتناہی چیٹس کو ہمیشہ کے لی
 msgid "Schedule"
 msgstr "شیڈول"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Schedule changes & cancellations"
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates."
-msgstr "گروپ رائڈز شیڈول کریں، حاضری کی توثیق نوٹ کریں اور خودکار الرٹس کے ذریعے سب کو باخبر رکھیں۔"
+msgid ""
+"Schedule group rides, manage RSVPs seamlessly, and keep all your members "
+"informed with automated updates."
+msgstr ""
+"گروپ رائڈز شیڈول کریں، حاضری کی توثیق نوٹ کریں اور خودکار الرٹس کے ذریعے سب "
+"کو باخبر رکھیں۔"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Scheduled Ride"
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Seamless ride creation with GPX routes & leader controls"
 msgstr "GPX روٹ فائلز اور گروپ لیڈر ٹولز کے ساتھ آسان روٹ پلاننگ"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Search athlete by name or @username..."
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Search by activity title, club, or location..."
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Search communities by name or sport..."
+msgstr ""
+
+#: src/features/support/components/ChatSidebar.tsx
+msgid "Search conversations..."
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Search gear or location..."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Search gear, brand, or club..."
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Search messages in conversation"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Search messages in this conversation..."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Search purchases..."
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Search roster by athlete name, @handle, or email..."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Search saved activities..."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Search transactions..."
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Secure Checkout"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Security & Workspace"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "See All"
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
-msgid "See all your active events, clubs, and tasks in one unified view — no more toggling between apps."
-msgstr "اپنے تمام ایونٹس، کلبز اور شیڈول ایک ہی اسکرین پر دیکھیں — اب مختلف ایپس کے درمیان بار بار سوئچ کرنے کی ضرورت نہیں۔"
+msgid ""
+"See all your active events, clubs, and tasks in one unified view — no more "
+"toggling between apps."
+msgstr ""
+"اپنے تمام ایونٹس، کلبز اور شیڈول ایک ہی اسکرین پر دیکھیں — اب مختلف ایپس کے "
+"درمیان بار بار سوئچ کرنے کی ضرورت نہیں۔"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "See who has paid, who needs to renew, and who is not up to date."
-msgstr "واضح طور پر دیکھیں کہ کس نے فیس ادا کر دی، کس کی تجدید باقی ہے اور کون لیٹ ہے۔"
+msgstr ""
+"واضح طور پر دیکھیں کہ کس نے فیس ادا کر دی، کس کی تجدید باقی ہے اور کون لیٹ "
+"ہے۔"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid ""
+"Select a conversation from the left to start chatting with athletes and "
+"activity groups."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid ""
+"Select one of your joined clubs to share this listing onto their marketplace"
+" stream."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "SELECTED DATE"
+msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Send secure payment requests directly through Stripe."
 msgstr "اسٹرائپ کے ذریعے براہ راست محفوظ انوائس اور ادائیگی کے لنکس بھیجیں۔"
 
 #: src/features/landing/components/FeaturesSection.tsx
-msgid "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
-msgstr "اپنے کلب کی ممبرشپ فیس طے کریں، موصولی پر نظر رکھیں، اسٹرائپ لنکس ارسال کریں اور ہر ممبر کی پوزیشن سے باخبر رہیں۔"
+msgid ""
+"Set up your club's membership fees, track payments, send Stripe payment "
+"requests, and keep every member's status up to date - all from one simple "
+"dashboard."
+msgstr ""
+"اپنے کلب کی ممبرشپ فیس طے کریں، موصولی پر نظر رکھیں، اسٹرائپ لنکس ارسال کریں"
+" اور ہر ممبر کی پوزیشن سے باخبر رہیں۔"
+
+#: src/components/Sidebar.tsx
+msgid "Set up your first club"
+msgstr ""
 
 #: src/features/landing/components/HowitWorksSection.tsx
-msgid "Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll."
-msgstr "کھلاڑی کے طور پر پروفائل بنائیں یا نیا کلب بنائیں۔ اپنی سائیکلوں کا اندراج کریں اور فوراً میدان میں اتریں۔"
+msgid ""
+"Set up your rider profile or create a club. Add your bikes, configure your "
+"preferences, and you're ready to roll."
+msgstr ""
+"کھلاڑی کے طور پر پروفائل بنائیں یا نیا کلب بنائیں۔ اپنی سائیکلوں کا اندراج "
+"کریں اور فوراً میدان میں اتریں۔"
+
+#: src/components/Sidebar.tsx
+msgid "Settings"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Share"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Share Activity"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Share link: {url}"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Share Ride"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Shared successfully to the club bulletin board!"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Shop"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Shop Items"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Shop Order Status"
+msgstr ""
+
+#. placeholder {0}: filteredProducts.length
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Showing {0} items from elite verified riders & clubs"
+msgstr ""
+
+#. placeholder {0}: filteredProducts.length
+#: src/features/public-club/pages/Shop.tsx
+msgid "Showing {0} items from elite verified sellers"
+msgstr ""
+
+#. placeholder {0}: Math.min(notifications.length, 15)
+#. placeholder {1}: notifications.length
+#: src/components/layout/Navbar.tsx
+msgid "Showing {0} of {1} notifications"
+msgstr ""
+
+#. placeholder {0}: (discoverPage - 1) * itemsPerPage + 1
+#. placeholder {1}: Math.min(discoverPage * itemsPerPage,
+#. filteredDiscoverClubs.length)
+#. placeholder {2}: filteredDiscoverClubs.length
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Showing <0>{0}</0> to <1>{1}</1> of <2>{2}</2> clubs"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Sign Out"
+msgstr ""
+
+#: src/components/Sidebar.tsx
+msgid "Sign Out?"
+msgstr ""
 
 #: src/features/landing/components/Navigation.tsx
 msgid "Sign up"
 msgstr "سائن اپ"
 
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Slope"
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Smart Dashboard"
 msgstr "اسمارٹ ڈیش بورڈ"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Social"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Sort Order"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Speed"
+msgstr ""
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "sport clubs and ride squads"
 msgstr "اسپورٹس کلبز اور رائڈنگ گروپس"
 
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Sport Type"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Sport Type:"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Sport:"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Sports"
 msgstr "کھیل"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Standard Route Tracking"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Start / Meeting Point"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Start / Meeting Point:"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Start for Free"
@@ -829,9 +3159,22 @@ msgstr "ویب اور موبائل پر بالکل مفت شروع کریں"
 msgid "Start Gold Club"
 msgstr "گولڈ کلب شروع کریں"
 
+#: src/features/public-club/pages/MyPurchases.tsx
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Status"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Status updates for club join requests"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Stay connected."
 msgstr "ہمیشہ رابطے میں رہیں۔"
+
+#: src/features/notifications/Notifications.tsx
+msgid "Stay updated with your latest activity"
+msgstr ""
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Step 1"
@@ -846,6 +3189,7 @@ msgid "Step 3"
 msgstr "مرحلہ 3"
 
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Strava & GPS Route Syncing"
 msgstr "اسٹریوا اور جی پی ایس روٹس کی مطابقت پذیری"
 
@@ -853,53 +3197,178 @@ msgstr "اسٹریوا اور جی پی ایس روٹس کی مطابقت پذی
 msgid "Strava & GPX Route Syncing"
 msgstr "اسٹریوا اور GPX روٹس کی مطابقت پذیری"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Strava authentication initiated."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
-msgstr "اسٹریوا انفرادی کھیل کے ریکارڈز پر توجہ مرکوز کرتا ہے۔ جبکہ Ride with Pals پورے کلب کو چلانے کے لیے بنایا گیا ہے: رائڈز، ممبران، فیس، دکان، اختیارات اور باہمی رابطہ۔"
+msgid ""
+"Strava is a sports social network focused on individual performance. Ride "
+"with Pals is designed to manage entire clubs — activities, members, "
+"payments, permissions, club shop, and internal communication."
+msgstr ""
+"اسٹریوا انفرادی کھیل کے ریکارڈز پر توجہ مرکوز کرتا ہے۔ جبکہ Ride with Pals "
+"پورے کلب کو چلانے کے لیے بنایا گیا ہے: رائڈز، ممبران، فیس، دکان، اختیارات "
+"اور باہمی رابطہ۔"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Strava status refreshed!"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Strava Sync"
 msgstr "اسٹریوا سنک"
 
+#: src/features/public-club/pages/Shop.tsx
+msgid "Street & Number"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Stripe Automated Fee Collection"
 msgstr "اسٹرائپ کے ذریعے خودکار فیس وصولی"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Stripe Direct Payout Integrations"
+msgstr ""
+
+#: src/components/Sidebar.tsx
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Stripe Payments"
 msgstr "اسٹرائپ ادائیگیاں"
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Subscribe Now"
+msgstr ""
+
+#: src/components/Sidebar.tsx src/features/ClubSide/ProfileAccount.tsx
+msgid "Subscription"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Subscription Active!"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Subscription Status"
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "SUCCESS STORY"
 msgstr "کامیابی کی کہانی"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Sun"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Support & Help"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Swimming"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Switch Club"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Synced:"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Syncing schedule..."
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Take your club to the "
 msgstr "اپنے اسپورٹس کلب کو لے جائیں "
+
+#: src/components/Sidebar.tsx
+msgid "Terms & Conditions"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Terms & Safety Guidelines"
+msgstr ""
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "Thank you for purchasing"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Thank you for your purchase of the"
+msgstr ""
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "The app for managing"
 msgstr "بہترین ایپ برائے انتظام"
 
 #: src/features/landing/components/PricingSection.tsx
-msgid "The complete club operating system — collect member fees, run your club shop, and grow."
-msgstr "کلبوں کا مکمل آپریٹنگ سسٹم: فیس وصول کریں، آن لائن شاپ چلائیں اور اپنی کمیونٹی کو وسیع کریں۔"
+msgid ""
+"The complete club operating system — collect member fees, run your club "
+"shop, and grow."
+msgstr ""
+"کلبوں کا مکمل آپریٹنگ سسٹم: فیس وصول کریں، آن لائن شاپ چلائیں اور اپنی "
+"کمیونٹی کو وسیع کریں۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
-msgstr "مارکیٹ پلیس ممبران کے باہمی لین دین کے لیے ہے۔ یہ ایپ میں کارڈ پیمنٹ نہیں لیتا: سامان اور رقم کا تبادلہ ممبران آمنے سامنے خود طے کرتے ہیں۔"
+msgid ""
+"The marketplace is a space for exchanges between members. It does not "
+"support card payments. The exchange of goods and money takes place outside "
+"the app, in person."
+msgstr ""
+"مارکیٹ پلیس ممبران کے باہمی لین دین کے لیے ہے۔ یہ ایپ میں کارڈ پیمنٹ نہیں "
+"لیتا: سامان اور رقم کا تبادلہ ممبران آمنے سامنے خود طے کرتے ہیں۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission."
-msgstr "مارکیٹ پلیس ممبران کے لیے اندرونی اشتہارات کا شعبہ ہے۔ آپ بغیر کسی کمیشن کے اپنے قابل اعتماد ساتھیوں کو سامان فروخت کر سکتے ہیں۔"
+msgid ""
+"The marketplace is an internal classifieds section for club members. It "
+"allows you to sell your sports equipment to people you trust. Neither the "
+"club nor the app charges any commission."
+msgstr ""
+"مارکیٹ پلیس ممبران کے لیے اندرونی اشتہارات کا شعبہ ہے۔ آپ بغیر کسی کمیشن کے "
+"اپنے قابل اعتماد ساتھیوں کو سامان فروخت کر سکتے ہیں۔"
 
 #: src/features/landing/components/BentoSection.tsx
-msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
-msgstr "سائیکلنگ، رننگ اور ٹرائیتھلون کا بے مثل پلیٹ فارم۔ ایونٹس، ممبران اور مالیات کو ایک ہی جگہ منظم کریں، جو ایتھلیٹس نے خود ایتھلیٹس کے لیے بنایا ہے۔"
+msgid ""
+"The ultimate ecosystem for cycling, running, and triathlon clubs. Manage "
+"activities, members, and finances in a single platform built by athletes, "
+"for athletes."
+msgstr ""
+"سائیکلنگ، رننگ اور ٹرائیتھلون کا بے مثل پلیٹ فارم۔ ایونٹس، ممبران اور مالیات"
+" کو ایک ہی جگہ منظم کریں، جو ایتھلیٹس نے خود ایتھلیٹس کے لیے بنایا ہے۔"
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "There are currently no listings available in this category."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid ""
+"There are no club rides scheduled for this date. You can choose another "
+"marked date on the calendar or create a new ride for the club."
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "There’s a smarter way to manage your club"
 msgstr "اپنے کلب کو چلانے کا زیادہ اسمارٹ اور جدید طریقہ"
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "This Club"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Thu"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Time Format"
+msgstr ""
+
+#. placeholder {0}: newFormat === '12h' ? '12-hour' : '24-hour'
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Time format set to {0}."
+msgstr ""
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "TIPS & TRICKS"
@@ -909,17 +3378,134 @@ msgstr "مفید مشورے اور ٹپس"
 msgid "TO "
 msgstr "کی طرف "
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"To permanently delete your account, remove your club memberships, and clear "
+"all personal data, please contact our support team."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Today"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "TODAY"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "TODAY’S SCHEDULE"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Total Distance"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Total Spent"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Total Transactions"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid ""
+"Track your memberships, gear acquisitions, activity fees, and complete "
+"multi-club transaction history."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "Track your orders, view receipts, and manage your gear acquisitions."
+msgstr ""
+
 #: src/features/landing/components/BentoSection.tsx
-msgid "Track your personal bests and club statistics to understand your performance flow over time."
-msgstr "وقت کے ساتھ اپنی فٹنس اور کلب رینکنگ جانچنے کے لیے اپنے ذاتی ریکارڈز پر نظر رکھیں۔"
+msgid ""
+"Track your personal bests and club statistics to understand your performance"
+" flow over time."
+msgstr ""
+"وقت کے ساتھ اپنی فٹنس اور کلب رینکنگ جانچنے کے لیے اپنے ذاتی ریکارڈز پر نظر "
+"رکھیں۔"
+
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Trail"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Transaction & Club"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Transaction Ledger"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Transparent pricing"
 msgstr "شفاف اور واضح قیمتیں"
 
+#: src/features/public-club/components/ClubCard.tsx
+#: src/features/public-club/pages/Ride.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Triathlon"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+#: src/features/public-club/pages/UserClub.tsx
+msgid "TRIATHLON"
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Triathlon Activity"
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Try adjusting your search query or sport filter."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Try adjusting your search query."
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Try clearing your search query or sport filter."
+msgstr ""
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Tue"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Two ways to use it, one shared philosophy: simple, visual, and useful."
 msgstr "استعمال کے دو طریقے، مگر ایک ہی سوچ: سادہ، پرکشش اور بے حد مفید۔"
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Type"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "Type a message..."
+msgstr ""
+
+#: src/features/public-club/pages/UserClub.tsx
+msgid "Type:"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Under $50"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Unknown"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Unknown Item"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Unlimited Club Members"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Unlimited Club Members (beyond 15)"
@@ -929,29 +3515,97 @@ msgstr "لامحدود کلب اراکین (15 سے زائد)"
 msgid "Unlimited Group Rides & Activities"
 msgstr "لامحدود گروپ رائڈز اور ایونٹس"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Unlimited Group Rides & Events"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
 msgid "Unlimited marketplace listings"
 msgstr "مارکیٹ پلیس پر لامحدود اشتہارات"
 
 #: src/features/landing/components/PricingSection.tsx
+#: src/features/public-club/pages/UserSubscription.tsx
 msgid "Unlimited Marketplace Listings"
 msgstr "مارکیٹ پلیس پر لامحدود اشتہارات"
+
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Unsave Ride"
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Untitled Transaction"
+msgstr ""
+
+#. placeholder {0}: plan.config.numberOfRides
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Up to {0} Group Rides & Events"
+msgstr ""
+
+#. placeholder {0}: plan.config.marketplaceItems
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Up to {0} Marketplace Items"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Up to 2 items in Marketplace"
 msgstr "مارکیٹ پلیس میں 2 اشیاء تک کی اجازت"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Up to 50 Club Members"
+msgstr ""
+
+#: src/features/public-club/pages/Ride.tsx
+msgid "Upcoming Activities"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Upcoming rides with pace, distance and ride type"
 msgstr "آنے والی رائڈز رفتار، فاصلے اور روٹ کی نوعیت کے ساتھ"
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "Update security keys"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Upgrade"
 msgstr "اپ گریڈ کریں"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid ""
+"Upgrade your account to unlock premium features, including full access to "
+"the marketplace and unlimited rides."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Upload Product Image"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+#: src/features/public-club/pages/Shop.tsx
+msgid "Uploading..."
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid ""
+"Use at least 6 characters, including a mix of letters, numbers, and symbols."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Used"
+msgstr ""
+
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "User Profile"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "User Roles"
 msgstr "صارفین کے کردار اور اختیارات"
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "Verified Athlete"
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Verified Gold Club Crown Badge"
@@ -961,6 +3615,22 @@ msgstr "تصدیق شدہ گولڈ کلب کراؤن بیج"
 msgid "Verified Pro Athlete Badge"
 msgstr "تصدیق شدہ پرو ایتھلیٹ بیج"
 
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Verified Pro Badge"
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "Verified Rider Gear"
+msgstr ""
+
+#: src/features/public-club/pages/ClubDetails.tsx
+msgid "Verify"
+msgstr ""
+
+#: src/features/public-club/components/ClubCard.tsx
+msgid "View"
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "View all members, assign roles, message directly"
 msgstr "تمام ممبران کو دیکھیں، کردار سونپیں اور براہ راست رابطہ کریں"
@@ -968,6 +3638,19 @@ msgstr "تمام ممبران کو دیکھیں، کردار سونپیں اور
 #: src/features/landing/components/BlogSection.tsx
 msgid "View all posts"
 msgstr "تمام تحریریں دیکھیں"
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "View Group Info & Members"
+msgstr ""
+
+#: src/features/support/components/ChatWindow.tsx
+msgid "View Profile"
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "View Ride"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "vs Strava"
@@ -977,13 +3660,31 @@ msgstr "اسٹریوا کے مقابلے میں"
 msgid "Watch Video"
 msgstr "ویڈیو دیکھیں"
 
+#: src/features/public-club/pages/Ride.tsx
+msgid ""
+"We couldn't find any activities matching your search filters. Try resetting "
+"or adjusting your search parameters."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "We've got answers."
 msgstr "ہمارے پاس ہر سوال کا جواب ہے۔"
 
+#: src/features/public-club/pages/UserCalendar.tsx
+msgid "Wed"
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid ""
+"Welcome to the Premium Plan! You now have full access to marketplace "
+"listings, unlimited rides, and all premium features."
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
-msgid "What do I need to create paid activities or manage membership fee payments?"
-msgstr "بامعاوضہ رائڈز یا ممبرشپ فیس اکٹھی کرنے کے لیے مجھے کن چیزوں کی ضرورت ہوگی؟"
+msgid ""
+"What do I need to create paid activities or manage membership fee payments?"
+msgstr ""
+"بامعاوضہ رائڈز یا ممبرشپ فیس اکٹھی کرنے کے لیے مجھے کن چیزوں کی ضرورت ہوگی؟"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "What is Ride with Pals?"
@@ -993,9 +3694,25 @@ msgstr "Ride with Pals کیا ہے؟"
 msgid "What problems does it solve?"
 msgstr "یہ ایپ کن مسائل کو حل کرتی ہے؟"
 
+#: src/features/ClubSide/ProfileAccount.tsx
+msgid "When new club rides are published"
+msgstr ""
+
+#: src/features/notifications/Notifications.tsx
+msgid "When you get notifications, they'll show up here."
+msgstr ""
+
+#: src/features/public-club/pages/UserWallet.tsx
+msgid "Where your wallet expenditures are allocated"
+msgstr ""
+
 #: src/features/landing/components/PricingSection.tsx
-msgid "Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees."
-msgstr "چاہے آپ اکیلے کھلاڑی ہوں یا کسی ابھرتے ہوئے کلب کے سربراہ — وہ پلان منتخب کریں جو آپ کی ضرورت ہو۔ واضح قیمتیں بغیر کسی پوشیدہ چارجز کے۔"
+msgid ""
+"Whether you are an individual athlete or running a growing sports club — "
+"find the real plan that fits. Transparent pricing with no hidden fees."
+msgstr ""
+"چاہے آپ اکیلے کھلاڑی ہوں یا کسی ابھرتے ہوئے کلب کے سربراہ — وہ پلان منتخب "
+"کریں جو آپ کی ضرورت ہو۔ واضح قیمتیں بغیر کسی پوشیدہ چارجز کے۔"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Why Ride With Pals?"
@@ -1010,45 +3727,124 @@ msgid "Yes, absolutely. Strava is optional."
 msgstr "جی ہاں، بالکل۔ اسٹریوا کا استعمال اختیاری ہے۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app."
-msgstr "جی ہاں، بالکل کام کرتا ہے۔ اگرچہ اس وقت بنیادی کیٹیگریز سائیکلنگ، رننگ اور ٹرائیتھلون ہیں، لیکن ہر وہ کھیل جس میں لوگ جی پی ایس روٹ فالو کرنے اور وقت و فاصلہ جانچنے کے لیے اکٹھے ہوں، اس ایپ میں مکمل کلب ٹولز حاصل کر سکتا ہے۔"
+msgid ""
+"Yes, it works perfectly well for them. Although the main categories "
+"currently available are Cycling, Running, and Triathlon, any sport where "
+"groups meet to follow a route, use a GPS track, and track their progress by "
+"distance and time can find the perfect club management tool in our app."
+msgstr ""
+"جی ہاں، بالکل کام کرتا ہے۔ اگرچہ اس وقت بنیادی کیٹیگریز سائیکلنگ، رننگ اور "
+"ٹرائیتھلون ہیں، لیکن ہر وہ کھیل جس میں لوگ جی پی ایس روٹ فالو کرنے اور وقت و"
+" فاصلہ جانچنے کے لیے اکٹھے ہوں، اس ایپ میں مکمل کلب ٹولز حاصل کر سکتا ہے۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club."
-msgstr "جی ہاں۔ ہر ایکٹیوٹی کے لیے ایک خاص گروپ چیٹ بن جاتی ہے جس میں صرف اسی ایونٹ پر گفتگو ہو سکتی ہے۔ نیز ممبران باہم پرائیویٹ چیٹ بھی کر سکتے ہیں۔"
+msgid ""
+"Yes. A chat is created for every activity, allowing participants to discuss "
+"topics related specifically to that activity. You can also chat privately "
+"with members of your club."
+msgstr ""
+"جی ہاں۔ ہر ایکٹیوٹی کے لیے ایک خاص گروپ چیٹ بن جاتی ہے جس میں صرف اسی ایونٹ "
+"پر گفتگو ہو سکتی ہے۔ نیز ممبران باہم پرائیویٹ چیٹ بھی کر سکتے ہیں۔"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Yes. Administrators can accept or remove members."
-msgstr "جی ہاں۔ ایڈمنز ممبران کو قبول کرنے اور خارج کرنے کا پورا اختیار رکھتے ہیں۔"
+msgstr ""
+"جی ہاں۔ ایڈمنز ممبران کو قبول کرنے اور خارج کرنے کا پورا اختیار رکھتے ہیں۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. Ride with Pals charges a small 4% management fee on each transaction."
-msgstr "جی ہاں۔ Ride with Pals ہر مالی لین دین پر 4 فیصد کی معمولی انتظامی فیس وصول کرتا ہے۔"
+msgid ""
+"Yes. Ride with Pals charges a small 4% management fee on each transaction."
+msgstr ""
+"جی ہاں۔ Ride with Pals ہر مالی لین دین پر 4 فیصد کی معمولی انتظامی فیس وصول "
+"کرتا ہے۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format."
-msgstr "جی ہاں۔ کلب کا نیوز سیکشن ممبران کو ہر پوسٹ پر تبصرہ کرنے کی سہولت دیتا ہے، جس سے بات چیت فورم کے انداز میں ایک جگہ محفوظ رہتی ہے۔"
+msgid ""
+"Yes. The club's News section allows users to comment on each post, with all "
+"the conversation kept together in a forum-style format."
+msgstr ""
+"جی ہاں۔ کلب کا نیوز سیکشن ممبران کو ہر پوسٹ پر تبصرہ کرنے کی سہولت دیتا ہے، "
+"جس سے بات چیت فورم کے انداز میں ایک جگہ محفوظ رہتی ہے۔"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Yes. You can create public activities."
 msgstr "جی ہاں۔ آپ عوامی سرگرمیاں بنا سکتے ہیں جس میں کوئی بھی شامل ہو سکے۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join."
-msgstr "جی ہاں۔ آپ ایک ہی رائڈ ان تمام کلبوں میں پوسٹ کر سکتے ہیں جن کے آپ ممبر ہیں، یا اسے پبلک کر سکتے ہیں تاکہ باہر کے لوگ بھی شرکت کریں۔"
+msgid ""
+"Yes. You can publish the same activity in as many clubs as you belong to. "
+"You can also make it public so that people outside your clubs can join."
+msgstr ""
+"جی ہاں۔ آپ ایک ہی رائڈ ان تمام کلبوں میں پوسٹ کر سکتے ہیں جن کے آپ ممبر ہیں،"
+" یا اسے پبلک کر سکتے ہیں تاکہ باہر کے لوگ بھی شرکت کریں۔"
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
-msgstr "جی ہاں۔ آپ ہفتہ وار، پندرہ روزہ یا ماہانہ بنیادوں پر باقاعدہ سرگرمیاں ترتیب دے سکتے ہیں۔"
+msgid ""
+"Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
+msgstr ""
+"جی ہاں۔ آپ ہفتہ وار، پندرہ روزہ یا ماہانہ بنیادوں پر باقاعدہ سرگرمیاں ترتیب "
+"دے سکتے ہیں۔"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Yes. You can upgrade at any time."
 msgstr "جی ہاں۔ آپ کسی بھی وقت اپنے پلان کو اپ گریڈ کر سکتے ہیں۔"
 
-#: src/features/landing/components/FAQSection.tsx
-msgid "You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish."
-msgstr "آپ ایڈمنز اور ممبران کے حقوق مقرر کر سکتے ہیں جیسے خبریں پوسٹ کرنا، رائڈز بنانا، اور ڈسکاؤنٹ شیئر کرنا۔ آپ جتنے چاہیں اتنے ایڈمنز بنا سکتے ہیں۔"
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "You are Registered"
+msgstr ""
+
+#: src/features/public-club/pages/RideJoining.tsx
+msgid "You are registered for this activity"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
-msgid "You need a Gold club subscription, a free Stripe account, and you must connect it to the app."
-msgstr "اس کے لیے آپ کو گولڈ کلب سبسکرپشن اور ایک مفت اسٹرائپ اکاؤنٹ کی ضرورت ہے جسے آپ ایپ کے ساتھ منسلک کریں گے۔"
+msgid ""
+"You can define the permissions available to administrators and members, such"
+" as creating news posts, creating activities, and sharing discounts. You can"
+" appoint as many administrators as you wish."
+msgstr ""
+"آپ ایڈمنز اور ممبران کے حقوق مقرر کر سکتے ہیں جیسے خبریں پوسٹ کرنا، رائڈز "
+"بنانا، اور ڈسکاؤنٹ شیئر کرنا۔ آپ جتنے چاہیں اتنے ایڈمنز بنا سکتے ہیں۔"
+
+#: src/features/public-club/pages/Shop.tsx
+msgid "You don't have permission to add items to this shop."
+msgstr ""
+
+#: src/features/public-club/pages/MyPurchases.tsx
+msgid "You haven't bought any items yet."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid "You haven't joined any other clubs yet."
+msgstr ""
+
+#: src/features/landing/components/FAQSection.tsx
+msgid ""
+"You need a Gold club subscription, a free Stripe account, and you must "
+"connect it to the app."
+msgstr ""
+"اس کے لیے آپ کو گولڈ کلب سبسکرپشن اور ایک مفت اسٹرائپ اکاؤنٹ کی ضرورت ہے جسے"
+" آپ ایپ کے ساتھ منسلک کریں گے۔"
+
+#: src/components/Sidebar.tsx
+msgid ""
+"You'll be returned to the login screen. Any unsaved changes will be lost."
+msgstr ""
+
+#: src/features/public-club/pages/UserSubscription.tsx
+msgid "Your <0>Subscription Plan</0>"
+msgstr ""
+
+#: src/components/layout/Navbar.tsx
+msgid "Your activity will appear here."
+msgstr ""
+
+#: src/features/public-club/pages/SavedRides.tsx
+msgid "Your personal collection of bookmarked group activities."
+msgstr ""
+
+#: src/features/public-club/pages/Marketplace.tsx
+msgid ""
+"Your transaction is successful, and a confirmation email has been sent. Your"
+" professional gear will ship soon!"
+msgstr ""

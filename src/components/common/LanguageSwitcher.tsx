@@ -8,9 +8,10 @@ import { dynamicActivate, LANGUAGE_META, type Locale } from '@/lib/i18n';
 interface LanguageSwitcherProps {
   /** 'light' for in-app navbar, 'dark' for landing page navbar (default) */
   variant?: 'dark' | 'light';
+  className?: string;
 }
 
-export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'dark' }) => {
+export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'dark', className = '' }) => {
   const dispatch = useAppDispatch();
   const currentLocale = useAppSelector((s) => s.language?.locale ?? 'en') as Locale;
   const [open, setOpen] = useState(false);
@@ -230,7 +231,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'd
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
-      <div className="rwp-lang-switcher" ref={containerRef}>
+      <div className={`rwp-lang-switcher ${className}`.trim()} ref={containerRef}>
         <button
           className={`rwp-lang-btn${open ? ' active' : ''}`}
           onClick={() => setOpen((v) => !v)}

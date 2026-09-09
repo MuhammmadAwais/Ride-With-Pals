@@ -21,6 +21,8 @@ import {
 import { toast } from "sonner";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { ROUTES } from "@/Constants";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import {
   useGetMarketplaceListQuery,
   useAddMarketPlaceItemMutation,
@@ -80,7 +82,9 @@ const ProductCardImage = ({
     return (
       <div className="w-full h-full bg-[#1c1c1c] flex flex-col items-center justify-center gap-1.5 text-text-muted">
         <Package size={22} className="text-[#EB712B]" />
-        <span className="font-black text-[10px] uppercase tracking-wider text-text-muted">Premium Gear</span>
+        <span className="font-black text-[10px] uppercase tracking-wider text-text-muted">
+          <Trans>Premium Gear</Trans>
+        </span>
       </div>
     );
   }
@@ -127,20 +131,24 @@ function SuccessModal({ itemName, onClose }: SuccessModalProps) {
             ✓
           </div>
           <div>
-            <p className="text-[9px] font-black uppercase tracking-wider text-[#69B475]">Premium Marketplace</p>
-            <h3 className="text-base font-black tracking-tight text-text-main">Order Confirmed!</h3>
+            <p className="text-[9px] font-black uppercase tracking-wider text-[#69B475]">
+              <Trans>Premium Marketplace</Trans>
+            </p>
+            <h3 className="text-base font-black tracking-tight text-text-main">
+              <Trans>Order Confirmed!</Trans>
+            </h3>
           </div>
         </div>
 
         <p className="text-xs font-medium text-text-muted leading-relaxed">
-          Thank you for your purchase of the <span className="font-black text-text-main">{itemName}</span>. Your transaction is successful, and a confirmation email has been sent. Your professional gear will ship soon!
+          <Trans>Thank you for your purchase of the</Trans> <span className="font-black text-text-main">{itemName}</span>. <Trans>Your transaction is successful, and a confirmation email has been sent. Your professional gear will ship soon!</Trans>
         </p>
 
         <button 
           onClick={onClose}
           className="w-full py-3.5 rounded-2xl bg-[#69B475] hover:bg-[#589762] text-[#0D1310] text-xs font-black tracking-wider uppercase transition-colors cursor-pointer shadow-lg border-0 outline-none"
         >
-          Return to Marketplace
+          <Trans>Return to Marketplace</Trans>
         </button>
       </div>
     </div>
@@ -176,11 +184,11 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error("Please enter a product name.");
+      toast.error(t`Please enter a product name.`);
       return;
     }
     if (!price || Number(price) <= 0) {
-      toast.error("Please enter a valid price.");
+      toast.error(t`Please enter a valid price.`);
       return;
     }
 
@@ -202,10 +210,10 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
         image: finalImageUrl || undefined,
       }).unwrap();
 
-      toast.success("Listing created successfully!");
+      toast.success(t`Listing created successfully!`);
       onClose();
     } catch (err) {
-      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to create listing.");
+      toast.error((err as { data?: { message?: string } })?.data?.message || t`Failed to create listing.`);
       console.error(err);
     }
   };
@@ -214,7 +222,9 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
     <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <form onSubmit={handleSubmit} className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-lg relative border border-border shadow-2xl space-y-5">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-black uppercase tracking-wider text-text-main">Create Listing</h3>
+          <h3 className="text-lg font-black uppercase tracking-wider text-text-main">
+            <Trans>Create Listing</Trans>
+          </h3>
           <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main border-0 bg-transparent cursor-pointer">
             <X size={20} />
           </button>
@@ -231,30 +241,36 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
             ) : (
               <>
                 {isUploading ? <Loader2 className="text-[#EB712B] animate-spin mb-2" size={20} /> : <Upload className="text-[#EB712B] mb-2" size={20} />}
-                <span className="text-[10px] text-text-muted font-bold">{isUploading ? "Uploading..." : "Upload Product Image"}</span>
+                <span className="text-[10px] text-text-muted font-bold">
+                  {isUploading ? <Trans>Uploading...</Trans> : <Trans>Upload Product Image</Trans>}
+                </span>
               </>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Product Name</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                <Trans>Product Name</Trans>
+              </label>
               <input 
                 type="text" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
                 className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
-                placeholder="e.g. Carbon Helmet"
+                placeholder={t`e.g. Carbon Helmet`}
               />
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Price (USD)</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                <Trans>Price (USD)</Trans>
+              </label>
               <input 
                 type="number" 
                 value={price} 
                 onChange={(e) => setPrice(e.target.value)} 
                 className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
-                placeholder="e.g. 150"
+                placeholder={t`e.g. 150`}
                 min="0"
               />
             </div>
@@ -262,26 +278,30 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Condition</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                <Trans>Condition</Trans>
+              </label>
               <select 
                 value={condition} 
                 onChange={(e) => setCondition(e.target.value as "NEW" | "USED")} 
                 className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs text-text-main outline-none focus:border-[#EB712B]"
               >
-                <option value="USED">Used</option>
-                <option value="NEW">New</option>
+                <option value="USED">{t`Used`}</option>
+                <option value="NEW">{t`New`}</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Description</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+              <Trans>Description</Trans>
+            </label>
             <textarea 
               value={description} 
               onChange={(e) => setDescription(e.target.value)} 
               rows={3} 
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main resize-none"
-              placeholder="Provide a detailed description of the gear condition, sizing, etc."
+              placeholder={t`Provide a detailed description of the gear condition, sizing, etc.`}
             />
           </div>
         </div>
@@ -293,7 +313,7 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
             disabled={isAdding || isUploading}
             className="flex-1 py-3.5 rounded-xl bg-surface hover:bg-hover border border-border text-text-main text-xs font-bold tracking-wider uppercase transition-colors cursor-pointer outline-none disabled:opacity-50"
           >
-            Cancel
+            <Trans>Cancel</Trans>
           </button>
           <button 
             type="submit" 
@@ -301,7 +321,7 @@ function AddListingModal({ onClose, activeClubId }: AddListingModalProps) {
             className="flex-1 py-3.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black tracking-wider uppercase transition-colors cursor-pointer shadow-lg flex items-center justify-center gap-2 border-0 outline-none disabled:opacity-50"
           >
             {(isAdding || isUploading) && <Loader2 size={16} className="animate-spin" />}
-            {isAdding || isUploading ? "Publishing..." : "Publish Listing"}
+            {isAdding || isUploading ? <Trans>Publishing...</Trans> : <Trans>Publish Listing</Trans>}
           </button>
         </div>
       </form>
@@ -324,10 +344,10 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
   const handleShare = async (clubId: number) => {
     try {
       await shareItem({ clubId, marketPlaceItemId: itemId }).unwrap();
-      toast.success("Shared successfully to the club bulletin board!");
+      toast.success(t`Shared successfully to the club bulletin board!`);
       onClose();
     } catch (err) {
-      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to share listing.");
+      toast.error((err as { data?: { message?: string } })?.data?.message || t`Failed to share listing.`);
       console.error(err);
     }
   };
@@ -336,13 +356,17 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
     <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <div className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-sm relative border border-border shadow-2xl space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-base font-black uppercase tracking-wider text-text-main">Cross-post Listing</h3>
+          <h3 className="text-base font-black uppercase tracking-wider text-text-main">
+            <Trans>Cross-post Listing</Trans>
+          </h3>
           <button onClick={onClose} className="text-text-muted hover:text-text-main border-0 bg-transparent cursor-pointer">
             <X size={20} />
           </button>
         </div>
 
-        <p className="text-xs text-text-muted">Select one of your joined clubs to share this listing onto their marketplace stream.</p>
+        <p className="text-xs text-text-muted">
+          <Trans>Select one of your joined clubs to share this listing onto their marketplace stream.</Trans>
+        </p>
 
         <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
           {isLoadingClubs ? (
@@ -350,7 +374,9 @@ function ShareListingModal({ itemId, onClose }: ShareListingModalProps) {
               <Loader2 size={24} className="animate-spin text-[#EB712B]" />
             </div>
           ) : clubs.length === 0 ? (
-            <div className="text-center py-6 text-xs text-text-muted">You haven't joined any other clubs yet.</div>
+            <div className="text-center py-6 text-xs text-text-muted">
+              <Trans>You haven't joined any other clubs yet.</Trans>
+            </div>
           ) : (
             clubs.map((c: { id: number; logo?: string; clubName: string }) => (
               <button
@@ -507,20 +533,18 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
       const resolved = resolveImageUrl(item.image);
       return {
         id: item.id.toString(),
-        name: item.productName || "Unknown Item",
-        price: item.price ? `$${parseFloat(item.price).toFixed(2)}` : "Free",
+        name: item.productName || t`Unknown Item`,
+        price: item.price ? `$${parseFloat(item.price).toFixed(2)}` : t`Free`,
         condition: (item.condition?.toUpperCase() === "NEW" ? "NEW" : "USED") as "NEW" | "USED",
-        location: item.club?.clubName || "Global Marketplace",
+        location: item.club?.clubName || t`Global Marketplace`,
         image: resolved || fallback,
         sellerId: item.sellerId,
-        sellerName: item.seller?.fullName || "Elite Seller",
+        sellerName: item.seller?.fullName || t`Elite Seller`,
         sellerAvatar: resolveImageUrl(item.seller?.profileImage) || undefined,
         description: item.description,
       };
     });
   }, [marketplaceResponse, ownListingsResponse, activeTab]);
-
-
 
   const toggleFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -539,9 +563,9 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
     e.stopPropagation();
     try {
       await deleteListing({ marketPlaceItemId: Number(id) }).unwrap();
-      toast.success("Listing deleted successfully!");
+      toast.success(t`Listing deleted successfully!`);
     } catch (err) {
-      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to delete listing.");
+      toast.error((err as { data?: { message?: string } })?.data?.message || t`Failed to delete listing.`);
       console.error(err);
     }
   };
@@ -595,7 +619,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
 
   const handleBuyNow = (product: Product) => {
     if (!currentUser) {
-      toast.error("Please log in to purchase items.");
+      toast.error(t`Please log in to purchase items.`);
       return;
     }
     setPurchasedItemName(product.name);
@@ -627,11 +651,11 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl md:text-3xl font-black uppercase tracking-wide text-text-main">
-              Premium Equipment
+              <Trans>Premium Equipment</Trans>
             </h1>
           </div>
           <p className="text-xs font-bold uppercase tracking-wider text-text-muted mt-1.5">
-            Showing {filteredProducts.length} items from elite verified riders & clubs
+            <Trans>Showing {filteredProducts.length} items from elite verified riders & clubs</Trans>
           </p>
         </div>
 
@@ -641,7 +665,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
             <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
             <input 
               type="text" 
-              placeholder="Search gear, brand, or club..."
+              placeholder={t`Search gear, brand, or club...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-10 pl-11 pr-8 bg-surface border border-border rounded-2xl text-xs font-medium text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-colors"
@@ -650,7 +674,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
               <button
                 onClick={() => setSearchQuery("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main border-0 bg-transparent cursor-pointer p-0.5"
-                title="Clear search"
+                title={t`Clear search`}
               >
                 <X size={13} />
               </button>
@@ -668,7 +692,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
               }`}
             >
               <Filter size={14} className={activeFilterCount > 0 || isFilterOpen ? "text-white" : "text-text-muted"} />
-              <span>Filter</span>
+              <span><Trans>Filter</Trans></span>
               {activeFilterCount > 0 && (
                 <span className="w-4 h-4 rounded-full bg-white text-[#EB712B] text-[10px] font-black flex items-center justify-center">
                   {activeFilterCount}
@@ -682,14 +706,16 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                 <div className="flex items-center justify-between pb-3 border-b border-border">
                   <div className="flex items-center gap-2">
                     <SlidersHorizontal size={15} className="text-[#EB712B]" />
-                    <h4 className="text-xs font-black uppercase tracking-wider text-text-main">Marketplace Filters</h4>
+                    <h4 className="text-xs font-black uppercase tracking-wider text-text-main">
+                      <Trans>Marketplace Filters</Trans>
+                    </h4>
                   </div>
                   {activeFilterCount > 0 && (
                     <button
                       onClick={handleClearFilters}
                       className="text-[10px] font-bold text-[#EB712B] hover:underline cursor-pointer border-0 bg-transparent flex items-center gap-1"
                     >
-                      <RotateCcw size={10} /> Reset
+                      <RotateCcw size={10} /> <Trans>Reset</Trans>
                     </button>
                   )}
                 </div>
@@ -697,7 +723,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                 {/* Condition Filter */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-wider text-text-muted block">
-                    Equipment Condition
+                    <Trans>Equipment Condition</Trans>
                   </label>
                   <div className="grid grid-cols-3 gap-1.5 p-1 bg-main-bg rounded-xl border border-border">
                     {(["ALL", "NEW", "USED"] as const).map((cond) => (
@@ -710,7 +736,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                             : "text-text-muted hover:text-text-main bg-transparent"
                         }`}
                       >
-                        {cond === "ALL" ? "All" : cond === "NEW" ? "New" : "Used"}
+                        {cond === "ALL" ? <Trans>All</Trans> : cond === "NEW" ? <Trans>New</Trans> : <Trans>Used</Trans>}
                       </button>
                     ))}
                   </div>
@@ -719,13 +745,13 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                 {/* Sort Order */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-wider text-text-muted block">
-                    Sort Order
+                    <Trans>Sort Order</Trans>
                   </label>
                   <div className="grid grid-cols-1 gap-1.5">
                     {[
-                      { id: "newest", label: "Newest Listings First" },
-                      { id: "price-asc", label: "Price: Low to High" },
-                      { id: "price-desc", label: "Price: High to Low" },
+                      { id: "newest", label: t`Newest Listings First` },
+                      { id: "price-asc", label: t`Price: Low to High` },
+                      { id: "price-desc", label: t`Price: High to Low` },
                     ].map((sort) => (
                       <button
                         key={sort.id}
@@ -746,7 +772,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                 {/* Price Range */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-wider text-text-muted block">
-                    Price Range (USD)
+                    <Trans>Price Range (USD)</Trans>
                   </label>
                   <div className="flex items-center gap-2">
                     <div className="relative flex-1">
@@ -754,7 +780,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                       <input
                         type="number"
                         min="0"
-                        placeholder="Min"
+                        placeholder={t`Min`}
                         value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
                         className="w-full bg-main-bg border border-border rounded-xl py-2 pl-7 pr-3 text-xs text-text-main outline-none focus:border-[#EB712B]"
@@ -766,7 +792,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                       <input
                         type="number"
                         min="0"
-                        placeholder="Max"
+                        placeholder={t`Max`}
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(e.target.value)}
                         className="w-full bg-main-bg border border-border rounded-xl py-2 pl-7 pr-3 text-xs text-text-main outline-none focus:border-[#EB712B]"
@@ -776,9 +802,9 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                   {/* Quick price presets */}
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {[
-                      { label: "Under $50", min: "", max: "50" },
-                      { label: "$50 - $200", min: "50", max: "200" },
-                      { label: "$200+", min: "200", max: "" },
+                      { label: t`Under $50`, min: "", max: "50" },
+                      { label: t`$50 - $200`, min: "50", max: "200" },
+                      { label: t`$200+`, min: "200", max: "" },
                     ].map((preset) => (
                       <button
                         key={preset.label}
@@ -800,13 +826,13 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
 
                 <div className="pt-2 border-t border-border flex items-center justify-between">
                   <span className="text-[10px] font-bold text-text-muted">
-                    {filteredProducts.length} items found
+                    {filteredProducts.length} <Trans>items found</Trans>
                   </span>
                   <button
                     onClick={() => setIsFilterOpen(false)}
                     className="px-4 py-2 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer border-0 outline-none shadow-md shadow-[#EB712B]/20"
                   >
-                    Done
+                    <Trans>Done</Trans>
                   </button>
                 </div>
               </div>
@@ -820,7 +846,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
               className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all ${
                 viewMode === "grid" ? "bg-hover text-text-main shadow-sm" : "text-text-muted hover:text-text-main"
               }`}
-              title="Grid View"
+              title={t`Grid View`}
             >
               <Grid3X3 size={16} />
             </button>
@@ -829,7 +855,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
               className={`w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer transition-all ${
                 viewMode === "list" ? "bg-hover text-text-main shadow-sm" : "text-text-muted hover:text-text-main"
               }`}
-              title="List View"
+              title={t`List View`}
             >
               <List size={16} />
             </button>
@@ -841,7 +867,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
       {(activeFilterCount > 0 || searchQuery) && (
         <div className="flex flex-wrap items-center gap-2 pt-1 pb-1">
           <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-1">
-            Active Filters:
+            <Trans>Active Filters:</Trans>
           </span>
           {searchQuery && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-black uppercase tracking-wider">
@@ -890,7 +916,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
             onClick={handleClearFilters}
             className="text-[10px] font-bold text-text-muted hover:text-[#EB712B] underline cursor-pointer ml-1 transition-colors"
           >
-            Clear all
+            <Trans>Clear all</Trans>
           </button>
         </div>
       )}
@@ -902,13 +928,13 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
             onClick={() => setActiveTab("All")} 
             className={`px-5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 outline-none ${activeTab === "All" ? "bg-[#EB712B] text-white" : "text-text-muted hover:text-text-main bg-transparent"}`}
           >
-            All Gear
+            <Trans>All Gear</Trans>
           </button>
           <button 
             onClick={() => setActiveTab("MyListings")} 
             className={`px-5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 outline-none ${activeTab === "MyListings" ? "bg-[#EB712B] text-white" : "text-text-muted hover:text-text-main bg-transparent"}`}
           >
-            My Listings
+            <Trans>My Listings</Trans>
           </button>
         </div>
 
@@ -917,7 +943,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
             onClick={() => setShowAddModal(true)}
             className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-2 border-0 outline-none shadow-md shadow-[#EB712B]/10"
           >
-            <Plus size={16} /> Add Listing
+            <Plus size={16} /> <Trans>Add Listing</Trans>
           </button>
         )}
       </div>
@@ -927,7 +953,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
         viewMode === "list" ? <ListSkeleton /> : <GridSkeleton />
       ) : isError ? (
         <div className="text-center py-12 bg-surface border border-border rounded-3xl text-red-500 font-bold text-xs uppercase tracking-wider">
-          Failed to load marketplace listings. Please try again.
+          <Trans>Failed to load marketplace listings. Please try again.</Trans>
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl p-8 space-y-4">
@@ -936,12 +962,12 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
           </div>
           <div className="space-y-1">
             <h3 className="text-base font-black uppercase tracking-wide text-text-main">
-              No equipment found
+              <Trans>No equipment found</Trans>
             </h3>
             <p className="text-xs font-medium text-text-muted">
               {activeFilterCount > 0 || searchQuery
-                ? "No listings match your selected search or filter criteria."
-                : "There are currently no listings available in this category."}
+                ? <Trans>No listings match your selected search or filter criteria.</Trans>
+                : <Trans>There are currently no listings available in this category.</Trans>}
             </p>
           </div>
           {(activeFilterCount > 0 || searchQuery) && (
@@ -949,7 +975,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
               onClick={handleClearFilters}
               className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer border-0 outline-none shadow-md"
             >
-              Reset Filters & Search
+              <Trans>Reset Filters & Search</Trans>
             </button>
           )}
         </div>
@@ -995,7 +1021,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                         ? "bg-[#112217]/90 text-green-400 border-green-500/30" 
                         : "bg-[#251912]/90 text-[#EB712B] border-[#EB712B]/30"
                     }`}>
-                      {product.condition === "NEW" ? "New Condition" : "Pre-Owned"}
+                      {product.condition === "NEW" ? <Trans>New Condition</Trans> : <Trans>Pre-Owned</Trans>}
                     </span>
                   </div>
                 </div>
@@ -1010,7 +1036,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                         <span className="truncate max-w-[200px]">{product.location}</span>
                       </div>
                       <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                        • Verified Rider Gear
+                        • <Trans>Verified Rider Gear</Trans>
                       </span>
                     </div>
 
@@ -1021,7 +1047,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
 
                     {/* Description Preview */}
                     <p className="text-xs text-text-muted/80 line-clamp-2 leading-relaxed mt-1.5 font-medium">
-                      {product.description || "Authentic gear listed by community member. Inquire with seller directly for specifications, sizing, and pickup options."}
+                      {product.description || <Trans>Authentic gear listed by community member. Inquire with seller directly for specifications, sizing, and pickup options.</Trans>}
                     </p>
                   </div>
 
@@ -1039,7 +1065,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                       </div>
                     )}
                     <span className="text-[11px] font-semibold text-text-muted truncate">
-                      Listed by <span className="text-text-main font-bold">{product.sellerName}</span>
+                      <Trans>Listed by</Trans> <span className="text-text-main font-bold">{product.sellerName}</span>
                     </span>
                   </div>
                 </div>
@@ -1048,7 +1074,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                 <div className="shrink-0 flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-border/70 md:pl-6 min-w-[200px]">
                   <div className="text-left md:text-right">
                     <span className="text-[9px] font-black uppercase tracking-wider text-text-muted block">
-                      Listing Price
+                      <Trans>Listing Price</Trans>
                     </span>
                     <span className="text-2xl font-black tracking-tight text-[#EB712B]">
                       {product.price}
@@ -1062,13 +1088,13 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                           onClick={() => setSharingItemId(Number(product.id))}
                           className="flex-1 py-3 px-3 bg-surface hover:bg-hover border border-border text-text-main text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5 outline-none"
                         >
-                          <Share2 size={13} /> Share
+                          <Share2 size={13} /> <Trans>Share</Trans>
                         </button>
                         <button 
                           onClick={(e) => handleDelete(product.id, e)}
                           disabled={isDeleting}
                           className="py-3 px-3 bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 text-red-500 rounded-xl transition-colors cursor-pointer outline-none flex items-center justify-center"
-                          title="Delete listing"
+                          title={t`Delete listing`}
                         >
                           <Trash2 size={13} />
                         </button>
@@ -1078,7 +1104,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                         onClick={() => handleBuyNow(product)}
                         className="w-full py-3 px-6 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer border-0 outline-none shadow-md shadow-[#EB712B]/20 flex items-center justify-center gap-2"
                       >
-                        Buy Now
+                        <Trans>Buy Now</Trans>
                       </button>
                     )}
                   </div>
@@ -1128,7 +1154,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                           ? "bg-[#112217]/90 text-green-400 border-green-500/30" 
                           : "bg-[#251912]/90 text-[#EB712B] border-[#EB712B]/30"
                       }`}>
-                        {product.condition === "NEW" ? "New" : "Used"}
+                        {product.condition === "NEW" ? <Trans>New</Trans> : <Trans>Used</Trans>}
                       </span>
                     </div>
                   </div>
@@ -1151,7 +1177,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
 
                     {product.sellerName && (
                       <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-semibold pt-1 border-t border-border/50">
-                        <span className="text-text-muted">By</span>
+                        <span className="text-text-muted"><Trans>By</Trans></span>
                         <span className="text-text-main font-bold truncate">{product.sellerName}</span>
                       </div>
                     )}
@@ -1166,13 +1192,13 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                         onClick={() => setSharingItemId(Number(product.id))}
                         className="flex-1 py-2.5 bg-surface hover:bg-hover border border-border text-text-main text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5 outline-none"
                       >
-                        <Share2 size={13} /> Share
+                        <Share2 size={13} /> <Trans>Share</Trans>
                       </button>
                       <button 
                         onClick={(e) => handleDelete(product.id, e)}
                         disabled={isDeleting}
                         className="py-2.5 px-3 bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 text-red-500 rounded-xl transition-colors cursor-pointer outline-none flex items-center justify-center"
-                        title="Delete listing"
+                        title={t`Delete listing`}
                       >
                         <Trash2 size={13} />
                       </button>
@@ -1182,7 +1208,7 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                       onClick={() => handleBuyNow(product)}
                       className="w-full py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer border-0 outline-none shadow-md shadow-[#EB712B]/20"
                     >
-                      Buy Now
+                      <Trans>Buy Now</Trans>
                     </button>
                   )}
                 </div>

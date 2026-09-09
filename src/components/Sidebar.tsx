@@ -29,6 +29,42 @@ import { APP_NAME, ROUTES } from '@/Constants';
 import { useTheme } from '@/hooks/useTheme';
 import { Lock as LockIcon } from 'lucide-react';
 import { useUserInfoQuery } from '@/features/auth/api/authApiSlice';
+import { Trans } from '@lingui/react/macro';
+
+const renderNavLabel = (label: string) => {
+  switch (label) {
+    // Athlete items
+    case 'Explore Clubs': return <Trans>Explore Clubs</Trans>;
+    case 'Activities': return <Trans>Activities</Trans>;
+    case 'Calendar': return <Trans>Calendar</Trans>;
+    case 'Saved Activities': return <Trans>Saved Activities</Trans>;
+    case 'My Purchases': return <Trans>My Purchases</Trans>;
+    case 'My Wallet': return <Trans>My Wallet</Trans>;
+    case 'Subscription': return <Trans>Subscription</Trans>;
+    case 'Notifications': return <Trans>Notifications</Trans>;
+    case 'Chat': return <Trans>Chat</Trans>;
+    case 'Profile': return <Trans>Profile</Trans>;
+    // Club items
+    case 'Dashboard': return <Trans>Dashboard</Trans>;
+    case 'Create Ride': return <Trans>Create Ride</Trans>;
+    case 'Product': return <Trans>Product</Trans>;
+    case 'Order': return <Trans>Order</Trans>;
+    case 'Club Wallet': return <Trans>Club Wallet</Trans>;
+    case 'News': return <Trans>News</Trans>;
+    case 'Leaderboard': return <Trans>Leaderboard</Trans>;
+    case 'Discount': return <Trans>Discount</Trans>;
+    case 'Joining Requests': return <Trans>Joining Requests</Trans>;
+    case 'Members': return <Trans>Members</Trans>;
+    case 'Permissions': return <Trans>Permissions</Trans>;
+    case 'Membership Plans': return <Trans>Membership Plans</Trans>;
+    case 'Club Subscription': return <Trans>Club Subscription</Trans>;
+    case 'Stripe Payments': return <Trans>Stripe Payments</Trans>;
+    case 'Terms & Conditions': return <Trans>Terms & Conditions</Trans>;
+    case 'Privacy Policy': return <Trans>Privacy Policy</Trans>;
+    case 'Chat Support': return <Trans>Chat Support</Trans>;
+    default: return label;
+  }
+};
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -154,10 +190,10 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ onConfirm, onCancel }) => {
         </div>
 
         <h3 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 700, fontSize: '20px', color: 'var(--color-main-text)', marginBottom: '8px' }}>
-          Sign Out?
+          <Trans>Sign Out?</Trans>
         </h3>
         <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'var(--color-secondary-text)', lineHeight: 1.6, marginBottom: '28px' }}>
-          You'll be returned to the login screen. Any unsaved changes will be lost.
+          <Trans>You'll be returned to the login screen. Any unsaved changes will be lost.</Trans>
         </p>
 
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -171,7 +207,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ onConfirm, onCancel }) => {
               border: '1px solid var(--color-border)',
               cursor: 'pointer', transition: 'background 0.2s',
             }}
-          >Cancel</button>
+          ><Trans>Cancel</Trans></button>
           <button
             onClick={onConfirm}
             style={{
@@ -182,7 +218,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ onConfirm, onCancel }) => {
               cursor: 'pointer', transition: 'filter 0.2s',
               border: 'none',
             }}
-          >Sign Out</button>
+          ><Trans>Sign Out</Trans></button>
         </div>
       </div>
     </div>,
@@ -366,7 +402,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <LayoutDashboard size={16} className="text-[#EB712B]" />
                 )}
                 <span className="font-poppins font-bold text-xs text-text-main tracking-wide">
-                  {isAthleteSide ? 'Athlete Interface' : 'Club Management'}
+                  {isAthleteSide ? <Trans>Athlete Interface</Trans> : <Trans>Club Management</Trans>}
                 </span>
               </div>
               <ChevronUp
@@ -397,8 +433,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 >
                   <Compass size={16} className="text-[#EB712B]" />
                   <div className="flex flex-col">
-                    <span>Athlete Interface</span>
-                    <span className="text-[10px] text-text-muted font-normal mt-0.5">Explore clubs & rides</span>
+                    <span><Trans>Athlete Interface</Trans></span>
+                    <span className="text-[10px] text-text-muted font-normal mt-0.5"><Trans>Explore clubs & rides</Trans></span>
                   </div>
                 </button>
                 <div className="h-[1px] bg-border my-1.5" />
@@ -426,12 +462,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   )}
                   <div className="flex flex-col">
                     <span className={hasManageableClubs ? '' : 'text-text-muted'}>
-                      {hasManageableClubs ? 'Club Management' : 'Create a Club'}
+                      {hasManageableClubs ? <Trans>Club Management</Trans> : <Trans>Create a Club</Trans>}
                     </span>
                     <span className="text-[10px] text-text-muted font-normal mt-0.5">
                       {hasManageableClubs
-                        ? `Manage ${myClubs.length} club${myClubs.length > 1 ? 's' : ''}`
-                        : 'Set up your first club'}
+                        ? (myClubs.length > 1 ? <Trans>Manage {myClubs.length} clubs</Trans> : <Trans>Manage 1 club</Trans>)
+                        : <Trans>Set up your first club</Trans>}
                     </span>
                   </div>
                 </button>
@@ -492,7 +528,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   {item.icon}
                 </span>
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {item.label}
+                  {renderNavLabel(item.label)}
                 </span>
               </NavLink>
             );
@@ -512,7 +548,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 style={{ color: 'var(--color-main-text)', background: 'transparent', border: 'none', cursor: 'pointer' }}
               >
                 <Settings size={18} style={{ color: 'rgba(235,113,43,0.8)', flexShrink: 0 }} />
-                <span>Settings</span>
+                <span><Trans>Settings</Trans></span>
               </button>
               <div className="profile-menu-divider" />
               <button
@@ -520,7 +556,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 style={{ color: '#f87171', background: 'transparent', border: 'none' }}
               >
                 <LogOut size={18} style={{ color: '#f87171', flexShrink: 0 }} />
-                <span>Sign Out</span>
+                <span><Trans>Sign Out</Trans></span>
               </button>
             </div>
           )}

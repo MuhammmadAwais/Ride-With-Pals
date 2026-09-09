@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import { 
   Calendar, 
   MapPin, 
@@ -348,10 +350,10 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-1">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase text-text-main">
-                Upcoming Activities
+                <Trans>Upcoming Activities</Trans>
               </h1>
               <p className="text-text-muted font-medium text-xs sm:text-sm">
-                Discover and join scheduled group activities in your region.
+                <Trans>Discover and join scheduled group activities in your region.</Trans>
               </p>
             </div>
           </div>
@@ -368,8 +370,8 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           <div className="relative w-full lg:w-[420px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input 
-              type="text"
-              placeholder="Search by activity title, club, or location..."
+              type="text" 
+              placeholder={t`Search by activity title, club, or location...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border pl-12 pr-4 py-3 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
@@ -399,7 +401,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
                   }`}
                 >
-                  {type}
+                  {type === "All" ? <Trans>All</Trans> : type === "Cycling" ? <Trans>Cycling</Trans> : type === "Running" ? <Trans>Running</Trans> : type === "Triathlon" ? <Trans>Triathlon</Trans> : type === "Swimming" ? <Trans>Swimming</Trans> : type}
                 </button>
               ))}
             </div>
@@ -412,7 +414,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
                   viewMode === "grid" ? "bg-white/10 text-text-main shadow-xs" : "text-text-muted hover:text-text-main bg-transparent"
                 }`}
-                title="Grid View"
+                title={t`Grid View`}
               >
                 <Grid3X3 size={16} />
               </button>
@@ -422,7 +424,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
                   viewMode === "list" ? "bg-white/10 text-text-main shadow-xs" : "text-text-muted hover:text-text-main bg-transparent"
                 }`}
-                title="List View"
+                title={t`List View`}
               >
                 <List size={16} />
               </button>
@@ -432,7 +434,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                 className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all border-0 outline-none ${
                   (viewMode as string) === "map" ? "bg-[#EB712B] text-white shadow-xs" : "text-text-muted hover:text-text-main bg-transparent"
                 }`}
-                title="Map View"
+                title={t`Map View`}
               >
                 <MapIcon size={16} />
               </button>
@@ -483,7 +485,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                               : "bg-amber-950/85 border-amber-500/40 text-amber-300"
                           }`}
                         >
-                          {ride.terrainBadges[0]}
+                          {ride.terrainBadges[0] === "Road" ? <Trans>Road</Trans> : ride.terrainBadges[0] === "Trail" ? <Trans>Trail</Trans> : ride.terrainBadges[0]}
                         </span>
                       </div>
                     )}
@@ -492,7 +494,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5">
                       {ride.isPaymentRequired && (
                         <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-emerald-950/85 border border-emerald-500/40 text-emerald-300 backdrop-blur-md">
-                          {ride.priceFormatted || "Paid"}
+                          {ride.priceFormatted || <Trans>Paid</Trans>}
                         </span>
                       )}
                       {ride.terrainBadges && ride.terrainBadges[1] && (
@@ -505,7 +507,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                               : "bg-purple-950/85 border-purple-500/40 text-purple-300"
                           }`}
                         >
-                          {ride.terrainBadges[1]}
+                          {ride.terrainBadges[1] === "Social" ? <Trans>Social</Trans> : ride.terrainBadges[1] === "Race" ? <Trans>Race</Trans> : ride.terrainBadges[1]}
                         </span>
                       )}
                     </div>
@@ -520,7 +522,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         </h3>
                         <div className="flex items-center gap-1.5 mt-0.5 text-xs text-text-muted">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shrink-0" />
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted shrink-0">Club</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted shrink-0"><Trans>Club</Trans></span>
                           <span className="font-semibold text-xs text-text-main hover:text-[#EB712B] transition-colors truncate">
                             {ride.clubName}
                           </span>
@@ -533,7 +535,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           type="button"
                           onClick={(e) => handleAddToCalendar(ride, e)}
                           className="p-1.5 rounded-lg bg-surface border border-border text-text-muted hover:text-text-main"
-                          title="Add to Google Calendar"
+                          title={t`Add to Google Calendar`}
                         >
                           <GoogleCalendarIcon size={14} />
                         </button>
@@ -541,7 +543,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           type="button"
                           onClick={(e) => handleDownloadGpx(ride, e)}
                           className="px-1.5 py-1 rounded-lg bg-surface border border-border text-emerald-500 flex items-center gap-0.5 text-[8px] font-bold"
-                          title="Download GPX Route"
+                          title={t`Download GPX Route`}
                         >
                           <Download size={11} /> GPX
                         </button>
@@ -549,7 +551,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           type="button"
                           onClick={(e) => handleOpenShare(ride, e)}
                           className="p-1.5 rounded-lg bg-surface border border-border text-text-muted hover:text-[#EB712B]"
-                          title="Share Activity"
+                          title={t`Share Activity`}
                         >
                           <Share2 size={13} />
                         </button>
@@ -564,7 +566,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                               ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
                               : "bg-surface border-border text-text-muted hover:text-text-main"
                           }`}
-                          title={ride.isSaved ? "Saved" : "Save activity"}
+                          title={ride.isSaved ? t`Saved` : t`Save activity`}
                         >
                           <Bookmark size={13} fill={ride.isSaved ? "#EB712B" : "none"} />
                         </button>
@@ -590,7 +592,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           <Bike size={11} className="text-[#EB712B]" />
                         </div>
                         <span className="font-medium text-text-main">
-                          Sport: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
+                          <Trans>Sport:</Trans> <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
                         </span>
                       </div>
                     </div>
@@ -598,15 +600,15 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     {/* Telemetry Metrics Row */}
                     <div className="flex flex-wrap items-center gap-2 pt-1">
                       <div className="bg-surface/60 px-3 py-1.5 rounded-lg border border-border/70 flex items-center gap-2">
-                        <span className="text-[9px] uppercase font-bold text-text-muted">Speed</span>
+                        <span className="text-[9px] uppercase font-bold text-text-muted"><Trans>Speed</Trans></span>
                         <span className="text-xs font-black text-text-main">{ride.speed}</span>
                       </div>
                       <div className="bg-surface/60 px-3 py-1.5 rounded-lg border border-border/70 flex items-center gap-2">
-                        <span className="text-[9px] uppercase font-bold text-text-muted">Distance</span>
+                        <span className="text-[9px] uppercase font-bold text-text-muted"><Trans>Distance</Trans></span>
                         <span className="text-xs font-black text-text-main">{ride.distance}</span>
                       </div>
                       <div className="bg-surface/60 px-3 py-1.5 rounded-lg border border-border/70 flex items-center gap-2">
-                        <span className="text-[9px] uppercase font-bold text-text-muted">Participants</span>
+                        <span className="text-[9px] uppercase font-bold text-text-muted"><Trans>Participants</Trans></span>
                         <span className="text-xs font-black text-text-main">{ride.participants}</span>
                       </div>
                       
@@ -631,7 +633,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           {(ride.organizer || "Organizer").split(" ").map((n: string) => n[0] || "").join("").substring(0, 2)}
                         </div>
                         <div className="flex flex-col overflow-hidden max-w-[100px]">
-                          <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
+                          <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider"><Trans>Organizer</Trans></span>
                           <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
                         </div>
                       </div>
@@ -646,7 +648,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         type="button"
                         onClick={(e) => handleAddToCalendar(ride, e)}
                         className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#4285F4]/40 hover:bg-[#4285F4]/10 transition-all cursor-pointer shadow-sm group/btn"
-                        title="Add to Google Calendar"
+                        title={t`Add to Google Calendar`}
                         aria-label="Add to Google Calendar"
                       >
                         <GoogleCalendarIcon size={15} className="group-hover/btn:scale-110 transition-transform" />
@@ -656,7 +658,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         type="button"
                         onClick={(e) => handleDownloadGpx(ride, e)}
                         className="px-2 py-1.5 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all cursor-pointer shadow-sm flex items-center gap-1 group/btn"
-                        title="Download GPX Route"
+                        title={t`Download GPX Route`}
                         aria-label="Download GPX Route"
                       >
                         <Download size={13} className="text-emerald-500 group-hover/btn:scale-110 transition-transform" />
@@ -667,7 +669,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         type="button"
                         onClick={(e) => handleOpenShare(ride, e)}
                         className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/40 hover:bg-[#EB712B]/10 transition-all cursor-pointer shadow-sm group/btn"
-                        title="Share Activity"
+                        title={t`Share Activity`}
                         aria-label="Share Activity"
                       >
                         <Share2 size={14} className="group-hover/btn:text-[#EB712B] group-hover/btn:scale-110 transition-all" />
@@ -684,7 +686,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                             ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
                             : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
                         }`}
-                        title={ride.isSaved ? "Saved" : "Save activity"}
+                        title={ride.isSaved ? t`Saved` : t`Save activity`}
                         aria-label="Save activity"
                       >
                         <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
@@ -701,15 +703,15 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     >
                       {ride.isRideJoined ? (
                         <>
-                          Joined <CheckCircle2 size={14} />
+                          <Trans>Joined</Trans> <CheckCircle2 size={14} />
                         </>
                       ) : ride.isPaymentRequired ? (
                         <>
-                          Pay & Join {ride.priceFormatted ? `(${ride.priceFormatted})` : ''} <CreditCard size={14} />
+                          <Trans>Pay & Join</Trans> {ride.priceFormatted ? `(${ride.priceFormatted})` : ''} <CreditCard size={14} />
                         </>
                       ) : (
                         <>
-                          Join Activity <ArrowRight size={14} />
+                          <Trans>Join Activity</Trans> <ArrowRight size={14} />
                         </>
                       )}
                     </button>
@@ -752,7 +754,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                               : "bg-amber-950/80 border-amber-500/40 text-amber-300"
                           }`}
                         >
-                          {ride.terrainBadges[0]}
+                          {ride.terrainBadges[0] === "Road" ? <Trans>Road</Trans> : ride.terrainBadges[0] === "Trail" ? <Trans>Trail</Trans> : ride.terrainBadges[0]}
                         </span>
                       </div>
                     )}
@@ -761,7 +763,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5">
                       {ride.isPaymentRequired && (
                         <span className="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider backdrop-blur-md bg-emerald-950/85 border border-emerald-500/40 text-emerald-300">
-                          {ride.priceFormatted || "Paid"}
+                          {ride.priceFormatted || <Trans>Paid</Trans>}
                         </span>
                       )}
                       {ride.terrainBadges && ride.terrainBadges[1] && (
@@ -774,7 +776,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                               : "bg-purple-950/80 border-purple-500/40 text-purple-300"
                           }`}
                         >
-                          {ride.terrainBadges[1]}
+                          {ride.terrainBadges[1] === "Social" ? <Trans>Social</Trans> : ride.terrainBadges[1] === "Race" ? <Trans>Race</Trans> : ride.terrainBadges[1]}
                         </span>
                       )}
                     </div>
@@ -791,7 +793,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                         </h3>
                         <div className="flex items-center gap-1.5 mt-1 text-xs text-text-muted">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shrink-0" />
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted shrink-0">Club</span>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted shrink-0"><Trans>Club</Trans></span>
                           <span className="font-bold text-xs text-text-main hover:text-[#EB712B] transition-colors truncate" title={ride.clubName}>
                             {ride.clubName}
                           </span>
@@ -805,7 +807,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           type="button"
                           onClick={(e) => handleAddToCalendar(ride, e)}
                           className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#4285F4]/40 hover:bg-[#4285F4]/10 transition-all cursor-pointer shadow-sm group/btn"
-                          title="Add to Google Calendar"
+                          title={t`Add to Google Calendar`}
                           aria-label="Add to Google Calendar"
                         >
                           <GoogleCalendarIcon size={16} className="group-hover/btn:scale-110 transition-transform" />
@@ -816,7 +818,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           type="button"
                           onClick={(e) => handleDownloadGpx(ride, e)}
                           className="px-2.5 py-1.5 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all cursor-pointer shadow-sm flex items-center gap-1 group/btn"
-                          title="Download GPX Route"
+                          title={t`Download GPX Route`}
                           aria-label="Download GPX Route"
                         >
                           <Download size={13} className="text-emerald-500 group-hover/btn:scale-110 transition-transform" />
@@ -828,7 +830,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           type="button"
                           onClick={(e) => handleOpenShare(ride, e)}
                           className="p-2 rounded-xl bg-surface border border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/40 hover:bg-[#EB712B]/10 transition-all cursor-pointer shadow-sm group/btn"
-                          title="Share Activity"
+                          title={t`Share Activity`}
                           aria-label="Share Activity"
                         >
                           <Share2 size={15} className="group-hover/btn:text-[#EB712B] group-hover/btn:scale-110 transition-all" />
@@ -846,7 +848,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                               ? "bg-[#EB712B]/10 border-[#EB712B]/30 text-[#EB712B]"
                               : "bg-surface border-border text-text-muted hover:text-text-main hover:border-text-muted"
                           }`}
-                          title={ride.isSaved ? "Saved" : "Save activity"}
+                          title={ride.isSaved ? t`Saved` : t`Save activity`}
                           aria-label="Save activity"
                         >
                           <Bookmark size={15} fill={ride.isSaved ? "#EB712B" : "none"} />
@@ -873,7 +875,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                             <Bike size={13} className="text-[#EB712B]" />
                           </div>
                           <span className="font-medium text-xs text-text-main">
-                            Sport Type: <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
+                            <Trans>Sport Type:</Trans> <span className="text-[#EB712B] font-bold">{ride.rideType}</span>
                           </span>
                         </div>
                       </div>
@@ -882,15 +884,15 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                     <div className="grid grid-cols-3 gap-2 py-2 z-10">
                       <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
                         <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.speed}</span>
-                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Speed</span>
+                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5"><Trans>Speed</Trans></span>
                       </div>
                       <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
                         <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.distance}</span>
-                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Distance</span>
+                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5"><Trans>Distance</Trans></span>
                       </div>
                       <div className="bg-surface p-3 rounded-xl border border-border text-center flex flex-col items-center justify-center">
                         <span className="text-xs font-extrabold text-text-main tracking-tight whitespace-nowrap">{ride.participants}</span>
-                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5">Participants</span>
+                        <span className="text-[8px] uppercase tracking-wider text-text-muted font-bold mt-1.5"><Trans>Participants</Trans></span>
                       </div>
                     </div>
 
@@ -906,15 +908,15 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                       >
                         {ride.isRideJoined ? (
                           <>
-                            Joined <CheckCircle2 size={14} />
+                            <Trans>Joined</Trans> <CheckCircle2 size={14} />
                           </>
                         ) : ride.isPaymentRequired ? (
                           <>
-                            Pay & Join {ride.priceFormatted ? `(${ride.priceFormatted})` : ''} <CreditCard size={14} />
+                            <Trans>Pay & Join</Trans> {ride.priceFormatted ? `(${ride.priceFormatted})` : ''} <CreditCard size={14} />
                           </>
                         ) : (
                           <>
-                            Click to Join Activity <ArrowRight size={14} />
+                            <Trans>Click to Join Activity</Trans> <ArrowRight size={14} />
                           </>
                         )}
                       </button>
@@ -938,7 +940,7 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
                           {(ride.organizer || "Organizer").split(" ").map((n: string) => n[0] || "").join("").substring(0, 2)}
                         </div>
                         <div className="flex flex-col overflow-hidden">
-                          <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider">Organizer</span>
+                          <span className="text-[7px] uppercase font-extrabold text-text-muted tracking-wider"><Trans>Organizer</Trans></span>
                           <span className="text-[10px] font-bold text-text-main truncate leading-tight">{ride.organizer}</span>
                         </div>
                       </div>
@@ -952,15 +954,17 @@ const Ride: React.FC<RideProps> = ({ clubId }) => {
           /* Empty State Display */
           <div className="flex flex-col items-center justify-center bg-main-bg border border-border rounded-3xl p-16 text-center shadow-2xl">
             <Compass size={48} className="text-text-muted animate-pulse mb-4" />
-            <h3 className="font-extrabold text-lg text-text-main tracking-tight">No activities found</h3>
+            <h3 className="font-extrabold text-lg text-text-main tracking-tight">
+              <Trans>No activities found</Trans>
+            </h3>
             <p className="text-text-muted text-xs mt-1 max-w-sm">
-              We couldn't find any activities matching your search filters. Try resetting or adjusting your search parameters.
+              <Trans>We couldn't find any activities matching your search filters. Try resetting or adjusting your search parameters.</Trans>
             </p>
             <button 
               onClick={() => { setSearchQuery(""); setSelectedType("All"); }}
               className="mt-6 px-6 py-2.5 bg-surface border border-border rounded-xl text-xs font-bold text-text-main hover:bg-hover transition-all cursor-pointer"
             >
-              Clear Search & Filters
+              <Trans>Clear Search & Filters</Trans>
             </button>
           </div>
         )}

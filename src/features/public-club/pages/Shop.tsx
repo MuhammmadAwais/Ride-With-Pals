@@ -8,6 +8,8 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import type { ShopTypes } from "@/api/types";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { toast } from "sonner";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import { resolveImageUrl } from "../services/clubGeocoding";
 
 // ── SKELETONS ───────────────────────────────────────────────────────────────
@@ -56,7 +58,7 @@ function AddShopItemModal({ onClose, activeClubId }: AddShopItemModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !price || Number(price) <= 0) {
-      toast.error("Please enter a valid name and price.");
+      toast.error(t`Please enter a valid name and price.`);
       return;
     }
 
@@ -78,10 +80,10 @@ function AddShopItemModal({ onClose, activeClubId }: AddShopItemModalProps) {
         quantity: 1,
       }).unwrap();
 
-      toast.success("Product added to shop!");
+      toast.success(t`Product added to shop!`);
       onClose();
     } catch (err) {
-      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to add product.");
+      toast.error((err as { data?: { message?: string } })?.data?.message || t`Failed to add product.`);
     }
   };
 
@@ -89,7 +91,9 @@ function AddShopItemModal({ onClose, activeClubId }: AddShopItemModalProps) {
     <div className="fixed inset-0 bg-main-bg/85 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <form onSubmit={handleSubmit} className="bg-surface text-text-main rounded-3xl p-6 w-full max-w-lg relative border border-border shadow-2xl space-y-5">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-black uppercase tracking-wider text-text-main">Add Product</h3>
+          <h3 className="text-lg font-black uppercase tracking-wider text-text-main">
+            <Trans>Add Product</Trans>
+          </h3>
           <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main border-0 bg-transparent cursor-pointer">
             <X size={20} />
           </button>
@@ -103,30 +107,38 @@ function AddShopItemModal({ onClose, activeClubId }: AddShopItemModalProps) {
             ) : (
               <>
                 {isUploading ? <Loader2 className="text-[#EB712B] animate-spin mb-2" size={20} /> : <Upload className="text-[#EB712B] mb-2" size={20} />}
-                <span className="text-[10px] text-text-muted font-bold">{isUploading ? "Uploading..." : "Upload Product Image"}</span>
+                <span className="text-[10px] text-text-muted font-bold">
+                  {isUploading ? <Trans>Uploading...</Trans> : <Trans>Upload Product Image</Trans>}
+                </span>
               </>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Product Name</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                <Trans>Product Name</Trans>
+              </label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main" required />
             </div>
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Price (USD)</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+                <Trans>Price (USD)</Trans>
+              </label>
               <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main" min="0" required />
             </div>
           </div>
 
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Description</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
+              <Trans>Description</Trans>
+            </label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] min-h-[80px] text-text-main" />
           </div>
         </div>
 
         <button type="submit" disabled={isAdding || isUploading} className="w-full py-3.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black tracking-wider uppercase rounded-xl transition-all cursor-pointer shadow-lg border-0 outline-none disabled:opacity-50 mt-4">
-          {isAdding ? "Adding..." : "Add to Shop"}
+          {isAdding ? <Trans>Adding...</Trans> : <Trans>Add to Shop</Trans>}
         </button>
       </form>
     </div>
@@ -195,10 +207,10 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
   // Map API rows → ShopProduct view model
   const products: ShopProduct[] = (shopData?.rows || []).map((item: ShopTypes.Row) => ({
     id: item.id.toString(),
-    name: item.name || "Unknown Item",
-    price: item.price ? `€${parseFloat(item.price as unknown as string).toFixed(2)}` : "Free",
+    name: item.name || t`Unknown Item`,
+    price: item.price ? `€${parseFloat(item.price as unknown as string).toFixed(2)}` : t`Free`,
     rawPrice: parseFloat(item.price as unknown as string) || 0,
-    location: item.gender || "Club Store",
+    location: item.gender || t`Club Store`,
     image: resolveImageUrl(item.image) || "/Images/HelmetImage4.jpg",
   }));
 
@@ -239,7 +251,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
   const handleBuy = async () => {
     if (!selectedProduct) return;
     if (deliveryMethod === "delivery" && (!address.fullName.trim() || !address.street.trim() || !address.city.trim())) {
-      toast.error("Please fill in your delivery address.");
+      toast.error(t`Please fill in your delivery address.`);
       return;
     }
     try {
@@ -251,11 +263,9 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
       }).unwrap();
       setIsSuccess(true);
     } catch (err) {
-      toast.error((err as { data?: { message?: string } })?.data?.message || "Failed to place order. Please try again.");
+      toast.error((err as { data?: { message?: string } })?.data?.message || t`Failed to place order. Please try again.`);
     }
   };
-
-
 
   return (
     <div className="space-y-8 w-full">
@@ -264,10 +274,10 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-black uppercase tracking-wide text-text-main">
-            Premium Equipment
+            <Trans>Premium Equipment</Trans>
           </h1>
           <p className="text-xs font-bold uppercase tracking-wider text-text-muted mt-1.5">
-            Showing {filteredProducts.length} items from elite verified sellers
+            <Trans>Showing {filteredProducts.length} items from elite verified sellers</Trans>
           </p>
         </div>
 
@@ -277,14 +287,14 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
             <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
             <input
               type="text"
-              placeholder="Search gear or location..."
+              placeholder={t`Search gear or location...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-10 pl-11 pr-4 bg-surface border border-border rounded-2xl text-xs font-medium text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-colors"
             />
           </div>
           <button className="h-10 px-4 bg-surface border border-border hover:border-text-muted rounded-2xl flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-muted transition-all cursor-pointer">
-            <Filter size={14} /> Filter
+            <Filter size={14} /> <Trans>Filter</Trans>
           </button>
           <div className="flex bg-surface border border-border rounded-2xl p-1.5 gap-1">
             <button
@@ -304,18 +314,20 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-4">
-        <div className="text-sm text-text-muted">Shop Items</div>
+        <div className="text-sm text-text-muted">
+          <Trans>Shop Items</Trans>
+        </div>
         <button 
           onClick={() => {
             if (hasPermission) {
               setShowAddModal(true);
             } else {
-              toast.error("You don't have permission to add items to this shop.");
+              toast.error(t`You don't have permission to add items to this shop.`);
             }
           }}
           className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-2 border-0 outline-none shadow-md shadow-[#EB712B]/10"
         >
-          <Plus size={16} /> Add Product
+          <Plus size={16} /> <Trans>Add Product</Trans>
         </button>
       </div>
 
@@ -324,11 +336,15 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
         <ShopSkeleton />
       ) : isError ? (
         <div className="text-center py-12 bg-surface border border-border rounded-3xl">
-          <p className="text-sm font-bold text-red-400 uppercase tracking-wider">Failed to load shop items. Please try again.</p>
+          <p className="text-sm font-bold text-red-400 uppercase tracking-wider">
+            <Trans>Failed to load shop items. Please try again.</Trans>
+          </p>
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12 bg-surface border border-border rounded-3xl">
-          <p className="text-sm font-bold text-text-muted uppercase tracking-wider">No equipment found matching your search</p>
+          <p className="text-sm font-bold text-text-muted uppercase tracking-wider">
+            <Trans>No equipment found matching your search</Trans>
+          </p>
         </div>
       ) : (
         <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "flex flex-col gap-4"}>
@@ -343,7 +359,9 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                 <div className={`relative bg-main-bg rounded-2xl overflow-hidden border border-border flex items-center justify-center group shrink-0 ${viewMode === "list" ? "w-28 h-28 aspect-square" : "w-full aspect-4/3"}`}>
                   {imageErrors[product.id] ? (
                     <div className="w-full h-full bg-main-bg flex flex-col items-center justify-center gap-1.5 text-text-muted">
-                      <span className="font-black text-[10px] uppercase tracking-wider">Premium Gear</span>
+                      <span className="font-black text-[10px] uppercase tracking-wider">
+                        <Trans>Premium Gear</Trans>
+                      </span>
                     </div>
                   ) : (
                     <img
@@ -378,7 +396,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                         onClick={() => { setSelectedProduct(product); setQuantity(1); setDeliveryMethod("pickup"); }}
                         className="py-1.5 px-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-xl text-[10px] font-extrabold uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[#EB712B]/10 shrink-0"
                       >
-                        <ShoppingBag size={11} /> Buy Now
+                        <ShoppingBag size={11} /> <Trans>Buy Now</Trans>
                       </button>
                     </div>
                   </div>
@@ -399,11 +417,15 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                   <CheckCircle2 size={32} className="animate-bounce" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-text-main uppercase tracking-wider">Order Confirmed!</h3>
+                  <h3 className="text-base font-black text-text-main uppercase tracking-wider">
+                    <Trans>Order Confirmed!</Trans>
+                  </h3>
                   <p className="text-xs font-medium text-text-muted mt-1.5">
-                    Thank you for purchasing <strong className="text-[#EB712B]">{selectedProduct.name}</strong>.
+                    <Trans>Thank you for purchasing</Trans> <strong className="text-[#EB712B]">{selectedProduct.name}</strong>.
                   </p>
-                  <p className="text-[10px] text-text-muted uppercase tracking-wider mt-4">Redirecting you back...</p>
+                  <p className="text-[10px] text-text-muted uppercase tracking-wider mt-4">
+                    <Trans>Redirecting you back...</Trans>
+                  </p>
                 </div>
               </div>
             ) : (
@@ -415,8 +437,12 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                   <X size={20} />
                 </button>
                 <div>
-                  <h2 className="text-lg font-black uppercase tracking-wider text-text-main pr-8">Complete Purchase</h2>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mt-1">Review your order and checkout</p>
+                  <h2 className="text-lg font-black uppercase tracking-wider text-text-main pr-8">
+                    <Trans>Complete Purchase</Trans>
+                  </h2>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mt-1">
+                    <Trans>Review your order and checkout</Trans>
+                  </p>
                 </div>
 
                 {/* Item summary */}
@@ -430,7 +456,9 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
 
                 {/* Quantity */}
                 <div>
-                  <p className="text-[9px] font-black text-text-muted uppercase tracking-wider mb-2">Quantity</p>
+                  <p className="text-[9px] font-black text-text-muted uppercase tracking-wider mb-2">
+                    <Trans>Quantity</Trans>
+                  </p>
                   <div className="flex items-center gap-3">
                     <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} className="w-8 h-8 rounded-xl bg-hover border border-border flex items-center justify-center cursor-pointer hover:border-[#EB712B]/30">
                       <Minus size={14} />
@@ -445,7 +473,9 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
 
                 {/* Delivery Method */}
                 <div>
-                  <p className="text-[9px] font-black text-text-muted uppercase tracking-wider mb-2">Delivery Method</p>
+                  <p className="text-[9px] font-black text-text-muted uppercase tracking-wider mb-2">
+                    <Trans>Delivery Method</Trans>
+                  </p>
                   <div className="flex gap-2">
                     {(["pickup", "delivery"] as const).map((m) => (
                       <button
@@ -453,7 +483,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                         onClick={() => setDeliveryMethod(m)}
                         className={`flex-1 py-2 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer border ${deliveryMethod === m ? "bg-[#EB712B] text-white border-[#EB712B]" : "bg-main-bg border-border text-text-muted hover:border-[#EB712B]/30"}`}
                       >
-                        {m}
+                        {m === "pickup" ? <Trans>Pickup</Trans> : <Trans>Delivery</Trans>}
                       </button>
                     ))}
                   </div>
@@ -462,14 +492,16 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                 {/* Address fields (only for delivery) */}
                 {deliveryMethod === "delivery" && (
                   <div className="space-y-2">
-                    <p className="text-[9px] font-black text-text-muted uppercase tracking-wider">Delivery Address</p>
+                    <p className="text-[9px] font-black text-text-muted uppercase tracking-wider">
+                      <Trans>Delivery Address</Trans>
+                    </p>
                     {[
-                      { key: "fullName", placeholder: "Full Name" },
-                      { key: "phone", placeholder: "Phone" },
-                      { key: "street", placeholder: "Street & Number" },
-                      { key: "city", placeholder: "City" },
-                      { key: "postalCode", placeholder: "Postal Code" },
-                      { key: "country", placeholder: "Country" },
+                      { key: "fullName", placeholder: t`Full Name` },
+                      { key: "phone", placeholder: t`Phone` },
+                      { key: "street", placeholder: t`Street & Number` },
+                      { key: "city", placeholder: t`City` },
+                      { key: "postalCode", placeholder: t`Postal Code` },
+                      { key: "country", placeholder: t`Country` },
                     ].map(({ key, placeholder }) => (
                       <input
                         key={key}
@@ -488,7 +520,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                     onClick={() => setSelectedProduct(null)}
                     className="flex-1 py-3.5 bg-hover hover:bg-white/10 border border-border rounded-2xl text-xs font-extrabold text-text-muted uppercase tracking-wider cursor-pointer transition-all"
                   >
-                    Cancel
+                    <Trans>Cancel</Trans>
                   </button>
                   <button
                     onClick={handleBuy}
@@ -496,7 +528,7 @@ export default function Shop({ clubId: propClubId }: ShopProps) {
                     className="flex-1 py-3.5 bg-[#EB712B] hover:bg-[#d05c1c] text-white rounded-2xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-[#EB712B]/20 disabled:opacity-60 flex items-center justify-center gap-2"
                   >
                     {isBuying ? <Loader2 size={14} className="animate-spin" /> : null}
-                    {isBuying ? "Placing Order..." : `Pay €${(selectedProduct.rawPrice * quantity).toFixed(2)}`}
+                    {isBuying ? <Trans>Placing Order...</Trans> : `Pay €${(selectedProduct.rawPrice * quantity).toFixed(2)}`}
                   </button>
                 </div>
               </div>

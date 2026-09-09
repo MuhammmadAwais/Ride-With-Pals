@@ -14,6 +14,7 @@ import { ChatWindow } from './components/ChatWindow';
 import { useChat } from './hooks/useChat';
 import { useLocation } from 'react-router-dom';
 import UserProfileModal from '@/features/ClubSide/components/UserProfileModal';
+import { t } from '@lingui/core/macro';
 
 const Support = () => {
   const location = useLocation();
@@ -58,7 +59,7 @@ const Support = () => {
   return (
     <>
       <Helmet>
-        <title>Messages & Group Chat — {APP_NAME}</title>
+        <title>{t`Messages & Group Chat`} — {APP_NAME}</title>
       </Helmet>
 
       <div

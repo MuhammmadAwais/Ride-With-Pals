@@ -25,6 +25,8 @@ import {
   Flame,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useGetSavedRidesListQuery, useUnsaveRideMutation } from '@/features/club/api/savedRidesApiSlice';
 
 // ── Skeleton ───────────────────────────────────────────────────────────────────
@@ -96,9 +98,9 @@ const SavedRides: React.FC = () => {
     setRemovingIds((prev) => new Set(prev).add(rideId));
     try {
       await unsaveRide({ rideId }).unwrap();
-      toast.success('Ride removed from saved list.');
+      toast.success(t`Ride removed from saved list.`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to remove ride.');
+      toast.error(err?.data?.message || t`Failed to remove ride.`);
     } finally {
       setRemovingIds((prev) => {
         const next = new Set(prev);
@@ -124,13 +126,15 @@ const SavedRides: React.FC = () => {
               <div className="w-10 h-10 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-xl flex items-center justify-center">
                 <Bookmark size={18} className="text-[#EB712B]" />
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#EB712B]">Athlete Library</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-[#EB712B]">
+                <Trans>Athlete Library</Trans>
+              </span>
             </div>
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-text-main">
-              Saved Activities
+              <Trans>Saved Activities</Trans>
             </h1>
             <p className="text-text-muted font-medium text-sm max-w-xl">
-              Your personal collection of bookmarked group activities.
+              <Trans>Your personal collection of bookmarked group activities.</Trans>
             </p>
           </div>
 
@@ -139,7 +143,7 @@ const SavedRides: React.FC = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
             <input
               type="text"
-              placeholder="Search saved activities..."
+              placeholder={t`Search saved activities...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border pl-11 pr-10 py-3 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
@@ -157,11 +161,11 @@ const SavedRides: React.FC = () => {
 
         {/* Stats bar */}
         <div className="flex items-center gap-6 text-xs text-text-muted">
-          <span className="font-bold text-text-main">{rides.length}</span> saved activities
+          <span><span className="font-bold text-text-main">{rides.length}</span> <Trans>saved activities</Trans></span>
           {searchQuery && (
             <>
               <span className="text-border">·</span>
-              <span className="font-bold text-[#EB712B]">{filtered.length}</span> matching search
+              <span><span className="font-bold text-[#EB712B]">{filtered.length}</span> <Trans>matching search</Trans></span>
             </>
           )}
         </div>
@@ -173,8 +177,12 @@ const SavedRides: React.FC = () => {
           </div>
         ) : isError ? (
           <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-3">
-            <p className="text-red-500 font-bold uppercase text-xs tracking-wider">Failed to load saved activities.</p>
-            <p className="text-text-muted text-sm">Please check your connection and try again.</p>
+            <p className="text-red-500 font-bold uppercase text-xs tracking-wider">
+              <Trans>Failed to load saved activities.</Trans>
+            </p>
+            <p className="text-text-muted text-sm">
+              <Trans>Please check your connection and try again.</Trans>
+            </p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-surface border border-border rounded-3xl p-16 text-center space-y-4">
@@ -182,19 +190,19 @@ const SavedRides: React.FC = () => {
               <BookmarkX size={32} className="text-[#EB712B]" />
             </div>
             <h2 className="text-xl font-bold text-text-main">
-              {searchQuery ? 'No activities match your search' : 'No Saved Activities Yet'}
+              {searchQuery ? <Trans>No activities match your search</Trans> : <Trans>No Saved Activities Yet</Trans>}
             </h2>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
               {searchQuery
-                ? 'Try adjusting your search query.'
-                : 'Browse activities and tap the bookmark icon to save them for later.'}
+                ? <Trans>Try adjusting your search query.</Trans>
+                : <Trans>Browse activities and tap the bookmark icon to save them for later.</Trans>}
             </p>
             {!searchQuery && (
               <button
                 onClick={() => navigate('/view/userside/activities')}
                 className="mt-2 px-6 py-3 bg-[#EB712B] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#d05c19] transition-colors cursor-pointer border-0"
               >
-                Browse Activities
+                <Trans>Browse Activities</Trans>
               </button>
             )}
           </div>
@@ -251,7 +259,7 @@ const SavedRides: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-2 text-[10px] text-text-muted">
                         <Bike size={10} className="shrink-0" />
-                        <span>{ride.participants} participants</span>
+                        <span>{ride.participants} <Trans>participants</Trans></span>
                       </div>
                     </div>
 
@@ -261,13 +269,13 @@ const SavedRides: React.FC = () => {
                         onClick={() => handleJoinRide(ride.id)}
                         className="flex-1 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border-0 flex items-center justify-center gap-1.5"
                       >
-                        View Ride <ArrowRight size={12} />
+                        <Trans>View Ride</Trans> <ArrowRight size={12} />
                       </button>
                       <button
                         onClick={() => handleUnsave(ride.id)}
                         disabled={isRemoving}
                         className="py-2.5 px-3 bg-surface border border-border hover:border-red-500/40 hover:bg-red-500/5 text-text-muted hover:text-red-500 rounded-xl transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
-                        title="Remove from saved"
+                        title={t`Remove from saved`}
                       >
                         <BookmarkX size={14} />
                       </button>

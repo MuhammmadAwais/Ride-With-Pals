@@ -3,6 +3,7 @@ import { Globe, Lock, MapPin, Users, ShieldCheck, Bike, Activity, Trophy } from 
 import { useGetClubMembersListQuery } from "@/features/club/api/clubApiSlice";
 import { extractMembersList } from "../pages/ClubDetails";
 import { cn } from "@/lib/utils";
+import { Trans } from "@lingui/react/macro";
 
 interface ClubCardProps {
   club: any;
@@ -108,12 +109,10 @@ export const ClubMemberCountText: React.FC<{ club: any; className?: string; as?:
     return getMemberCount(club);
   }, [membersData, club]);
 
-  const text = `${count} Pals joined`;
-
   if (as === "p") {
-    return <p className={className}>{text}</p>;
+    return <p className={className}><Trans>{count} Pals joined</Trans></p>;
   }
-  return <span className={className}>{text}</span>;
+  return <span className={className}><Trans>{count} Pals joined</Trans></span>;
 };
 
 export const isClubOwned = (club: any, user: any, myClubs: any[]) => {
@@ -147,7 +146,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-amber-600 dark:text-amber-400 border border-amber-500/25 dark:border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
           <Activity size={11} className="shrink-0" />
-          <span>Running</span>
+          <span><Trans>Running</Trans></span>
         </span>
       );
     }
@@ -155,14 +154,14 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-purple-600 dark:text-purple-300 border border-purple-500/25 dark:border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
           <Trophy size={11} className="shrink-0" />
-          <span>Triathlon</span>
+          <span><Trans>Triathlon</Trans></span>
         </span>
       );
     }
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-[#EB712B] dark:text-[#ff8c42] border border-[#EB712B]/25 dark:border-white/15 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs">
         <Bike size={11} className="shrink-0" />
-        <span>Cycling</span>
+        <span><Trans>Cycling</Trans></span>
       </span>
     );
   };
@@ -203,7 +202,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
                   : "bg-surface/90 dark:bg-black/60 text-rose-600 dark:text-rose-400 border-rose-500/25 dark:border-rose-500/30"
               )}>
                 {isPublic ? <Globe size={10} className="shrink-0" /> : <Lock size={10} className="shrink-0" />}
-                <span>{isPublic ? 'Public' : 'Private'}</span>
+                <span>{isPublic ? <Trans>Public</Trans> : <Trans>Private</Trans>}</span>
               </span>
             </div>
 
@@ -213,7 +212,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
 
             <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-normal min-w-0 w-full">
               <MapPin size={12} className="text-[#EB712B] shrink-0" />
-              <span className="truncate">{club.location || "Location not specified"}</span>
+              <span className="truncate">{club.location || <Trans>Location not specified</Trans>}</span>
             </div>
 
             <ClubMemberCountText club={club} as="p" className="text-[11px] text-text-muted font-medium" />
@@ -221,7 +220,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
         </div>
 
         <span className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-[#EB712B]/10 hover:bg-[#EB712B] text-[#EB712B] hover:text-white font-bold text-xs tracking-wider uppercase transition-all shrink-0 self-end sm:self-center border border-[#EB712B]/20">
-          <span>{club.isManaged ? "Manage" : "View"}</span>
+          <span>{club.isManaged ? <Trans>Manage</Trans> : <Trans>View</Trans>}</span>
           <span>&rarr;</span>
         </span>
       </div>
@@ -267,7 +266,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
               title="You manage this club"
             >
               <ShieldCheck size={11} className="shrink-0 text-amber-500" />
-              <span>Owned</span>
+              <span><Trans>Owned</Trans></span>
             </span>
           )}
           <span className={cn(
@@ -277,7 +276,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
               : "bg-surface/90 dark:bg-black/60 text-rose-600 dark:text-rose-400 border-rose-500/25 dark:border-rose-500/30"
           )}>
             {isPublic ? <Globe size={11} className="shrink-0" /> : <Lock size={11} className="shrink-0" />}
-            <span>{isPublic ? 'Public' : 'Private'}</span>
+            <span>{isPublic ? <Trans>Public</Trans> : <Trans>Private</Trans>}</span>
           </span>
         </div>
       </div>
@@ -300,7 +299,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
             </h3>
             <div className="flex items-center gap-1.5 text-[11px] text-zinc-600 dark:text-white/80 font-normal min-w-0">
               <MapPin size={12} className="text-[#EB712B] shrink-0" />
-              <span className="truncate">{club.location || "Location not specified"}</span>
+              <span className="truncate">{club.location || <Trans>Location not specified</Trans>}</span>
             </div>
           </div>
         </div>
@@ -316,7 +315,7 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
           </div>
 
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#EB712B] group-hover:bg-[#ff8036] text-white text-xs font-bold transition-all shadow-sm group-hover:scale-105">
-            <span>{club.isManaged ? "Manage" : "View"}</span>
+            <span>{club.isManaged ? <Trans>Manage</Trans> : <Trans>View</Trans>}</span>
             <span>&rarr;</span>
           </span>
         </div>

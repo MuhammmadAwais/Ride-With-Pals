@@ -5,6 +5,8 @@ import { useGetUserNotificationQuery, useMarkAsReadNotificationsMutation } from 
 import { Bell, Loader2, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 const Notifications: React.FC = () => {
   const { data, isLoading } = useGetUserNotificationQuery();
@@ -17,23 +19,23 @@ const Notifications: React.FC = () => {
       await markAsRead({ notificationId: id }).unwrap();
     } catch (error) {
       console.error('Failed to mark as read', error);
-      toast.error('Failed to mark notification as read');
+      toast.error(t`Failed to mark notification as read`);
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Notifications — {APP_NAME}</title>
+        <title>{t`Notifications`} — {APP_NAME}</title>
       </Helmet>
       
       <div className="w-full max-w-4xl mx-auto p-4 md:p-8 animate-fade-in pb-24">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-text-main tracking-tight uppercase">
-              Notifications
+              <Trans>Notifications</Trans>
             </h1>
-            <p className="text-sm text-text-muted mt-1">Stay updated with your latest activity</p>
+            <p className="text-sm text-text-muted mt-1"><Trans>Stay updated with your latest activity</Trans></p>
           </div>
         </div>
 
@@ -44,8 +46,8 @@ const Notifications: React.FC = () => {
         ) : notifications.length === 0 ? (
           <div className="text-center py-20 bg-surface border border-border rounded-2xl">
             <Bell size={48} className="text-text-muted mx-auto mb-4 opacity-30" />
-            <h3 className="text-lg font-bold text-text-main">No notifications yet</h3>
-            <p className="text-sm text-text-muted mt-2">When you get notifications, they'll show up here.</p>
+            <h3 className="text-lg font-bold text-text-main"><Trans>No notifications yet</Trans></h3>
+            <p className="text-sm text-text-muted mt-2"><Trans>When you get notifications, they'll show up here.</Trans></p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -67,7 +69,7 @@ const Notifications: React.FC = () => {
                   
                   <div className="flex-1 min-w-0">
                     <h4 className={cn("text-base truncate", isUnread ? "font-bold text-text-main" : "font-medium text-text-muted")}>
-                      {notif.title || notif.message || notif.body || 'New Notification'}
+                      {notif.title || notif.message || notif.body || t`New Notification`}
                     </h4>
                     {notif.body && notif.title && (
                       <p className="text-sm text-text-muted mt-1 leading-relaxed">
@@ -86,7 +88,7 @@ const Notifications: React.FC = () => {
                         className="text-xs flex items-center gap-1.5 font-bold text-[#EB712B] bg-[#EB712B]/10 hover:bg-[#EB712B]/20 px-3 py-1.5 rounded-full transition-colors"
                       >
                         <CheckCircle2 size={14} />
-                        Mark as read
+                        <Trans>Mark as read</Trans>
                       </button>
                     )}
                   </div>

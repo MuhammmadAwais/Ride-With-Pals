@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import { 
   ArrowLeft, Share2, Bike, Award, CheckCircle2, Users, Search, X, Check, ShieldAlert, Bookmark, 
   MapPin, Gauge, Navigation, FileText, MessageSquare, Calendar, Download, ShieldCheck, Clock, 
@@ -1103,7 +1105,7 @@ const RideJoining = () => {
   const participantColumns: Column<ParticipantRow>[] = useMemo(() => [
     {
       key: "name",
-      label: "Athlete",
+      label: t`Athlete`,
       sortable: true,
       headerClass: "min-w-[220px]",
       render: (row) => (
@@ -1130,7 +1132,7 @@ const RideJoining = () => {
               {row.verified && (
                 <span
                   className="w-3.5 h-3.5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0"
-                  title="Verified Athlete"
+                  title={t`Verified Athlete`}
                 >
                   <Check size={8} />
                 </span>
@@ -1145,7 +1147,7 @@ const RideJoining = () => {
     },
     {
       key: "role",
-      label: "Role",
+      label: t`Role`,
       sortable: true,
       headerClass: "min-w-[110px]",
       render: (row) => {
@@ -1161,14 +1163,14 @@ const RideJoining = () => {
                 : "bg-hover border border-border text-text-muted"
             }`}
           >
-            {row.role}
+            {isHost ? <Trans>Host</Trans> : isLeader ? <Trans>Leader</Trans> : <Trans>Participant</Trans>}
           </span>
         );
       },
     },
     {
       key: "joinedDate",
-      label: "Joined",
+      label: t`Joined`,
       sortable: true,
       headerClass: "min-w-[130px]",
       render: (row) => (
@@ -1180,7 +1182,7 @@ const RideJoining = () => {
     },
     {
       key: "actions",
-      label: "Action",
+      label: t`Action`,
       sortable: false,
       headerClass: "text-right min-w-[70px]",
       cellClass: "text-right",
@@ -1190,8 +1192,8 @@ const RideJoining = () => {
             type="button"
             onClick={() => handleDirectMessage(row.id, row.name, row.profilePhoto)}
             className="w-8 h-8 rounded-xl bg-surface hover:bg-[#EB712B]/15 border border-border hover:border-[#EB712B]/40 text-text-muted hover:text-[#EB712B] flex items-center justify-center transition-all cursor-pointer shadow-xs"
-            title={`Direct message ${row.name}`}
-            aria-label={`Direct message ${row.name}`}
+            title={t`Direct message ${row.name}`}
+            aria-label={t`Direct message ${row.name}`}
           >
             <MessageSquare size={13} />
           </button>
@@ -1210,7 +1212,7 @@ const RideJoining = () => {
       <div className="min-h-screen text-text-main p-4 md:p-8 flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#EB712B]"></div>
-          <p className="mt-4 text-xs font-bold text-text-muted uppercase tracking-wider">Loading Activity Details...</p>
+          <p className="mt-4 text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Loading Activity Details...</Trans></p>
         </div>
       </div>
     );
@@ -1241,7 +1243,7 @@ const RideJoining = () => {
             {/* Start Marker */}
             <Marker position={startCoords} icon={createStartIcon()}>
               <Popup className="font-sans text-xs">
-                <span className="font-bold text-[#EB712B]">Start / Meeting Point:</span><br />
+                <span className="font-bold text-[#EB712B]"><Trans>Start / Meeting Point:</Trans></span><br />
                 {resolvedStartLocation || rideDetails.startLocation}
               </Popup>
             </Marker>
@@ -1249,7 +1251,7 @@ const RideJoining = () => {
             {/* Destination Marker */}
             <Marker position={endCoords} icon={createEndIcon()}>
               <Popup className="font-sans text-xs">
-                <span className="font-bold text-rose-500">Destination / Finish:</span><br />
+                <span className="font-bold text-rose-500"><Trans>Destination / Finish:</Trans></span><br />
                 {resolvedEndLocation || rideDetails.endLocation}
               </Popup>
             </Marker>
@@ -1271,7 +1273,7 @@ const RideJoining = () => {
               type="button"
               onClick={() => navigate(-1)}
               className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-surface/90 hover:bg-surface dark:bg-black/75 dark:hover:bg-black/90 backdrop-blur-md border border-border dark:border-white/15 text-text-main dark:text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer"
-              title="Back to Activities"
+              title={t`Back to Activities`}
               aria-label="Back"
             >
               <ArrowLeft size={18} />
@@ -1290,7 +1292,7 @@ const RideJoining = () => {
               <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider ${
                 surfaceBadge === "Road" ? "bg-sky-50 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-500/30" : "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
               }`}>
-                {surfaceBadge}
+                {surfaceBadge === "Road" ? <Trans>Road</Trans> : surfaceBadge === "Trail" ? <Trans>Trail</Trans> : surfaceBadge}
               </span>
             </div>
           </div>
@@ -1307,7 +1309,7 @@ const RideJoining = () => {
                   ? "bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1E1E1E] border-border dark:border-white/15 hover:border-[#EB712B]/40 text-text-main hover:shadow-2xl" 
                   : "bg-surface/90 hover:bg-surface dark:bg-black/80 dark:hover:bg-black/95 border-border dark:border-white/10 text-text-muted hover:text-text-main"
               )}
-              title={isJoined ? "Open Activity Group Chat" : "Join activity to unlock group chat room"}
+              title={isJoined ? t`Open Activity Group Chat` : t`Join activity to unlock group chat room`}
             >
               {isJoined ? (
                 <>
@@ -1316,17 +1318,17 @@ const RideJoining = () => {
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                   </span>
                   <MessageSquare size={15} className="text-[#EB712B] group-hover:scale-110 transition-transform shrink-0" />
-                  <span className="text-xs font-semibold tracking-wide text-text-main">Group Chat</span>
+                  <span className="text-xs font-semibold tracking-wide text-text-main"><Trans>Group Chat</Trans></span>
                   <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold uppercase tracking-wider hidden sm:inline-flex items-center">
-                    Live
+                    <Trans>Live</Trans>
                   </span>
                 </>
               ) : (
                 <>
                   <Lock size={13} className="text-text-muted shrink-0" />
-                  <span className="text-xs font-semibold text-text-muted">Group Chat</span>
+                  <span className="text-xs font-semibold text-text-muted"><Trans>Group Chat</Trans></span>
                   <span className="px-1.5 py-0.5 rounded-md bg-hover dark:bg-white/5 border border-border dark:border-white/10 text-[9px] font-bold text-text-muted uppercase tracking-wider hidden sm:inline">
-                    Locked
+                    <Trans>Locked</Trans>
                   </span>
                 </>
               )}
@@ -1337,7 +1339,7 @@ const RideJoining = () => {
               type="button"
               onClick={() => setIsShareModalOpen(true)}
               className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1E1E1E] backdrop-blur-xl border border-border dark:border-white/15 hover:border-[#EB712B]/40 text-text-muted hover:text-text-main flex items-center justify-center active:scale-95 transition-all shadow-lg cursor-pointer"
-              title="Share Activity"
+              title={t`Share Activity`}
               aria-label="Share"
             >
               <Share2 size={15} />
@@ -1353,7 +1355,7 @@ const RideJoining = () => {
                   ? "bg-[#EB712B]/15 border-[#EB712B]/50 text-[#EB712B] shadow-[#EB712B]/10" 
                   : "bg-surface/90 hover:bg-surface dark:bg-[#141414]/90 dark:hover:bg-[#1E1E1E] border-border dark:border-white/15 hover:border-[#EB712B]/40 text-text-muted hover:text-text-main"
               )}
-              title={isSaved ? "Saved" : "Save Activity"}
+              title={isSaved ? t`Saved` : t`Save Activity`}
               aria-label="Save"
             >
               <Bookmark size={15} fill={isSaved ? "#EB712B" : "none"} />
@@ -1365,19 +1367,19 @@ const RideJoining = () => {
             <div className="inline-flex flex-wrap items-center gap-3 sm:gap-4 px-4 py-2.5 rounded-2xl bg-surface/90 dark:bg-black/85 backdrop-blur-md border border-border dark:border-white/15 text-text-main dark:text-white shadow-2xl">
               <div className="flex items-center gap-1.5 text-xs font-bold">
                 <Navigation size={13} className="text-[#EB712B] shrink-0" />
-                <span className="text-text-muted dark:text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Dist:</span>
+                <span className="text-text-muted dark:text-gray-400 text-[10px] uppercase font-extrabold tracking-wider"><Trans>Dist:</Trans></span>
                 <span className="font-extrabold text-text-main dark:text-white">{rideDetails.distance}</span>
               </div>
               <div className="h-3 w-px bg-border dark:bg-white/20 hidden sm:block" />
               <div className="flex items-center gap-1.5 text-xs font-bold">
                 <Gauge size={13} className="text-[#EB712B] shrink-0" />
-                <span className="text-text-muted dark:text-gray-400 text-[10px] uppercase font-extrabold tracking-wider">Pace:</span>
+                <span className="text-text-muted dark:text-gray-400 text-[10px] uppercase font-extrabold tracking-wider"><Trans>Pace:</Trans></span>
                 <span className="font-extrabold text-text-main dark:text-white">{rideDetails.avgPace}</span>
               </div>
               <div className="h-3 w-px bg-border dark:bg-white/20 hidden sm:block" />
               <div className="flex items-center gap-1.5 text-xs font-bold">
                 <Users size={13} className="text-[#EB712B] shrink-0" />
-                <span className="font-extrabold text-text-main dark:text-white">{rideDetails.participantsCount} Joined</span>
+                <span className="font-extrabold text-text-main dark:text-white">{rideDetails.participantsCount} <Trans>Joined</Trans></span>
               </div>
             </div>
           </div>
@@ -1412,13 +1414,13 @@ const RideJoining = () => {
                   ) : (
                     <Compass size={14} className="text-emerald-400 shrink-0" />
                   )}
-                  <span>{surfaceBadge}</span>
+                  <span>{surfaceBadge.toLowerCase() === "road" ? <Trans>Road</Trans> : surfaceBadge.toLowerCase() === "trail" ? <Trans>Trail</Trans> : surfaceBadge}</span>
                 </div>
 
                 {/* 2. Category Badge */}
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-surface border border-border text-[11px] font-black uppercase tracking-wider text-text-muted shadow-xs">
                   <Users size={14} className="text-indigo-400 shrink-0" />
-                  <span>{categoryBadge || "Social"}</span>
+                  <span>{(categoryBadge || "Social") === "Social" ? <Trans>Social</Trans> : (categoryBadge || "Social") === "Race" ? <Trans>Race</Trans> : categoryBadge}</span>
                 </div>
 
                 {/* 3. Sport Type Badge */}
@@ -1442,19 +1444,19 @@ const RideJoining = () => {
                   ) : (
                     <Lock size={14} className="text-rose-400 shrink-0" />
                   )}
-                  <span>{rideDetails.isPublic ? "Public" : "Private"}</span>
+                  <span>{rideDetails.isPublic ? <Trans>Public</Trans> : <Trans>Private</Trans>}</span>
                 </div>
 
                 {/* 5. Paid Activity Badge */}
                 {isPaymentRequired ? (
                   <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-[11px] font-black uppercase tracking-wider text-emerald-400 shadow-xs">
                     <CreditCard size={14} className="text-emerald-400 shrink-0" />
-                    <span>Paid {priceFormatted ? `(${priceFormatted})` : ''}</span>
+                    <span><Trans>Paid</Trans> {priceFormatted ? `(${priceFormatted})` : ''}</span>
                   </div>
                 ) : (
                   <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface border border-border text-[11px] font-black uppercase tracking-wider text-text-muted shadow-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    <span>Free Entry</span>
+                    <span><Trans>Free Entry</Trans></span>
                   </div>
                 )}
               </div>
@@ -1468,7 +1470,7 @@ const RideJoining = () => {
               <div className="flex flex-wrap items-center gap-y-3 gap-x-5 text-sm font-semibold text-text-muted pt-1">
                 <div className="inline-flex items-center gap-2.5">
                   <Building2 size={20} className="text-[#EB712B] shrink-0" />
-                  <span className="text-xs uppercase font-extrabold tracking-wider text-text-muted">Club:</span>
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-text-muted"><Trans>Club:</Trans></span>
                   <span 
                     className="text-text-main font-bold hover:text-[#EB712B] transition-colors cursor-pointer"
                     onClick={() => rideDetails.clubId && navigate(`/view/userside/club/${rideDetails.clubId}`)}
@@ -1504,7 +1506,7 @@ const RideJoining = () => {
                   <div className="flex items-center gap-2">
                     <Compass size={16} className="text-[#EB712B] shrink-0" />
                     <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-main">
-                      Route & Waypoints
+                      <Trans>Route & Waypoints</Trans>
                     </h3>
                   </div>
                   {rideDetails.gpxFile && (
@@ -1512,10 +1514,10 @@ const RideJoining = () => {
                       type="button"
                       onClick={handleDownloadGpx}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-hover hover:bg-emerald-500/10 border border-border hover:border-emerald-500/30 text-emerald-400 text-xs font-bold transition-all cursor-pointer"
-                      title="Download GPX route"
+                      title={t`Download GPX route`}
                     >
                       <Download size={13} />
-                      <span>Download GPX</span>
+                      <span><Trans>Download GPX</Trans></span>
                     </button>
                   )}
                 </div>
@@ -1532,7 +1534,7 @@ const RideJoining = () => {
                     <div className="flex-1 min-w-0">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                         <MapPin size={12} className="text-[#EB712B]" />
-                        <span>Start / Meeting Point</span>
+                        <span><Trans>Start / Meeting Point</Trans></span>
                       </span>
                       <p className="text-xs sm:text-sm font-semibold text-text-main mt-1 leading-relaxed">
                         {resolvedStartLocation || rideDetails.startLocation}
@@ -1548,7 +1550,7 @@ const RideJoining = () => {
                     <div className="flex-1 min-w-0">
                       <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
                         <MapPin size={12} className="text-rose-500" />
-                        <span>Destination / Finish Point</span>
+                        <span><Trans>Destination / Finish Point</Trans></span>
                       </span>
                       <p className="text-xs sm:text-sm font-semibold text-text-main mt-1 leading-relaxed">
                         {resolvedEndLocation || rideDetails.endLocation}
@@ -1567,7 +1569,7 @@ const RideJoining = () => {
                   </div>
                   <div className="min-w-0 space-y-0.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-text-muted">
-                      Total Distance
+                      <Trans>Total Distance</Trans>
                     </span>
                     <p className="text-lg sm:text-xl font-black text-text-main tracking-tight truncate leading-tight">
                       {rideDetails.distance}
@@ -1582,7 +1584,7 @@ const RideJoining = () => {
                   </div>
                   <div className="min-w-0 space-y-0.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-text-muted">
-                      Avg Pace
+                      <Trans>Avg Pace</Trans>
                     </span>
                     <p className="text-lg sm:text-xl font-black text-text-main tracking-tight truncate leading-tight">
                       {rideDetails.avgPace}
@@ -1597,10 +1599,10 @@ const RideJoining = () => {
                   </div>
                   <div className="min-w-0 space-y-0.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-text-muted">
-                      Elevation & Slope
+                      <Trans>Elevation & Slope</Trans>
                     </span>
                     <p className="text-lg sm:text-xl font-black text-text-main tracking-tight truncate leading-tight">
-                      {rideDetails.elevationGain || (rideDetails.maxSlope ? `Slope ${rideDetails.maxSlope}` : "Rolling Terrain")}
+                      {rideDetails.elevationGain || (rideDetails.maxSlope ? `${t`Slope`} ${rideDetails.maxSlope}` : <Trans>Rolling Terrain</Trans>)}
                     </p>
                   </div>
                 </div>
@@ -1611,13 +1613,14 @@ const RideJoining = () => {
 
           {/* Right Column: Join Activity Card + Group Chat Card */}
           <div className="lg:col-span-4 flex flex-col justify-between gap-6">
-            
-            {/* Activity Participation Card (No 'Open' badge, professional CTA, Leave handler) */}
+                     {/* Activity Participation Card (No 'Open' badge, professional CTA, Leave handler) */}
             <div className="bg-surface border border-border rounded-3xl p-6 sm:p-7 space-y-5 shadow-sm relative overflow-hidden">
               <div className="space-y-0.5 pb-3 border-b border-border/60">
-                <span className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">Participation</span>
+                <span className="text-[9px] font-extrabold uppercase tracking-wider text-text-muted">
+                  <Trans>Participation</Trans>
+                </span>
                 <h3 className="text-base font-black text-text-main tracking-tight uppercase">
-                  {isJoined ? "You are Registered" : "Join Activity"}
+                  {isJoined ? <Trans>You are Registered</Trans> : <Trans>Join Activity</Trans>}
                 </h3>
               </div>
 
@@ -1625,7 +1628,7 @@ const RideJoining = () => {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold">
                     <CheckCircle2 size={16} className="shrink-0" />
-                    <span>You are registered for this activity</span>
+                    <span><Trans>You are registered for this activity</Trans></span>
                   </div>
 
                   <button
@@ -1639,7 +1642,7 @@ const RideJoining = () => {
                     ) : (
                       <>
                         <LogOut size={14} />
-                        <span>Leave Activity</span>
+                        <span><Trans>Leave Activity</Trans></span>
                       </>
                     )}
                   </button>
@@ -1649,11 +1652,11 @@ const RideJoining = () => {
                   {isPaymentRequired && (
                     <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-text-muted">Activity Fee</span>
-                        <span className="text-base font-black text-emerald-400 tracking-tight">{priceFormatted || "Paid Entry"}</span>
+                        <span className="text-xs font-bold text-text-muted"><Trans>Activity Fee</Trans></span>
+                        <span className="text-base font-black text-emerald-400 tracking-tight">{priceFormatted || <Trans>Paid Entry</Trans>}</span>
                       </div>
                       <p className="text-[11px] text-text-muted leading-tight font-medium">
-                        Online payment required. Processed securely via Stripe Checkout. Spot confirmed instantly upon completion.
+                        <Trans>Online payment required. Processed securely via Stripe Checkout. Spot confirmed instantly upon completion.</Trans>
                       </p>
                     </div>
                   )}
@@ -1667,23 +1670,23 @@ const RideJoining = () => {
                       className="w-4 h-4 rounded border-border text-[#EB712B] focus:ring-[#EB712B] cursor-pointer mt-0.5"
                     />
                     <label htmlFor="accept-terms-checkbox" className="text-xs text-text-muted font-medium leading-snug cursor-pointer select-none">
-                      I acknowledge and accept the{" "}
+                      <Trans>I acknowledge and accept the</Trans>{" "}
                       <button 
                         type="button" 
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowTermsModal(true); }}
                         className="text-[#EB712B] font-extrabold underline hover:text-[#d66525] cursor-pointer"
                       >
-                        Terms & Safety Guidelines
+                        <Trans>Terms & Safety Guidelines</Trans>
                       </button>
                       .
                     </label>
                   </div>
 
                   <button 
-                    type="button"
+                    type="button" 
                     onClick={() => {
                       if (!acceptTerms) {
-                        toast.error("Please read and accept the Terms & Safety Guidelines before joining.");
+                        toast.error(t`Please read and accept the Terms & Safety Guidelines before joining.`);
                         return;
                       }
                       handleJoinClick();
@@ -1696,12 +1699,12 @@ const RideJoining = () => {
                     ) : isPaymentRequired ? (
                       <>
                         <CreditCard size={15} />
-                        <span>Pay & Join Activity {priceFormatted ? `(${priceFormatted})` : ''}</span>
+                        <span><Trans>Pay & Join Activity</Trans> {priceFormatted ? `(${priceFormatted})` : ''}</span>
                       </>
                     ) : (
                       <>
                         <CheckCircle2 size={15} />
-                        <span>Join Activity</span>
+                        <span><Trans>Join Activity</Trans></span>
                       </>
                     )}
                   </button>
@@ -1714,28 +1717,28 @@ const RideJoining = () => {
                   type="button"
                   onClick={handleAddToCalendar}
                   className="flex-1 py-2 px-2.5 rounded-xl bg-hover hover:bg-border border border-border text-text-muted hover:text-text-main flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer"
-                  title="Add to Google Calendar"
+                  title={t`Add to Google Calendar`}
                 >
                   <GoogleCalendarIcon size={14} />
-                  <span>Calendar</span>
+                  <span><Trans>Calendar</Trans></span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleDownloadGpx}
                   className="flex-1 py-2 px-2.5 rounded-xl bg-hover hover:bg-emerald-500/10 border border-border hover:border-emerald-500/30 text-emerald-400 flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer"
-                  title="Download GPX Route"
+                  title={t`Download GPX Route`}
                 >
                   <Download size={13} />
-                  <span>GPX Route</span>
+                  <span><Trans>GPX Route</Trans></span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIsShareModalOpen(true)}
                   className="p-2 rounded-xl bg-hover hover:bg-[#EB712B]/10 border border-border hover:border-[#EB712B]/30 text-text-muted hover:text-[#EB712B] flex items-center justify-center transition-all cursor-pointer shrink-0"
-                  title="Share Activity"
-                  aria-label="Share"
+                  title={t`Share Activity`}
+                  aria-label={t`Share`}
                 >
                   <Share2 size={14} />
                 </button>
@@ -1749,15 +1752,15 @@ const RideJoining = () => {
                   <div className="flex items-center gap-2">
                     <MessageSquare size={16} className="text-[#EB712B] shrink-0" />
                     <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-main">
-                      Group Chat
+                      <Trans>Group Chat</Trans>
                     </h3>
                   </div>
                 </div>
 
                 <p className="text-xs text-text-muted leading-relaxed font-medium">
                   {isJoined 
-                    ? "Connect in real-time with the organizer and fellow participants to coordinate rendezvous point, pace, and equipment."
-                    : "Group discussion is reserved for registered athletes. Join this activity to unlock the conversation room."}
+                    ? <Trans>Connect in real-time with the organizer and fellow participants to coordinate rendezvous point, pace, and equipment.</Trans>
+                    : <Trans>Group discussion is reserved for registered athletes. Join this activity to unlock the conversation room.</Trans>}
                 </p>
               </div>
 
@@ -1773,12 +1776,12 @@ const RideJoining = () => {
                 {isJoined ? (
                   <>
                     <MessageSquare size={14} />
-                    <span>Open Group Chat</span>
+                    <span><Trans>Open Group Chat</Trans></span>
                   </>
                 ) : (
                   <>
                     <Lock size={13} />
-                    <span>Join Activity to Chat</span>
+                    <span><Trans>Join Activity to Chat</Trans></span>
                   </>
                 )}
               </button>
@@ -1806,7 +1809,7 @@ const RideJoining = () => {
               <div className="flex items-center gap-2.5 pb-2.5 border-b border-border/60">
                 <FileText size={17} className="text-[#EB712B] shrink-0" />
                 <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-text-main">
-                  Activity Overview & Guidelines
+                  <Trans>Activity Overview & Guidelines</Trans>
                 </h3>
               </div>
               <p className="text-sm text-text-muted leading-relaxed font-medium whitespace-pre-line pl-0.5">
@@ -1824,10 +1827,10 @@ const RideJoining = () => {
                 <div className="flex items-center gap-2.5">
                   <Users size={17} className="text-[#EB712B] shrink-0" />
                   <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-text-main">
-                    Registered Participants
+                    <Trans>Registered Participants</Trans>
                   </h3>
                   <span className="px-2.5 py-0.5 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/30 text-[#EB712B] text-[10px] font-extrabold">
-                    {activeParticipants.length} Athletes
+                    {activeParticipants.length} <Trans>Athletes</Trans>
                   </span>
                 </div>
 
@@ -1843,7 +1846,7 @@ const RideJoining = () => {
                         : "text-text-muted hover:text-text-main"
                     )}
                   >
-                    All ({activeParticipants.length})
+                    <Trans>All</Trans> ({activeParticipants.length})
                   </button>
                   <button
                     type="button"
@@ -1855,7 +1858,7 @@ const RideJoining = () => {
                         : "text-text-muted hover:text-text-main"
                     )}
                   >
-                    Leaders ({leaderCount})
+                    <Trans>Leaders</Trans> ({leaderCount})
                   </button>
                   <button
                     type="button"
@@ -1867,7 +1870,7 @@ const RideJoining = () => {
                         : "text-text-muted hover:text-text-main"
                     )}
                   >
-                    Participants ({participantCount})
+                    <Trans>Participants</Trans> ({participantCount})
                   </button>
                 </div>
               </div>
@@ -1878,7 +1881,7 @@ const RideJoining = () => {
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={14} />
                   <input
                     type="text"
-                    placeholder="Search roster by athlete name, @handle, or email..."
+                    placeholder={t`Search roster by athlete name, @handle, or email...`}
                     value={participantSearch}
                     onChange={(e) => setParticipantSearch(e.target.value)}
                     className="w-full bg-surface hover:bg-hover border border-border/80 focus:border-[#EB712B]/60 pl-9 pr-9 py-2.5 rounded-xl text-xs font-semibold text-text-main placeholder:text-text-muted placeholder:font-normal focus:outline-none transition-all shadow-xs"
@@ -1888,7 +1891,7 @@ const RideJoining = () => {
                       type="button"
                       onClick={() => setParticipantSearch("")}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
-                      aria-label="Clear search"
+                      aria-label={t`Clear search`}
                     >
                       <X size={13} />
                     </button>
@@ -1904,7 +1907,7 @@ const RideJoining = () => {
                     }}
                     className="px-3.5 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border/80 text-text-muted hover:text-text-main text-xs font-bold transition-all cursor-pointer shrink-0 shadow-xs"
                   >
-                    Reset
+                    <Trans>Reset</Trans>
                   </button>
                 )}
               </div>
@@ -1918,10 +1921,10 @@ const RideJoining = () => {
                 className="!rounded-xl border border-border/80 shadow-xs"
                 emptyMessage={
                   participantSearch
-                    ? `No participants matched "${participantSearch}".`
+                    ? t`No participants matched "${participantSearch}".`
                     : participantRoleFilter !== "all"
-                    ? `No participants found in category "${participantRoleFilter}".`
-                    : "No registered participants yet."
+                    ? t`No participants found in this category.`
+                    : t`No registered participants yet.`
                 }
               />
             </div>
@@ -1936,7 +1939,7 @@ const RideJoining = () => {
               <div className="flex items-center gap-2 pb-2.5 border-b border-border/60">
                 <Users size={15} className="text-[#EB712B] shrink-0" />
                 <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-main">
-                  Activity Organizer
+                  <Trans>Activity Organizer</Trans>
                 </h3>
               </div>
 
@@ -1956,7 +1959,9 @@ const RideJoining = () => {
                     <div className="flex items-center gap-2 text-[11px] font-semibold text-text-muted truncate">
                       <span className="text-[#EB712B] font-bold">{rideDetails.hostUsername}</span>
                       <span>•</span>
-                      <span className="text-[10px] uppercase font-extrabold text-text-muted">Host</span>
+                      <span className="text-[10px] uppercase font-extrabold text-text-muted">
+                        <Trans>Host</Trans>
+                      </span>
                     </div>
                     {rideDetails.hostEmail && (
                       <p className="text-[11px] text-text-muted truncate flex items-center gap-1.5 pt-0.5">
@@ -1971,10 +1976,10 @@ const RideJoining = () => {
                   type="button"
                   onClick={() => handleDirectMessage(rideDetails.hostId, rideDetails.host, rideDetails.hostAvatar)}
                   className="px-3.5 py-2.5 rounded-xl bg-hover hover:bg-[#EB712B]/15 border border-border hover:border-[#EB712B]/40 text-text-muted hover:text-[#EB712B] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-xs"
-                  title="Message Host"
+                  title={t`Message Host`}
                 >
                   <MessageSquare size={13} />
-                  <span>Message</span>
+                  <span><Trans>Message</Trans></span>
                 </button>
               </div>
             </div>
@@ -1988,7 +1993,7 @@ const RideJoining = () => {
                 <div className="flex items-center gap-2 pb-2.5 border-b border-border/60">
                   <Award size={15} className="text-[#EB712B] shrink-0" />
                   <h3 className="text-xs font-extrabold uppercase tracking-wider text-text-main">
-                    Ride Leaders ({rideDetails.leaders.length})
+                    <Trans>Ride Leaders</Trans> ({rideDetails.leaders.length})
                   </h3>
                 </div>
 
@@ -2028,7 +2033,7 @@ const RideJoining = () => {
                         type="button"
                         onClick={() => handleDirectMessage(leader.id, leader.name, leader.profilePhoto)}
                         className="p-2 rounded-xl bg-hover hover:bg-[#EB712B]/15 border border-border hover:border-[#EB712B]/40 text-text-muted hover:text-[#EB712B] transition-all cursor-pointer shrink-0"
-                        title={`Message ${leader.name}`}
+                        title={t`Message ${leader.name}`}
                       >
                         <MessageSquare size={13} />
                       </button>
@@ -2068,13 +2073,15 @@ const RideJoining = () => {
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="flex items-center gap-2.5">
                 <FileText className="text-[#EB712B]" size={20} />
-                <h3 className="font-extrabold text-base md:text-lg text-text-main">Terms & Safety Guidelines</h3>
+                <h3 className="font-extrabold text-base md:text-lg text-text-main">
+                  <Trans>Terms & Safety Guidelines</Trans>
+                </h3>
               </div>
               <button 
-                type="button"
+                type="button" 
                 onClick={() => setShowTermsModal(false)}
                 className="w-9 h-9 rounded-xl bg-hover border border-border flex items-center justify-center text-text-muted hover:text-text-main cursor-pointer"
-                aria-label="Close modal"
+                aria-label={t`Close modal`}
               >
                 <X size={16} />
               </button>
@@ -2082,20 +2089,28 @@ const RideJoining = () => {
 
             <div className="space-y-4 text-xs md:text-sm text-text-muted leading-relaxed max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               <div>
-                <h4 className="font-extrabold text-text-main mb-1">1. Mandatory Safety & Gear Policy</h4>
-                <p>Helmets and proper sports apparel are required for all cycling and high-velocity activities. Participants must inspect their gear prior to departure.</p>
+                <h4 className="font-extrabold text-text-main mb-1">
+                  <Trans>1. Mandatory Safety & Gear Policy</Trans>
+                </h4>
+                <p><Trans>Helmets and proper sports apparel are required for all cycling and high-velocity activities. Participants must inspect their gear prior to departure.</Trans></p>
               </div>
               <div>
-                <h4 className="font-extrabold text-text-main mb-1">2. Traffic Laws & Environmental Respect</h4>
-                <p>All riders and runners must follow traffic signs, signal properly, and respect local pedestrians and trail etiquette at all times.</p>
+                <h4 className="font-extrabold text-text-main mb-1">
+                  <Trans>2. Traffic Laws & Environmental Respect</Trans>
+                </h4>
+                <p><Trans>All riders and runners must follow traffic signs, signal properly, and respect local pedestrians and trail etiquette at all times.</Trans></p>
               </div>
               <div>
-                <h4 className="font-extrabold text-text-main mb-1">3. Risk Awareness & Personal Responsibility</h4>
-                <p>By registering for this event, you understand the aerobic and environmental challenges of outdoor activity and assume personal responsibility.</p>
+                <h4 className="font-extrabold text-text-main mb-1">
+                  <Trans>3. Risk Awareness & Personal Responsibility</Trans>
+                </h4>
+                <p><Trans>By registering for this event, you understand the aerobic and environmental challenges of outdoor activity and assume personal responsibility.</Trans></p>
               </div>
               <div>
-                <h4 className="font-extrabold text-text-main mb-1">4. Community Code of Conduct</h4>
-                <p>Ride With Pals maintains a zero-tolerance policy for unsportsmanlike behavior, harassment, or unsafe reckless maneuvers.</p>
+                <h4 className="font-extrabold text-text-main mb-1">
+                  <Trans>4. Community Code of Conduct</Trans>
+                </h4>
+                <p><Trans>Ride With Pals maintains a zero-tolerance policy for unsportsmanlike behavior, harassment, or unsafe reckless maneuvers.</Trans></p>
               </div>
             </div>
 
@@ -2105,18 +2120,18 @@ const RideJoining = () => {
                 onClick={() => setShowTermsModal(false)}
                 className="px-5 py-2.5 rounded-xl border border-border bg-hover font-bold text-xs text-text-muted hover:text-text-main cursor-pointer"
               >
-                Dismiss
+                <Trans>Dismiss</Trans>
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setAcceptTerms(true);
                   setShowTermsModal(false);
-                  toast.success("Safety guidelines accepted!");
+                  toast.success(t`Safety guidelines accepted!`);
                 }}
                 className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#d66525] font-extrabold text-xs text-white cursor-pointer shadow-lg shadow-orange-500/20"
               >
-                Accept & Continue
+                <Trans>Accept & Continue</Trans>
               </button>
             </div>
           </div>
@@ -2136,14 +2151,18 @@ const RideJoining = () => {
             {/* Drawer Header */}
             <div className="p-6 border-b border-border flex items-center justify-between shrink-0">
               <div className="space-y-0.5">
-                <h3 className="font-extrabold text-text-main text-base tracking-tight">Registered Athletes</h3>
-                <p className="text-[10px] text-text-muted font-medium">Activity roster ({activeParticipants.length} registered)</p>
+                <h3 className="font-extrabold text-text-main text-base tracking-tight">
+                  <Trans>Registered Athletes</Trans>
+                </h3>
+                <p className="text-[10px] text-text-muted font-medium">
+                  <Trans>Activity roster</Trans> ({activeParticipants.length} <Trans>registered</Trans>)
+                </p>
               </div>
               <button 
-                type="button"
+                type="button" 
                 onClick={() => setIsRosterOpen(false)}
                 className="w-10 h-10 rounded-2xl bg-hover hover:bg-border border border-border flex items-center justify-center text-text-muted hover:text-text-main transition-all cursor-pointer"
-                aria-label="Close roster"
+                aria-label={t`Close roster`}
               >
                 <X size={16} />
               </button>
@@ -2154,7 +2173,7 @@ const RideJoining = () => {
               <Search className="absolute left-7 top-1/2 transform -translate-y-1/2 text-text-muted" size={14} />
               <input 
                 type="text" 
-                placeholder="Search athlete by name or @username..." 
+                placeholder={t`Search athlete by name or @username...`} 
                 value={searchQuery} 
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-hover border border-border pl-10 pr-4 py-3 rounded-2xl text-xs font-bold text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/40 transition-colors"
@@ -2209,7 +2228,7 @@ const RideJoining = () => {
                         handleDirectMessage(user.id, user.name, user.profilePhoto);
                       }}
                       className="p-2 rounded-xl bg-surface hover:bg-[#EB712B]/15 border border-border hover:border-[#EB712B]/40 text-text-muted hover:text-[#EB712B] transition-all cursor-pointer shrink-0"
-                      title={`Message ${user.name}`}
+                      title={t`Message ${user.name}`}
                     >
                       <MessageSquare size={13} />
                     </button>
@@ -2218,7 +2237,9 @@ const RideJoining = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center space-y-3">
                   <ShieldAlert size={32} className="text-text-muted" />
-                  <p className="text-xs font-bold text-text-muted">No matching athletes found</p>
+                  <p className="text-xs font-bold text-text-muted">
+                    <Trans>No matching athletes found</Trans>
+                  </p>
                 </div>
               )}
             </div>
@@ -2226,15 +2247,17 @@ const RideJoining = () => {
             {/* Drawer Footer */}
             <div className="p-5 border-t border-border bg-hover/40 flex items-center justify-between shrink-0">
               <div className="flex flex-col">
-                <span className="text-[8px] font-extrabold text-text-muted uppercase tracking-wider">Event Operated By</span>
+                <span className="text-[8px] font-extrabold text-text-muted uppercase tracking-wider">
+                  <Trans>Event Operated By</Trans>
+                </span>
                 <span className="text-xs font-extrabold text-text-main mt-0.5">{rideDetails.host}</span>
               </div>
               <button 
-                type="button"
+                type="button" 
                 onClick={() => setIsRosterOpen(false)}
                 className="bg-[#EB712B] hover:bg-[#d66525] text-white px-5 py-3 rounded-xl font-extrabold text-[10px] tracking-wider uppercase transition-all cursor-pointer shadow-md"
               >
-                Close Directory
+                <Trans>Close Directory</Trans>
               </button>
             </div>
           </div>
