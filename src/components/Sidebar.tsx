@@ -197,7 +197,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user     = useAppSelector((s) => s.auth.user);
-  const { data: userInfo } = useUserInfoQuery();
+  const { data: userInfo } = useUserInfoQuery(undefined, {
+    skip: !user?.token || !user?.isAthleteProfile,
+  });
   const activeUser = userInfo || user;
   const myClubs  = useAppSelector((s) => s.club.myClubs);
   const { isDark } = useTheme();

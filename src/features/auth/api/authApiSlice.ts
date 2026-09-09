@@ -102,23 +102,25 @@ export const authApiSlice = apiSlice.injectEndpoints({
           dispatch(setUser(user));
           dispatch(bypassOtpSuccess());
           
-          // Fetch full user info behind the scenes to populate missing profile fields
-          try {
-            const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
-            const hasProfileFromInfo = Boolean(userInfoResult.isAthleteProfile);
-            user = {
-              ...user,
-              isAthleteProfile: hasProfileFromInfo,
-              role: hasProfileFromInfo ? (user.role || 'athlete') : undefined,
-              fullName: userInfoResult.fullName,
-              profileImage: userInfoResult.profileImage || undefined,
-              dob: userInfoResult.dob || undefined,
-              country: userInfoResult.country || undefined,
-              phone: userInfoResult.phone || undefined
-            };
-            dispatch(setUser(user));
-          } catch (e) {
-            console.warn('Failed to fetch full user info during login', e);
+          // Only fetch full user info behind the scenes if athlete profile already exists
+          if (hasProfile) {
+            try {
+              const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
+              const hasProfileFromInfo = Boolean(userInfoResult.isAthleteProfile);
+              user = {
+                ...user,
+                isAthleteProfile: hasProfileFromInfo,
+                role: hasProfileFromInfo ? (user.role || 'athlete') : undefined,
+                fullName: userInfoResult.fullName,
+                profileImage: userInfoResult.profileImage || undefined,
+                dob: userInfoResult.dob || undefined,
+                country: userInfoResult.country || undefined,
+                phone: userInfoResult.phone || undefined
+              };
+              dispatch(setUser(user));
+            } catch (e) {
+              console.warn('Failed to fetch full user info during login', e);
+            }
           }
         } catch (err) {}
       },
@@ -223,22 +225,25 @@ export const authApiSlice = apiSlice.injectEndpoints({
           dispatch(setUser(user));
           dispatch(bypassOtpSuccess());
           
-          try {
-            const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
-            const hasProfileFromInfo = Boolean(userInfoResult.isAthleteProfile);
-            user = {
-              ...user,
-              isAthleteProfile: hasProfileFromInfo,
-              role: hasProfileFromInfo ? (user.role || 'athlete') : undefined,
-              fullName: userInfoResult.fullName,
-              profileImage: userInfoResult.profileImage || undefined,
-              dob: userInfoResult.dob || undefined,
-              country: userInfoResult.country || undefined,
-              phone: userInfoResult.phone || undefined
-            };
-            dispatch(setUser(user));
-          } catch (e) {
-            console.warn('Failed to fetch full user info during firebase login', e);
+          // Only fetch full user info behind the scenes if athlete profile already exists
+          if (hasProfile) {
+            try {
+              const userInfoResult = await dispatch(authApiSlice.endpoints.userInfo.initiate()).unwrap();
+              const hasProfileFromInfo = Boolean(userInfoResult.isAthleteProfile);
+              user = {
+                ...user,
+                isAthleteProfile: hasProfileFromInfo,
+                role: hasProfileFromInfo ? (user.role || 'athlete') : undefined,
+                fullName: userInfoResult.fullName,
+                profileImage: userInfoResult.profileImage || undefined,
+                dob: userInfoResult.dob || undefined,
+                country: userInfoResult.country || undefined,
+                phone: userInfoResult.phone || undefined
+              };
+              dispatch(setUser(user));
+            } catch (e) {
+              console.warn('Failed to fetch full user info during firebase login', e);
+            }
           }
         } catch (err) {}
       },

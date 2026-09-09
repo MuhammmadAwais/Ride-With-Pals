@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { toast } from "sonner";
 import { backendApi } from "@/api/backendApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import { setAthleteProfileSuccess } from "@/features/auth/slices/authSlice";
 import { useUserInfoQuery } from "@/features/auth/api/authApiSlice";
 import { WORLD_COUNTRIES } from "@/lib/countries";
@@ -13,7 +14,10 @@ const AthleteProfileForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const { data: userInfo, isLoading: isFetchingUserInfo } = useUserInfoQuery();
+  const user = useAppSelector((s) => s.auth.user);
+  const { data: userInfo, isLoading: isFetchingUserInfo } = useUserInfoQuery(undefined, {
+    skip: !user?.isAthleteProfile,
+  });
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);

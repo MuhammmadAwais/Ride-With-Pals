@@ -46,8 +46,12 @@ const customBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryEr
     console.groupEnd();
 
     if (result.error.status === 401) {
-      // If a 401 response is caught, automatically trigger a logout cleanup action
-      api.dispatch(logout());
+      // Don't auto-logout for auth endpoints or userInfo query
+      // (e.g. invalid login credentials or missing athlete profile on new accounts)
+      const ignoredEndpoints = ['login', 'firebaseLogin', 'signup', 'validateOtp', 'forgotPassword', 'changePassword', 'userInfo'];
+      if (!ignoredEndpoints.includes(api.endpoint || '')) {
+        api.dispatch(logout());
+      }
     } else if (result.error.status === 500) {
       // If a 500 error occurs, catch the payload and issue an error notice using the sonner library
       toast.error('Internal Server Error. Please try again later.');

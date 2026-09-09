@@ -92,19 +92,17 @@ const AuthSubscription = () => {
     setSubscribingId(plan.id);
     try {
       sessionStorage.setItem('selected_subscription_plan', String(plan.id || 'paid'));
-      const origin = window.location.origin;
       const res = await subscribeToAnyPlan({ 
-        planId: plan.id,
-        successUrl: `${origin}/select-role`,
-        cancelUrl: window.location.href,
+        planId: Number(plan.id),
       }).unwrap();
-      if (res?.checkoutUrl && typeof res.checkoutUrl === 'string' && res.checkoutUrl.startsWith('http')) {
-        window.location.href = res.checkoutUrl; // Redirect to Stripe
+      const checkoutUrl = res?.checkoutUrl || (res as any)?.url || (res as any)?.sessionUrl;
+      if (typeof checkoutUrl === 'string' && checkoutUrl.startsWith('http')) {
+        window.location.assign(checkoutUrl); // Redirect to Stripe
       } else {
         toast.error("Could not initiate checkout.");
       }
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to start checkout");
+      toast.error(err?.data?.message || err?.message || "Failed to start checkout");
     } finally {
       setSubscribingId(null);
     }
