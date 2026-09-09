@@ -8,6 +8,21 @@ export const HeroSection: React.FC = () => {
       data-framer-name="Hero Section"
       id="home"
     >
+      <style>{`
+        .rwp-hero-title {
+          max-width: 900px !important;
+          margin: 0 auto !important;
+          line-height: 1.12 !important;
+        }
+        .rwp-hero-br {
+          display: block;
+        }
+        @media (max-width: 600px) {
+          .rwp-hero-br {
+            display: none;
+          }
+        }
+      `}</style>
       <div className="framer-tvpdyg" data-framer-name="Container">
         <div
           className="framer-1feyz7p"
@@ -65,20 +80,23 @@ export const HeroSection: React.FC = () => {
               className="framer-n2cpvq"
               data-selection="true"
               data-framer-component-type="RichTextContainer"
-              style={{ transform: "none" } as any}
+              style={{ transform: "none", maxWidth: "900px", width: "100%" } as any}
             >
               <h1
-                className="framer-text framer-styles-preset-1s297ft"
+                className="framer-text framer-styles-preset-1s297ft rwp-hero-title"
                 data-styles-preset="SqFjj1czL"
                 style={
                   {
                     "--framer-text-alignment": "center",
                     "--framer-text-color":
                       "var(--token-743cf692-1243-473f-93be-c36de257addf, rgb(255, 255, 255))",
+                    maxWidth: "900px",
+                    margin: "0 auto",
+                    lineHeight: "1.12",
                   } as any
                 }
               >
-                The app for managing sport clubs and ride squads
+                The app for managing<br className="rwp-hero-br" /> sport clubs and ride squads
               </h1>
             </div>
             <div
