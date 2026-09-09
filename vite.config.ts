@@ -9,8 +9,13 @@ export default defineConfig({
   plugins: [
     react(),
     babel({
-      filter: /\.[jt]sx?$/,
+      include: /\.[jt]sx?$/,
+      exclude: /node_modules/,
       babelConfig: {
+        presets: [
+          '@babel/preset-typescript',
+          ['@babel/preset-react', { runtime: 'automatic' }],
+        ],
         plugins: ['@lingui/babel-plugin-lingui-macro'],
       },
     }),
