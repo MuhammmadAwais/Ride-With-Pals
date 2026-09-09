@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const FooterSection: React.FC = () => {
   return (
@@ -173,17 +174,17 @@ export const FooterSection: React.FC = () => {
 
       <div className="rwp-footer-content">
         <h2 className="rwp-footer-title" id="footer-main-title">
-          <span className="footer-word">READY </span>
-          <span className="footer-word">TO </span>
-          <span className="footer-word">RIDE?</span>
+          <span className="footer-word"><Trans>READY </Trans></span>
+          <span className="footer-word"><Trans>TO </Trans></span>
+          <span className="footer-word"><Trans>RIDE?</Trans></span>
         </h2>
         <a href="/signup" className="rwp-footer-btn">
-          Join the Club
+          <Trans>Join the Club</Trans>
         </a>
 
         <div className="rwp-footer-grid">
           <div className="rwp-footer-col">
-            <h4>Contact</h4>
+            <h4><Trans>Contact</Trans></h4>
             <ul>
               <li><a href="mailto:hello@ridewithpals.com">hello@ridewithpals.com</a></li>
               <li><a href="tel:+15551234567">+1 (555) 123-4567</a></li>
@@ -191,16 +192,16 @@ export const FooterSection: React.FC = () => {
             </ul>
           </div>
           <div className="rwp-footer-col">
-            <h4>Platform</h4>
+            <h4><Trans>Platform</Trans></h4>
             <ul>
-              <li><a href="#how-it-works">How it Works</a></li>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#pricing">Pricing</a></li>
-              <li><a href="#community">Community</a></li>
+              <li><a href="#how-it-works"><Trans>How it Works</Trans></a></li>
+              <li><a href="#features"><Trans>Features</Trans></a></li>
+              <li><a href="#pricing"><Trans>Pricing</Trans></a></li>
+              <li><a href="#community"><Trans>Community</Trans></a></li>
             </ul>
           </div>
           <div className="rwp-footer-col">
-            <h4>Company</h4>
+            <h4><Trans>Company</Trans></h4>
             <ul>
               <li><a href="#about">About Us</a></li>
               <li><a href="#blog">Blog</a></li>
@@ -209,7 +210,7 @@ export const FooterSection: React.FC = () => {
             </ul>
           </div>
           <div className="rwp-footer-col">
-            <h4>Legal</h4>
+            <h4><Trans>Legal</Trans></h4>
             <ul>
               <li><a href="#privacy">Privacy Policy</a></li>
               <li><a href="#terms">Terms of Service</a></li>
@@ -228,7 +229,7 @@ export const FooterSection: React.FC = () => {
             />
           </div>
           <div className="rwp-footer-copyright">
-            © {new Date().getFullYear()} Ride with Pals. All rights reserved.
+            © {new Date().getFullYear()} Ride with Pals. <Trans>All rights reserved.</Trans>
           </div>
           <div className="rwp-footer-socials">
             <a href="#github" aria-label="GitHub">

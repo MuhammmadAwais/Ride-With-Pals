@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const ComparisonSection: React.FC = () => {
   return (
@@ -98,7 +99,7 @@ export const ComparisonSection: React.FC = () => {
                       "var(--extracted-r6o4lv, var(--token-2d3de992-80f6-43cc-b5d5-16857da63015, rgb(235, 113, 43)))",
                   } as any}
                 >
-                  Why Ride With Pals?
+                  <Trans>Why Ride With Pals?</Trans>
                 </p>
               </div>
             </div>
@@ -114,7 +115,7 @@ export const ComparisonSection: React.FC = () => {
               data-styles-preset="Pd0MWMbDb"
               style={{ "--framer-text-alignment": "center" } as any}
             >
-              There’s a smarter way to manage your club
+              <Trans>There’s a smarter way to manage your club</Trans>
             </h2>
           </div>
         </div>
@@ -158,7 +159,7 @@ export const ComparisonSection: React.FC = () => {
                   className="framer-text framer-styles-preset-jb6s69"
                   data-styles-preset="NC3Baikr8"
                 >
-                  Other Tools
+                  <Trans>Other Tools</Trans>
                 </h5>
               </div>
               <div
@@ -215,7 +216,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Disorganized WhatsApp groups &amp; lost ride details
+                      <Trans>Disorganized WhatsApp groups &amp; lost ride details</Trans>
                     </p>
                   </div>
                 </div>
@@ -267,7 +268,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Manual member tracking &amp; paper waivers
+                      <Trans>Manual member tracking &amp; paper waivers</Trans>
                     </p>
                   </div>
                 </div>
@@ -319,7 +320,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      No live leaderboards, badges, or Strava sync
+                      <Trans>No live leaderboards, badges, or Strava sync</Trans>
                     </p>
                   </div>
                 </div>
@@ -371,7 +372,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Fragmented member chats &amp; missing announcement hub
+                      <Trans>Fragmented member chats &amp; missing announcement hub</Trans>
                     </p>
                   </div>
                 </div>
@@ -423,7 +424,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      No integrated marketplace, sub-accounts, or event wallet
+                      <Trans>No integrated marketplace, sub-accounts, or event wallet</Trans>
                     </p>
                   </div>
                 </div>
@@ -497,7 +498,7 @@ export const ComparisonSection: React.FC = () => {
                         "var(--extracted-r6o4lv, var(--token-743cf692-1243-473f-93be-c36de257addf, rgb(255, 255, 255)))",
                     } as any}
                   >
-                    <span className="hide-on-mobile">Ride With Pals</span>
+                    <span className="hide-on-mobile"><Trans>Ride With Pals</Trans></span>
                     <span className="show-on-mobile" style={{ display: 'none' }}>RWP</span>
                   </p>
                 </div>
@@ -560,7 +561,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      All-in-one club dashboard with real-time ride tracking
+                      <Trans>All-in-one club dashboard with real-time ride tracking</Trans>
                     </p>
                   </div>
                 </div>
@@ -616,7 +617,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Seamless ride creation with GPX routes &amp; leader controls
+                      <Trans>Seamless ride creation with GPX routes &amp; leader controls</Trans>
                     </p>
                   </div>
                 </div>
@@ -672,7 +673,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Automated monthly leaderboards, distance metrics &amp; badges
+                      <Trans>Automated monthly leaderboards, distance metrics &amp; badges</Trans>
                     </p>
                   </div>
                 </div>
@@ -728,7 +729,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Built-in club chat, announcement board &amp; gear marketplace
+                      <Trans>Built-in club chat, announcement board &amp; gear marketplace</Trans>
                     </p>
                   </div>
                 </div>
@@ -784,7 +785,7 @@ export const ComparisonSection: React.FC = () => {
                       className="framer-text framer-styles-preset-38u9fz"
                       data-styles-preset="f_lMCwHxq"
                     >
-                      Integrated wallet, automated member dues &amp; permissions
+                      <Trans>Integrated wallet, automated member dues &amp; permissions</Trans>
                     </p>
                   </div>
                 </div>

@@ -1,0 +1,1054 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-09-09 19:10+0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ur\n"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ mo ($49.99/yr)"
+msgstr "/ ماہ ($49.99/سال)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ month"
+msgstr "/ ماہ"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ year"
+msgstr "/ سال"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "01 — FOR RIDERS"
+msgstr "01 — رائڈرز اور ایتھلیٹس کے لیے"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "02 — COMMUNITY"
+msgstr "02 — کمیونٹی"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "03 — FOR CLUBS"
+msgstr "03 — اسپورٹس کلبوں کے لیے"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "04 — MEMBERSHIP FEES"
+msgstr "04 — کلب ممبرشپ فیس"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "A chat for every ride."
+msgstr "ہر رائڈ اور ایکٹیوٹی کے لیے وقف چیٹ۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
+msgstr "بالکل۔ درحقیقت، Ride with Pals کو ہمارے جیسے اسپورٹس گروپس میں باہمی رابطے کو بہتر بنانے اور واٹس ایپ چیٹس کی بے ترتیبی اور انتشار کو ختم کرنے کے لیے ہی بنایا گیا ہے۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Accept or reject applications with one tap"
+msgstr "ایک کلک میں ممبرشپ درخواستیں منظور یا مسترد کریں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Advanced Performance Analytics"
+msgstr "پرفارمنس کے جدید ترین تجزیاتی اعداد و شمار"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "All rights reserved."
+msgstr "جملہ حقوق محفوظ ہیں۔"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "All-in-one club dashboard with real-time ride tracking"
+msgstr "ریئل ٹائم رائڈ ٹریکنگ کے ساتھ ہمہ جہت کلب ڈیش بورڈ"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "All-in-One Sports Club Platform"
+msgstr "اسپورٹس کلبوں کے لیے آل ان ون پلیٹ فارم"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Approve members, handle roles, and keep your community engaged and organised effortlessly."
+msgstr "ممبران کو منظور کریں، ذمہ داریاں سونپیں اور اپنی کمیونٹی کو بغیر کسی پریشانی کے منظم اور فعال رکھیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "As a club administrator, what permissions can I grant to club members?"
+msgstr "بطور کلب ایڈمنسٹریٹر، میں اراکین کو کون سے اختیارات دے سکتا ہوں؟"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Automated monthly leaderboards, distance metrics & badges"
+msgstr "خودکار ماہانہ لیڈر بورڈ، طے شدہ فاصلے کے ریکارڈز اور بیجز"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Basic ride & activity tracking"
+msgstr "بنیادی رائڈ اور ایکٹیوٹی ٹریکنگ"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Basic Tier"
+msgstr "بنیادی پلان"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app."
+msgstr "دونوں سہولیات موجود ہیں: آپ نقد یا بینک ٹرانسفر کے ذریعے دستی طور پر ادائیگیاں درج کر سکتے ہیں، یا اسٹرائپ (Stripe) کے ذریعے ایپ میں محفوظ اور خودکار طریقے سے فیس وصول کر سکتے ہیں۔"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Browse & join public activities"
+msgstr "پبلک ایکٹیوٹیز دیکھیں اور شامل ہوں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Browse & Join Rides"
+msgstr "رائڈز تلاش کریں اور شرکت کریں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
+msgstr "آنے والی گروپ رائڈز، رفتار، فاصلہ اور روٹ ایک نظر میں دیکھیں۔ سیکنڈوں میں شامل ہوں اور ماہانہ لیڈر بورڈ پر مقابلہ کریں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Build your club."
+msgstr "اپنا اسپورٹس کلب بنائیں۔"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Building Trust and Safety in Group Rides"
+msgstr "گروپ رائڈز میں باہمی اعتماد اور سلامتی کا فروغ"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Built-in club chat, announcement board & gear marketplace"
+msgstr "کلب چیٹ، اہم اعلانات کا بورڈ اور کھیلوں کے سامان کی مارکیٹ پلیس"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Buy and sell gear with riders you already know"
+msgstr "قابل اعتماد کھلاڑیوں اور رائڈرز سے اسپورٹس گیئر کی خرید و فروخت کریں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I create activities without belonging to a club?"
+msgstr "کیا میں کسی کلب کا حصہ بنے بغیر ایکٹیوٹیز بنا سکتا ہوں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I create recurring activities?"
+msgstr "کیا میں بار بار ہونے والی باقاعدہ ایکٹیوٹیز شیڈول کر سکتا ہوں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I share an activity across multiple clubs?"
+msgstr "کیا میں ایک ہی ایکٹیوٹی کو بیک وقت کئی کلبوں میں شیئر کر سکتا ہوں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I start for free and upgrade later?"
+msgstr "کیا میں مفت آغاز کر کے بعد میں پلان اپ گریڈ کر سکتا ہوں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I use the app without connecting Strava?"
+msgstr "کیا اسٹریوا (Strava) منسلک کیے بغیر ایپ استعمال کی جا سکتی ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can users be banned?"
+msgstr "کیا کسی صارف کو بلاک یا خارج کیا جا سکتا ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Casual Groups"
+msgstr "دوستوں کے گروپس"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Chat. Trade."
+msgstr "چیٹ کریں۔ گیئر شیئر کریں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Climb the ranks."
+msgstr "رینکنگ میں آگے بڑھیں۔"
+
+#: src/features/landing/components/CTASection.tsx
+msgid "club & rides?"
+msgstr "اپنے کلب اور رائڈز کو؟"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Club Calendar"
+msgstr "کلب کا کیلنڈر"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "CLUB GROWTH"
+msgstr "کلب کی ترقی"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Club Management"
+msgstr "کلب مینجمنٹ"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Club Marketplace"
+msgstr "کلب مارکیٹ پلیس"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Club shop & fee collection"
+msgstr "کلب شاپ اور ممبرشپ فیس کی وصولی"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Club shop & membership fee management"
+msgstr "کلب کی آن لائن دکان اور ممبرشپ فیس کا نظام"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
+msgstr "گولڈ سبسکرپشن والے کلب اپنا اسٹرائپ اکاؤنٹ جوڑ کر اپنے ممبران کو کلب کی کٹس، جرسیاں اور سامان فروخت کرنے کے لیے آن لائن شاپ فعال کر سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Collect Fees"
+msgstr "فیس وصول کریں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Commission"
+msgstr "کمیشن"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Community"
+msgstr "کمیونٹی"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "COMMUNITY"
+msgstr "کمیونٹی"
+
+#: src/features/landing/components/BlogSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "Community & Updates"
+msgstr "کمیونٹی اور تازہ ترین خبریں"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Company"
+msgstr "کمپنی"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Compete by rides attended or total km covered"
+msgstr "مکمل کردہ رائڈز یا طے شدہ کلومیٹرز کی بنیاد پر برتری حاصل کریں"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes."
+msgstr "اپنے ساتھیوں سے جڑیں، رائڈز پلان کریں اور اپنی کمیونٹی کو متحرک رکھیں — آغاز میں محض چند منٹ لگتے ہیں۔"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Contact"
+msgstr "رابطہ کریں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Core Features"
+msgstr "اہم ترین خصوصیات"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Create a club (up to 15 members)"
+msgstr "کلب بنائیں (15 ممبران تک)"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Create and build community with "
+msgstr "کمیونٹی بنائیں اور پروان چڑھائیں بذریعہ "
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel."
+msgstr "ایک ہی ڈیش بورڈ سے کئی کلب بنائیں۔ خبریں پوسٹ کریں، ممبران کی منظوری دیں اور اپنی اسپورٹس کمیونٹی کو ہمیشہ منظم رکھیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Create Club"
+msgstr "کلب بنائیں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Create community."
+msgstr "کمیونٹی کو منظم کریں۔"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Create your profile"
+msgstr "اپنا پروفائل بنائیں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Cross-Club"
+msgstr "بین الکلب سرگرمیاں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Cycling, running and swimming"
+msgstr "سائیکلنگ، رننگ اور تیراکی"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Define the amount and membership validity period."
+msgstr "فیس کی رقم اور ممبرشپ کی مدت کا خود تعین کریں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Deposit, withdraw, and pay without leaving the app"
+msgstr "ایپ کے اندر ہی رقم جمع، ٹرانسفر اور ادا کریں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Designed for athletes who want unlimited access to activities, marketplace, and analytics."
+msgstr "ان ایتھلیٹس کے لیے جو لامحدود رائڈز، مارکیٹ پلیس اور کارکردگی کی تفصیلی رپورٹ چاہتے ہیں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Designed for clubs."
+msgstr "کلبوں کی ضروریات کے مطابق تیار کردہ۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Discover clubs. Join activities."
+msgstr "کلب دریافت کریں۔ سرگرمیوں میں حصہ لیں۔"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Disorganized WhatsApp groups & lost ride details"
+msgstr "بے ہنگم واٹس ایپ گروپس اور ضائع ہونے والی روٹ معلومات"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Do I need to be a Premium user to create a club?"
+msgstr "کیا کلب بنانے کے لیے پریمیم صارف ہونا ضروری ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Do I need to belong to a club to use the app?"
+msgstr "کیا ایپ استعمال کرنے کے لیے کسی کلب کا رکن ہونا لازمی ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does it work for skating, hiking, or other sports clubs?"
+msgstr "کیا یہ اسکیٹنگ، ہائیکنگ یا دیگر کھیلوں کے لیے بھی کارآمد ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does Ride with Pals process payments, or does it only record them?"
+msgstr "کیا Ride with Pals خود فیس پروسیس کرتا ہے یا صرف اندراج رکھتا ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does the app charge a commission on each payment made through the app?"
+msgstr "کیا ایپ کے ذریعے ہونے والی ادائیگیوں پر کوئی کمیشن کٹتا ہے؟"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Download route files and sync with Strava classification"
+msgstr "GPX روٹ فائلز ڈاؤن لوڈ کریں اور اسٹریوا رینکنگ کے ساتھ ہم آہنگ کریں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Essential access to browse activities, join clubs, and connect with your community."
+msgstr "ایونٹس دیکھنے، کلبوں میں شامل ہونے اور کمیونٹی سے جڑنے کی بنیادی مفت رسائی۔"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Everything in Free Limited Plan"
+msgstr "مفت بنیادی پلان کی تمام سہولیات"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Exclusive discount codes on gear and club events"
+msgstr "اسپورٹس گیئر اور کلب ایونٹس پر خصوصی ڈسکاؤنٹ کوڈز"
+
+#: src/features/landing/components/FeaturesSection.tsx
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "Features"
+msgstr "خصوصیات"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Flat yearly rate — no member limits"
+msgstr "مقررہ سالانہ فیس — ممبران کی تعداد کی کوئی حد نہیں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Flexible Fee Setup"
+msgstr "فیس کی لچکدار سیٹنگز"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "for athletes & clubs."
+msgstr "ایتھلیٹس اور کلبوں کے لیے۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Athletes & Riders"
+msgstr "ایتھلیٹس اور رائڈرز کے لیے"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "For club owners"
+msgstr "کلب مالکان کے لیے"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Club Owners"
+msgstr "کلب مالکان اور منتظمین کے لیے"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Club Owners & Managers"
+msgstr "کلب مالکان اور کوچز کے لیے"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Riders"
+msgstr "رائڈرز اور ایتھلیٹس کے لیے"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Forum & News"
+msgstr "فورم اور اعلانات"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Fragmented member chats & missing announcement hub"
+msgstr "بکھری ہوئی بات چیت اور کسی مرکزی معلوماتی چینل کا فقدان"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Free"
+msgstr "مفت"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Free Limited Plan"
+msgstr "مفت بنیادی پلان"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Get Premium Athlete"
+msgstr "پریمیم ایتھلیٹ بنیں"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Get started free"
+msgstr "مفت آغاز کریں"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "Get Started Free"
+msgstr "ابھی مفت شروع کریں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Gold Club Plan"
+msgstr "گولڈ کلب پلان"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Got questions?"
+msgstr "کوئی سوال ہے؟"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "GPX & Strava Sync"
+msgstr "GPX اور اسٹریوا سنک"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides."
+msgstr "گروپ چیٹ، پرائیویٹ میسجز، داخلی مارکیٹ پلیس اور ڈیجیٹل والیٹ — وہ سب کچھ جو ٹیم کو رائڈز کے درمیان باہم جوڑے رکھتا ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Here's everything you need to know before getting started. If you have more questions, feel free to reach out to our team."
+msgstr "شروع کرنے سے پہلے جاننے کے لیے تمام معلومات یہاں موجود ہیں۔ مزید رہنمائی کے لیے ہماری ٹیم ہمہ وقت حاضر ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How are transactions carried out through the marketplace?"
+msgstr "مارکیٹ پلیس کے ذریعے خرید و فروخت کیسے انجام پاتی ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How can I collect membership fees from my members?"
+msgstr "میں اپنے ممبران سے فیس کس طرح وصول کر سکتا ہوں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How does the marketplace work?"
+msgstr "مارکیٹ پلیس کا طریقہ کار کیا ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How does the online shop work?"
+msgstr "کلب شاپ کیسے کام کرتی ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How is it different from Strava?"
+msgstr "یہ اسٹریوا (Strava) سے کس طرح مختلف ہے؟"
+
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "How it Works"
+msgstr "طریقہ کار"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "How Metro CC Doubled Their Membership"
+msgstr "میٹرو سی سی نے اپنے اراکین کی تعداد کیسے دوگنی کی"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "How to Launch Your Club and Attract More Riders"
+msgstr "نیا کلب کیسے شروع کریں اور مزید کھلاڑیوں کو متوجہ کریں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "I'm not part of an official club, but my friends and I ride together. Can we use the app?"
+msgstr "ہم کسی باضابطہ کلب کا حصہ نہیں مگر دوست اکٹھے ٹریننگ کرتے ہیں۔ کیا ہم اسے استعمال کر سکتے ہیں؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard."
+msgstr "گولڈ سبسکرپشن کے ساتھ آپ ممبرشپ فیس مقرر کر سکتے ہیں، موصولہ رقوم کی تصدیق کر سکتے ہیں اور ڈیش بورڈ سے اسٹرائپ کے ذریعے براہ راست چالان بھیج سکتے ہیں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "In-App Wallet"
+msgstr "ایپ والیٹ"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Integrated Shop"
+msgstr "ان بلٹ آن لائن شاپ"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Integrated wallet, automated member dues & permissions"
+msgstr "ڈیجیٹل والیٹ، فیس کا خودکار نظام اور ایڈوانسڈ اختیارات"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is it a social app or a management tool?"
+msgstr "کیا یہ سوشل نیٹ ورک ہے یا مینجمنٹ سسٹم؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is it only for cycling?"
+msgstr "کیا یہ ایپ صرف سائیکلنگ تک محدود ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is there a chat within the app?"
+msgstr "کیا ایپ کے اندر چیٹ کی سہولت موجود ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is there a forum-style interaction feature?"
+msgstr "کیا فورم کی طرز پر تبادلہ خیال کی سہولت ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation."
+msgstr "یہ دونوں کا بہترین امتزاج ہے۔ Ride with Pals کمیونٹی خصوصیات (چیٹ، گیئر اور ایونٹس) کو پیشہ ورانہ انتظامی ٹولز (فیس، شاپ، اختیارات اور شیڈولنگ) کے ساتھ یکجا کرتا ہے۔"
+
+#: src/features/landing/components/CTASection.tsx
+msgid "Join athletes and club leaders building the ultimate sports community."
+msgstr "ان کھلاڑیوں اور منتظمین میں شامل ہوں جو کھیلوں کی بہترین کمیونٹی تعمیر کر رہے ہیں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Join Request Control"
+msgstr "درخواستوں کی مانیٹرنگ"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Join the Club"
+msgstr "کلب میں شامل ہوں"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Join the ride, track your progress, build connections, and share your experiences with the community."
+msgstr "رائڈ کا حصہ بنیں، اپنی کارکردگی جانچیں، نئے دوست بنائیں اور تجربات شیئر کریں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Keep every ride, event, and activity organized in one place"
+msgstr "ہر رائڈ، مقابلے اور مشق کو ایک منظم جگہ پر رکھیں"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff."
+msgstr "جانیں کہ دوستوں کے چھوٹے گروپ کو بڑی اسپورٹس کمیونٹی میں کیسے بدلا جائے۔ ایونٹس، جوش و خروش اور انتظامی امور کو Ride with Pals کے ذریعے خودکار بنانے کا طریقہ۔"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Legal"
+msgstr "قانونی معلومات"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Login"
+msgstr "لاگ اِن"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Made simple."
+msgstr "نہایت آسان اور واضح۔"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free."
+msgstr "ہر چیز ایک ہی ایپ میں سنبھالیں: آنے والی رائڈز، خبریں، کلب شاپ، مارکیٹ پلیس، فیسیں اور پیغامات۔ واٹس ایپ کی الجھنوں کو خیرباد کہیں۔ اور یہ بالکل مفت ہے۔"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Manual member tracking & paper waivers"
+msgstr "کاغذات پر ناموں کا اندراج اور فارم کے جھنجھٹ"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Manual Payment Tracking & Cash Updates"
+msgstr "نقد رقم اور کیش ادائیگیوں کا دستی اندراج"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Manual Payment Updates"
+msgstr "فیس کا دستی اندراج"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Mark members as paid when they pay outside the app."
+msgstr "ایپ سے باہر براہ راست نقد رقم ملنے پر ممبر کو 'ادا شدہ' مارک کریں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Market Trades"
+msgstr "مارکیٹ سودے"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Marketplace"
+msgstr "مارکیٹ پلیس"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Maximising Ride Analytics to Boost Performance"
+msgstr "بہترین کارکردگی کے لیے رائڈ کے اعداد و شمار کا دانشمندانہ استعمال"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Member Discounts"
+msgstr "ممبر ڈسکاؤنٹس"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Member Management"
+msgstr "ممبران کا انتظام"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Membership"
+msgstr "ممبرشپ"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Membership fees."
+msgstr "کلب ممبرشپ فیس۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Moderation"
+msgstr "نگرانی و کنٹرول"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Monthly"
+msgstr "ماہانہ"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Monthly Leaderboards"
+msgstr "ماہانہ لیڈر بورڈز"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Most popular"
+msgstr "سب سے مقبول"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Multiple Admins & Co-Owner Roles"
+msgstr "متعدد ایڈمنز اور نائب منتظمین کے اختیارات"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Multisport activities"
+msgstr "ملٹی اسپورٹس ایونٹس"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "News & Announcements"
+msgstr "خبریں اور اعلانات"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "next level"
+msgstr "اگلی سطح"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No integrated marketplace, sub-accounts, or event wallet"
+msgstr "نہ مارکیٹ پلیس، نہ داخلی اکاؤنٹس اور نہ ایونٹ والیٹ"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No live leaderboards, badges, or Strava sync"
+msgstr "نہ لائیو رینکنگ، نہ تعریفی بیجز اور نہ اسٹریوا لنک"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water)."
+msgstr "جی نہیں۔ Ride with Pals سائیکلنگ، رننگ اور ٹرائیتھلون کلبوں کے لیے بنایا گیا ہے۔ اسی لیے ہم 'ایکٹیوٹیز' کی اصطلاح استعمال کرتے ہیں جس میں سائیکلنگ (روڈ، بجری، ماؤنٹین)، رننگ اور تیراکی شامل ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan."
+msgstr "جی نہیں۔ کلب بنانے کے لیے پہلے فری پلان پر بطور کھلاڑی اکاؤنٹ بنائیں، جس کے بعد آپ فری یا گولڈ پلان چن کر اپنا کلب بنا سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. You can use it as an individual athlete, join clubs, or take part in public activities."
+msgstr "جی نہیں۔ آپ اسے انفرادی کھلاڑی کے طور پر بھی چلا سکتے ہیں، کلبوں میں شامل ہو سکتے ہیں اور عوامی رائڈز کا حصہ بن سکتے ہیں۔"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Offer club merch, event tickets, and gear directly to your members without external tools."
+msgstr "بغیر کسی بیرونی ویب سائٹ کے اپنی کٹس، جرسیاں اور ٹکٹ براہ راست ممبران کو فروخت کریں۔"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "One platform."
+msgstr "ایک ہی مکمل پلیٹ فارم۔"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Online Club Merchandise Shop"
+msgstr "کلب کی کٹس اور ساز و سامان کی آن لائن شاپ"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Online Shop"
+msgstr "آن لائن شاپ"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Organise rides & events"
+msgstr "رائڈز اور مقابلے منعقد کریں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Other Sports"
+msgstr "دیگر کھیل"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Other Tools"
+msgstr "دیگر روایتی طریقے"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Overview"
+msgstr "جائزہ"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Paid Activities"
+msgstr "بامعاوضہ ایکٹیوٹیز"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Paid Activities & Event Ticketing"
+msgstr "بامعاوضہ ایونٹس اور ٹورنامنٹ ٹکٹنگ"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Payment Options"
+msgstr "ادائیگی کے طریقے"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Payment Tracking"
+msgstr "ادائیگیوں کی صورتحال"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Perfect for athletes"
+msgstr "ایتھلیٹس کے لیے شاندار"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Permissions"
+msgstr "صلاحیتیں اور اختیارات"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Platform"
+msgstr "پلیٹ فارم"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Platform Type"
+msgstr "پلیٹ فارم کی نوعیت"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Platforms"
+msgstr "تعاون یافتہ پلیٹ فارمز"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Post updates and records for members to engage with"
+msgstr "نئی اپڈیٹس اور ریکارڈز شیئر کریں تاکہ کھلاڑی متحرک رہیں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Premium Athlete"
+msgstr "پریمیم ایتھلیٹ"
+
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+#: src/features/landing/components/PricingSection.tsx
+msgid "Pricing"
+msgstr "پلانز اور قیمتیں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Priority member chat support"
+msgstr "ترجیحی چیٹ سپورٹ"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Problems Solved"
+msgstr "مسائل کا حل"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Public club access & group chats"
+msgstr "عوامی کلبوں تک رسائی اور ٹیم چیٹس"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Public Rides"
+msgstr "عوامی رائڈز"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Questions? Talk to us →"
+msgstr "کوئی سوال؟ ہم سے بات کریں ←"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Read more"
+msgstr "مزید پڑھیں"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "READY "
+msgstr "تیار "
+
+#: src/features/landing/components/CTASection.tsx
+msgid "Ready to elevate your "
+msgstr "کیا آپ آگے بڑھانے کے لیے تیار ہیں اپنے "
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Real plans"
+msgstr "حقیقی اور موزوں پلانز"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Ride Analytics"
+msgstr "رائڈ اور پرفارمنس کا تجزیہ"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Ride and connect"
+msgstr "سائیکل چلائیں اور دوست بنائیں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride Chat"
+msgstr "رائڈ چیٹ"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Ride With Pals"
+msgstr "Ride With Pals"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management."
+msgstr "Ride with Pals غیر منظم رائڈز، مختلف ایپس پر پیغامات کا بکھراؤ، کلب کٹس کی فروخت کی الجھنوں، پرانے سامان کے لیے محفوظ پلیٹ فارم کی عدم دستیابی اور فیسوں کے دستی حساب کتاب کی پریشانیوں کو جڑ سے ختم کرتا ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
+msgstr "Ride with Pals سائیکلنگ، رننگ اور ٹرائیتھلون کلبوں کے لیے ایک ہمہ جہت پلیٹ فارم ہے جہاں آپ رائڈز منعقد کر سکتے ہیں، ممبران کو منظم کر سکتے ہیں، فیس وصول کر سکتے ہیں اور باہمی کمیونٹی کو فروغ دے سکتے ہیں۔"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "RIDE?"
+msgstr "رائڈ کے لیے؟"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Save over 58% with annual billing ($49.99/year)"
+msgstr "سالانہ ادائیگی پر 58 فیصد سے زائد بچت کریں ($49.99/سال)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Save up to 58%"
+msgstr "58 فیصد تک بچائیں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Say goodbye to endless WhatsApp chats."
+msgstr "واٹس ایپ کی لامتناہی چیٹس کو ہمیشہ کے لیے الوداع کہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Schedule"
+msgstr "شیڈول"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates."
+msgstr "گروپ رائڈز شیڈول کریں، حاضری کی توثیق نوٹ کریں اور خودکار الرٹس کے ذریعے سب کو باخبر رکھیں۔"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Seamless ride creation with GPX routes & leader controls"
+msgstr "GPX روٹ فائلز اور گروپ لیڈر ٹولز کے ساتھ آسان روٹ پلاننگ"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "See all your active events, clubs, and tasks in one unified view — no more toggling between apps."
+msgstr "اپنے تمام ایونٹس، کلبز اور شیڈول ایک ہی اسکرین پر دیکھیں — اب مختلف ایپس کے درمیان بار بار سوئچ کرنے کی ضرورت نہیں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "See who has paid, who needs to renew, and who is not up to date."
+msgstr "واضح طور پر دیکھیں کہ کس نے فیس ادا کر دی، کس کی تجدید باقی ہے اور کون لیٹ ہے۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Send secure payment requests directly through Stripe."
+msgstr "اسٹرائپ کے ذریعے براہ راست محفوظ انوائس اور ادائیگی کے لنکس بھیجیں۔"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
+msgstr "اپنے کلب کی ممبرشپ فیس طے کریں، موصولی پر نظر رکھیں، اسٹرائپ لنکس ارسال کریں اور ہر ممبر کی پوزیشن سے باخبر رہیں۔"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll."
+msgstr "کھلاڑی کے طور پر پروفائل بنائیں یا نیا کلب بنائیں۔ اپنی سائیکلوں کا اندراج کریں اور فوراً میدان میں اتریں۔"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Sign up"
+msgstr "سائن اپ"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Smart Dashboard"
+msgstr "اسمارٹ ڈیش بورڈ"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "sport clubs and ride squads"
+msgstr "اسپورٹس کلبز اور رائڈنگ گروپس"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Sports"
+msgstr "کھیل"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start for Free"
+msgstr "مفت شروع کریں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start for free on web & mobile"
+msgstr "ویب اور موبائل پر بالکل مفت شروع کریں"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start Gold Club"
+msgstr "گولڈ کلب شروع کریں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Stay connected."
+msgstr "ہمیشہ رابطے میں رہیں۔"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 1"
+msgstr "مرحلہ 1"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 2"
+msgstr "مرحلہ 2"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 3"
+msgstr "مرحلہ 3"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Strava & GPS Route Syncing"
+msgstr "اسٹریوا اور جی پی ایس روٹس کی مطابقت پذیری"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Strava & GPX Route Syncing"
+msgstr "اسٹریوا اور GPX روٹس کی مطابقت پذیری"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
+msgstr "اسٹریوا انفرادی کھیل کے ریکارڈز پر توجہ مرکوز کرتا ہے۔ جبکہ Ride with Pals پورے کلب کو چلانے کے لیے بنایا گیا ہے: رائڈز، ممبران، فیس، دکان، اختیارات اور باہمی رابطہ۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Strava Sync"
+msgstr "اسٹریوا سنک"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Stripe Automated Fee Collection"
+msgstr "اسٹرائپ کے ذریعے خودکار فیس وصولی"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Stripe Payments"
+msgstr "اسٹرائپ ادائیگیاں"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "SUCCESS STORY"
+msgstr "کامیابی کی کہانی"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Take your club to the "
+msgstr "اپنے اسپورٹس کلب کو لے جائیں "
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "The app for managing"
+msgstr "بہترین ایپ برائے انتظام"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "The complete club operating system — collect member fees, run your club shop, and grow."
+msgstr "کلبوں کا مکمل آپریٹنگ سسٹم: فیس وصول کریں، آن لائن شاپ چلائیں اور اپنی کمیونٹی کو وسیع کریں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
+msgstr "مارکیٹ پلیس ممبران کے باہمی لین دین کے لیے ہے۔ یہ ایپ میں کارڈ پیمنٹ نہیں لیتا: سامان اور رقم کا تبادلہ ممبران آمنے سامنے خود طے کرتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission."
+msgstr "مارکیٹ پلیس ممبران کے لیے اندرونی اشتہارات کا شعبہ ہے۔ آپ بغیر کسی کمیشن کے اپنے قابل اعتماد ساتھیوں کو سامان فروخت کر سکتے ہیں۔"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
+msgstr "سائیکلنگ، رننگ اور ٹرائیتھلون کا بے مثل پلیٹ فارم۔ ایونٹس، ممبران اور مالیات کو ایک ہی جگہ منظم کریں، جو ایتھلیٹس نے خود ایتھلیٹس کے لیے بنایا ہے۔"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "There’s a smarter way to manage your club"
+msgstr "اپنے کلب کو چلانے کا زیادہ اسمارٹ اور جدید طریقہ"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "TIPS & TRICKS"
+msgstr "مفید مشورے اور ٹپس"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "TO "
+msgstr "کی طرف "
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Track your personal bests and club statistics to understand your performance flow over time."
+msgstr "وقت کے ساتھ اپنی فٹنس اور کلب رینکنگ جانچنے کے لیے اپنے ذاتی ریکارڈز پر نظر رکھیں۔"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Transparent pricing"
+msgstr "شفاف اور واضح قیمتیں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Two ways to use it, one shared philosophy: simple, visual, and useful."
+msgstr "استعمال کے دو طریقے، مگر ایک ہی سوچ: سادہ، پرکشش اور بے حد مفید۔"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Club Members (beyond 15)"
+msgstr "لامحدود کلب اراکین (15 سے زائد)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Group Rides & Activities"
+msgstr "لامحدود گروپ رائڈز اور ایونٹس"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited marketplace listings"
+msgstr "مارکیٹ پلیس پر لامحدود اشتہارات"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Marketplace Listings"
+msgstr "مارکیٹ پلیس پر لامحدود اشتہارات"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Up to 2 items in Marketplace"
+msgstr "مارکیٹ پلیس میں 2 اشیاء تک کی اجازت"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Upcoming rides with pace, distance and ride type"
+msgstr "آنے والی رائڈز رفتار، فاصلے اور روٹ کی نوعیت کے ساتھ"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Upgrade"
+msgstr "اپ گریڈ کریں"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "User Roles"
+msgstr "صارفین کے کردار اور اختیارات"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Verified Gold Club Crown Badge"
+msgstr "تصدیق شدہ گولڈ کلب کراؤن بیج"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Verified Pro Athlete Badge"
+msgstr "تصدیق شدہ پرو ایتھلیٹ بیج"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "View all members, assign roles, message directly"
+msgstr "تمام ممبران کو دیکھیں، کردار سونپیں اور براہ راست رابطہ کریں"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "View all posts"
+msgstr "تمام تحریریں دیکھیں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "vs Strava"
+msgstr "اسٹریوا کے مقابلے میں"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Watch Video"
+msgstr "ویڈیو دیکھیں"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "We've got answers."
+msgstr "ہمارے پاس ہر سوال کا جواب ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What do I need to create paid activities or manage membership fee payments?"
+msgstr "بامعاوضہ رائڈز یا ممبرشپ فیس اکٹھی کرنے کے لیے مجھے کن چیزوں کی ضرورت ہوگی؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What is Ride with Pals?"
+msgstr "Ride with Pals کیا ہے؟"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What problems does it solve?"
+msgstr "یہ ایپ کن مسائل کو حل کرتی ہے؟"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees."
+msgstr "چاہے آپ اکیلے کھلاڑی ہوں یا کسی ابھرتے ہوئے کلب کے سربراہ — وہ پلان منتخب کریں جو آپ کی ضرورت ہو۔ واضح قیمتیں بغیر کسی پوشیدہ چارجز کے۔"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Why Ride With Pals?"
+msgstr "Ride With Pals ہی کیوں؟"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Yearly"
+msgstr "سالانہ"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes, absolutely. Strava is optional."
+msgstr "جی ہاں، بالکل۔ اسٹریوا کا استعمال اختیاری ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app."
+msgstr "جی ہاں، بالکل کام کرتا ہے۔ اگرچہ اس وقت بنیادی کیٹیگریز سائیکلنگ، رننگ اور ٹرائیتھلون ہیں، لیکن ہر وہ کھیل جس میں لوگ جی پی ایس روٹ فالو کرنے اور وقت و فاصلہ جانچنے کے لیے اکٹھے ہوں، اس ایپ میں مکمل کلب ٹولز حاصل کر سکتا ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club."
+msgstr "جی ہاں۔ ہر ایکٹیوٹی کے لیے ایک خاص گروپ چیٹ بن جاتی ہے جس میں صرف اسی ایونٹ پر گفتگو ہو سکتی ہے۔ نیز ممبران باہم پرائیویٹ چیٹ بھی کر سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. Administrators can accept or remove members."
+msgstr "جی ہاں۔ ایڈمنز ممبران کو قبول کرنے اور خارج کرنے کا پورا اختیار رکھتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. Ride with Pals charges a small 4% management fee on each transaction."
+msgstr "جی ہاں۔ Ride with Pals ہر مالی لین دین پر 4 فیصد کی معمولی انتظامی فیس وصول کرتا ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format."
+msgstr "جی ہاں۔ کلب کا نیوز سیکشن ممبران کو ہر پوسٹ پر تبصرہ کرنے کی سہولت دیتا ہے، جس سے بات چیت فورم کے انداز میں ایک جگہ محفوظ رہتی ہے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can create public activities."
+msgstr "جی ہاں۔ آپ عوامی سرگرمیاں بنا سکتے ہیں جس میں کوئی بھی شامل ہو سکے۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join."
+msgstr "جی ہاں۔ آپ ایک ہی رائڈ ان تمام کلبوں میں پوسٹ کر سکتے ہیں جن کے آپ ممبر ہیں، یا اسے پبلک کر سکتے ہیں تاکہ باہر کے لوگ بھی شرکت کریں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
+msgstr "جی ہاں۔ آپ ہفتہ وار، پندرہ روزہ یا ماہانہ بنیادوں پر باقاعدہ سرگرمیاں ترتیب دے سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can upgrade at any time."
+msgstr "جی ہاں۔ آپ کسی بھی وقت اپنے پلان کو اپ گریڈ کر سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish."
+msgstr "آپ ایڈمنز اور ممبران کے حقوق مقرر کر سکتے ہیں جیسے خبریں پوسٹ کرنا، رائڈز بنانا، اور ڈسکاؤنٹ شیئر کرنا۔ آپ جتنے چاہیں اتنے ایڈمنز بنا سکتے ہیں۔"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "You need a Gold club subscription, a free Stripe account, and you must connect it to the app."
+msgstr "اس کے لیے آپ کو گولڈ کلب سبسکرپشن اور ایک مفت اسٹرائپ اکاؤنٹ کی ضرورت ہے جسے آپ ایپ کے ساتھ منسلک کریں گے۔"

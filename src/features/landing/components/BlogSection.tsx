@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const BlogSection: React.FC = () => {
   return (
@@ -65,7 +66,7 @@ export const BlogSection: React.FC = () => {
                   "var(--token-743cf692-1243-473f-93be-c36de257addf, rgb(255, 255, 255))",
               } as any}
             >
-              Community & Updates
+              <Trans>Community &amp; Updates</Trans>
             </h2>
           </div>
           <div className="framer-62f8ab-container">
@@ -104,7 +105,7 @@ export const BlogSection: React.FC = () => {
                       "var(--extracted-r6o4lv, var(--token-267ef2d9-0982-4b94-a54c-1c19958cb68c, rgb(255, 255, 255)))",
                   } as any}
                 >
-                  View all posts
+                  <Trans>View all posts</Trans>
                 </p>
               </div>
               <div
@@ -314,7 +315,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        CLUB GROWTH
+                        <Trans>CLUB GROWTH</Trans>
                       </p>
                     </div>
                     <div
@@ -332,7 +333,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-1iazjjy"
                         data-styles-preset="mFPkbr_6a"
                       >
-                        How to Launch Your Club and Attract More Riders
+                        <Trans>How to Launch Your Club and Attract More Riders</Trans>
                       </h3>
                     </div>
                     <div
@@ -350,7 +351,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-38u9fz"
                         data-styles-preset="f_lMCwHxq"
                       >
-                        Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff.
+                        <Trans>Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff.</Trans>
                       </p>
                     </div>
                     <div
@@ -392,7 +393,7 @@ export const BlogSection: React.FC = () => {
                                 "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
                             } as any}
                           >
-                            Read more
+                            <Trans>Read more</Trans>
                           </p>
                         </div>
                         <div
@@ -610,7 +611,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        TIPS & TRICKS
+                        <Trans>TIPS &amp; TRICKS</Trans>
                       </p>
                     </div>
                     <div
@@ -628,7 +629,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-y5qli"
                         data-styles-preset="y5FcLWj2c"
                       >
-                        Maximising Ride Analytics to Boost Performance
+                        <Trans>Maximising Ride Analytics to Boost Performance</Trans>
                       </h4>
                     </div>
                     <div
@@ -682,7 +683,7 @@ export const BlogSection: React.FC = () => {
                                 "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
                             } as any}
                           >
-                            Read more
+                            <Trans>Read more</Trans>
                           </p>
                         </div>
                         <div
@@ -894,7 +895,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        COMMUNITY
+                        <Trans>COMMUNITY</Trans>
                       </p>
                     </div>
                     <div
@@ -912,7 +913,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-y5qli"
                         data-styles-preset="y5FcLWj2c"
                       >
-                        Building Trust and Safety in Group Rides
+                        <Trans>Building Trust and Safety in Group Rides</Trans>
                       </h4>
                     </div>
                     <div
@@ -966,7 +967,7 @@ export const BlogSection: React.FC = () => {
                                 "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
                             } as any}
                           >
-                            Read more
+                            <Trans>Read more</Trans>
                           </p>
                         </div>
                         <div
@@ -1178,7 +1179,7 @@ export const BlogSection: React.FC = () => {
                           "--framer-text-transform": "uppercase",
                         } as any}
                       >
-                        SUCCESS STORY
+                        <Trans>SUCCESS STORY</Trans>
                       </p>
                     </div>
                     <div
@@ -1196,7 +1197,7 @@ export const BlogSection: React.FC = () => {
                         className="framer-text framer-styles-preset-y5qli"
                         data-styles-preset="y5FcLWj2c"
                       >
-                        How Metro CC Doubled Their Membership
+                        <Trans>How Metro CC Doubled Their Membership</Trans>
                       </h4>
                     </div>
                     <div
@@ -1250,7 +1251,7 @@ export const BlogSection: React.FC = () => {
                                 "var(--extracted-r6o4lv, var(--variable-reference-gCtuSASlb-AYxsxblIT))",
                             } as any}
                           >
-                            Read more
+                            <Trans>Read more</Trans>
                           </p>
                         </div>
                         <div

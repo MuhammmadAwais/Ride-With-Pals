@@ -1,0 +1,1054 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-09-09 19:10+0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: nl\n"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ mo ($49.99/yr)"
+msgstr "/ mnd ($49.99/jaar)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ month"
+msgstr "/ maand"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ year"
+msgstr "/ jaar"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "01 — FOR RIDERS"
+msgstr "01 — VOOR SPORTERS"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "02 — COMMUNITY"
+msgstr "02 — COMMUNITY"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "03 — FOR CLUBS"
+msgstr "03 — VOOR CLUBS"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "04 — MEMBERSHIP FEES"
+msgstr "04 — LIDMAATSCHAPSKOSTEN"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "A chat for every ride."
+msgstr "Een chat voor elke rit."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
+msgstr "Zeker weten. Ride with Pals is juist ontworpen om de communicatie binnen sportgroepen te verbeteren en een einde te maken aan eindeloze, chaotische WhatsApp-groepen."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Accept or reject applications with one tap"
+msgstr "Accepteer of weiger aanvragen met één tik"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Advanced Performance Analytics"
+msgstr "Geavanceerde Prestatieanalyses"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "All rights reserved."
+msgstr "Alle rechten voorbehouden."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "All-in-one club dashboard with real-time ride tracking"
+msgstr "Alles-in-één clubdashboard met realtime rittenregistratie"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "All-in-One Sports Club Platform"
+msgstr "Alles-in-één sportclubplatform"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Approve members, handle roles, and keep your community engaged and organised effortlessly."
+msgstr "Keur leden goed, beheer rollen en houd je community moeiteloos betrokken en georganiseerd."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "As a club administrator, what permissions can I grant to club members?"
+msgstr "Welke rechten kan ik als clubbeheerder toekennen aan leden?"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Automated monthly leaderboards, distance metrics & badges"
+msgstr "Automatische maandelijkse klassementen, afstandsmetingen & badges"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Basic ride & activity tracking"
+msgstr "Basisregistratie van ritten en activiteiten"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Basic Tier"
+msgstr "Basisniveau"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app."
+msgstr "Beide opties zijn mogelijk: je kunt betalingen handmatig registreren (contant of via bankoverschrijving) of Stripe gebruiken om ze veilig en geautomatiseerd in de app te innen."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Browse & join public activities"
+msgstr "Bekijk en neem deel aan openbare activiteiten"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Browse & Join Rides"
+msgstr "Ontdek & sluit aan bij ritten"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
+msgstr "Bekijk geplande groepsritten met snelheid, afstand en route in één oogopslag. Swipe om direct mee te doen en strijd maandelijks mee in het klassement."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Build your club."
+msgstr "Bouw je club op."
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Building Trust and Safety in Group Rides"
+msgstr "Vertrouwen en veiligheid opbouwen bij groepsritten"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Built-in club chat, announcement board & gear marketplace"
+msgstr "Ingebouwde clubchat, prikbord voor aankondigingen & marktplaats voor uitrusting"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Buy and sell gear with riders you already know"
+msgstr "Koop en verkoop materiaal met sporters die je vertrouwt"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I create activities without belonging to a club?"
+msgstr "Kan ik activiteiten aanmaken zonder lid te zijn van een club?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I create recurring activities?"
+msgstr "Kan ik herhalende ritten inplannen?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I share an activity across multiple clubs?"
+msgstr "Kan ik één activiteit delen over meerdere clubs?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I start for free and upgrade later?"
+msgstr "Kan ik gratis starten en later upgraden?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I use the app without connecting Strava?"
+msgstr "Kan ik de app gebruiken zonder Strava te koppelen?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can users be banned?"
+msgstr "Kunnen gebruikers uit een club worden verwijderd?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Casual Groups"
+msgstr "Vriendengroepen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Chat. Trade."
+msgstr "Chat. Deel."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Climb the ranks."
+msgstr "Stijg in het klassement."
+
+#: src/features/landing/components/CTASection.tsx
+msgid "club & rides?"
+msgstr "club & ritten?"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Club Calendar"
+msgstr "Clubkalender"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "CLUB GROWTH"
+msgstr "CLUBGROEI"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Club Management"
+msgstr "Clubbeheer"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Club Marketplace"
+msgstr "Clubmarktplaats"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Club shop & fee collection"
+msgstr "Clubshop & contributie-inning"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Club shop & membership fee management"
+msgstr "Clubshop & contributiebeheer"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
+msgstr "Clubs met een Gold-abonnement kunnen hun Stripe-account koppelen en een webshop openen om kleding en clubartikelen aan leden te verkopen."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Collect Fees"
+msgstr "Contributie innen"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Commission"
+msgstr "Commissie"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Community"
+msgstr "Community"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "COMMUNITY"
+msgstr "COMMUNITY"
+
+#: src/features/landing/components/BlogSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "Community & Updates"
+msgstr "Community & Nieuws"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Company"
+msgstr "Bedrijf"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Compete by rides attended or total km covered"
+msgstr "Strijd mee op basis van gereden ritten of totaal afgelegde kilometers"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes."
+msgstr "Verbind met je team, organiseer ritten en houd je leden enthousiast — starten kost slechts enkele minuten."
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Contact"
+msgstr "Contact"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Core Features"
+msgstr "Kernfuncties"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Create a club (up to 15 members)"
+msgstr "Maak een club aan (tot 15 leden)"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Create and build community with "
+msgstr "Bouw en versterk je community met "
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel."
+msgstr "Maak en beheer meerdere clubs vanuit één overzichtelijk dashboard. Plaats nieuwsberichten, beheer aanmeldingen en houd je club gestroomlijnd."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Create Club"
+msgstr "Club Aanmaken"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Create community."
+msgstr "Versterk de community."
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Create your profile"
+msgstr "Maak je profiel aan"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Cross-Club"
+msgstr "Tussen Clubs"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Cycling, running and swimming"
+msgstr "Wielrennen, hardlopen en zwemmen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Define the amount and membership validity period."
+msgstr "Bepaal het contributiebedrag en de geldigheidsperiode."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Deposit, withdraw, and pay without leaving the app"
+msgstr "Stort, neem op en betaal direct binnen de app"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Designed for athletes who want unlimited access to activities, marketplace, and analytics."
+msgstr "Ontworpen voor atleten die onbeperkte toegang willen tot ritten, marktplaats en prestatie-inzichten."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Designed for clubs."
+msgstr "Ontworpen voor clubs."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Discover clubs. Join activities."
+msgstr "Ontdek clubs. Doe mee aan activiteiten."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Disorganized WhatsApp groups & lost ride details"
+msgstr "Onhandige WhatsApp-groepen en verloren ritdetails"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Do I need to be a Premium user to create a club?"
+msgstr "Moet ik Premium-gebruiker zijn om een club op te richten?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Do I need to belong to a club to use the app?"
+msgstr "Moet ik lid zijn van een club om de app te kunnen gebruiken?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does it work for skating, hiking, or other sports clubs?"
+msgstr "Werkt het ook voor skeeleren, wandelen of andere sportclubs?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does Ride with Pals process payments, or does it only record them?"
+msgstr "Verwerkt Ride with Pals betalingen rechtstreeks of registreert het alleen transacties?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does the app charge a commission on each payment made through the app?"
+msgstr "Brengt de app commissie in rekening per betaling?"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Download route files and sync with Strava classification"
+msgstr "Download GPX-routes en synchroniseer met Strava-statistieken"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Essential access to browse activities, join clubs, and connect with your community."
+msgstr "De essentiële toegang om activiteiten te bekijken, lid te worden van clubs en contact te houden met je community."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Everything in Free Limited Plan"
+msgstr "Alles uit het Gratis Beperkte Plan"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Exclusive discount codes on gear and club events"
+msgstr "Exclusieve kortingscodes op kleding en club-evenementen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "Features"
+msgstr "Functies"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Flat yearly rate — no member limits"
+msgstr "Vast jaartarief — geen ledenlimiet"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Flexible Fee Setup"
+msgstr "Flexibele contributie-instelling"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "for athletes & clubs."
+msgstr "voor atleten & clubs."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Athletes & Riders"
+msgstr "Voor Sporters & Renners"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "For club owners"
+msgstr "Voor clubeigenaren"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Club Owners"
+msgstr "Voor Clubeigenaren"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Club Owners & Managers"
+msgstr "Voor Clubeigenaren & Bestuurders"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Riders"
+msgstr "Voor Sporters & Renners"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Forum & News"
+msgstr "Forum & Nieuws"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Fragmented member chats & missing announcement hub"
+msgstr "Verspreide groepsgesprekken en gebrek aan een centraal mededelingenbord"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Free"
+msgstr "Gratis"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Free Limited Plan"
+msgstr "Gratis Beperkt Plan"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Get Premium Athlete"
+msgstr "Word Premium Atleet"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Get started free"
+msgstr "Start gratis"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "Get Started Free"
+msgstr "Start Nu Gratis"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Gold Club Plan"
+msgstr "Gold Club Plan"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Got questions?"
+msgstr "Vragen?"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "GPX & Strava Sync"
+msgstr "GPX- & Strava-synchronisatie"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides."
+msgstr "Groepsgesprekken, privéberichten, een geïntegreerde marktplaats en digitale portemonnee: alles wat je club actief houdt tussen de ritten door."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Here's everything you need to know before getting started. If you have more questions, feel free to reach out to our team."
+msgstr "Hier vind je alle informatie om aan de slag te gaan. Heb je verdere vragen, neem dan gerust contact met ons op."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How are transactions carried out through the marketplace?"
+msgstr "Hoe vinden betalingen en leveringen plaats via de marktplaats?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How can I collect membership fees from my members?"
+msgstr "Hoe kan ik contributie innen bij mijn clubleden?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How does the marketplace work?"
+msgstr "Hoe werkt de marktplaats?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How does the online shop work?"
+msgstr "Hoe werkt de webshop van de club?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How is it different from Strava?"
+msgstr "Waarin verschilt het van Strava?"
+
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "How it Works"
+msgstr "Hoe het Werkt"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "How Metro CC Doubled Their Membership"
+msgstr "Hoe Metro CC het aantal leden wist te verdubbelen"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "How to Launch Your Club and Attract More Riders"
+msgstr "Hoe je je club lanceert en meer sporters aantrekt"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "I'm not part of an official club, but my friends and I ride together. Can we use the app?"
+msgstr "Ik zit niet bij een officiële vereniging maar fiets met vrienden. Kunnen wij de app gebruiken?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard."
+msgstr "Met een Gold-clubabonnement kun je contributiebedragen instellen, contante betalingen afvinken en betaalverzoeken via Stripe versturen vanuit je dashboard."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "In-App Wallet"
+msgstr "In-App Portemonnee"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Integrated Shop"
+msgstr "Geïntegreerde Clubshop"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Integrated wallet, automated member dues & permissions"
+msgstr "Ingebouwde portemonnee, automatische contributie & rolbeheer"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is it a social app or a management tool?"
+msgstr "Is het een sociaal platform of een beheertool?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is it only for cycling?"
+msgstr "Is het uitsluitend bedoeld voor wielrennen?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is there a chat within the app?"
+msgstr "Zit er een chatfunctie in de app?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is there a forum-style interaction feature?"
+msgstr "Is er een forumfunctie om van gedachten te wisselen?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation."
+msgstr "Het is beide. Ride with Pals combineert community-gemak (chats, marktplaats en ritten) met professionele tools voor verenigingen: contributies, clubshop, rolverdeling en planning."
+
+#: src/features/landing/components/CTASection.tsx
+msgid "Join athletes and club leaders building the ultimate sports community."
+msgstr "Sluit je aan bij atleten en clubleiders die bouwen aan de ultieme sportcommunity."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Join Request Control"
+msgstr "Aanvragenbeheer"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Join the Club"
+msgstr "Meld je aan bij de Club"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Join the ride, track your progress, build connections, and share your experiences with the community."
+msgstr "Rijd mee, houd je vooruitgang bij, ontmoet nieuwe sportvrienden en deel je avonturen met de community."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Keep every ride, event, and activity organized in one place"
+msgstr "Houd elke rit, tocht en clubactiviteit overzichtelijk bijeen"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff."
+msgstr "Leer hoe je van een klein groepje vrienden uitgroeit tot een toonaangevende club. Evenementen, betrokkenheid en administratie automatiseren met Ride with Pals."
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Legal"
+msgstr "Juridisch"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Login"
+msgstr "Inloggen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Made simple."
+msgstr "Eenvoudig gemaakt."
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free."
+msgstr "Regel alles op één plek: geplande ritten, clubberichten, shop, marktplaats, contributies en communicatie. Geen chaotische WhatsApp-groepen meer. En helemaal gratis."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Manual member tracking & paper waivers"
+msgstr "Handmatige ledenlijsten en papieren verklaringen"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Manual Payment Tracking & Cash Updates"
+msgstr "Contante betalingen en handmatige registratie"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Manual Payment Updates"
+msgstr "Handmatige betalingsupdates"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Mark members as paid when they pay outside the app."
+msgstr "Vink leden handmatig af als betaald wanneer ze buiten de app om afrekenen."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Market Trades"
+msgstr "Marktplaatshandel"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Marketplace"
+msgstr "Marktplaats"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Maximising Ride Analytics to Boost Performance"
+msgstr "Prestaties verbeteren met ritdata en analyses"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Member Discounts"
+msgstr "Ledenkortingen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Member Management"
+msgstr "Ledenbeheer"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Membership"
+msgstr "Lidmaatschap"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Membership fees."
+msgstr "Contributie."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Moderation"
+msgstr "Moderatie"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Monthly"
+msgstr "Maandelijks"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Monthly Leaderboards"
+msgstr "Maandelijkse Klassementen"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Most popular"
+msgstr "Meest gekozen"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Multiple Admins & Co-Owner Roles"
+msgstr "Meerdere beheerders & mede-eigenaarsrollen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Multisport activities"
+msgstr "Multisport-activiteiten"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "News & Announcements"
+msgstr "Nieuws & Mededelingen"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "next level"
+msgstr "volgende niveau"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No integrated marketplace, sub-accounts, or event wallet"
+msgstr "Geen marktplaats, subaccounts of evenementenportemonnee"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No live leaderboards, badges, or Strava sync"
+msgstr "Geen live klassementen, badges of Strava-koppeling"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water)."
+msgstr "Nee. Ride with Pals is gemaakt voor wielren-, hardloop- en triatlonverenigingen. Daarom gebruiken we de term “Activiteiten”, waaronder fietsen (weg, gravel, MTB), hardlopen (weg, trail) en zwemmen (bad of open water) vallen."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan."
+msgstr "Nee. Je hoeft je alleen gratis als sporter aan te melden. Vervolgens kun je direct een club oprichten en kiezen voor het Gratis of Gold-plan."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. You can use it as an individual athlete, join clubs, or take part in public activities."
+msgstr "Nee. Je kunt de app individueel gebruiken, lid worden van clubs of aanhaken bij openbare ritten."
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Offer club merch, event tickets, and gear directly to your members without external tools."
+msgstr "Bied clubkleding, tickets en accessoires rechtstreeks aan je leden aan zonder tussenpartijen."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "One platform."
+msgstr "Eén platform."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Online Club Merchandise Shop"
+msgstr "Online clubkledingshop"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Online Shop"
+msgstr "Webshop"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Organise rides & events"
+msgstr "Organiseer tochten & evenementen"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Other Sports"
+msgstr "Andere Sporten"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Other Tools"
+msgstr "Andere Tools"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Overview"
+msgstr "Overzicht"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Paid Activities"
+msgstr "Betaalde Activiteiten"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Paid Activities & Event Ticketing"
+msgstr "Betaalde evenementen & ticketverkoop"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Payment Options"
+msgstr "Betaalmogelijkheden"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Payment Tracking"
+msgstr "Betalingsstatus"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Perfect for athletes"
+msgstr "Ideaal voor sporters"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Permissions"
+msgstr "Rechten & Toegang"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Platform"
+msgstr "Platform"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Platform Type"
+msgstr "Platformtype"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Platforms"
+msgstr "Platformen"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Post updates and records for members to engage with"
+msgstr "Plaats updates en prestaties om interactie te stimuleren"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Premium Athlete"
+msgstr "Premium Atleet"
+
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+#: src/features/landing/components/PricingSection.tsx
+msgid "Pricing"
+msgstr "Tarieven"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Priority member chat support"
+msgstr "Prioritaire chatsupport voor leden"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Problems Solved"
+msgstr "Opgeloste Problemen"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Public club access & group chats"
+msgstr "Toegang tot openbare clubs & groepschats"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Public Rides"
+msgstr "Openbare Ritten"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Questions? Talk to us →"
+msgstr "Vragen? Neem contact op →"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Read more"
+msgstr "Lees meer"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "READY "
+msgstr "KLAAR "
+
+#: src/features/landing/components/CTASection.tsx
+msgid "Ready to elevate your "
+msgstr "Klaar om je "
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Real plans"
+msgstr "Echte abonnementen"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Ride Analytics"
+msgstr "Ritstatistieken"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Ride and connect"
+msgstr "Rijd mee en ontmoet elkaar"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride Chat"
+msgstr "Rittenchat"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Ride With Pals"
+msgstr "Ride With Pals"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management."
+msgstr "Ride with Pals maakt een einde aan onsamenhangende ritten, versnipperde WhatsApp-berichten, gedoe met de verkoop van clubkleding, het ontbreken van een betrouwbare tweedehandsmarktplaats en de administratieve rompslomp rondom contributies."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
+msgstr "Ride with Pals is het alles-in-één platform voor wielren-, hardloop- en triatlonclubs waarmee je ritten organiseert, leden beheert, contributie int, artikelen verkoopt en een hechte community opbouwt."
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "RIDE?"
+msgstr "OM TE RIJDEN?"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Save over 58% with annual billing ($49.99/year)"
+msgstr "Bespaar meer dan 58% bij jaarlijkse betaling ($49.99/jaar)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Save up to 58%"
+msgstr "Bespaar tot 58%"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Say goodbye to endless WhatsApp chats."
+msgstr "Zeg maar dag tegen oneindige WhatsApp-groepen."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Schedule"
+msgstr "Inplannen"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates."
+msgstr "Plan groepsritten, beheer aanmeldingen en houd iedereen automatisch op de hoogte van wijzigingen."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Seamless ride creation with GPX routes & leader controls"
+msgstr "Vlot routes uitzetten met GPX-bestanden en wegkapitein-functies"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "See all your active events, clubs, and tasks in one unified view — no more toggling between apps."
+msgstr "Bekijk geplande evenementen, clubberichten en taken op één scherm: schakelen tussen apps is verleden tijd."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "See who has paid, who needs to renew, and who is not up to date."
+msgstr "Zie direct wie voldaan heeft, wie moet verlengen en wie een achterstand heeft."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Send secure payment requests directly through Stripe."
+msgstr "Verstuur veilige betaalverzoeken rechtstreeks via Stripe."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
+msgstr "Stel de contributie in, volg betalingen, stuur Stripe-verzoeken en houd de status van elk lid actueel via een intuïtief dashboard."
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll."
+msgstr "Maak je rennersprofiel aan of sticht je eigen club. Voeg je fietsen toe, stel voorkeuren in en je bent klaar om te vertrekken."
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Sign up"
+msgstr "Aanmelden"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Smart Dashboard"
+msgstr "Slim Dashboard"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "sport clubs and ride squads"
+msgstr "sportverenigingen en trainingsgroepen"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Sports"
+msgstr "Sporten"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start for Free"
+msgstr "Gratis Beginnen"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start for free on web & mobile"
+msgstr "Begin gratis op web & mobiel"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start Gold Club"
+msgstr "Start Gold Club"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Stay connected."
+msgstr "Blijf in contact."
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 1"
+msgstr "Stap 1"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 2"
+msgstr "Stap 2"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 3"
+msgstr "Stap 3"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Strava & GPS Route Syncing"
+msgstr "Synchronisatie met Strava & GPS-routes"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Strava & GPX Route Syncing"
+msgstr "Strava- & GPX-synchronisatie"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
+msgstr "Strava richt zich op individuele sportprestaties. Ride with Pals is ontworpen om een complete club te leiden: activiteiten, leden, betalingen, rechten, kledingshop en interne communicatie."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Strava Sync"
+msgstr "Strava-koppeling"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Stripe Automated Fee Collection"
+msgstr "Geautomatiseerde inning via Stripe"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Stripe Payments"
+msgstr "Stripe-betalingen"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "SUCCESS STORY"
+msgstr "SUCCESVERHAAL"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Take your club to the "
+msgstr "Til je club naar het "
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "The app for managing"
+msgstr "Dé app voor het beheren van"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "The complete club operating system — collect member fees, run your club shop, and grow."
+msgstr "Het complete besturingssysteem voor sportverenigingen: in contributies, run je kledingshop en laat je club groeien."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
+msgstr "De marktplaats is bedoeld voor veilige onderlinge ruil en verkoop tussen leden. Betalingen lopen niet via pin in de app: overhandiging en afrekening gebeuren persoonlijk tussen de leden."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission."
+msgstr "De marktplaats is een besloten advertentieruimte voor clubleden. Verkoop je materiaal aan betrouwbare clubgenoten zonder provisie voor de club of de app."
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
+msgstr "Het ultieme ecosysteem voor wielren-, loop- en triatlonclubs. Beheer activiteiten, leden en financiën op één platform, gebouwd door en voor sporters."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "There’s a smarter way to manage your club"
+msgstr "Er is een slimmere manier om je club te leiden"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "TIPS & TRICKS"
+msgstr "TIPS & TRUCS"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "TO "
+msgstr "NAAR HET "
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Track your personal bests and club statistics to understand your performance flow over time."
+msgstr "Bekijk persoonlijke records en teamstatistieken om je ontwikkeling door de tijd heen te volgen."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Transparent pricing"
+msgstr "Transparante tarieven"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Two ways to use it, one shared philosophy: simple, visual, and useful."
+msgstr "Twee manieren van gebruik, één filosofie: overzichtelijk, visueel en doeltreffend."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Club Members (beyond 15)"
+msgstr "Onbeperkt aantal clubleden (meer dan 15)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Group Rides & Activities"
+msgstr "Onbeperkt groepsritten & activiteiten"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited marketplace listings"
+msgstr "Onbeperkt aantal marktplaats-advertenties"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Marketplace Listings"
+msgstr "Onbeperkt aantal marktplaats-advertenties"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Up to 2 items in Marketplace"
+msgstr "Maximaal 2 artikelen op de marktplaats"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Upcoming rides with pace, distance and ride type"
+msgstr "Aankomende ritten met tempo, afstand en terrein"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Upgrade"
+msgstr "Upgraden"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "User Roles"
+msgstr "Gebruikersrollen"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Verified Gold Club Crown Badge"
+msgstr "Geverifieerde Gold Club Kroon-badge"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Verified Pro Athlete Badge"
+msgstr "Geverifieerde Pro Atleet-badge"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "View all members, assign roles, message directly"
+msgstr "Bekijk ledenlijsten, wijs functies toe en chat rechtstreeks"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "View all posts"
+msgstr "Bekijk alle artikelen"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "vs Strava"
+msgstr "vs Strava"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Watch Video"
+msgstr "Bekijk Video"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "We've got answers."
+msgstr "Wij hebben de antwoorden."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What do I need to create paid activities or manage membership fee payments?"
+msgstr "Wat heb ik nodig om betaalde ritten te organiseren of contributies te innen?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What is Ride with Pals?"
+msgstr "Wat is Ride with Pals?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What problems does it solve?"
+msgstr "Welke knelpunten lost de app op?"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees."
+msgstr "Of je nu individueel sport of aan het roer staat van een groeiende vereniging: kies het abonnement dat bij je past. Heldere prijzen zonder verborgen kosten."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Why Ride With Pals?"
+msgstr "Waarom Ride With Pals?"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Yearly"
+msgstr "Jaarlijks"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes, absolutely. Strava is optional."
+msgstr "Jazeker. Het koppelen van Strava is geheel optioneel."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app."
+msgstr "Ja, uitstekend zelfs. Hoewel de hoofdmoot bestaat uit Wielrennen, Hardlopen en Triatlon, kan elke sport waarbij groepen routes volgen, GPS-bestanden gebruiken en tijden registreren hier de perfecte clubtool in vinden."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club."
+msgstr "Ja. Voor elke geplande activiteit opent zich automatisch een groepschat. Daarnaast kun je 1-op-1 berichten sturen naar clubgenoten."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. Administrators can accept or remove members."
+msgstr "Ja. Beheerders kunnen aanmeldingen goedkeuren of leden uit de club verwijderen."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. Ride with Pals charges a small 4% management fee on each transaction."
+msgstr "Ja. Ride with Pals rekent een bescheiden beheervergoeding van 4% per transactie."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format."
+msgstr "Ja. Onder elk nieuwsbericht kunnen leden reageren in een overzichtelijke forumstructuur."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can create public activities."
+msgstr "Ja. Je kunt ritten en trainingen openbaar toegankelijk maken."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join."
+msgstr "Ja. Je kunt dezelfde rit in meerdere clubs plaatsen waar je lid van bent, of openbaar zetten zodat ook externe sporters kunnen meedoen."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
+msgstr "Ja. Je kunt ritten wekelijks, tweewekelijks of maandelijks laten terugkeren."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can upgrade at any time."
+msgstr "Ja. Je kunt op ieder gewenst moment overstappen naar een hoger plan."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish."
+msgstr "Je bepaalt zelf welke bevoegdheden leden en bestuursleden krijgen (berichten plaatsen, ritten aanmaken, kortingen delen) en kunt zoveel medebeheerders aanwijzen als nodig."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "You need a Gold club subscription, a free Stripe account, and you must connect it to the app."
+msgstr "Je hebt een Gold-clubabonnement nodig, een gratis Stripe-account en de actieve koppeling in de app."

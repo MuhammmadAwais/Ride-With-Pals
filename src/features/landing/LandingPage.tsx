@@ -13,7 +13,6 @@ import { HowitWorksSection } from './components/HowitWorksSection';
 import { BentoSection } from './components/BentoSection';
 import { FeaturesSection } from './components/FeaturesSection';
 import { ComparisonSection } from './components/ComparisonSection';
-import { TestimonialsSection } from './components/TestimonialsSection';
 import { PricingSection } from './components/PricingSection';
 import { FAQSection } from './components/FAQSection';
 import { BlogSection } from './components/BlogSection';

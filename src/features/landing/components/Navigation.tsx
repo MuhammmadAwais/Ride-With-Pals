@@ -1,5 +1,7 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
+import { Trans } from "@lingui/react/macro";
+import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 export const Navigation: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,12 +22,6 @@ export const Navigation: React.FC = () => {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  const navLinks = [
-    { label: "How it works", href: "/#how-it-works" },
-    { label: "Features", href: "/#features" },
-    { label: "Pricing", href: "/#pricing" },
-    { label: "Blog", href: "/blog#blog" },
-  ];
 
   const css = `
     .rwp-nav {
@@ -239,6 +235,15 @@ export const Navigation: React.FC = () => {
       right: -120px;
       pointer-events: none;
     }
+    .rwp-mobile-lang-row {
+      display: flex;
+      justify-content: center;
+      padding: 8px 0 16px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.4s ease 0.28s, transform 0.4s ease 0.28s;
+    }
+    .rwp-mobile-drawer.open .rwp-mobile-lang-row { opacity: 1; transform: translateY(0); }
     @media (max-width: 768px) {
       .rwp-nav { padding: 0 20px; }
       .rwp-nav-center { display: none; }
@@ -255,13 +260,28 @@ export const Navigation: React.FC = () => {
           <img src="/Images/Logo.png" alt="Ride With Pals" fetchPriority="high" decoding="async" />
         </a>
         <div className="rwp-nav-center">
-          {navLinks.map((link) => (
-            <a key={link.label} className="rwp-nav-link" href={link.href}>{link.label}</a>
-          ))}
+          <a className="rwp-nav-link" href="/#how-it-works">
+            <Trans>How it Works</Trans>
+          </a>
+          <a className="rwp-nav-link" href="/#features">
+            <Trans>Features</Trans>
+          </a>
+          <a className="rwp-nav-link" href="/#pricing">
+            <Trans>Pricing</Trans>
+          </a>
+          <a className="rwp-nav-link" href="/blog#blog">
+            <Trans>Community &amp; Updates</Trans>
+          </a>
         </div>
         <div className="rwp-nav-actions">
-          <a className="rwp-btn-login" href="/login" id="landing-login-btn">Login</a>
-          <a className="rwp-btn-signup" href="/signup" id="landing-signup-btn">Sign up</a>
+          {/* Language switcher */}
+          <LanguageSwitcher variant="dark" />
+          <a className="rwp-btn-login" href="/login" id="landing-login-btn">
+            <Trans>Login</Trans>
+          </a>
+          <a className="rwp-btn-signup" href="/signup" id="landing-signup-btn">
+            <Trans>Sign up</Trans>
+          </a>
         </div>
         <button
           className={"rwp-hamburger" + (menuOpen ? " open" : "")}
@@ -277,15 +297,29 @@ export const Navigation: React.FC = () => {
       <div className={"rwp-mobile-drawer" + (menuOpen ? " open" : "")} role="dialog" aria-modal="true">
         <div className="rwp-mobile-orb" />
         <div className="rwp-mobile-drawer-inner">
-          {navLinks.map((link) => (
-            <a key={link.label} className="rwp-mobile-link" href={link.href} onClick={() => setMenuOpen(false)}>
-              {link.label}
-            </a>
-          ))}
+          <a className="rwp-mobile-link" href="/#how-it-works" onClick={() => setMenuOpen(false)}>
+            <Trans>How it Works</Trans>
+          </a>
+          <a className="rwp-mobile-link" href="/#features" onClick={() => setMenuOpen(false)}>
+            <Trans>Features</Trans>
+          </a>
+          <a className="rwp-mobile-link" href="/#pricing" onClick={() => setMenuOpen(false)}>
+            <Trans>Pricing</Trans>
+          </a>
+          <a className="rwp-mobile-link" href="/blog#blog" onClick={() => setMenuOpen(false)}>
+            <Trans>Community &amp; Updates</Trans>
+          </a>
+        </div>
+        <div className="rwp-mobile-lang-row">
+          <LanguageSwitcher variant="dark" />
         </div>
         <div className="rwp-mobile-actions">
-          <a className="rwp-mobile-btn-login" href="/login" onClick={() => setMenuOpen(false)}>Login</a>
-          <a className="rwp-mobile-btn-signup" href="/signup" onClick={() => setMenuOpen(false)}>Get started free</a>
+          <a className="rwp-mobile-btn-login" href="/login" onClick={() => setMenuOpen(false)}>
+            <Trans>Login</Trans>
+          </a>
+          <a className="rwp-mobile-btn-signup" href="/signup" onClick={() => setMenuOpen(false)}>
+            <Trans>Get started free</Trans>
+          </a>
         </div>
       </div>
     </>

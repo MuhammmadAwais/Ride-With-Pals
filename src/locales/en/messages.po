@@ -1,0 +1,1060 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-09-09 18:43+0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ mo ($49.99/yr)"
+msgstr "/ mo ($49.99/yr)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ month"
+msgstr "/ month"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "/ year"
+msgstr "/ year"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "01 — FOR RIDERS"
+msgstr "01 — FOR RIDERS"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "02 — COMMUNITY"
+msgstr "02 — COMMUNITY"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "03 — FOR CLUBS"
+msgstr "03 — FOR CLUBS"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "04 — MEMBERSHIP FEES"
+msgstr "04 — MEMBERSHIP FEES"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "A chat for every ride."
+msgstr "A chat for every ride."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
+msgstr "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Accept or reject applications with one tap"
+msgstr "Accept or reject applications with one tap"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Advanced Performance Analytics"
+msgstr "Advanced Performance Analytics"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "All rights reserved."
+msgstr "All rights reserved."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "All-in-one club dashboard with real-time ride tracking"
+msgstr "All-in-one club dashboard with real-time ride tracking"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "All-in-One Sports Club Platform"
+msgstr "All-in-One Sports Club Platform"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Approve members, handle roles, and keep your community engaged and organised effortlessly."
+msgstr "Approve members, handle roles, and keep your community engaged and organised effortlessly."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "As a club administrator, what permissions can I grant to club members?"
+msgstr "As a club administrator, what permissions can I grant to club members?"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Automated monthly leaderboards, distance metrics & badges"
+msgstr "Automated monthly leaderboards, distance metrics & badges"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Basic ride & activity tracking"
+msgstr "Basic ride & activity tracking"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Basic Tier"
+msgstr "Basic Tier"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app."
+msgstr "Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Browse & join public activities"
+msgstr "Browse & join public activities"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Browse & Join Rides"
+msgstr "Browse & Join Rides"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
+msgstr "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Build your club."
+msgstr "Build your club."
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Building Trust and Safety in Group Rides"
+msgstr "Building Trust and Safety in Group Rides"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Built-in club chat, announcement board & gear marketplace"
+msgstr "Built-in club chat, announcement board & gear marketplace"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Buy and sell gear with riders you already know"
+msgstr "Buy and sell gear with riders you already know"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I create activities without belonging to a club?"
+msgstr "Can I create activities without belonging to a club?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I create recurring activities?"
+msgstr "Can I create recurring activities?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I share an activity across multiple clubs?"
+msgstr "Can I share an activity across multiple clubs?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I start for free and upgrade later?"
+msgstr "Can I start for free and upgrade later?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can I use the app without connecting Strava?"
+msgstr "Can I use the app without connecting Strava?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Can users be banned?"
+msgstr "Can users be banned?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Casual Groups"
+msgstr "Casual Groups"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Chat. Trade."
+msgstr "Chat. Trade."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Climb the ranks."
+msgstr "Climb the ranks."
+
+#: src/features/landing/components/CTASection.tsx
+msgid "club & rides?"
+msgstr "club & rides?"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Club Calendar"
+msgstr "Club Calendar"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "CLUB GROWTH"
+msgstr "CLUB GROWTH"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Club Management"
+msgstr "Club Management"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Club Marketplace"
+msgstr "Club Marketplace"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Club shop & fee collection"
+msgstr "Club shop & fee collection"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Club shop & membership fee management"
+msgstr "Club shop & membership fee management"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
+msgstr "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Collect Fees"
+msgstr "Collect Fees"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Commission"
+msgstr "Commission"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Community"
+msgstr "Community"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "COMMUNITY"
+msgstr "COMMUNITY"
+
+#: src/features/landing/components/BlogSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "Community & Updates"
+msgstr "Community & Updates"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Company"
+msgstr "Company"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Compete by rides attended or total km covered"
+msgstr "Compete by rides attended or total km covered"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes."
+msgstr "Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes."
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Contact"
+msgstr "Contact"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Core Features"
+msgstr "Core Features"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Create a club (up to 15 members)"
+msgstr "Create a club (up to 15 members)"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Create and build community with "
+msgstr "Create and build community with "
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel."
+msgstr "Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Create Club"
+msgstr "Create Club"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Create community."
+msgstr "Create community."
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Create your profile"
+msgstr "Create your profile"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Cross-Club"
+msgstr "Cross-Club"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Cycling, running and swimming"
+msgstr "Cycling, running and swimming"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Define the amount and membership validity period."
+msgstr "Define the amount and membership validity period."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Deposit, withdraw, and pay without leaving the app"
+msgstr "Deposit, withdraw, and pay without leaving the app"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Designed for athletes who want unlimited access to activities, marketplace, and analytics."
+msgstr "Designed for athletes who want unlimited access to activities, marketplace, and analytics."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Designed for clubs."
+msgstr "Designed for clubs."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Discover clubs. Join activities."
+msgstr "Discover clubs. Join activities."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Disorganized WhatsApp groups & lost ride details"
+msgstr "Disorganized WhatsApp groups & lost ride details"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Do I need to be a Premium user to create a club?"
+msgstr "Do I need to be a Premium user to create a club?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Do I need to belong to a club to use the app?"
+msgstr "Do I need to belong to a club to use the app?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does it work for skating, hiking, or other sports clubs?"
+msgstr "Does it work for skating, hiking, or other sports clubs?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does Ride with Pals process payments, or does it only record them?"
+msgstr "Does Ride with Pals process payments, or does it only record them?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Does the app charge a commission on each payment made through the app?"
+msgstr "Does the app charge a commission on each payment made through the app?"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Download route files and sync with Strava classification"
+msgstr "Download route files and sync with Strava classification"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Essential access to browse activities, join clubs, and connect with your community."
+msgstr "Essential access to browse activities, join clubs, and connect with your community."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Everything in Free Limited Plan"
+msgstr "Everything in Free Limited Plan"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Exclusive discount codes on gear and club events"
+msgstr "Exclusive discount codes on gear and club events"
+
+#: src/features/landing/components/FeaturesSection.tsx
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "Features"
+msgstr "Features"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Flat yearly rate — no member limits"
+msgstr "Flat yearly rate — no member limits"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Flexible Fee Setup"
+msgstr "Flexible Fee Setup"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "for athletes & clubs."
+msgstr "for athletes & clubs."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Athletes & Riders"
+msgstr "For Athletes & Riders"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "For club owners"
+msgstr "For club owners"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Club Owners"
+msgstr "For Club Owners"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Club Owners & Managers"
+msgstr "For Club Owners & Managers"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "For Riders"
+msgstr "For Riders"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Forum & News"
+msgstr "Forum & News"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Fragmented member chats & missing announcement hub"
+msgstr "Fragmented member chats & missing announcement hub"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Free"
+msgstr "Free"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Free Limited Plan"
+msgstr "Free Limited Plan"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Get Premium Athlete"
+msgstr "Get Premium Athlete"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Get started free"
+msgstr "Get started free"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "Get Started Free"
+msgstr "Get Started Free"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Gold Club Plan"
+msgstr "Gold Club Plan"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Got questions?"
+msgstr "Got questions?"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "GPX & Strava Sync"
+msgstr "GPX & Strava Sync"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides."
+msgstr "Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Here's everything you need to know before getting started. If you have more questions, feel free to reach out to our team."
+msgstr "Here's everything you need to know before getting started. If you have more questions, feel free to reach out to our team."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How are transactions carried out through the marketplace?"
+msgstr "How are transactions carried out through the marketplace?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How can I collect membership fees from my members?"
+msgstr "How can I collect membership fees from my members?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How does the marketplace work?"
+msgstr "How does the marketplace work?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How does the online shop work?"
+msgstr "How does the online shop work?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "How is it different from Strava?"
+msgstr "How is it different from Strava?"
+
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+msgid "How it Works"
+msgstr "How it Works"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "How Metro CC Doubled Their Membership"
+msgstr "How Metro CC Doubled Their Membership"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "How to Launch Your Club and Attract More Riders"
+msgstr "How to Launch Your Club and Attract More Riders"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "I'm not part of an official club, but my friends and I ride together. Can we use the app?"
+msgstr "I'm not part of an official club, but my friends and I ride together. Can we use the app?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard."
+msgstr "If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "In-App Wallet"
+msgstr "In-App Wallet"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Integrated Shop"
+msgstr "Integrated Shop"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Integrated wallet, automated member dues & permissions"
+msgstr "Integrated wallet, automated member dues & permissions"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is it a social app or a management tool?"
+msgstr "Is it a social app or a management tool?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is it only for cycling?"
+msgstr "Is it only for cycling?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is there a chat within the app?"
+msgstr "Is there a chat within the app?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Is there a forum-style interaction feature?"
+msgstr "Is there a forum-style interaction feature?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation."
+msgstr "It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation."
+
+#: src/features/landing/components/CTASection.tsx
+msgid "Join athletes and club leaders building the ultimate sports community."
+msgstr "Join athletes and club leaders building the ultimate sports community."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Join Request Control"
+msgstr "Join Request Control"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Join the Club"
+msgstr "Join the Club"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Join the ride, track your progress, build connections, and share your experiences with the community."
+msgstr "Join the ride, track your progress, build connections, and share your experiences with the community."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Keep every ride, event, and activity organized in one place"
+msgstr "Keep every ride, event, and activity organized in one place"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff."
+msgstr "Learn how to go from a small group of friends to a massive local community. We cover events, member engagement, and using Ride with Pals to automate the boring stuff."
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Legal"
+msgstr "Legal"
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Login"
+msgstr "Login"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Made simple."
+msgstr "Made simple."
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free."
+msgstr "Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Manual member tracking & paper waivers"
+msgstr "Manual member tracking & paper waivers"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Manual Payment Tracking & Cash Updates"
+msgstr "Manual Payment Tracking & Cash Updates"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Manual Payment Updates"
+msgstr "Manual Payment Updates"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Mark members as paid when they pay outside the app."
+msgstr "Mark members as paid when they pay outside the app."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Market Trades"
+msgstr "Market Trades"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Marketplace"
+msgstr "Marketplace"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Maximising Ride Analytics to Boost Performance"
+msgstr "Maximising Ride Analytics to Boost Performance"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Member Discounts"
+msgstr "Member Discounts"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Member Management"
+msgstr "Member Management"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Membership"
+msgstr "Membership"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Membership fees."
+msgstr "Membership fees."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Moderation"
+msgstr "Moderation"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Monthly"
+msgstr "Monthly"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Monthly Leaderboards"
+msgstr "Monthly Leaderboards"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Most popular"
+msgstr "Most popular"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Multiple Admins & Co-Owner Roles"
+msgstr "Multiple Admins & Co-Owner Roles"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Multisport activities"
+msgstr "Multisport activities"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "News & Announcements"
+msgstr "News & Announcements"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "next level"
+msgstr "next level"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No integrated marketplace, sub-accounts, or event wallet"
+msgstr "No integrated marketplace, sub-accounts, or event wallet"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No live leaderboards, badges, or Strava sync"
+msgstr "No live leaderboards, badges, or Strava sync"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water)."
+msgstr "No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water)."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan."
+msgstr "No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "No. You can use it as an individual athlete, join clubs, or take part in public activities."
+msgstr "No. You can use it as an individual athlete, join clubs, or take part in public activities."
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Offer club merch, event tickets, and gear directly to your members without external tools."
+msgstr "Offer club merch, event tickets, and gear directly to your members without external tools."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "One platform."
+msgstr "One platform."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Online Club Merchandise Shop"
+msgstr "Online Club Merchandise Shop"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Online Shop"
+msgstr "Online Shop"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Organise rides & events"
+msgstr "Organise rides & events"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Other Sports"
+msgstr "Other Sports"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Other Tools"
+msgstr "Other Tools"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Overview"
+msgstr "Overview"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Paid Activities"
+msgstr "Paid Activities"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Paid Activities & Event Ticketing"
+msgstr "Paid Activities & Event Ticketing"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Payment Options"
+msgstr "Payment Options"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Payment Tracking"
+msgstr "Payment Tracking"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Perfect for athletes"
+msgstr "Perfect for athletes"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Permissions"
+msgstr "Permissions"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "Platform"
+msgstr "Platform"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Platform Type"
+msgstr "Platform Type"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Platforms"
+msgstr "Platforms"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Post updates and records for members to engage with"
+msgstr "Post updates and records for members to engage with"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Premium Athlete"
+msgstr "Premium Athlete"
+
+#: src/features/landing/components/FooterSection.tsx
+#: src/features/landing/components/Navigation.tsx
+#: src/features/landing/components/PricingSection.tsx
+msgid "Pricing"
+msgstr "Pricing"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Priority member chat support"
+msgstr "Priority member chat support"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Problems Solved"
+msgstr "Problems Solved"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Public club access & group chats"
+msgstr "Public club access & group chats"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Public Rides"
+msgstr "Public Rides"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Questions? Talk to us →"
+msgstr "Questions? Talk to us →"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "Read more"
+msgstr "Read more"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "READY "
+msgstr "READY "
+
+#: src/features/landing/components/CTASection.tsx
+msgid "Ready to elevate your "
+msgstr "Ready to elevate your "
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Real plans"
+msgstr "Real plans"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Ride Analytics"
+msgstr "Ride Analytics"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Ride and connect"
+msgstr "Ride and connect"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride Chat"
+msgstr "Ride Chat"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Ride With Pals"
+msgstr "Ride With Pals"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management."
+msgstr "Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
+msgstr "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "RIDE?"
+msgstr "RIDE?"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Save over 58% with annual billing ($49.99/year)"
+msgstr "Save over 58% with annual billing ($49.99/year)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Save up to 58%"
+msgstr "Save up to 58%"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Say goodbye to endless WhatsApp chats."
+msgstr "Say goodbye to endless WhatsApp chats."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Schedule"
+msgstr "Schedule"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates."
+msgstr "Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Seamless ride creation with GPX routes & leader controls"
+msgstr "Seamless ride creation with GPX routes & leader controls"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "See all your active events, clubs, and tasks in one unified view — no more toggling between apps."
+msgstr "See all your active events, clubs, and tasks in one unified view — no more toggling between apps."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "See who has paid, who needs to renew, and who is not up to date."
+msgstr "See who has paid, who needs to renew, and who is not up to date."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Send secure payment requests directly through Stripe."
+msgstr "Send secure payment requests directly through Stripe."
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
+msgstr "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll."
+msgstr "Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll."
+
+#: src/features/landing/components/Navigation.tsx
+msgid "Sign up"
+msgstr "Sign up"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Smart Dashboard"
+msgstr "Smart Dashboard"
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "sport clubs and ride squads"
+msgstr "sport clubs and ride squads"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Sports"
+msgstr "Sports"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start for Free"
+msgstr "Start for Free"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start for free on web & mobile"
+msgstr "Start for free on web & mobile"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Start Gold Club"
+msgstr "Start Gold Club"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Stay connected."
+msgstr "Stay connected."
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 1"
+msgstr "Step 1"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 2"
+msgstr "Step 2"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Step 3"
+msgstr "Step 3"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Strava & GPS Route Syncing"
+msgstr "Strava & GPS Route Syncing"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Strava & GPX Route Syncing"
+msgstr "Strava & GPX Route Syncing"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
+msgstr "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Strava Sync"
+msgstr "Strava Sync"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Stripe Automated Fee Collection"
+msgstr "Stripe Automated Fee Collection"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Stripe Payments"
+msgstr "Stripe Payments"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "SUCCESS STORY"
+msgstr "SUCCESS STORY"
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Take your club to the "
+msgstr "Take your club to the "
+
+#: src/features/landing/components/HeroSection.tsx
+msgid "The app for managing"
+msgstr "The app for managing"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "The complete club operating system — collect member fees, run your club shop, and grow."
+msgstr "The complete club operating system — collect member fees, run your club shop, and grow."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
+msgstr "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission."
+msgstr "The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission."
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
+msgstr "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "There’s a smarter way to manage your club"
+msgstr "There’s a smarter way to manage your club"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "TIPS & TRICKS"
+msgstr "TIPS & TRICKS"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "TO "
+msgstr "TO "
+
+#: src/features/landing/components/BentoSection.tsx
+msgid "Track your personal bests and club statistics to understand your performance flow over time."
+msgstr "Track your personal bests and club statistics to understand your performance flow over time."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Transparent pricing"
+msgstr "Transparent pricing"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Two ways to use it, one shared philosophy: simple, visual, and useful."
+msgstr "Two ways to use it, one shared philosophy: simple, visual, and useful."
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Club Members (beyond 15)"
+msgstr "Unlimited Club Members (beyond 15)"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Group Rides & Activities"
+msgstr "Unlimited Group Rides & Activities"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited marketplace listings"
+msgstr "Unlimited marketplace listings"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Unlimited Marketplace Listings"
+msgstr "Unlimited Marketplace Listings"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Up to 2 items in Marketplace"
+msgstr "Up to 2 items in Marketplace"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "Upcoming rides with pace, distance and ride type"
+msgstr "Upcoming rides with pace, distance and ride type"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Upgrade"
+msgstr "Upgrade"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "User Roles"
+msgstr "User Roles"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Verified Gold Club Crown Badge"
+msgstr "Verified Gold Club Crown Badge"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Verified Pro Athlete Badge"
+msgstr "Verified Pro Athlete Badge"
+
+#: src/features/landing/components/FeaturesSection.tsx
+msgid "View all members, assign roles, message directly"
+msgstr "View all members, assign roles, message directly"
+
+#: src/features/landing/components/BlogSection.tsx
+msgid "View all posts"
+msgstr "View all posts"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "vs Strava"
+msgstr "vs Strava"
+
+#: src/features/landing/components/HowitWorksSection.tsx
+msgid "Watch Video"
+msgstr "Watch Video"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "We've got answers."
+msgstr "We've got answers."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What do I need to create paid activities or manage membership fee payments?"
+msgstr "What do I need to create paid activities or manage membership fee payments?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What is Ride with Pals?"
+msgstr "What is Ride with Pals?"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "What problems does it solve?"
+msgstr "What problems does it solve?"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees."
+msgstr "Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees."
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Why Ride With Pals?"
+msgstr "Why Ride With Pals?"
+
+#: src/features/landing/components/PricingSection.tsx
+msgid "Yearly"
+msgstr "Yearly"
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes, absolutely. Strava is optional."
+msgstr "Yes, absolutely. Strava is optional."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app."
+msgstr "Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club."
+msgstr "Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. Administrators can accept or remove members."
+msgstr "Yes. Administrators can accept or remove members."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. Ride with Pals charges a small 4% management fee on each transaction."
+msgstr "Yes. Ride with Pals charges a small 4% management fee on each transaction."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format."
+msgstr "Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can create public activities."
+msgstr "Yes. You can create public activities."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join."
+msgstr "Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
+msgstr "Yes. You can schedule activities on a weekly, biweekly, or monthly basis."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "Yes. You can upgrade at any time."
+msgstr "Yes. You can upgrade at any time."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish."
+msgstr "You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish."
+
+#: src/features/landing/components/FAQSection.tsx
+msgid "You need a Gold club subscription, a free Stripe account, and you must connect it to the app."
+msgstr "You need a Gold club subscription, a free Stripe account, and you must connect it to the app."

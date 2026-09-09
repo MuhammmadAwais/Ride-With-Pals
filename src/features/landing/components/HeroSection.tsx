@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const HeroSection: React.FC = () => {
   return (
@@ -71,7 +72,7 @@ export const HeroSection: React.FC = () => {
                       } as any
                     }
                   >
-                    All-in-One Sports Club Platform
+                    <Trans>All-in-One Sports Club Platform</Trans>
                   </p>
                 </div>
               </div>
@@ -96,7 +97,7 @@ export const HeroSection: React.FC = () => {
                   } as any
                 }
               >
-                The app for managing<br className="rwp-hero-br" /> sport clubs and ride squads
+                <Trans>The app for managing</Trans><br className="rwp-hero-br" /> <Trans>sport clubs and ride squads</Trans>
               </h1>
             </div>
             <div
@@ -115,7 +116,7 @@ export const HeroSection: React.FC = () => {
                   } as any
                 }
               >
-                Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free.
+                <Trans>Manage everything in one place: upcoming rides, news, online shop, marketplace, membership fees and messaging. No more endless WhatsApp chats. And it’s free.</Trans>
               </p>
             </div>
           </div>
@@ -155,7 +156,7 @@ export const HeroSection: React.FC = () => {
                     className="framer-text framer-styles-preset-1tpxd7h"
                     data-styles-preset="XIZNBvjnr"
                   >
-                    Get Started Free
+                    <Trans>Get Started Free</Trans>
                   </p>
                 </div>
                 <div

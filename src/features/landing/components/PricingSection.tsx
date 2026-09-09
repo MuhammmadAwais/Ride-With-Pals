@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { useState } from "react";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -48,75 +50,75 @@ const EliteIcon = () => (
 
 // ── Plan data ─────────────────────────────────────────────────────────────────
 
-const PLANS = [
+const PLANS = () => [
   {
     id: "free",
     Icon: RiderIcon,
-    name: "Free Limited Plan",
-    tagline: "Basic Tier",
-    description: "Essential access to browse activities, join clubs, and connect with your community.",
+    name: t`Free Limited Plan`,
+    tagline: t`Basic Tier`,
+    description: t`Essential access to browse activities, join clubs, and connect with your community.`,
     monthlyPrice: 0,
     yearlyPrice: 0,
-    cta: "Start for Free",
+    cta: t`Start for Free`,
     ctaHref: "/signup",
     highlight: false,
     features: [
-      { text: "Browse & join public activities", ok: true },
-      { text: "Up to 2 items in Marketplace", ok: true },
-      { text: "Basic ride & activity tracking", ok: true },
-      { text: "Public club access & group chats", ok: true },
-      { text: "Create a club (up to 15 members)", ok: true },
-      { text: "Unlimited marketplace listings", ok: false },
-      { text: "Advanced Performance Analytics", ok: false },
-      { text: "Club shop & membership fee management", ok: false },
+      { text: t`Browse & join public activities`, ok: true },
+      { text: t`Up to 2 items in Marketplace`, ok: true },
+      { text: t`Basic ride & activity tracking`, ok: true },
+      { text: t`Public club access & group chats`, ok: true },
+      { text: t`Create a club (up to 15 members)`, ok: true },
+      { text: t`Unlimited marketplace listings`, ok: false },
+      { text: t`Advanced Performance Analytics`, ok: false },
+      { text: t`Club shop & membership fee management`, ok: false },
     ],
   },
   {
     id: "premium-athlete",
     Icon: ProIcon,
-    name: "Premium Athlete",
-    tagline: "Most popular",
-    description: "Designed for athletes who want unlimited access to activities, marketplace, and analytics.",
+    name: t`Premium Athlete`,
+    tagline: t`Most popular`,
+    description: t`Designed for athletes who want unlimited access to activities, marketplace, and analytics.`,
     monthlyPrice: "9.99",
     yearlyPrice: "4.16",
-    intervalLabel: (b: string) => b === "yearly" ? "/ mo ($49.99/yr)" : "/ month",
-    saveText: "Save over 58% with annual billing ($49.99/year)",
-    cta: "Get Premium Athlete",
+    intervalLabel: (b: string) => b === "yearly" ? t`/ mo ($49.99/yr)` : t`/ month`,
+    saveText: t`Save over 58% with annual billing ($49.99/year)`,
+    cta: t`Get Premium Athlete`,
     ctaHref: "/signup",
     highlight: true,
     features: [
-      { text: "Everything in Free Limited Plan", ok: true },
-      { text: "Unlimited Marketplace Listings", ok: true },
-      { text: "Unlimited Group Rides & Activities", ok: true },
-      { text: "Strava & GPS Route Syncing", ok: true },
-      { text: "Advanced Performance Analytics", ok: true },
-      { text: "Verified Pro Athlete Badge", ok: true },
-      { text: "Priority member chat support", ok: true },
-      { text: "Club shop & fee collection", ok: false },
+      { text: t`Everything in Free Limited Plan`, ok: true },
+      { text: t`Unlimited Marketplace Listings`, ok: true },
+      { text: t`Unlimited Group Rides & Activities`, ok: true },
+      { text: t`Strava & GPS Route Syncing`, ok: true },
+      { text: t`Advanced Performance Analytics`, ok: true },
+      { text: t`Verified Pro Athlete Badge`, ok: true },
+      { text: t`Priority member chat support`, ok: true },
+      { text: t`Club shop & fee collection`, ok: false },
     ],
   },
   {
     id: "gold-club",
     Icon: EliteIcon,
-    name: "Gold Club Plan",
-    tagline: "For club owners",
-    description: "The complete club operating system — collect member fees, run your club shop, and grow.",
+    name: t`Gold Club Plan`,
+    tagline: t`For club owners`,
+    description: t`The complete club operating system — collect member fees, run your club shop, and grow.`,
     monthlyPrice: "40",
     yearlyPrice: "40",
-    intervalLabel: () => "/ year",
-    saveText: "Flat yearly rate — no member limits",
-    cta: "Start Gold Club",
+    intervalLabel: () => t`/ year`,
+    saveText: t`Flat yearly rate — no member limits`,
+    cta: t`Start Gold Club`,
     ctaHref: "/signup",
     highlight: false,
     features: [
-      { text: "Unlimited Club Members (beyond 15)", ok: true },
-      { text: "Stripe Automated Fee Collection", ok: true },
-      { text: "Manual Payment Tracking & Cash Updates", ok: true },
-      { text: "Online Club Merchandise Shop", ok: true },
-      { text: "Paid Activities & Event Ticketing", ok: true },
-      { text: "Strava & GPX Route Syncing", ok: true },
-      { text: "Multiple Admins & Co-Owner Roles", ok: true },
-      { text: "Verified Gold Club Crown Badge", ok: true },
+      { text: t`Unlimited Club Members (beyond 15)`, ok: true },
+      { text: t`Stripe Automated Fee Collection`, ok: true },
+      { text: t`Manual Payment Tracking & Cash Updates`, ok: true },
+      { text: t`Online Club Merchandise Shop`, ok: true },
+      { text: t`Paid Activities & Event Ticketing`, ok: true },
+      { text: t`Strava & GPX Route Syncing`, ok: true },
+      { text: t`Multiple Admins & Co-Owner Roles`, ok: true },
+      { text: t`Verified Gold Club Crown Badge`, ok: true },
     ],
   },
 ];
@@ -147,7 +149,7 @@ const PricingCard = ({ plan, billing }) => {
       {/* Price */}
       <div className="rwp-pc-price-block">
         {isFree ? (
-          <span className="rwp-pc-price-free">Free</span>
+          <span className="rwp-pc-price-free"><Trans>Free</Trans></span>
         ) : (
           <div className="rwp-pc-price-row">
             <span className="rwp-pc-currency">$</span>
@@ -600,14 +602,14 @@ export const PricingSection: React.FC = () => {
           <div className="rwp-pricing-header-left">
             <div className="rwp-pricing-badge">
               <div className="rwp-pricing-badge-dot" />
-              <span className="rwp-pricing-badge-text">Pricing</span>
+              <span className="rwp-pricing-badge-text"><Trans>Pricing</Trans></span>
             </div>
             <h2 className="rwp-pricing-heading">
-              One platform.<br />
-              <em>Real plans</em> for athletes &amp; clubs.
+              <Trans>One platform.</Trans><br />
+              <em><Trans>Real plans</Trans></em> <Trans>for athletes &amp; clubs.</Trans>
             </h2>
             <p className="rwp-pricing-sub">
-              Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees.
+              <Trans>Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees.</Trans>
             </p>
 
             {/* Billing toggle */}
@@ -616,14 +618,14 @@ export const PricingSection: React.FC = () => {
                 <button
                   className={`rwp-pricing-toggle-btn ${billing === "monthly" ? "on" : "off"}`}
                   onClick={() => setBilling("monthly")}
-                >Monthly</button>
+                ><Trans>Monthly</Trans></button>
                 <button
                   className={`rwp-pricing-toggle-btn ${billing === "yearly" ? "on" : "off"}`}
                   onClick={() => setBilling("yearly")}
-                >Yearly</button>
+                ><Trans>Yearly</Trans></button>
               </div>
               {billing === "yearly" && (
-                <span className="rwp-pricing-save-pill">Save up to 58%</span>
+                <span className="rwp-pricing-save-pill"><Trans>Save up to 58%</Trans></span>
               )}
             </div>
           </div>
@@ -654,15 +656,15 @@ export const PricingSection: React.FC = () => {
 
         {/* ─── Cards ─── */}
         <div className="rwp-pricing-grid">
-          {PLANS.map(plan => (
+          {PLANS().map(plan => (
             <PricingCard key={plan.id} plan={plan} billing={billing} />
           ))}
         </div>
 
         {/* ─── Footer ─── */}
         <div className="rwp-pricing-footer">
-          Start for free on web &amp; mobile &nbsp;·&nbsp; Transparent pricing &nbsp;·&nbsp;
-          <a href="/contact">Questions? Talk to us →</a>
+          <Trans>Start for free on web &amp; mobile</Trans> &nbsp;·&nbsp; <Trans>Transparent pricing</Trans> &nbsp;·&nbsp;
+          <a href="/contact"><Trans>Questions? Talk to us →</Trans></a>
         </div>
 
       </section>

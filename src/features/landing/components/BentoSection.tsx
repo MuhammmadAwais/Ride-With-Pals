@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const BentoSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -370,10 +371,10 @@ export const BentoSection: React.FC = () => {
       <div className="rwp-bento-container">
         <div className="rwp-bento-header">
           <h2 className="rwp-bento-title">
-            Take your club to the <span style={{ color: "#EB712B" }}>next level</span>
+            <Trans>Take your club to the </Trans><span style={{ color: "#EB712B" }}><Trans>next level</Trans></span>
           </h2>
           <p className="rwp-bento-subtitle">
-            The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes.
+            <Trans>The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes.</Trans>
           </p>
         </div>
 
@@ -406,10 +407,10 @@ export const BentoSection: React.FC = () => {
           <div className="rwp-bento-card rwp-bento-card-1">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> Smart Dashboard
+                <span className="rwp-bento-accent-dot"></span> <Trans>Smart Dashboard</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                See all your active events, clubs, and tasks in one unified view — no more toggling between apps.
+                <Trans>See all your active events, clubs, and tasks in one unified view — no more toggling between apps.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
@@ -428,10 +429,10 @@ export const BentoSection: React.FC = () => {
           <div className="rwp-bento-card rwp-bento-card-2">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> Ride Analytics
+                <span className="rwp-bento-accent-dot"></span> <Trans>Ride Analytics</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                Track your personal bests and club statistics to understand your performance flow over time.
+                <Trans>Track your personal bests and club statistics to understand your performance flow over time.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
@@ -445,10 +446,10 @@ export const BentoSection: React.FC = () => {
           <div className="rwp-bento-card rwp-bento-card-3">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> Club Management
+                <span className="rwp-bento-accent-dot"></span> <Trans>Club Management</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                Approve members, handle roles, and keep your community engaged and organised effortlessly.
+                <Trans>Approve members, handle roles, and keep your community engaged and organised effortlessly.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
@@ -462,10 +463,10 @@ export const BentoSection: React.FC = () => {
           <div className="rwp-bento-card rwp-bento-card-4">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> Integrated Shop
+                <span className="rwp-bento-accent-dot"></span> <Trans>Integrated Shop</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                Offer club merch, event tickets, and gear directly to your members without external tools.
+                <Trans>Offer club merch, event tickets, and gear directly to your members without external tools.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">

@@ -21,6 +21,7 @@ import storage from 'redux-persist/es/storage';
 import authReducer from '@/features/auth/slices/authSlice';
 import clubReducer from '@/features/club/slices/clubSlice';
 import addRideReducer from '@/features/club/slices/addRideSlice';
+import languageReducer from '@/app/slices/languageSlice';
 import { STORAGE_KEYS } from '@/Constants';
 import { apiSlice } from '@/api/apiSlice';
 
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   club: clubReducer,
   addRide: addRideReducer,
+  language: languageReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
   // Add new feature slices here (e.g., news: newsReducer)
 });
@@ -40,8 +42,8 @@ const persistConfig = {
   key:       STORAGE_KEYS.PERSIST_ROOT,
   version:   1,
   storage,
-  // Only persist auth — keeps other state ephemeral (re-fetched on load)
-  whitelist: ['auth'],
+  // Persist auth + language preference
+  whitelist: ['auth', 'language'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer) as unknown as typeof rootReducer;

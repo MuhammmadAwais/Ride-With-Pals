@@ -1,12 +1,21 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { lingui } from '@lingui/vite-plugin';
+import babel from 'vite-plugin-babel';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    babel({
+      filter: /\.[jt]sx?$/,
+      babelConfig: {
+        plugins: ['@lingui/babel-plugin-lingui-macro'],
+      },
+    }),
     tailwindcss(),
+    lingui(),
   ],
   resolve: {
     // Vite natively supports tsconfig paths in 6+ via resolve.tsconfigPaths

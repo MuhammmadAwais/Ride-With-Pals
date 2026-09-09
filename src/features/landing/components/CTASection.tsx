@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const CTASection: React.FC = () => {
   return (
@@ -58,7 +59,7 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-1of0zx5, rgb(255, 255, 255))",
                     } as any}
                   >
-                    Ready to elevate your <span style={{ color: "#EB712B" }}>club &amp; rides?</span>
+                    <Trans>Ready to elevate your </Trans><span style={{ color: "#EB712B" }}><Trans>club &amp; rides?</Trans></span>
                   </h2>
                 </div>
                 <div
@@ -82,7 +83,7 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-r6o4lv, rgba(255, 255, 255, 0.55))",
                     } as any}
                   >
-                    Join athletes and club leaders building the ultimate sports community.
+                    <Trans>Join athletes and club leaders building the ultimate sports community.</Trans>
                   </p>
                 </div>
               </div>

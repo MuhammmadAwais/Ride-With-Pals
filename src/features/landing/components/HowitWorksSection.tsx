@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Trans } from "@lingui/react/macro";
 
 export const HowitWorksSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -271,11 +272,11 @@ export const HowitWorksSection: React.FC = () => {
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z" />
             </svg>
-            Watch Video
+            <Trans>Watch Video</Trans>
           </div>
-          <h2 className="rwp-hiw-title">Create and build community with <span style={{color: '#EB712B'}}>Ride With Pals</span> -</h2>
+          <h2 className="rwp-hiw-title"><Trans>Create and build community with </Trans><span style={{color: '#EB712B'}}>Ride With Pals</span> -</h2>
           <p className="rwp-hiw-subtitle">
-            Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes.
+            <Trans>Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes.</Trans>
           </p>
         </div>
 
@@ -302,11 +303,11 @@ export const HowitWorksSection: React.FC = () => {
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
                 <div className="rwp-hiw-dot" />
-                <span className="rwp-hiw-step-text">Step 1</span>
+                <span className="rwp-hiw-step-text"><Trans>Step 1</Trans></span>
               </div>
-              <h3 className="rwp-hiw-card-title">Create your profile</h3>
+              <h3 className="rwp-hiw-card-title"><Trans>Create your profile</Trans></h3>
               <p className="rwp-hiw-card-desc">
-                Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll.
+                <Trans>Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll.</Trans>
               </p>
             </div>
           </div>
@@ -319,11 +320,11 @@ export const HowitWorksSection: React.FC = () => {
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
                 <div className="rwp-hiw-dot" />
-                <span className="rwp-hiw-step-text">Step 2</span>
+                <span className="rwp-hiw-step-text"><Trans>Step 2</Trans></span>
               </div>
-              <h3 className="rwp-hiw-card-title">Organise rides & events</h3>
+              <h3 className="rwp-hiw-card-title"><Trans>Organise rides &amp; events</Trans></h3>
               <p className="rwp-hiw-card-desc">
-                Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates.
+                <Trans>Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates.</Trans>
               </p>
             </div>
           </div>
@@ -336,11 +337,11 @@ export const HowitWorksSection: React.FC = () => {
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
                 <div className="rwp-hiw-dot" />
-                <span className="rwp-hiw-step-text">Step 3</span>
+                <span className="rwp-hiw-step-text"><Trans>Step 3</Trans></span>
               </div>
-              <h3 className="rwp-hiw-card-title">Ride and connect</h3>
+              <h3 className="rwp-hiw-card-title"><Trans>Ride and connect</Trans></h3>
               <p className="rwp-hiw-card-desc">
-                Join the ride, track your progress, build connections, and share your experiences with the community.
+                <Trans>Join the ride, track your progress, build connections, and share your experiences with the community.</Trans>
               </p>
             </div>
           </div>
