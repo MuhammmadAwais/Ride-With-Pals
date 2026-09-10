@@ -9,6 +9,9 @@ export interface AddRideState {
   sportSubTypeId: number;
   categoryTypeId: number;
   meetingPoint: string;
+  endingPoint?: string;
+  isAsphalt: boolean;
+  isTrail: boolean;
   gpxFile: string;
   distance: number;
   description: string;
@@ -42,8 +45,11 @@ const initialState: AddRideState = {
   time: '',
   activityTypeId: 1,
   sportSubTypeId: 1,
+  isAsphalt: true,
+  isTrail: false,
   categoryTypeId: 1,
   meetingPoint: '',
+  endingPoint: '',
   gpxFile: '',
   distance: 0,
   description: '',

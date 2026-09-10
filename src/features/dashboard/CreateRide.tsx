@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown, Calendar } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown, Calendar, MapPin, Map, FileCode } from 'lucide-react';
 import { toast } from 'sonner';
 import gsap from 'gsap';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
@@ -8,6 +8,7 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { updateStepFields, setStep, resetRideForm } from '@/features/club/slices/addRideSlice';
 import { backendApi } from '@/api/backendApi';
 import { useActiveClub } from '@/hooks/useActiveClub';
+import { ROUTES } from '@/Constants';
 
 export const CreateRide: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export const CreateRide: React.FC = () => {
           onComplete: () => {
             setShowSuccessToast(false);
             dispatch(resetRideForm());
-            navigate('/view/clubside/activities');
+            navigate(ROUTES.ACTIVITIES);
           }
         });
       }, 3000);
@@ -190,6 +191,8 @@ export const CreateRide: React.FC = () => {
         time: formState.time.length === 5 ? `${formState.time}:00` : formState.time,
         activityTypeId: Number(formState.activityTypeId || 1),
         categoryTypeId: Number(formState.categoryTypeId || 1),
+        isAsphalt: Boolean(formState.isAsphalt),
+        isTrail: Boolean(formState.isTrail),
         meetingPoint: formState.meetingPoint.trim(),
         gpxFile: formState.gpxFile || '',
         distance: Number(formState.distance || 0),
@@ -203,6 +206,10 @@ export const CreateRide: React.FC = () => {
         isPublic: Boolean(formState.isPublic),
         isPaymentRequired: Boolean(formState.isPaymentRequired),
       };
+
+      if (formState.endingPoint && formState.endingPoint.trim()) {
+        payload.endingPoint = formState.endingPoint.trim();
+      }
 
       if (formState.isPaymentRequired) {
         payload.price = Number(formState.price || 0);
@@ -245,36 +252,25 @@ export const CreateRide: React.FC = () => {
     }
   };
 
-  // Activity types matching backend IDs
-  const activityTypes = [
-    { id: 1, name: 'Cycling' },
-    { id: 2, name: 'Running' },
-    { id: 3, name: 'Triathlon' },
-    { id: 4, name: 'Swimming' },
+  // Sports matching mobile app and backend
+  const sportsOptions = [
+    { id: 2, name: 'Running', hasDiscipline: true },
+    { id: 1, name: 'Cycling', hasDiscipline: true },
+    { id: 4, name: 'Swimming', hasDiscipline: false },
+    { id: 5, name: 'Social', hasDiscipline: false },
   ];
 
-  const categoryTypes = [
-    { id: 1, name: 'Social Roll' },
-    { id: 2, name: 'Training Run' },
-    { id: 3, name: 'Race Simulation' },
-    { id: 4, name: 'Charity Ride' },
-    { id: 5, name: 'Group Tour' },
+  // Activity Types matching mobile app and backend category types
+  const activityTypeOptions = [
+    { id: 1, name: 'Social' },
+    { id: 2, name: 'Training' },
+    { id: 3, name: 'Competition' },
   ];
-
-  const sportSubTypes = [
-    { id: 1, name: 'Cross Country' },
-    { id: 2, name: 'Enduro' },
-    { id: 3, name: 'Downhill' },
-    { id: 4, name: 'Gran Fondo' },
-    { id: 5, name: 'Time Trial' },
-    { id: 6, name: 'Criterium' },
-    { id: 7, name: 'Track' },
-    { id: 8, name: 'Gravel' },
-  ];
-
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const slotsOptions = ['Morning', 'Afternoon', 'Evening', 'Night'];
+
+  const selectedSport = sportsOptions.find(s => s.id === formState.activityTypeId) || sportsOptions[0];
 
   return (
     <div className="p-10 min-h-screen text-text-main bg-main-bg relative overflow-hidden font-sans">
@@ -288,7 +284,7 @@ export const CreateRide: React.FC = () => {
             <CheckCircle2 size={64} className="text-[#EB712B] mx-auto animate-pulse" />
             <h3 className="text-2xl font-black text-white">Ride Created!</h3>
             <p className="text-sm text-text-muted">
-              Your ride <strong>{formState.rideName}</strong> was published successfully. Redirecting you to the calendar...
+              Your ride <strong>{formState.rideName}</strong> was published successfully. Redirecting you to activities...
             </p>
           </div>
         </div>
@@ -296,17 +292,17 @@ export const CreateRide: React.FC = () => {
 
       {/* Back button */}
       <button 
-        onClick={() => navigate('/dashboard/calendar')} 
+        onClick={() => navigate(ROUTES.ACTIVITIES)} 
         className="flex items-center gap-2 text-text-muted hover:text-[#EB712B] transition-colors mb-6 text-sm font-bold uppercase tracking-widest bg-transparent border-0 outline-none cursor-pointer"
       >
-        <ArrowLeft size={20} /> Back to Calendar
+        <ArrowLeft size={20} /> Back to Activities
       </button>
 
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-8" ref={dropdownRef}>
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
-            <h1 className="text-4xl font-black text-white">Host a Ride</h1>
+            <h1 className="text-3xl md:text-4xl font-black text-white">Add Ride</h1>
             <p className="text-text-muted text-xs md:text-sm mt-1">Create a new group ride activity and sync with your club members.</p>
           </div>
 
@@ -333,45 +329,30 @@ export const CreateRide: React.FC = () => {
         </div>
 
         {/* Wizard Step Forms */}
-        <div className="bg-surface border border-border rounded-[32px] p-10 shadow-2xl">
+        <div className="bg-surface border border-border rounded-[32px] p-6 md:p-10 shadow-2xl">
           {/* STEP 1 */}
           {formState.currentStep === 1 && (
-            <div className="space-y-8 animate-fade-in">
-              <div className="border-b border-border pb-4">
-                <h3 className="text-lg font-bold text-white uppercase tracking-wider">Step 1: General Details & Route</h3>
-                <p className="text-xs text-text-muted">Enter basic details and upload the GPX file for the riding route.</p>
+            <div className="space-y-6 animate-fade-in">
+              {/* Ride Name */}
+              <div className="space-y-2">
+                <label className="text-text-muted text-xs font-semibold block">Ride Name</label>
+                <input 
+                  type="text" 
+                  value={formState.rideName}
+                  onChange={(e) => {
+                    dispatch(updateStepFields({ rideName: e.target.value }));
+                    if (e.target.value.trim()) setErrors(prev => ({ ...prev, rideName: '' }));
+                  }}
+                  className={`w-full h-13 bg-[#1e1e1e] border ${errors.rideName ? 'border-red-500' : 'border-border/60'} rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white placeholder:text-text-muted/40`}
+                  placeholder=""
+                />
+                {errors.rideName && <p className="text-red-500 text-xs">{errors.rideName}</p>}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Ride Name */}
+              {/* Date & Time */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Ride Name</label>
-                  <input 
-                    type="text" 
-                    value={formState.rideName}
-                    onChange={(e) => dispatch(updateStepFields({ rideName: e.target.value }))}
-                    className={`w-full h-14 bg-main-bg border ${errors.rideName ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`}
-                    placeholder="Misty Pines Gravel Roll"
-                  />
-                  {errors.rideName && <p className="text-red-500 text-xs">{errors.rideName}</p>}
-                </div>
-
-                {/* Meeting Point */}
-                <div className="space-y-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Meeting Point</label>
-                  <input 
-                    type="text" 
-                    value={formState.meetingPoint}
-                    onChange={(e) => dispatch(updateStepFields({ meetingPoint: e.target.value }))}
-                    className={`w-full h-14 bg-main-bg border ${errors.meetingPoint ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`}
-                    placeholder="Cafe Stanza, Munich"
-                  />
-                  {errors.meetingPoint && <p className="text-red-500 text-xs">{errors.meetingPoint}</p>}
-                </div>
-
-                {/* Date */}
-                <div className="space-y-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Date</label>
+                  <label className="text-text-muted text-xs font-semibold block">Date</label>
                   <div className="relative">
                     <input 
                       type="date" 
@@ -381,186 +362,251 @@ export const CreateRide: React.FC = () => {
                         dispatch(updateStepFields({ date: e.target.value }));
                         setErrors((prev) => ({ ...prev, date: '' }));
                       }}
-                      className={`w-full h-14 bg-main-bg border ${errors.date ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main cursor-pointer appearance-none`}
-                    />
-                    <Calendar 
-                      className="absolute right-5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" 
-                      size={18} 
+                      className={`w-full h-13 bg-[#1e1e1e] border ${errors.date ? 'border-red-500' : 'border-border/60'} rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white cursor-pointer`}
                     />
                   </div>
                   {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
                 </div>
 
-                {/* Time */}
                 <div className="space-y-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Time</label>
+                  <label className="text-text-muted text-xs font-semibold block">Time</label>
                   <input 
                     type="time" 
                     value={formState.time}
-                    onChange={(e) => dispatch(updateStepFields({ time: e.target.value }))}
-                    className={`w-full h-14 bg-main-bg border ${errors.time ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`}
+                    onChange={(e) => {
+                      dispatch(updateStepFields({ time: e.target.value }));
+                      if (e.target.value) setErrors(prev => ({ ...prev, time: '' }));
+                    }}
+                    className={`w-full h-13 bg-[#1e1e1e] border ${errors.time ? 'border-red-500' : 'border-border/60'} rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white`}
                   />
                   {errors.time && <p className="text-red-500 text-xs">{errors.time}</p>}
                 </div>
+              </div>
 
-                {/* Distance */}
-                <div className="space-y-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Distance (km)</label>
-                  <input 
-                    type="number" 
-                    value={formState.distance || ''}
-                    onChange={(e) => dispatch(updateStepFields({ distance: Number(e.target.value) }))}
-                    className={`w-full h-14 bg-main-bg border ${errors.distance ? 'border-red-500' : 'border-border'} rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main`}
-                    placeholder="e.g. 45"
-                  />
-                  {errors.distance && <p className="text-red-500 text-xs">{errors.distance}</p>}
+              {/* Sports Dropdown */}
+              <div className="space-y-2 relative">
+                <label className="text-text-muted text-xs font-semibold block">Sports</label>
+                <button
+                  type="button"
+                  onClick={() => toggleDropdown('sports')}
+                  className="w-full h-13 bg-[#1e1e1e] border border-border/60 rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white flex items-center justify-between cursor-pointer"
+                >
+                  <span>{selectedSport.name}</span>
+                  <ChevronDown size={18} className={`text-text-muted transition-transform ${openDropdown === 'sports' ? 'rotate-180 text-[#EB712B]' : ''}`} />
+                </button>
+                {openDropdown === 'sports' && (
+                  <div className="absolute left-0 w-full bg-[#242424] border border-border rounded-xl shadow-2xl overflow-hidden mt-1 z-30 divide-y divide-border/40">
+                    {sportsOptions.map((item) => (
+                      <div
+                        key={item.id}
+                        className={`p-3.5 hover:bg-[#2e2e2e] cursor-pointer text-sm transition-colors flex items-center justify-between ${formState.activityTypeId === item.id ? 'text-[#EB712B] font-bold bg-[#2a2a2a]' : 'text-white'}`}
+                        onClick={() => { 
+                          dispatch(updateStepFields({ activityTypeId: item.id })); 
+                          toggleDropdown(null); 
+                        }}
+                      >
+                        <span>{item.name}</span>
+                        {formState.activityTypeId === item.id && <CheckCircle2 size={16} className="text-[#EB712B]" />}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Sport Discipline (Shown when Sport has disciplines like Running or Cycling) */}
+              {selectedSport.hasDiscipline && (
+                <div className="space-y-2.5">
+                  <label className="text-text-muted text-xs font-semibold block">Sport Discipline</label>
+                  <div className="flex items-center gap-6">
+                    <label 
+                      className="flex items-center gap-2.5 cursor-pointer select-none"
+                      onClick={() => dispatch(updateStepFields({ isAsphalt: true, isTrail: false, sportSubTypeId: 1 }))}
+                    >
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${formState.isAsphalt ? 'border-[#EB712B]' : 'border-border'}`}>
+                        {formState.isAsphalt && <div className="w-2.5 h-2.5 rounded-full bg-[#EB712B]" />}
+                      </div>
+                      <span className={`text-sm ${formState.isAsphalt ? 'text-white font-medium' : 'text-text-muted'}`}>Asphalt</span>
+                    </label>
+
+                    <label 
+                      className="flex items-center gap-2.5 cursor-pointer select-none"
+                      onClick={() => dispatch(updateStepFields({ isAsphalt: false, isTrail: true, sportSubTypeId: 2 }))}
+                    >
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${formState.isTrail ? 'border-[#EB712B]' : 'border-border'}`}>
+                        {formState.isTrail && <div className="w-2.5 h-2.5 rounded-full bg-[#EB712B]" />}
+                      </div>
+                      <span className={`text-sm ${formState.isTrail ? 'text-white font-medium' : 'text-text-muted'}`}>Trail</span>
+                    </label>
+                  </div>
                 </div>
+              )}
 
-                {/* Activity Type Dropdown */}
-                <div className="space-y-2 relative">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Activity Type</label>
-                  <button
-                    type="button"
-                    onClick={() => toggleDropdown('activityType')}
-                    className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer"
-                  >
-                    <span>{activityTypes.find(t => t.id === formState.activityTypeId)?.name || 'Select type'}</span>
-                    <ChevronDown size={18} className="text-text-muted" />
-                  </button>
-                  {openDropdown === 'activityType' && (
-                    <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl shadow-2xl overflow-hidden mt-1 z-30">
-                      {activityTypes.map((item) => (
-                        <div
-                          key={item.id}
-                          className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
-                          onClick={() => { dispatch(updateStepFields({ activityTypeId: item.id })); toggleDropdown(null); }}
-                        >
-                          {item.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Activity Type Dropdown */}
+              <div className="space-y-2 relative">
+                <label className="text-text-muted text-xs font-semibold block">Activity Type</label>
+                <button
+                  type="button"
+                  onClick={() => toggleDropdown('activityType')}
+                  className="w-full h-13 bg-[#1e1e1e] border border-border/60 rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white flex items-center justify-between cursor-pointer"
+                >
+                  <span>{activityTypeOptions.find(t => t.id === formState.categoryTypeId)?.name || 'Social'}</span>
+                  <ChevronDown size={18} className={`text-text-muted transition-transform ${openDropdown === 'activityType' ? 'rotate-180 text-[#EB712B]' : ''}`} />
+                </button>
+                {openDropdown === 'activityType' && (
+                  <div className="absolute left-0 w-full bg-[#242424] border border-border rounded-xl shadow-2xl overflow-hidden mt-1 z-30 divide-y divide-border/40">
+                    {activityTypeOptions.map((item) => (
+                      <div
+                        key={item.id}
+                        className={`p-3.5 hover:bg-[#2e2e2e] cursor-pointer text-sm transition-colors flex items-center justify-between ${formState.categoryTypeId === item.id ? 'text-[#EB712B] font-bold bg-[#2a2a2a]' : 'text-white'}`}
+                        onClick={() => { 
+                          dispatch(updateStepFields({ categoryTypeId: item.id })); 
+                          toggleDropdown(null); 
+                        }}
+                      >
+                        <span>{item.name}</span>
+                        {formState.categoryTypeId === item.id && <CheckCircle2 size={16} className="text-[#EB712B]" />}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                {/* Sport Sub Type Dropdown */}
-                <div className="space-y-2 relative">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Sport Sub Type</label>
-                  <button
-                    type="button"
-                    onClick={() => toggleDropdown('sportSubType')}
-                    className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer"
-                  >
-                    <span>{sportSubTypes.find(t => t.id === formState.sportSubTypeId)?.name || 'Select sub type'}</span>
-                    <ChevronDown size={18} className="text-text-muted" />
-                  </button>
-                  {openDropdown === 'sportSubType' && (
-                    <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl shadow-2xl overflow-hidden mt-1 z-30">
-                      {sportSubTypes.map((item) => (
-                        <div
-                          key={item.id}
-                          className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
-                          onClick={() => { dispatch(updateStepFields({ sportSubTypeId: item.id })); toggleDropdown(null); }}
-                        >
-                          {item.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Upload GPX File */}
+              <div className="space-y-2">
+                <label className="text-text-muted text-xs font-semibold block">Upload GPX File</label>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleGpxUpload}
+                  accept=".gpx"
+                  className="hidden"
+                />
 
-                {/* Category Type Dropdown */}
-                <div className="space-y-2 relative">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Ride Category</label>
-                  <button
-                    type="button"
-                    onClick={() => toggleDropdown('categoryType')}
-                    className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main flex items-center justify-between cursor-pointer"
-                  >
-                    <span>{categoryTypes.find(t => t.id === formState.categoryTypeId)?.name || 'Select category'}</span>
-                    <ChevronDown size={18} className="text-text-muted" />
-                  </button>
-                  {openDropdown === 'categoryType' && (
-                    <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl shadow-2xl overflow-hidden mt-1 z-30">
-                      {categoryTypes.map((item) => (
-                        <div
-                          key={item.id}
-                          className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
-                          onClick={() => { dispatch(updateStepFields({ categoryTypeId: item.id })); toggleDropdown(null); }}
-                        >
-                          {item.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* GPX Route Uploader */}
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">GPX File (Route)</label>
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    onChange={handleGpxUpload}
-                    accept=".gpx"
-                    className="hidden"
-                  />
-
-                  {formState.gpxFile ? (
-                    <div className="flex items-center justify-between bg-main-bg border border-[#EB712B]/20 rounded-2xl p-5">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle2 className="text-[#EB712B]" size={20} />
-                        <span className="text-xs text-text-main truncate font-medium">
+                {formState.gpxFile ? (
+                  <div className="flex items-center justify-between bg-[#1e1e1e] border border-[#EB712B]/40 rounded-2xl p-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-[#EB712B]/20 flex items-center justify-center text-[#EB712B] shrink-0">
+                        <FileCode size={20} />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xs text-white truncate font-medium block">
                           {formState.gpxFile}
                         </span>
+                        <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+                          <CheckCircle2 size={10} /> GPX Attached
+                        </span>
                       </div>
-                      <button 
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="text-[#EB712B] text-xs font-bold uppercase hover:underline cursor-pointer border-0 outline-none bg-transparent"
-                      >
-                        Change File
-                      </button>
                     </div>
-                  ) : (
-                    <div 
+                    <button 
+                      type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className={`border border-dashed ${errors.gpxFile ? 'border-red-500' : 'border-border'} rounded-[24px] p-8 text-center bg-main-bg cursor-pointer hover:bg-hover transition-all flex flex-col items-center justify-center gap-3`}
+                      className="text-[#EB712B] text-xs font-bold uppercase hover:underline cursor-pointer border-0 outline-none bg-transparent shrink-0"
                     >
-                      {isUploadingGpx ? (
-                        <>
-                          <Loader2 className="animate-spin text-[#EB712B]" size={24} />
-                          <span className="text-xs text-text-muted">Uploading route file...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="text-[#EB712B]" size={24} />
-                          <span className="text-xs text-text-muted font-medium">Click to select and upload GPX route file</span>
-                        </>
-                      )}
-                    </div>
-                  )}
-                  {errors.gpxFile && <p className="text-red-500 text-xs">{errors.gpxFile}</p>}
-                </div>
+                      Change File
+                    </button>
+                  </div>
+                ) : (
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border border-dashed ${errors.gpxFile ? 'border-red-500' : 'border-[#EB712B]/50 hover:border-[#EB712B]'} rounded-2xl p-6 text-center bg-[#1e1e1e] cursor-pointer hover:bg-[#252525] transition-all flex flex-col items-center justify-center gap-2`}
+                  >
+                    {isUploadingGpx ? (
+                      <>
+                        <Loader2 className="animate-spin text-[#EB712B]" size={28} />
+                        <span className="text-xs text-text-muted">Uploading route file...</span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center text-[#EB712B]">
+                          <FileCode size={24} />
+                        </div>
+                        <p className="text-sm font-medium text-white">Click to upload GPX file</p>
+                        <p className="text-xs text-text-muted">.gpx file</p>
+                      </>
+                    )}
+                  </div>
+                )}
+                {errors.gpxFile && <p className="text-red-500 text-xs">{errors.gpxFile}</p>}
+              </div>
 
-                {/* Description */}
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Ride Description</label>
-                  <textarea 
-                    value={formState.description}
-                    onChange={(e) => dispatch(updateStepFields({ description: e.target.value }))}
-                    className="w-full bg-main-bg border border-border rounded-2xl p-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main h-32"
-                    placeholder="Provide ride description, recommended setups, and details..."
+              {/* Meeting Point */}
+              <div className="space-y-2">
+                <label className="text-text-muted text-xs font-semibold block">Meeting Point</label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-[#EB712B] pointer-events-none">
+                    <MapPin size={18} />
+                  </div>
+                  <input 
+                    type="text" 
+                    value={formState.meetingPoint}
+                    onChange={(e) => {
+                      dispatch(updateStepFields({ meetingPoint: e.target.value }));
+                      if (e.target.value.trim()) setErrors(prev => ({ ...prev, meetingPoint: '' }));
+                    }}
+                    className={`w-full h-13 bg-[#1e1e1e] border ${errors.meetingPoint ? 'border-red-500' : 'border-border/60'} rounded-xl pl-11 pr-11 text-sm outline-none focus:border-[#EB712B] transition-all text-white placeholder:text-text-muted/40`}
+                    placeholder=""
                   />
+                  <div className="absolute right-4 text-[#EB712B] pointer-events-none">
+                    <Map size={18} />
+                  </div>
+                </div>
+                {errors.meetingPoint && <p className="text-red-500 text-xs">{errors.meetingPoint}</p>}
+              </div>
+
+              {/* Ending Point (Optional) */}
+              <div className="space-y-2">
+                <label className="text-text-muted text-xs font-semibold block">Ending Point (Optional)</label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-[#EB712B] pointer-events-none">
+                    <MapPin size={18} />
+                  </div>
+                  <input 
+                    type="text" 
+                    value={formState.endingPoint || ''}
+                    onChange={(e) => dispatch(updateStepFields({ endingPoint: e.target.value }))}
+                    className="w-full h-13 bg-[#1e1e1e] border border-border/60 rounded-xl pl-11 pr-11 text-sm outline-none focus:border-[#EB712B] transition-all text-white placeholder:text-text-muted/40"
+                    placeholder=""
+                  />
+                  <div className="absolute right-4 text-[#EB712B] pointer-events-none">
+                    <Map size={18} />
+                  </div>
                 </div>
               </div>
 
-              {/* Navigation button */}
+              {/* Distance */}
+              <div className="space-y-2">
+                <label className="text-text-muted text-xs font-semibold block">Distance (km)</label>
+                <input 
+                  type="number" 
+                  value={formState.distance || ''}
+                  onChange={(e) => {
+                    dispatch(updateStepFields({ distance: Number(e.target.value) }));
+                    if (Number(e.target.value) > 0) setErrors(prev => ({ ...prev, distance: '' }));
+                  }}
+                  className={`w-full h-13 bg-[#1e1e1e] border ${errors.distance ? 'border-red-500' : 'border-border/60'} rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white placeholder:text-text-muted/40`}
+                  placeholder=""
+                />
+                {errors.distance && <p className="text-red-500 text-xs">{errors.distance}</p>}
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <label className="text-text-muted text-xs font-semibold block">Description</label>
+                <textarea 
+                  value={formState.description}
+                  onChange={(e) => dispatch(updateStepFields({ description: e.target.value }))}
+                  className="w-full bg-[#1e1e1e] border border-border/60 rounded-xl p-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white h-28 resize-none placeholder:text-text-muted/40"
+                  placeholder=""
+                />
+              </div>
+
+              {/* Next Button */}
               <button 
                 type="button"
                 onClick={handleNext}
-                className="w-full h-16 mt-8 rounded-2xl bg-[#EB712B] hover:bg-[#ff8243] text-white font-black text-sm uppercase transition-all cursor-pointer border-0 outline-none flex items-center justify-center gap-2"
+                className="w-full h-14 mt-6 rounded-2xl bg-[#EB712B] hover:bg-[#ff8243] text-white font-bold text-base transition-all cursor-pointer border-0 outline-none flex items-center justify-center shadow-lg shadow-[#EB712B]/20"
               >
-                Next Step
+                Next
               </button>
             </div>
           )}
