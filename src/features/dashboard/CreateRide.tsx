@@ -191,8 +191,6 @@ export const CreateRide: React.FC = () => {
         time: formState.time.length === 5 ? `${formState.time}:00` : formState.time,
         activityTypeId: Number(formState.activityTypeId || 1),
         categoryTypeId: Number(formState.categoryTypeId || 1),
-        isAsphalt: Boolean(formState.isAsphalt),
-        isTrail: Boolean(formState.isTrail),
         meetingPoint: formState.meetingPoint.trim(),
         gpxFile: formState.gpxFile || '',
         distance: Number(formState.distance || 0),
@@ -207,16 +205,17 @@ export const CreateRide: React.FC = () => {
         isPaymentRequired: Boolean(formState.isPaymentRequired),
       };
 
-      if (formState.endingPoint && formState.endingPoint.trim()) {
-        payload.endingPoint = formState.endingPoint.trim();
+      // Set sportSubTypeId (1 for Asphalt, 2 for Trail or existing sportSubTypeId)
+      if (formState.isTrail) {
+        payload.sportSubTypeId = 2;
+      } else if (formState.isAsphalt) {
+        payload.sportSubTypeId = 1;
+      } else if (formState.sportSubTypeId) {
+        payload.sportSubTypeId = Number(formState.sportSubTypeId);
       }
 
       if (formState.isPaymentRequired) {
         payload.price = Number(formState.price || 0);
-      }
-
-      if (formState.sportSubTypeId) {
-        payload.sportSubTypeId = Number(formState.sportSubTypeId);
       }
       if (formState.isRecurringActivity && formState.recurringActivities?.length) {
         payload.recurringActivities = formState.recurringActivities;

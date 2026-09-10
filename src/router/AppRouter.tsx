@@ -171,7 +171,9 @@ export const router = createBrowserRouter(
           <Route path="activities" element={<Activities />} />
           <Route path="add-ride" element={<CreateRide />} />
           <Route path="product" element={<Product />} />
+          <Route path="shop" element={<Product />} />
           <Route path="add-product" element={<AddProduct />} />
+          <Route path="marketplace" element={<Marketplace />} />
           <Route path="order" element={<Order />} />
           <Route path="order/:id" element={<OrderDetail />} />
           <Route path="profile" element={<ProfileAccount />} />

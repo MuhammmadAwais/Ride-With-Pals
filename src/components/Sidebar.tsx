@@ -16,7 +16,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Car, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
-  Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Calendar, ShoppingBag
+  Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Calendar, ShoppingBag, Store, Tag
 } from 'lucide-react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -31,7 +31,7 @@ import { Lock as LockIcon } from 'lucide-react';
 import { useUserInfoQuery } from '@/features/auth/api/authApiSlice';
 import { Trans } from '@lingui/react/macro';
 
-const renderNavLabel = (label: string) => {
+const renderNavLabel = (label: string): React.ReactNode => {
   switch (label) {
     // Athlete items
     case 'Explore Clubs': return <Trans>Explore Clubs</Trans>;
@@ -46,9 +46,9 @@ const renderNavLabel = (label: string) => {
     case 'Profile': return <Trans>Profile</Trans>;
     // Club items
     case 'Dashboard': return <Trans>Dashboard</Trans>;
-
-    case 'Product': return <Trans>Product</Trans>;
-    case 'Order': return <Trans>Order</Trans>;
+    case 'Shop': return <Trans>Shop</Trans>;
+    case 'Marketplace': return <Trans>Marketplace</Trans>;
+    case 'Orders': return <Trans>Orders</Trans>;
     case 'Club Wallet': return <Trans>Club Wallet</Trans>;
     case 'News': return <Trans>News</Trans>;
     case 'Leaderboard': return <Trans>Leaderboard</Trans>;
@@ -88,9 +88,9 @@ const ICON_SIZE = 18;
 const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Dashboard',        route: ROUTES.DASHBOARD,        icon: <LayoutDashboard size={ICON_SIZE} /> },
   { label: 'Activities',       route: ROUTES.ACTIVITIES,       icon: <Bike size={ICON_SIZE} /> },
-
-  { label: 'Product',          route: ROUTES.PRODUCT,          icon: <Car size={ICON_SIZE} /> },
-  { label: 'Order',            route: ROUTES.ORDER,            icon: <ShoppingBag size={ICON_SIZE} /> },
+  { label: 'Shop',             route: ROUTES.PRODUCT,          icon: <Store size={ICON_SIZE} /> },
+  { label: 'Marketplace',      route: ROUTES.CLUB_MARKETPLACE, icon: <Tag size={ICON_SIZE} /> },
+  { label: 'Orders',           route: ROUTES.ORDER,            icon: <ShoppingBag size={ICON_SIZE} /> },
   { label: 'Club Wallet',      route: ROUTES.WALLET,           icon: <Wallet size={ICON_SIZE} /> },
   { label: 'News',             route: ROUTES.NEWS,             icon: <Newspaper size={ICON_SIZE} /> },
   { label: 'Leaderboard',      route: ROUTES.LEADERBOARD,      icon: <Trophy size={ICON_SIZE} /> },

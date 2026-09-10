@@ -33,6 +33,7 @@ import {
 
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
+import { useClubPermissions } from "@/hooks/useClubPermissions";
 import { useGetJoinedClubsQuery } from "@/features/club/api/clubApiSlice";
 import { resolveImageUrl } from "../services/clubGeocoding";
 
@@ -506,6 +507,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   // listings when the user hadn't explicitly selected a club.
   const { clubId: activeClubIdRedux } = useActiveClub();
   const activeClubId = propClubId || activeClubIdRedux;
+  const permissions = useClubPermissions(activeClubId);
 
   // RTK Queries & Mutations
   const { data: marketplaceResponse, isLoading: isLoadingListings, isError: isErrorListings } = useGetMarketplaceListQuery(
@@ -1099,6 +1101,23 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                           <Trash2 size={13} />
                         </button>
                       </>
+                    ) : permissions.isAdmin ? (
+                      <div className="w-full flex items-center gap-2">
+                        <button 
+                          onClick={() => handleBuyNow(product)}
+                          className="flex-1 py-3 px-4 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer border-0 outline-none shadow-md shadow-[#EB712B]/20 flex items-center justify-center gap-2"
+                        >
+                          <Trans>Buy Now</Trans>
+                        </button>
+                        <button 
+                          onClick={(e) => handleDelete(product.id, e)}
+                          disabled={isDeleting}
+                          className="py-3 px-3 bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 text-red-500 rounded-xl transition-colors cursor-pointer outline-none flex items-center justify-center"
+                          title={t`Remove listing (Moderator)`}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
                     ) : (
                       <button 
                         onClick={() => handleBuyNow(product)}
@@ -1199,6 +1218,23 @@ Hi ${product.sellerName || 'there'}! I saw your listing for "${product.name}" on
                         disabled={isDeleting}
                         className="py-2.5 px-3 bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 text-red-500 rounded-xl transition-colors cursor-pointer outline-none flex items-center justify-center"
                         title={t`Delete listing`}
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  ) : permissions.isAdmin ? (
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => handleBuyNow(product)}
+                        className="flex-1 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer border-0 outline-none shadow-md shadow-[#EB712B]/20"
+                      >
+                        <Trans>Buy Now</Trans>
+                      </button>
+                      <button 
+                        onClick={(e) => handleDelete(product.id, e)}
+                        disabled={isDeleting}
+                        className="py-2.5 px-3 bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 hover:border-red-500 text-red-500 rounded-xl transition-colors cursor-pointer outline-none flex items-center justify-center"
+                        title={t`Remove listing (Moderator)`}
                       >
                         <Trash2 size={13} />
                       </button>

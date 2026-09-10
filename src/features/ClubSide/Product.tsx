@@ -18,6 +18,7 @@ import { useGetTheShopItemsQuery, useDeleteShopItemMutation } from "@/features/c
 import { useForClubOwnerOrderListQuery } from "@/features/club/api/shopOrderApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
+import { ROUTES } from "@/Constants";
 
 const formatProductImage = (img?: string | null): string => {
   if (!img || img === 'null' || img.trim() === '') return '/Images/BottleImage.png';
@@ -41,6 +42,9 @@ interface ProductType {
   units?: number;
   sales?: string;
   code?: string;
+  size?: string;
+  gender?: string;
+  description?: string;
 }
 
 const Product = () => {
@@ -77,6 +81,9 @@ const Product = () => {
         status: p.isActive ? "IN STOCK" : "LIMITED",
         image: formattedImg,
         gallery: [formattedImg],
+        size: p.size,
+        gender: p.gender,
+        description: p.description,
         units: 0,
         sales: "0"
       };
@@ -265,49 +272,35 @@ const Product = () => {
             </div>
 
             <p className="text-text-muted mb-8 leading-relaxed text-sm md:text-base">
-              Engineered for elite performance. Our triple-insulated stainless
-              steel construction keeps hydration at temperature for 24 hours,
-              even in extreme environments.
+              {selectedProduct.description || "Official merchandise and gear provided directly by the club."}
             </p>
 
-            {/* Display Club Code */}
-            {selectedProduct.code && (
-              <div className="mb-6 bg-surface px-4 py-3 rounded-xl border border-border w-fit">
-                <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Club Product Code</p>
-                <p className="font-mono text-sm font-bold text-[#EB712B]">{selectedProduct.code}</p>
-              </div>
-            )}
-
-            {/* Owner Info Grid */}
-            <div className="grid grid-cols-3 gap-4 mb-10 pt-6 bg-surface p-6 rounded-2xl border border-border">
-              <div>
-                <p className="text-[10px] text-text-muted uppercase font-bold">
-                  SKU
-                </p>
-                <p className="font-mono font-bold text-[#EB712B]">
-                  {selectedProduct.sku || "EB-BOT-001"}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] text-text-muted uppercase font-bold">
-                  TOTAL SALES
-                </p>
-                <p className="font-bold text-lg text-text-main">
-                  {selectedProduct.sales || "1,248"}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] text-text-muted uppercase font-bold">
-                  LAST MODIFIED
-                </p>
-                <p className="font-bold text-sm text-text-main">2 hours ago</p>
-              </div>
+            {/* Display Club Details */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+              {selectedProduct.size && (
+                <div className="bg-surface px-4 py-3 rounded-xl border border-border">
+                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Size / Fit</p>
+                  <p className="font-bold text-sm text-text-main">{selectedProduct.size}</p>
+                </div>
+              )}
+              {selectedProduct.gender && (
+                <div className="bg-surface px-4 py-3 rounded-xl border border-border">
+                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Target Gender</p>
+                  <p className="font-bold text-sm text-text-main">{selectedProduct.gender}</p>
+                </div>
+              )}
+              {selectedProduct.code && (
+                <div className="bg-surface px-4 py-3 rounded-xl border border-border">
+                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Product Code</p>
+                  <p className="font-mono text-sm font-bold text-[#EB712B]">{selectedProduct.code}</p>
+                </div>
+              )}
             </div>
 
             {/* Owner Controls */}
             {permissions.isAdmin && (
               <>
-                <div className="flex flex-wrap gap-4 pt-8">
+                <div className="flex flex-wrap gap-4 pt-4">
                   <button
                     onClick={() => {
                       const productToEdit = {
@@ -315,22 +308,19 @@ const Product = () => {
                         image: activeImage,
                       };
 
-                      navigate("/add-product", {
+                      navigate(ROUTES.ADD_PRODUCT, {
                         state: { product: productToEdit },
                       });
                     }}
-                    className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-1 bg-[#EB712B] hover:bg-[#ff8243] text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer border-0 shadow-lg shadow-[#EB712B]/20"
                   >
-                    <Edit2 size={18} /> Edit
+                    <Edit2 size={16} /> Edit Product
                   </button>
-                  <button className="flex-1 bg-surface border border-border hover:border-[#EB712B] text-text-main py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer">
-                    <Clipboard size={18} /> Stock
-                  </button>
-                </div>
-
-                <div className="pt-15">
-                  <button className="w-full mt-4 py-4 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/5 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                    <EyeOff size={18} /> Deactivate Listing
+                  <button 
+                    onClick={() => handleDelete(selectedProduct.id)}
+                    className="bg-surface border border-red-500/30 hover:bg-red-500 hover:text-white text-red-400 py-3.5 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Trash2 size={16} /> Delete
                   </button>
                 </div>
               </>
@@ -344,13 +334,18 @@ const Product = () => {
   return (
     <div className="min-h-screen p-4 md:p-8 text-text-main font-sans max-w-[1400px] mx-auto bg-main-bg">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-text-main">
-          High Performance <span className="text-[#EB712B]">Gear</span>
-        </h1>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-text-main">
+            Club <span className="text-[#EB712B]">Shop & Merchandise</span>
+          </h1>
+          <p className="text-text-muted text-xs md:text-sm mt-1">
+            Manage your club's official merchandise, apparel, and equipment catalog.
+          </p>
+        </div>
         {permissions.isAdmin && (
-          <Link to="/add-product">
-            <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer hover:bg-[#d66525]">
-              <Plus size={18} /> Add new Product
+          <Link to={ROUTES.ADD_PRODUCT}>
+            <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer hover:bg-[#d66525] shadow-lg shadow-[#EB712B]/20 border-0">
+              <Plus size={18} /> Add Shop Item
             </button>
           </Link>
         )}

@@ -1,33 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, ArrowLeft, LayoutDashboard, FileText, Eye, ShieldCheck, RefreshCcw, Settings, Gauge, X, Loader2 } from 'lucide-react';
+import { Upload, ArrowLeft, LayoutDashboard, FileText, CheckCircle2, X, Loader2, Package, Tag, DollarSign, Layers, Sparkles } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAddItemToShopMutation, useUpdateItemToShopMutation } from '@/features/club/api/shopApiSlice';
 import { useUploadFileMutation } from '@/features/auth/api/authApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
+import { ROUTES } from '@/Constants';
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const { clubId: clubIdStr } = useActiveClub();
   const permissions = useClubPermissions(clubIdStr || undefined);
-
-  if (!permissions.isLoading && !permissions.isAdmin) {
-    return (
-      <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
-        <h1 className="text-2xl font-black mb-4">Access Denied</h1>
-        <p className="text-text-muted max-w-md mb-6">
-          You do not have the required permissions to add or manage products for this club.
-        </p>
-        <button 
-          onClick={() => navigate('/view/clubside/product')} 
-          className="px-6 py-3 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl font-bold transition-all cursor-pointer border-0"
-        >
-          Go Back
-        </button>
-      </div>
-    );
-  }
 
   const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -37,10 +21,10 @@ const AddProduct = () => {
   const [name, setName] = useState(incomingProduct?.name || '');
   const [price, setPrice] = useState(incomingProduct?.price || '');
   const [description, setDescription] = useState(incomingProduct?.description || '');
-  const [size, setSize] = useState(incomingProduct?.size || 'XL');
-  const [gender, setGender] = useState(incomingProduct?.gender || 'None');
+  const [size, setSize] = useState(incomingProduct?.size || 'L');
+  const [gender, setGender] = useState(incomingProduct?.gender || 'Unisex');
 
-  // Image state: existing gallery string URLs + pending File objects for new uploads
+  // Image state
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
@@ -74,16 +58,19 @@ const AddProduct = () => {
 
   const handleSubmit = async () => {
     if (!clubIdStr) {
-      toast.error('No club selected. Please select a club first.');
+      toast.error('No club selected. Please select an active club first.');
       return;
     }
     if (!name.trim()) {
-      toast.error('Product name is required.');
+      toast.error('Please provide a product name.');
+      return;
+    }
+    if (!price || Number(price) <= 0) {
+      toast.error('Please provide a valid unit price.');
       return;
     }
 
     try {
-      // Upload any pending new image files first
       let finalImageUrl: string | undefined;
       if (pendingFiles.length > 0) {
         const formData = new FormData();
@@ -91,16 +78,14 @@ const AddProduct = () => {
         const uploadRes = await uploadFile(formData).unwrap();
         finalImageUrl = uploadRes.fileName;
       } else if (previewImages.length > 0) {
-        // Keep existing image if no new upload
         finalImageUrl = previewImages[0];
       }
 
       if (incomingProduct) {
-        // UPDATE existing product
         await updateItem({
           shopItemId: incomingProduct.id,
           name: name.trim(),
-          price: Number(price) || 0,
+          price: Number(price),
           description: description.trim(),
           size,
           gender: gender === 'None' ? undefined : gender,
@@ -108,149 +93,273 @@ const AddProduct = () => {
         }).unwrap();
         toast.success('Product updated successfully!');
       } else {
-        // CREATE new product
         await addItem({
           clubId: Number(clubIdStr),
           name: name.trim(),
-          price: Number(price) || 0,
+          price: Number(price),
           description: description.trim(),
           size,
           gender: gender === 'None' ? undefined : gender,
           image: finalImageUrl,
         }).unwrap();
-        toast.success('Product published successfully!');
+        toast.success('Product added to club shop!');
       }
 
-      navigate('/dashboard/product');
+      navigate(ROUTES.PRODUCT);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Something went wrong. Please try again.');
+      toast.error(err?.data?.message || 'Failed to save product. Please check your inputs.');
     }
   };
 
+  if (!permissions.isLoading && !permissions.isAdmin) {
+    return (
+      <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
+        <h1 className="text-2xl font-black mb-4">Access Denied</h1>
+        <p className="text-text-muted max-w-md mb-6">
+          Only club administrators and organizers can manage merchandise products for this club.
+        </p>
+        <button 
+          onClick={() => navigate(ROUTES.PRODUCT)} 
+          className="px-6 py-3 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl font-bold transition-all cursor-pointer border-0"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen text-text-main p-6 md:p-12 font-sans bg-main-bg">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="bg-surface p-8 rounded-2xl border border-border mb-8 flex justify-between items-start shadow-xl">
+        <div className="bg-surface p-6 md:p-8 rounded-3xl border border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-xl">
           <div>
-            <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#EB712B] text-[10px] font-bold uppercase mb-3 hover:opacity-80 tracking-widest cursor-pointer">
-              <ArrowLeft size={14} /> Back to Inventory
+            <button 
+              onClick={() => navigate(ROUTES.PRODUCT)} 
+              className="flex items-center gap-2 text-[#EB712B] text-xs font-bold uppercase mb-2 hover:opacity-80 tracking-widest cursor-pointer bg-transparent border-0 outline-none"
+            >
+              <ArrowLeft size={16} /> Back to Shop Inventory
             </button>
-            <h1 className="text-3xl font-black text-text-main mb-2">{incomingProduct ? 'Edit your product' : 'Add New Product'}</h1>
-            <p className="text-text-muted text-sm max-w-lg">List a new high-performance asset to the elite inventory.</p>
+            <h1 className="text-2xl md:text-3xl font-black text-white">
+              {incomingProduct ? 'Edit Shop Item' : 'Add Shop Item'}
+            </h1>
+            <p className="text-text-muted text-xs md:text-sm mt-1">
+              List and manage official merchandise for your club members.
+            </p>
           </div>
-          <div className="flex gap-3 mt-8">
+
+          <div className="flex gap-3">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(ROUTES.PRODUCT)}
               disabled={isLoading}
-              className="bg-transparent border border-border text-text-main px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-hover transition-all cursor-pointer disabled:opacity-50"
+              className="bg-transparent border border-border text-text-main px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-hover transition-all cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="bg-[#EB712B] text-white px-6 py-2.5 rounded-lg font-bold text-sm transition-all cursor-pointer disabled:opacity-70 flex items-center gap-2"
+              className="bg-[#EB712B] hover:bg-[#ff8243] text-white px-6 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer disabled:opacity-70 flex items-center gap-2 border-0 shadow-lg shadow-[#EB712B]/20"
             >
               {isLoading && <Loader2 size={16} className="animate-spin" />}
-              {isLoading ? 'Saving...' : incomingProduct ? 'Update Product' : 'Publish Product'}
+              {isLoading ? 'Saving...' : incomingProduct ? 'Update Product' : 'Publish to Shop'}
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
+          {/* Main Form (Left 2 cols) */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Product Media */}
-            <div className="bg-surface p-6 rounded-2xl border border-border shadow-lg">
-              <h2 className="text-sm font-bold mb-4 flex items-center gap-2 text-text-main"><LayoutDashboard size={18} className="text-[#EB712B]" /> Product Media</h2>
-              <div className="grid grid-cols-3 gap-4">
+            {/* Product Media Dropzone */}
+            <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-4">
+              <h2 className="text-sm font-bold flex items-center gap-2 text-white">
+                <LayoutDashboard size={18} className="text-[#EB712B]" /> Product Media
+              </h2>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {previewImages.map((img, index) => (
-                  <div key={index} className="relative h-32 border border-border rounded-xl overflow-hidden bg-main-bg flex items-center justify-center">
-                    <img src={img} alt="Product" className="max-h-full object-contain" />
-                    <button onClick={() => removeImage(index)} className="absolute top-2 right-2 bg-black/50 p-1 rounded-full cursor-pointer text-white"><X size={14} /></button>
+                  <div key={index} className="relative aspect-square border border-border rounded-2xl overflow-hidden bg-main-bg flex items-center justify-center group">
+                    <img src={img} alt="Product" className="w-full h-full object-cover" />
+                    <button 
+                      onClick={() => removeImage(index)} 
+                      className="absolute top-2 right-2 bg-black/70 hover:bg-red-500 p-1.5 rounded-xl cursor-pointer text-white transition-colors border-0"
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
                 ))}
+
                 {previewImages.length < 3 && (
-                  <div onClick={() => fileInputRef.current?.click()} className="h-32 border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#EB712B]/50 transition-colors">
-                    <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple accept="image/*" />
+                  <div 
+                    onClick={() => fileInputRef.current?.click()} 
+                    className="aspect-square border-2 border-dashed border-[#EB712B]/40 hover:border-[#EB712B] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#EB712B]/5 transition-all p-4 text-center bg-main-bg/50"
+                  >
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      onChange={handleFileChange} 
+                      className="hidden" 
+                      multiple 
+                      accept="image/*" 
+                    />
                     {isUploading ? (
-                      <Loader2 className="text-[#EB712B] animate-spin mb-2" size={20} />
+                      <Loader2 className="text-[#EB712B] animate-spin mb-2" size={24} />
                     ) : (
-                      <Upload className="text-[#EB712B] mb-2" size={20} />
+                      <div className="w-10 h-10 rounded-xl bg-[#EB712B]/10 flex items-center justify-center text-[#EB712B] mb-2">
+                        <Upload size={20} />
+                      </div>
                     )}
-                    <span className="text-[10px] text-text-muted font-bold">{isUploading ? 'Uploading...' : 'Add Image'}</span>
+                    <span className="text-xs font-bold text-white">
+                      {isUploading ? 'Uploading...' : 'Upload Image'}
+                    </span>
+                    <span className="text-[10px] text-text-muted mt-1">PNG, JPG up to 10MB</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Technical Specifications */}
-            <div className="bg-surface p-6 rounded-2xl border border-border shadow-lg">
-              <h2 className="text-sm font-bold mb-6 flex items-center gap-2 text-text-main"><FileText size={18} className="text-[#EB712B]" /> Technical Specifications</h2>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="text-xs text-text-muted font-bold uppercase">Product Name</label>
-                  <input value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm outline-none focus:border-[#EB712B] text-text-main" />
+            {/* Product Details */}
+            <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-6">
+              <h2 className="text-sm font-bold flex items-center gap-2 text-white">
+                <FileText size={18} className="text-[#EB712B]" /> Item Specifications
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                    Product Name *
+                  </label>
+                  <input 
+                    type="text"
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)} 
+                    placeholder="e.g. Official Team Jersey 2026"
+                    className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors" 
+                  />
                 </div>
-                <div>
-                  <label className="text-xs text-text-muted font-bold uppercase">Price (USD)</label>
-                  <input value={price} onChange={(e) => setPrice(e.target.value)} type="number" min="0" className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm outline-none focus:border-[#EB712B] text-text-main" />
+
+                <div className="space-y-2">
+                  <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                    Price ($) *
+                  </label>
+                  <input 
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={price} 
+                    onChange={(e) => setPrice(e.target.value)} 
+                    placeholder="e.g. 45.00"
+                    className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors" 
+                  />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="text-xs text-text-muted font-bold uppercase">Size</label>
-                  <select value={size} onChange={(e) => setSize(e.target.value)} className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm text-text-main outline-none focus:border-[#EB712B]">
-                    <option>XL - Extra Large</option><option>L - Large</option><option>M - Medium</option><option>S - Small</option>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                    Size / Dimension
+                  </label>
+                  <select 
+                    value={size} 
+                    onChange={(e) => setSize(e.target.value)} 
+                    className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
+                  >
+                    <option value="XS">XS - Extra Small</option>
+                    <option value="S">S - Small</option>
+                    <option value="M">M - Medium</option>
+                    <option value="L">L - Large</option>
+                    <option value="XL">XL - Extra Large</option>
+                    <option value="XXL">XXL - Double Extra Large</option>
+                    <option value="One Size">One Size Fits All</option>
                   </select>
                 </div>
-                <div>
-                  <label className="text-xs text-text-muted font-bold uppercase">Gender (optional)</label>
-                  <select value={gender} onChange={(e) => setGender(e.target.value)} className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm text-text-main outline-none focus:border-[#EB712B]">
-                    <option>None</option><option>Male</option><option>Female</option><option>Unisex</option>
+
+                <div className="space-y-2">
+                  <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                    Target Gender
+                  </label>
+                  <select 
+                    value={gender} 
+                    onChange={(e) => setGender(e.target.value)} 
+                    className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
+                  >
+                    <option value="Unisex">Unisex / Universal</option>
+                    <option value="Male">Men's Apparel</option>
+                    <option value="Female">Women's Apparel</option>
+                    <option value="None">Not Applicable</option>
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="text-xs text-text-muted font-bold uppercase">Description</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm outline-none focus:border-[#EB712B] text-text-main resize-none" />
+
+              <div className="space-y-2">
+                <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                  Description
+                </label>
+                <textarea 
+                  value={description} 
+                  onChange={(e) => setDescription(e.target.value)} 
+                  rows={4} 
+                  placeholder="Provide fabric composition, sizing fit guidelines, care instructions, or delivery details..."
+                  className="w-full bg-main-bg border border-border rounded-xl p-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors resize-none" 
+                />
               </div>
             </div>
           </div>
 
-          {/* Right Column */}
+          {/* Right Column: Live Store Card Preview */}
           <div className="space-y-6">
-            <div className="bg-surface p-6 rounded-2xl border border-border shadow-lg">
-              <h2 className="text-sm font-bold mb-6 text-text-main">Elite Listing Tips</h2>
-              <div className="space-y-6">
-                <div className="flex gap-3"><ShieldCheck size={20} className="text-[#EB712B]/80" /><div><h3 className="text-xs font-bold text-text-main">Precision Data</h3><p className="text-[10px] text-text-muted">Accurate sizes reduce return rates.</p></div></div>
-                <div className="flex gap-3"><Eye size={20} className="text-[#EB712B]/80" /><div><h3 className="text-xs font-bold text-text-main">Visual Clarity</h3><p className="text-[10px] text-text-muted">Use consistent inventory aesthetics.</p></div></div>
-                <div className="flex gap-3"><Gauge size={20} className="text-[#EB712B]/80" /><div><h3 className="text-xs font-bold text-text-main">SEO Keywords</h3><p className="text-[10px] text-text-muted">Include technical terms.</p></div></div>
+            <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-4 sticky top-6">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                  <Sparkles size={14} className="text-[#EB712B]" /> Member View Preview
+                </h3>
+                <span className="text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-0.5 rounded-full">
+                  Official Merch
+                </span>
               </div>
-            </div>
 
-            {/* Configuration & Logistics */}
-            <div className="bg-surface p-6 rounded-2xl border border-border shadow-lg">
-              <h2 className="text-sm font-bold mb-6 flex items-center gap-2 text-text-main"><Settings size={18} className="text-[#EB712B]" /> Configuration & Logistics</h2>
-              <div className="mb-4">
-                <label className="text-xs text-text-muted font-bold uppercase">SKU Generation</label>
-                <div className="relative mt-1">
-                  <input defaultValue="EP-ELITE-2024-AUTO" className="w-full bg-main-bg border border-border rounded-lg p-3 text-sm outline-none focus:border-[#EB712B] text-text-main" />
-                  <RefreshCcw className="absolute right-3 top-3 text-text-muted cursor-pointer hover:text-[#EB712B]" size={16} />
+              {/* Preview Card */}
+              <div className="bg-main-bg border border-border rounded-2xl overflow-hidden p-4 space-y-4">
+                <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center">
+                  {previewImages[0] ? (
+                    <img src={previewImages[0]} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-text-muted gap-2">
+                      <Package size={32} className="text-[#EB712B]/40" />
+                      <span className="text-[10px] uppercase font-bold tracking-wider">Item Image</span>
+                    </div>
+                  )}
+                  <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-black text-white uppercase border border-white/10">
+                    {size}
+                  </div>
                 </div>
-              </div>
-              <div className="mb-4">
-                <label className="text-xs text-text-muted font-bold uppercase">Tax Category</label>
-                <select className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm text-text-main outline-none focus:border-[#EB712B]">
-                  <option>Standard</option><option>Reduced</option><option>Exempt</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs text-text-muted font-bold uppercase">Warehouse Zone</label>
-                <select className="w-full bg-main-bg border border-border rounded-lg p-3 mt-1 text-sm text-text-main outline-none focus:border-[#EB712B]">
-                  <option>Alpha Sector</option><option>Beta Sector</option><option>Gamma Sector</option>
-                </select>
+
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] uppercase font-bold text-text-muted tracking-wider">
+                      {gender !== 'None' ? gender : 'Gear'}
+                    </span>
+                    <span className="text-xs font-black text-emerald-400">● In Stock</span>
+                  </div>
+                  <h4 className="text-base font-black text-white truncate">
+                    {name || 'Product Title'}
+                  </h4>
+                  <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
+                    {description || 'Product description will appear here for club members browsing the shop.'}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-border flex items-center justify-between">
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-text-muted block">Price</span>
+                    <span className="text-lg font-black text-[#EB712B]">
+                      ${price ? Number(price).toFixed(2) : '0.00'}
+                    </span>
+                  </div>
+                  <div className="px-4 py-2 rounded-xl bg-[#EB712B]/20 text-[#EB712B] text-xs font-bold uppercase tracking-wider border border-[#EB712B]/30">
+                    Club Store
+                  </div>
+                </div>
               </div>
             </div>
           </div>
