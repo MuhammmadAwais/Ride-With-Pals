@@ -14,7 +14,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, Car, Wallet, UserCircle,
+  LayoutDashboard, Users, Wallet, UserCircle,
   Newspaper, Trophy, Percent, UserPlus, X, User,
   Settings, ChevronUp, LogOut, MessageSquare, CreditCard, Compass, Bike, Crown, ShieldCheck, FileText, Bell, ShieldAlert, Headphones, Bookmark, Calendar, ShoppingBag, Store, Tag
 } from 'lucide-react';

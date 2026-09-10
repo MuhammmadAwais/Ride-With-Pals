@@ -7,8 +7,6 @@ import {
   ArrowLeft,
   Plus,
   Edit2,
-  Clipboard,
-  EyeOff,
   Trash2,
 } from "lucide-react";
 import DataTable from "@/components/ui/DataTable";

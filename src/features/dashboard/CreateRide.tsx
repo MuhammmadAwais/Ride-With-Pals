@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Upload, CheckCircle2, ChevronDown, Calendar, MapPin, Map, FileCode } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle2, ChevronDown, Calendar, MapPin, Map, FileCode } from 'lucide-react';
 import { toast } from 'sonner';
 import gsap from 'gsap';
 import { useAppDispatch } from '@/hooks/useAppDispatch';

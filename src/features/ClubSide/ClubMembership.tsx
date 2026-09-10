@@ -9,6 +9,8 @@
  * Athlete view — list available plans + subscribe + active membership banner
  */
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/Constants';
 import {
   Crown,
   Plus,
@@ -1400,6 +1402,7 @@ const OverviewTab: React.FC<{
 // ─────────────────────────────────────────────────────────────────────────────
 
 const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
+  const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingPlan, setEditingPlan] = useState<any>(null);
   const [selectedDetailPlanId, setSelectedDetailPlanId] = useState<number | null>(null);
@@ -1420,10 +1423,14 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
     try {
       const result = await connectStripe({ clubId: Number(clubId) }).unwrap();
       const url = result?.onboardingUrl || (result as any)?.url;
-      if (url) window.location.href = url;
-      else toast.success('Stripe connection initiated!');
+      if (url) {
+        window.location.href = url;
+      } else {
+        navigate(ROUTES.STRIPE_CONNECT);
+      }
     } catch (err: any) {
       toast.error(err?.data?.message || 'Failed to initiate Stripe connection.');
+      navigate(ROUTES.STRIPE_CONNECT);
     }
   };
 

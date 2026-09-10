@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, ArrowLeft, LayoutDashboard, FileText, CheckCircle2, X, Loader2, Package, Tag, DollarSign, Layers, Sparkles } from 'lucide-react';
+import { Upload, ArrowLeft, LayoutDashboard, FileText, X, Loader2, Package, Sparkles, CreditCard } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAddItemToShopMutation, useUpdateItemToShopMutation } from '@/features/club/api/shopApiSlice';
 import { useUploadFileMutation } from '@/features/auth/api/authApiSlice';
+import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
 import { ROUTES } from '@/Constants';
@@ -34,6 +35,19 @@ const AddProduct = () => {
   const [uploadFile, { isLoading: isUploading }] = useUploadFileMutation();
 
   const isLoading = isAdding || isUpdating || isUploading;
+
+  // Stripe account status checking
+  const { data: stripeStatus } = useCheckStripeAccountStatusQuery(
+    { clubId: Number(clubIdStr) },
+    { skip: !clubIdStr }
+  );
+  const isStripeConnected = Boolean(
+    stripeStatus?.connected || 
+    stripeStatus?.status === 'active' || 
+    stripeStatus?.onboardingComplete || 
+    stripeStatus?.chargesEnabled
+  );
+  const [showStripeModal, setShowStripeModal] = useState(false);
 
   useEffect(() => {
     if (incomingProduct) {
@@ -107,7 +121,12 @@ const AddProduct = () => {
 
       navigate(ROUTES.PRODUCT);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to save product. Please check your inputs.');
+      const msg = err?.data?.message || err?.message || '';
+      if (msg.toLowerCase().includes('stripe') || msg.toLowerCase().includes('payment')) {
+        setShowStripeModal(true);
+      } else {
+        toast.error(msg || 'Failed to save product. Please check your inputs.');
+      }
     }
   };
 
@@ -166,6 +185,29 @@ const AddProduct = () => {
             </button>
           </div>
         </div>
+
+        {/* Stripe Gateway Notice Banner */}
+        {!isStripeConnected && (
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
+                <CreditCard size={18} />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-white">Stripe Gateway Not Connected</h4>
+                <p className="text-[11px] text-text-muted">
+                  Connect Stripe to enable automatic card checkout and direct bank payouts for merchandise sales.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate(ROUTES.STRIPE_CONNECT)}
+              className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0"
+            >
+              Configure Stripe
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form (Left 2 cols) */}
@@ -365,6 +407,39 @@ const AddProduct = () => {
           </div>
         </div>
       </div>
+
+      {/* Stripe Setup Required Modal */}
+      {showStripeModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-surface border border-border rounded-3xl p-8 max-w-md w-full space-y-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="w-14 h-14 rounded-2xl bg-[#EB712B]/15 border border-[#EB712B]/30 flex items-center justify-center text-[#EB712B] mx-auto">
+              <CreditCard size={28} />
+            </div>
+
+            <div className="text-center space-y-2">
+              <h3 className="text-xl font-bold text-white">Stripe Setup Required</h3>
+              <p className="text-xs text-text-muted leading-relaxed">
+                To publish merchandise and collect card payments from members, your club needs to connect a verified Stripe merchant account.
+              </p>
+            </div>
+
+            <div className="space-y-3 pt-2">
+              <button
+                onClick={() => navigate(ROUTES.STRIPE_CONNECT)}
+                className="w-full py-3.5 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border-0 shadow-lg shadow-[#EB712B]/25"
+              >
+                Set Up Stripe Gateway
+              </button>
+              <button
+                onClick={() => setShowStripeModal(false)}
+                className="w-full py-3 bg-surface hover:bg-hover border border-border text-text-muted hover:text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+              >
+                Continue Editing
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

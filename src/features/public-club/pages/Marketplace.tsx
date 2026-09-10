@@ -507,7 +507,7 @@ export default function Marketplace({ clubId: propClubId }: MarketplaceProps) {
   // listings when the user hadn't explicitly selected a club.
   const { clubId: activeClubIdRedux } = useActiveClub();
   const activeClubId = propClubId || activeClubIdRedux;
-  const permissions = useClubPermissions(activeClubId);
+  const permissions = useClubPermissions(activeClubId || undefined);
 
   // RTK Queries & Mutations
   const { data: marketplaceResponse, isLoading: isLoadingListings, isError: isErrorListings } = useGetMarketplaceListQuery(
