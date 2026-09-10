@@ -23,6 +23,7 @@ export default function ProfileSetup() {
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
   const [mission, setMission] = useState("");
+  const [isWomenAndNonBinary, setIsWomenAndNonBinary] = useState(false);
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   
@@ -118,10 +119,12 @@ export default function ProfileSetup() {
         clubTypeId: Number(clubType),
         currency,
         email,
+        phone,
         location,
         description: mission,
         logo: logoUrl,
         coverImage: coverUrl,
+        isWomenAndNonBinary,
         restrictUnpaidMembers: false,
         restrictClubShop: false,
         restrictJoinActivities: false
@@ -459,6 +462,37 @@ export default function ProfileSetup() {
               className="w-full bg-[#1a1a1a] border border-white/5 rounded-lg p-3 h-24 text-xs text-white focus:border-[#EB712B] outline-none transition-colors" 
               placeholder="Describe the soul of your club..." 
             />
+          </div>
+
+          {/* Women & Non-Binary Switch */}
+          <div className="flex items-center justify-between p-4 bg-[#161616] border border-white/5 rounded-xl transition-all duration-200 hover:border-white/10 shadow-xs">
+            <div className="space-y-0.5 pr-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white">Women and non-binary only</span>
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                  Exclusive
+                </span>
+              </div>
+              <p className="text-[11px] text-gray-400">
+                Only women and non-binary members can join this club
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsWomenAndNonBinary((prev) => !prev)}
+              aria-label="Toggle Women and non-binary only"
+              className={`w-12 h-6.5 rounded-full transition-colors flex items-center p-0.5 border cursor-pointer shrink-0 ${
+                isWomenAndNonBinary
+                  ? 'bg-[#EB712B] border-[#EB712B]'
+                  : 'bg-[#262626] border-white/10'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-white transition-transform shadow-xs ${
+                  isWomenAndNonBinary ? 'translate-x-5.5' : 'translate-x-0'
+                }`}
+              />
+            </button>
           </div>
 
           {/* Footer Actions */}

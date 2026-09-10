@@ -13,6 +13,7 @@ export interface Club {
   restrictUnpaidMembers: boolean;
   restrictClubShop: boolean;
   restrictJoinActivities: boolean;
+  isWomenAndNonBinary?: boolean;
   invitationCode?: string;
   invitationCodeExpiresAt?: string;
   memberCount?: number;
@@ -36,11 +37,13 @@ export interface CreateClubPayload {
   clubPrivacyId: number;
   clubTypeId: number;
   email: string;
+  phone?: string;
   location: string;
   currency: string;
   description: string;
   logo: string;
   coverImage: string;
+  isWomenAndNonBinary?: boolean;
   restrictUnpaidMembers: boolean;
   restrictClubShop: boolean;
   restrictJoinActivities: boolean;

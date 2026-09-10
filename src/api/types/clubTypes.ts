@@ -227,6 +227,7 @@ export type CreateClubProfileResponseResponse = {
     updatedAt:         Date;
     createdAt:         Date;
     participantCount?: number;
+    isWomenAndNonBinary?: boolean;
     deletedAt?:        null;
     clubMembers?:      ClubMemberElement[];
 }
@@ -498,6 +499,7 @@ export type CreateClubProfileRequest = {
     restrictUnpaidMembers?:   boolean;
     restrictClubShop?:        boolean;
     restrictJoinActivities?:  boolean;
+    isWomenAndNonBinary?:     boolean;
 }
 
 export type UpdateClubInfoRequest = CreateClubProfileRequest & {

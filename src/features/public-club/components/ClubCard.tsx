@@ -186,6 +186,14 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
           <div className="space-y-1.5 w-full min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               {renderSportBadge()}
+              {Boolean(club.isWomenAndNonBinary) && (
+                <span
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-pink-600/90 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs"
+                  title="Women and non-binary only"
+                >
+                  <span><Trans>Women & Non-Binary</Trans></span>
+                </span>
+              )}
               {isOwned && (
                 <span
                   className="inline-flex items-center gap-1 px-2.5 py-1 bg-surface/90 dark:bg-black/60 backdrop-blur-md text-amber-600 dark:text-amber-300 border border-amber-500/30 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs"
@@ -256,8 +264,18 @@ export const ClubCard: React.FC<ClubCardProps> = React.memo(({
       />
 
       {/* 4. Top Badges Bar */}
-      <div className="relative z-10 p-3 sm:p-3.5 flex justify-between items-center gap-1.5">
-        {renderSportBadge()}
+      <div className="relative z-10 p-3 sm:p-3.5 flex justify-between items-center gap-1.5 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {renderSportBadge()}
+          {Boolean(club.isWomenAndNonBinary) && (
+            <span
+              className="inline-flex items-center gap-1 px-2 py-1 bg-pink-600/90 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 shadow-xs"
+              title="Women and non-binary only"
+            >
+              <span><Trans>Women & Non-Binary</Trans></span>
+            </span>
+          )}
+        </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
           {isOwned && (

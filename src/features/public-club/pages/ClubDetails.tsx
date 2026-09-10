@@ -465,6 +465,13 @@ export default function ClubDetails() {
                   {club.clubPrivacyId === 1 ? <Globe size={12} /> : <Lock size={12} />}
                   <span>{club.clubPrivacyId === 1 ? <Trans>Public Club</Trans> : <Trans>Private Club</Trans>}</span>
                 </div>
+
+                {/* Women & Non-Binary Chip */}
+                {Boolean(club.isWomenAndNonBinary) && (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border whitespace-nowrap bg-pink-500/10 text-pink-400 border-pink-500/20">
+                    <span><Trans>Women & Non-Binary Only</Trans></span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
