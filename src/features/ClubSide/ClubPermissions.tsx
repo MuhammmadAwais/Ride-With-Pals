@@ -34,6 +34,7 @@ import {
   useAssignRoleToMemberMutation,
   useRemoveFullAccessPermissionMutation,
 } from '@/features/club/api/permissionApiSlice';
+import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
 
 // ── Permission Mapping ─────────────────────────────────────────────────────────
 
@@ -164,18 +165,47 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
     }
   };
 
+  const [imgError, setImgError] = useState(false);
+
+  const rawPhoto = (
+    member.profileImage ||
+    member.profilePhoto ||
+    member.profilePicUrl ||
+    member.avatar ||
+    member.user?.profileImage ||
+    member.user?.profilePhoto ||
+    member.user?.profilePicUrl
+  );
+  const photoUrl = resolveImageUrl(rawPhoto);
+
+  const initials = (fullName || 'M')
+    .split(' ')
+    .map((w: string) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'M';
+
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-[#EB712B]/20">
       {/* Member Header */}
       <div className="flex items-center gap-4 p-4">
-        <img
-          src={member.profileImage || member.profilePhoto || '/Images/ProfileImage.png'}
-          alt={fullName}
-          className="w-10 h-10 rounded-xl object-cover border border-border shrink-0"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/Images/ProfileImage.png';
-          }}
-        />
+        {photoUrl && !imgError ? (
+          <div className="w-10 h-10 rounded-full bg-surface border border-border overflow-hidden shrink-0 shadow-sm relative">
+            <img
+              src={photoUrl}
+              alt={fullName}
+              className="w-full h-full object-cover"
+              onError={() => setImgError(true)}
+            />
+          </div>
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-sm">
+            <span className="text-xs font-black text-[#EB712B] select-none">
+              {initials}
+            </span>
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold text-text-main truncate">{fullName}</p>

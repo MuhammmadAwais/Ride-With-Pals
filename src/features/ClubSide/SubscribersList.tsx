@@ -30,6 +30,7 @@ import {
   useSendSubscriptionReminderMutation,
   useSendSubscriptionReminderToEveryoneMutation,
 } from '@/features/subscriptions/api/subscriptionApiSlice';
+import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
 
 const LIMIT = 10;
 
@@ -235,14 +236,24 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
               >
                 {/* Avatar + Info */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <img
-                    src={row.user?.profileImage || '/Images/ProfileImage.png'}
-                    alt={row.user?.fullName}
-                    className="w-10 h-10 rounded-xl object-cover border border-border shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/Images/ProfileImage.png';
-                    }}
-                  />
+                  {resolveImageUrl(row.user?.profileImage) ? (
+                    <div className="w-10 h-10 rounded-full bg-surface border border-border overflow-hidden shrink-0 shadow-sm relative">
+                      <img
+                        src={resolveImageUrl(row.user?.profileImage)}
+                        alt={row.user?.fullName}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-sm">
+                      <span className="text-xs font-black text-[#EB712B] select-none">
+                        {(row.user?.fullName || 'M').split(' ').map((w: string) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'M'}
+                      </span>
+                    </div>
+                  )}
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-text-main truncate">
                       {row.user?.fullName || 'Unknown'}
