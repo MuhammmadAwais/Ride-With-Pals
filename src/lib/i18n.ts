@@ -17,17 +17,17 @@ export type Locale = keyof typeof locales;
 
 export const rtlLocales: Locale[] = ['ar', 'ur'];
 
-export const LANGUAGE_META: Record<Locale, { flag: string; native: string; english: string }> = {
-  en: { flag: '🇬🇧', native: 'English',    english: 'English'    },
-  ur: { flag: '🇵🇰', native: 'اردو',       english: 'Urdu'       },
-  hi: { flag: '🇮🇳', native: 'हिन्दी',     english: 'Hindi'      },
-  es: { flag: '🇪🇸', native: 'Español',    english: 'Spanish'    },
-  nl: { flag: '🇳🇱', native: 'Nederlands', english: 'Dutch'      },
-  fr: { flag: '🇫🇷', native: 'Français',   english: 'French'     },
-  it: { flag: '🇮🇹', native: 'Italiano',   english: 'Italian'    },
-  ar: { flag: '🇸🇦', native: 'العربية',    english: 'Arabic'     },
-  ru: { flag: '🇷🇺', native: 'Русский',    english: 'Russian'    },
-  pt: { flag: '🇧🇷', native: 'Português',  english: 'Portuguese' },
+export const LANGUAGE_META: Record<Locale, { flag: string; countryCode: string; native: string; english: string }> = {
+  en: { flag: '🇬🇧', countryCode: 'gb', native: 'English',    english: 'English'    },
+  ur: { flag: '🇵🇰', countryCode: 'pk', native: 'اردو',       english: 'Urdu'       },
+  hi: { flag: '🇮🇳', countryCode: 'in', native: 'हिन्दी',     english: 'Hindi'      },
+  es: { flag: '🇪🇸', countryCode: 'es', native: 'Español',    english: 'Spanish'    },
+  nl: { flag: '🇳🇱', countryCode: 'nl', native: 'Nederlands', english: 'Dutch'      },
+  fr: { flag: '🇫🇷', countryCode: 'fr', native: 'Français',   english: 'French'     },
+  it: { flag: '🇮🇹', countryCode: 'it', native: 'Italiano',   english: 'Italian'    },
+  ar: { flag: '🇸🇦', countryCode: 'sa', native: 'العربية',    english: 'Arabic'     },
+  ru: { flag: '🇷🇺', countryCode: 'ru', native: 'Русский',    english: 'Russian'    },
+  pt: { flag: '🇧🇷', countryCode: 'br', native: 'Português',  english: 'Portuguese' },
 };
 
 /**

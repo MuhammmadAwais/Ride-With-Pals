@@ -360,7 +360,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard', o
         )}
 
         {/* Language Switcher for Webapp */}
-        <LanguageSwitcher variant="light" className="mr-1" />
+        <LanguageSwitcher className="mr-1" />
 
         {/* Theme Toggle — GSAP icon flip on swap */}
         <button

@@ -104,7 +104,7 @@ const AppLayout: React.FC = () => {
           <div className="flex flex-col flex-1 min-w-0 relative lg:pl-[288px]">
 
             {/* Fixed Navbar — permanently pinned to top across all screen sizes */}
-            <div className="fixed top-0 right-0 left-0 lg:left-[288px] z-30 h-[80px]">
+            <div className="fixed top-0 right-0 left-0 lg:left-[288px] z-40 h-[80px]">
               <Navbar
                 onMenuClick={() => setSidebarOpen(true)}
                 pageTitle={pageTitle}
