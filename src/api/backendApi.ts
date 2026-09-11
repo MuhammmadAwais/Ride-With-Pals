@@ -424,6 +424,16 @@ export const ClubService = logWrapper("ClubService", {
     const response = await backendApi.put('/user/club/permissions/remove-full-access', data, { params });
     return response.data;
   },
+
+  deleteClub: async (params: { clubId: number | string }) => {
+    const response = await backendApi.delete('/user/club', { params });
+    return response.data;
+  },
+
+  transferClubOwnership: async (data: { clubId: number; newOwnerId: number }) => {
+    const response = await backendApi.put('/user/club/transfer-ownership', data);
+    return response.data;
+  },
 });
 
 export const NewsService = logWrapper("NewsService", {

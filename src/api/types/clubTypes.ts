@@ -646,12 +646,18 @@ export type UpdateClubJoinCodeRequest = {
     id: number;
     clubId: number;
     code: string;
-    expiresAt: string;
-    usageLimit: number;
-    isActive: boolean;
 }
 
 export type DeleteClubJoinCodeRequest = {
     id: number;
     clubId: number;
+}
+
+export type DeleteClubParams = {
+    clubId: number | string;
+}
+
+export type TransferClubOwnershipRequest = {
+    clubId: number;
+    newOwnerId: number;
 }

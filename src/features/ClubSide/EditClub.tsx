@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'sonner';
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
-import { useUpdateClubInfoByIdMutation } from '@/features/club/api/clubApiSlice';
+import {
+  useUpdateClubInfoByIdMutation,
+  useDeleteClubMutation,
+  useTransferClubOwnershipMutation,
+  useGetClubMembersListQuery,
+} from '@/features/club/api/clubApiSlice';
 import { RideService } from '@/api/backendApi';
 import {
   ArrowLeft,
@@ -13,13 +19,41 @@ import {
   Building,
   ShieldCheck,
   ImagePlus,
+  AlertTriangle,
+  Trash2,
+  ArrowRightLeft,
+  Search,
+  X,
+  Check,
+  ShieldAlert,
+  User,
+  Users,
 } from "lucide-react";
 import { useActiveClub } from "@/hooks/useActiveClub";
+import { useAppSelector } from "@/hooks/useAppSelector";
 
 export default function EditClub() {
   const navigate = useNavigate();
-  const { clubId: clubIdStr, activeClub } = useActiveClub();
+  const currentUserId = useAppSelector((state) => state.auth.user?.id);
+  const { clubId: clubIdStr, activeClub, clearActiveClub } = useActiveClub();
   const [updateClub, { isLoading }] = useUpdateClubInfoByIdMutation();
+  const [deleteClubMutation, { isLoading: isDeletingClub }] = useDeleteClubMutation();
+  const [transferOwnershipMutation, { isLoading: isTransferring }] = useTransferClubOwnershipMutation();
+
+  const { data: membersData, isLoading: isMembersLoading } = useGetClubMembersListQuery(
+    { clubId: Number(clubIdStr) },
+    { skip: !clubIdStr }
+  );
+
+  // Transfer Ownership state
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
+  const [memberSearch, setMemberSearch] = useState("");
+
+  // Delete Club state (2-Step Safety Confirmation)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
+  const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
 
   const [clubName, setClubName] = useState("");
   const [email, setEmail] = useState("");
@@ -144,6 +178,69 @@ export default function EditClub() {
       setIsUploading(false);
     }
   };
+
+  // Candidate members for transfer: exclude current user and existing owner
+  const eligibleMembers = useMemo(() => {
+    const rawList: any[] = Array.isArray(membersData) ? membersData : ((membersData as any)?.response || []);
+    return rawList.filter((m: any) => {
+      const isSelf = currentUserId && m.userId === currentUserId;
+      const isOwnerRole = (m.role || '').toLowerCase() === 'owner';
+      return !isSelf && !isOwnerRole;
+    });
+  }, [membersData, currentUserId]);
+
+  const filteredEligibleMembers = useMemo(() => {
+    const query = memberSearch.toLowerCase().trim();
+    if (!query) return eligibleMembers;
+    return eligibleMembers.filter((m: any) => {
+      const name = (m.fullName || m.name || '').toLowerCase();
+      const em = (m.email || '').toLowerCase();
+      return name.includes(query) || em.includes(query);
+    });
+  }, [eligibleMembers, memberSearch]);
+
+  const selectedMember = useMemo(() => {
+    return eligibleMembers.find((m: any) => m.userId === selectedMemberId);
+  }, [eligibleMembers, selectedMemberId]);
+
+  const handleConfirmTransfer = async () => {
+    if (!clubIdStr || !selectedMemberId) return;
+    try {
+      await transferOwnershipMutation({
+        clubId: Number(clubIdStr),
+        newOwnerId: selectedMemberId,
+      }).unwrap();
+
+      const memberName = selectedMember?.fullName || t`Selected member`;
+      toast.success(t`Club ownership successfully transferred to ${memberName}!`);
+      setIsTransferModalOpen(false);
+      navigate('/view/userside/home');
+    } catch (err: any) {
+      console.error("Failed to transfer ownership:", err);
+      toast.error(err?.data?.message || err?.response?.data?.message || err?.message || t`Failed to transfer club ownership.`);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!clubIdStr) return;
+    if (deleteConfirmInput.trim() !== "DELETE") {
+      toast.error(t`Please type DELETE in all caps to confirm.`);
+      return;
+    }
+
+    try {
+      await deleteClubMutation({ clubId: Number(clubIdStr) }).unwrap();
+      toast.success(t`Club "${clubName || activeClub?.clubName || 'Club'}" was deleted permanently.`);
+      clearActiveClub();
+      setIsDeleteModalOpen(false);
+      navigate('/view/userside/home');
+    } catch (err: any) {
+      console.error("Failed to delete club:", err);
+      toast.error(err?.data?.message || err?.response?.data?.message || err?.message || t`Failed to delete club.`);
+    }
+  };
+
+  const modalRoot = typeof document !== 'undefined' ? (document.getElementById('modal-root') || document.body) : null;
 
   return (
     <div className="min-h-screen bg-surface text-white py-12 px-4 sm:px-6 lg:px-8">
@@ -509,7 +606,402 @@ export default function EditClub() {
             </p>
           </div>
         </form>
+
+        {/* Danger Zone Section */}
+        <div className="mt-14 pt-10 border-t border-red-500/20">
+          <div className="bg-[#181112] border border-red-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-red-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+
+            <div className="flex items-center gap-3.5 mb-6 relative z-10">
+              <div className="w-10 h-10 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 shadow-lg shadow-red-500/10">
+                <AlertTriangle size={20} />
+              </div>
+              <div>
+                <h2 className="text-lg font-black text-white tracking-wide uppercase">
+                  <Trans>Danger Zone</Trans>
+                </h2>
+                <p className="text-xs text-red-400/80 font-medium mt-0.5">
+                  <Trans>High-impact, irreversible administrative actions for this club</Trans>
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 relative z-10">
+              {/* Transfer Ownership Row */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-[#201517] border border-red-500/15 gap-4 hover:border-amber-500/30 transition-colors">
+                <div>
+                  <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
+                    <ArrowRightLeft size={16} className="text-amber-400" />
+                    <Trans>Transfer Club Ownership</Trans>
+                  </h3>
+                  <p className="text-xs text-gray-400 max-w-xl leading-relaxed">
+                    <Trans>Transfer ownership of this club to an active member. You will lose primary ownership authority, Stripe billing controls, and member management powers.</Trans>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedMemberId(null);
+                    setMemberSearch("");
+                    setIsTransferModalOpen(true);
+                  }}
+                  className="px-5 py-2.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 cursor-pointer hover:border-amber-500/60 shadow-lg shadow-amber-500/5 flex items-center justify-center gap-2"
+                >
+                  <ArrowRightLeft size={14} />
+                  <span><Trans>Transfer Ownership</Trans></span>
+                </button>
+              </div>
+
+              {/* Delete Club Row */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-[#201517] border border-red-500/15 gap-4 hover:border-red-500/30 transition-colors">
+                <div>
+                  <h3 className="text-sm font-bold text-red-400 mb-1 flex items-center gap-2">
+                    <Trash2 size={16} className="text-red-400" />
+                    <Trans>Permanently Delete Club</Trans>
+                  </h3>
+                  <p className="text-xs text-gray-400 max-w-xl leading-relaxed">
+                    <Trans>Permanently delete this club, its member lists, scheduled rides, news feed, discounts, and history. This action cannot be reversed.</Trans>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDeleteStep(1);
+                    setDeleteConfirmInput("");
+                    setIsDeleteModalOpen(true);
+                  }}
+                  className="px-5 py-2.5 rounded-xl border border-red-500/40 bg-red-500/15 hover:bg-red-600 text-white text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 cursor-pointer shadow-lg shadow-red-500/10 hover:shadow-red-500/25 flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={14} />
+                  <span><Trans>Delete Club</Trans></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* ─── Transfer Club Ownership Modal ────────────────────────────────────── */}
+      {isTransferModalOpen && modalRoot && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsTransferModalOpen(false); }}
+        >
+          <div className="bg-[#1C1C1E] border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-[#161618]">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <ArrowRightLeft size={18} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-white">
+                    <Trans>Transfer Club Ownership</Trans>
+                  </h3>
+                  <p className="text-xs text-gray-400 font-medium">
+                    <Trans>Choose a member to receive primary ownership of this club.</Trans>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsTransferModalOpen(false)}
+                className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              {/* Search */}
+              <div className="relative">
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={memberSearch}
+                  onChange={(e) => setMemberSearch(e.target.value)}
+                  placeholder={t`Search club members by name or email...`}
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#141416] rounded-xl border border-white/10 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500/50 transition-colors"
+                />
+              </div>
+
+              {/* Members List */}
+              <div className="max-h-60 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                {isMembersLoading ? (
+                  <div className="py-10 text-center text-xs text-gray-400">
+                    <span className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin inline-block mr-2" />
+                    <Trans>Loading eligible club members...</Trans>
+                  </div>
+                ) : filteredEligibleMembers.length === 0 ? (
+                  <div className="py-10 text-center text-xs text-gray-400 bg-white/5 rounded-2xl p-6 border border-white/5">
+                    <Users size={28} className="mx-auto mb-2 text-gray-500" />
+                    <p className="font-bold text-white mb-1"><Trans>No eligible members found</Trans></p>
+                    <p className="text-gray-400 text-[11px]">
+                      {memberSearch ? t`No members match your search.` : t`Only existing active members can be transferred ownership.`}
+                    </p>
+                  </div>
+                ) : (
+                  filteredEligibleMembers.map((member: any) => {
+                    const isSelected = selectedMemberId === member.userId;
+                    const avatar = member.profileImage ? (member.profileImage.startsWith('http') || member.profileImage.startsWith('blob:') ? member.profileImage : `https://api.ridewithpals.com/uploads/${member.profileImage}`) : null;
+                    return (
+                      <div
+                        key={member.userId}
+                        onClick={() => setSelectedMemberId(member.userId)}
+                        className={`flex items-center justify-between p-3 rounded-2xl border cursor-pointer transition-all ${
+                          isSelected
+                            ? 'bg-amber-500/10 border-amber-500/40 text-white'
+                            : 'bg-[#141416] border-white/5 hover:border-white/20 text-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-full bg-[#202024] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                            {avatar ? (
+                              <img src={avatar} alt={member.fullName || 'Member'} className="w-full h-full object-cover" />
+                            ) : (
+                              <User size={18} className="text-gray-400" />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold text-white truncate">
+                              {member.fullName || t`Member #${member.userId}`}
+                            </p>
+                            <p className="text-xs text-gray-400 truncate">
+                              {member.email || t`No email`}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-gray-400">
+                            {member.role || t`Member`}
+                          </span>
+                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${isSelected ? 'border-amber-400 bg-amber-400 text-black' : 'border-white/20'}`}>
+                            {isSelected && <Check size={12} strokeWidth={3} />}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Warning Callout when selected */}
+              {selectedMember && (
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-200/90 text-xs leading-relaxed space-y-1">
+                  <div className="flex items-center gap-2 font-bold text-amber-400">
+                    <AlertTriangle size={15} />
+                    <span><Trans>Transfer Confirmation</Trans></span>
+                  </div>
+                  <p>
+                    <Trans>
+                      Are you sure you want to transfer ownership of <strong className="text-white font-semibold">{clubName || activeClub?.clubName}</strong> to <strong className="text-white font-semibold">{selectedMember.fullName || selectedMember.email}</strong>?
+                      You will be demoted to an administrator and will no longer have owner-level privileges.
+                    </Trans>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/10 bg-[#161618]">
+              <button
+                type="button"
+                onClick={() => setIsTransferModalOpen(false)}
+                disabled={isTransferring}
+                className="px-5 py-2.5 rounded-xl border border-white/10 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                <Trans>Cancel</Trans>
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmTransfer}
+                disabled={!selectedMemberId || isTransferring}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-black text-xs uppercase tracking-wider transition-all duration-200 disabled:opacity-50 cursor-pointer shadow-lg shadow-amber-500/20"
+              >
+                {isTransferring ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    <span><Trans>Transferring...</Trans></span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowRightLeft size={14} />
+                    <span><Trans>Confirm Transfer</Trans></span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        modalRoot
+      )}
+
+      {/* ─── Delete Club Two-Step Safety Modal ────────────────────────────────── */}
+      {isDeleteModalOpen && modalRoot && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => { if (e.target === e.currentTarget && !isDeletingClub) setIsDeleteModalOpen(false); }}
+        >
+          <div className="bg-[#1C1214] border border-red-500/30 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden relative">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-red-500/20 bg-[#221316]">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30">
+                  <ShieldAlert size={18} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-white">
+                    {deleteStep === 1 ? <Trans>Permanently Delete Club</Trans> : <Trans>Final Confirmation Required</Trans>}
+                  </h3>
+                  <p className="text-xs text-red-400 font-medium">
+                    {deleteStep === 1 ? <Trans>Step 1 of 2: Risk Assessment</Trans> : <Trans>Step 2 of 2: Safeguard Verification</Trans>}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => { if (!isDeletingClub) setIsDeleteModalOpen(false); }}
+                className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-5">
+              {deleteStep === 1 ? (
+                <>
+                  {/* Club Preview Badge */}
+                  <div className="flex items-center gap-3.5 p-4 rounded-2xl bg-black/30 border border-red-500/20">
+                    <div className="w-12 h-12 rounded-full bg-[#181112] border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                      {logoFile ? (
+                        <img
+                          src={logoFile.startsWith('http') || logoFile.startsWith('blob:') ? logoFile : `https://api.ridewithpals.com/uploads/${logoFile}`}
+                          alt="Club"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Building size={20} className="text-gray-500" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-white truncate text-base">
+                        {clubName || activeClub?.clubName}
+                      </h4>
+                      <p className="text-xs text-gray-400">
+                        {location || activeClub?.location || t`No location specified`} • {clubType}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Destruction Impact Warning Box */}
+                  <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-xs text-red-200 space-y-2 leading-relaxed">
+                    <p className="font-bold text-red-400 flex items-center gap-2">
+                      <AlertTriangle size={15} />
+                      <Trans>This action is completely irreversible.</Trans>
+                    </p>
+                    <ul className="list-disc list-inside space-y-1.5 text-gray-300">
+                      <li><Trans>All members and admins will immediately lose access.</Trans></li>
+                      <li><Trans>All scheduled rides, GPS route data, and comments will be permanently erased.</Trans></li>
+                      <li><Trans>All club shop merchandise, member fees, and history will be cancelled.</Trans></li>
+                      <li><Trans>This club name and profile cannot be recovered by support.</Trans></li>
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-xs text-red-200 leading-relaxed space-y-2">
+                    <p className="font-bold text-red-400 flex items-center gap-2">
+                      <AlertTriangle size={15} />
+                      <Trans>Type safety confirmation</Trans>
+                    </p>
+                    <p>
+                      <Trans>
+                        To confirm permanent deletion of <strong className="text-white font-bold">{clubName || activeClub?.clubName}</strong>, please type <span className="font-mono font-black text-red-400 tracking-widest px-1.5 py-0.5 bg-black/40 border border-red-500/30 rounded">DELETE</span> in capital letters in the input below:
+                      </Trans>
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      autoFocus
+                      value={deleteConfirmInput}
+                      onChange={(e) => setDeleteConfirmInput(e.target.value)}
+                      placeholder="DELETE"
+                      className="w-full text-center font-mono tracking-[0.25em] text-base uppercase py-3.5 bg-black/50 border border-red-500/40 rounded-2xl text-white placeholder:text-gray-600 focus:outline-none focus:border-red-500 transition-colors"
+                    />
+                    <div className="flex items-center justify-between text-[11px] px-1 font-semibold">
+                      <span className="text-gray-400"><Trans>Must match exactly:</Trans></span>
+                      {deleteConfirmInput.trim() === "DELETE" ? (
+                        <span className="text-emerald-400 flex items-center gap-1 font-bold">
+                          <Check size={12} strokeWidth={3} /> <Trans>Ready to delete</Trans>
+                        </span>
+                      ) : (
+                        <span className="text-gray-500 font-mono">DELETE</span>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between px-6 py-4 border-t border-red-500/20 bg-[#221316]">
+              {deleteStep === 1 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteModalOpen(false)}
+                    className="px-5 py-2.5 rounded-xl border border-white/10 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                  >
+                    <Trans>Cancel</Trans>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteStep(2)}
+                    className="px-6 py-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                  >
+                    <Trans>I Understand, Continue</Trans>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteStep(1)}
+                    disabled={isDeletingClub}
+                    className="px-5 py-2.5 rounded-xl border border-white/10 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                  >
+                    <Trans>Back</Trans>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmDelete}
+                    disabled={deleteConfirmInput.trim() !== "DELETE" || isDeletingClub}
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-lg shadow-red-600/30"
+                  >
+                    {isDeletingClub ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span><Trans>Deleting...</Trans></span>
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 size={14} />
+                        <span><Trans>Permanently Delete Club</Trans></span>
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>,
+        modalRoot
+      )}
     </div>
   );
 }

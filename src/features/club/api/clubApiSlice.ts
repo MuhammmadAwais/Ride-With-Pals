@@ -263,6 +263,24 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Club'],
     }),
+
+    deleteClub: builder.mutation<any, ClubTypes.DeleteClubParams>({
+      query: (params) => ({
+        url: '/user/club',
+        method: 'DELETE',
+        params,
+      }),
+      invalidatesTags: ['Club'],
+    }),
+
+    transferClubOwnership: builder.mutation<any, ClubTypes.TransferClubOwnershipRequest>({
+      query: (body) => ({
+        url: '/user/club/transfer-ownership',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
   }),
 });
 
@@ -296,4 +314,6 @@ export const {
   useGetClubTermsQuery,
   useAddClubTermsMutation,
   useUpdateClubTermsMutation,
+  useDeleteClubMutation,
+  useTransferClubOwnershipMutation,
 } = clubApiSlice;
