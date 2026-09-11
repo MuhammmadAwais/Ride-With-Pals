@@ -4,7 +4,7 @@ import { AreaChart, Area, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tool
 import { 
   Search, Bell, Mail, Users, Bike, Menu, 
   UserPlus, AlertCircle, ChevronRight, ShieldCheck, ShoppingBag, Plus,
-  Percent, Package, Crown ,ArrowUpRight
+  Percent, Package, Crown, ArrowUpRight, CreditCard, CheckCircle2, BellRing
 } from 'lucide-react';
 import Sidebar from '../../components/Sidebar';
 import { 
@@ -18,7 +18,14 @@ import {
 import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
 import { useGetClubDiscountsQuery } from '@/features/club/api/discountApiSlice';
 import { useGetTheShopItemsQuery } from '@/features/club/api/shopApiSlice';
-import { useListMembershipPlansQuery } from '@/features/club/api/membershipApiSlice';
+import { 
+  useListMembershipPlansQuery,
+  useListSubscribedMemberQuery
+} from '@/features/club/api/membershipApiSlice';
+import { 
+  useSendSubscriptionReminderMutation,
+  useSendSubscriptionReminderToEveryoneMutation
+} from '@/features/subscriptions/api/subscriptionApiSlice';
 import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -119,6 +126,15 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
     { skip: !effectiveClubId }
   );
 
+  const { 
+    data: subscribersResponse, 
+    isLoading: isLoadingSubscribers,
+    refetch: refetchSubscribers 
+  } = useListSubscribedMemberQuery(
+    { clubId: effectiveClubId, limit: 100 },
+    { skip: !effectiveClubId }
+  );
+
   const { data: stripeStatus } = useCheckStripeAccountStatusQuery(
     { clubId: effectiveClubId },
     { 
@@ -129,6 +145,9 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   );
 
   const [respondToJoinRequest] = useManageJoinGroupRequestMutation();
+  const [sendReminder] = useSendSubscriptionReminderMutation();
+  const [sendReminderToAll, { isLoading: isSendingAllReminders }] = useSendSubscriptionReminderToEveryoneMutation();
+  const [sendingReminderMemberId, setSendingReminderMemberId] = useState<number | null>(null);
 
   const stats = passedStats || fetchedStats;
   const rides = extractArray(ridesResponse);
@@ -217,6 +236,51 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
       toast.success(status === 'approved' ? t`Request approved successfully!` : t`Request rejected successfully!`);
     } catch (err: any) {
       toast.error(err?.data?.message || err?.message || t`Failed to process request.`);
+    }
+  };
+
+  // Filter members with pending/unpaid dues
+  const unpaidMembers = React.useMemo(() => {
+    const rawList = extractArray(subscribersResponse);
+    return rawList.filter((sub: any) => {
+      const pStatus = (sub.paymentStatus || sub.status || '').toLowerCase();
+      return pStatus === 'unpaid' || pStatus === 'pending' || pStatus === 'expired';
+    }).map((sub: any) => ({
+      id: sub.id,
+      userId: sub.userId,
+      name: sub.user?.fullName || sub.user?.name || t`Club Athlete`,
+      email: sub.user?.email || '',
+      profileImage: sub.user?.profileImage,
+      planName: sub.plan?.name || sub.planSnapshot?.name || t`Membership Fee`,
+      price: sub.plan?.price || sub.planSnapshot?.price || 0,
+      currency: sub.plan?.currency || sub.planSnapshot?.currency || 'EUR',
+      paymentStatus: sub.paymentStatus || sub.status || 'unpaid',
+      createdAt: sub.createdAt,
+    }));
+  }, [subscribersResponse]);
+
+  const handleSendSingleReminder = async (targetUserId: number, memberName: string) => {
+    if (!effectiveClubId) return;
+    setSendingReminderMemberId(targetUserId);
+    try {
+      await sendReminder({ clubId: effectiveClubId, targetUserId }).unwrap();
+      toast.success(t`Payment reminder sent to ${memberName}!`);
+      refetchSubscribers();
+    } catch (err: any) {
+      toast.error(err?.data?.message || t`Failed to send payment reminder.`);
+    } finally {
+      setSendingReminderMemberId(null);
+    }
+  };
+
+  const handleSendAllReminders = async () => {
+    if (!effectiveClubId) return;
+    try {
+      await sendReminderToAll({ clubId: effectiveClubId }).unwrap();
+      toast.success(t`Payment reminders sent to all unpaid members!`);
+      refetchSubscribers();
+    } catch (err: any) {
+      toast.error(err?.data?.message || t`Failed to send reminders.`);
     }
   };
 
@@ -576,6 +640,140 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
           </div>
         </div>
 
+      </div>
+
+      {/* ── BENTO WIDGET: Overdue / Unpaid Members & Quick Payment Reminders ── */}
+      <div className="bg-surface p-8 rounded-[32px] border border-border shadow-2xl relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="p-3 bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl shrink-0">
+              <CreditCard size={22} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">
+                  <Trans>Fee Management</Trans>
+                </span>
+                {unpaidMembers.length > 0 && (
+                  <span className="text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full animate-pulse">
+                    {unpaidMembers.length} <Trans>Overdue</Trans>
+                  </span>
+                )}
+              </div>
+              <h3 className="text-xl font-black text-text-main mt-1">
+                <Trans>Unpaid Members & Fee Reminders</Trans>
+              </h3>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {unpaidMembers.length > 0 && (
+              <button
+                onClick={handleSendAllReminders}
+                disabled={isSendingAllReminders}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#EB712B] to-[#ff7e36] text-white text-xs font-bold rounded-xl shadow-lg shadow-[#EB712B]/20 hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
+              >
+                <BellRing size={14} className={isSendingAllReminders ? 'animate-bounce' : ''} />
+                <span>
+                  {isSendingAllReminders 
+                    ? t`Sending...` 
+                    : t`Remind All (${unpaidMembers.length})`}
+                </span>
+              </button>
+            )}
+            <button
+              onClick={() => navigate('/view/clubside/membership')}
+              className="text-xs font-bold text-[#EB712B] hover:underline flex items-center gap-1 cursor-pointer py-2"
+            >
+              <Trans>Manage Fees</Trans> <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        {isLoadingSubscribers ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-24 bg-main-bg/60 border border-border rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        ) : unpaidMembers.length === 0 ? (
+          <div className="py-8 px-6 bg-main-bg/50 border border-border/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                <CheckCircle2 size={24} />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-text-main">
+                  <Trans>All members are up to date with fees!</Trans>
+                </h4>
+                <p className="text-xs text-text-muted mt-0.5">
+                  <Trans>No pending or overdue subscription payments require attention.</Trans>
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/view/clubside/membership')}
+              className="px-4 py-2 text-xs font-bold text-text-main bg-surface border border-border rounded-xl hover:border-[#EB712B]/40 transition-colors"
+            >
+              <Trans>View Overview</Trans>
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {unpaidMembers.slice(0, 6).map((member: any) => {
+              const initial = member.name.charAt(0).toUpperCase();
+              const isSendingThis = sendingReminderMemberId === member.userId;
+              const resolvedAvatar = member.profileImage ? resolveImageUrl(member.profileImage) : null;
+
+              return (
+                <div 
+                  key={member.id || member.userId} 
+                  className="p-4 bg-main-bg border border-border rounded-2xl flex items-center justify-between gap-3 hover:border-[#EB712B]/40 transition-all duration-200 group"
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="w-11 h-11 rounded-xl overflow-hidden bg-[#EB712B]/10 text-[#EB712B] flex items-center justify-center font-bold text-sm border border-border shrink-0">
+                      {resolvedAvatar ? (
+                        <img 
+                          src={resolvedAvatar} 
+                          alt={member.name} 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span>{initial}</span>
+                      )}
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="text-xs font-bold text-text-main truncate group-hover:text-[#EB712B] transition-colors">{member.name}</p>
+                      <p className="text-[11px] text-text-muted truncate mt-0.5 font-medium">{member.planName}</p>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-md border border-red-500/20 uppercase tracking-wider">
+                          <Trans>Unpaid</Trans>
+                        </span>
+                        {member.price > 0 && (
+                          <span className="text-[10px] font-semibold text-text-muted">
+                            {member.price} {member.currency}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleSendSingleReminder(member.userId, member.name)}
+                    disabled={isSendingThis}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-hover hover:bg-[#EB712B] text-text-muted hover:text-white border border-border hover:border-[#EB712B] rounded-xl text-[11px] font-bold transition-all shrink-0 active:scale-95 disabled:opacity-50 cursor-pointer shadow-xs"
+                    title={t`Send payment reminder`}
+                  >
+                    <Bell size={13} className={isSendingThis ? 'animate-spin' : ''} />
+                    <span>{isSendingThis ? t`Sending...` : t`Remind`}</span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* ── BENTO TERTIARY SECTION: Recent Club Rides Table ── */}
