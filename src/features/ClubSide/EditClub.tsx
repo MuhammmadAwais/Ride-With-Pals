@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'sonner';
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import { useUpdateClubInfoByIdMutation } from '@/features/club/api/clubApiSlice';
 import { RideService } from '@/api/backendApi';
 import {
@@ -81,7 +83,7 @@ export default function EditClub() {
     
     try {
       if (!clubIdStr) {
-        toast.error("No club selected");
+        toast.error(t`No club selected`);
         return;
       }
 
@@ -133,11 +135,11 @@ export default function EditClub() {
         clubImage: updatedBanner || ""
       }).unwrap();
 
-      toast.success("Club profile updated successfully!");
+      toast.success(t`Club profile updated successfully!`);
       navigate(-1);
     } catch (err: any) {
       console.error("Failed to save club profile:", err);
-      toast.error(err?.response?.data?.message || err?.data?.message || err?.message || "Failed to update club.");
+      toast.error(err?.response?.data?.message || err?.data?.message || err?.message || t`Failed to update club.`);
     } finally {
       setIsUploading(false);
     }
@@ -151,12 +153,12 @@ export default function EditClub() {
           className="flex items-center gap-3 text-gray-400 hover:text-white font-extrabold text-[10px] tracking-widest uppercase bg-hover border border-white/5 px-6 py-3.5 rounded-2xl transition-all duration-300 hover:bg-white/5 hover:border-white/10 cursor-pointer mb-10 shadow-xl"
         >
           <ArrowLeft size={14} className="text-[#EB712B]" />
-          <span>Back to Dashboard</span>
+          <span><Trans>Back to Dashboard</Trans></span>
         </button>
 
         {/* Top Title */}
         <h1 className="text-3xl font-black tracking-tight text-white mb-8">
-          Edit Club Profile
+          <Trans>Edit Club Profile</Trans>
         </h1>
 
         {/* Form Layout */}
@@ -167,14 +169,14 @@ export default function EditClub() {
           {/* LEFT COLUMN: Main Information Grid */}
           <div className="bg-[#181818] border border-white/5 rounded-3xl p-8 shadow-2xl space-y-6">
             <h2 className="text-base font-black tracking-tight text-white border-b border-white/[0.08] pb-4">
-              General Information
+              <Trans>General Information</Trans>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Club Name */}
               <div className="flex flex-col gap-2.5">
                 <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Club Name
+                  <Trans>Club Name</Trans>
                 </label>
                 <div className="relative">
                   <Building
@@ -183,7 +185,7 @@ export default function EditClub() {
                   />
                   <input
                     type="text"
-                    placeholder="e.g. Velocity Cycling"
+                    placeholder={t`e.g. Velocity Cycling`}
                     value={clubName}
                     onChange={(e) => setClubName(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/10"
@@ -195,7 +197,7 @@ export default function EditClub() {
               {/* Location */}
               <div className="flex flex-col gap-2.5">
                 <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Location
+                  <Trans>Location</Trans>
                 </label>
                 <div className="relative">
                   <MapPin
@@ -204,7 +206,7 @@ export default function EditClub() {
                   />
                   <input
                     type="text"
-                    placeholder="San Francisco, CA"
+                    placeholder={t`San Francisco, CA`}
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/10"
@@ -216,7 +218,7 @@ export default function EditClub() {
               {/* Email */}
               <div className="flex flex-col gap-2.5">
                 <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Email Address
+                  <Trans>Email Address</Trans>
                 </label>
                 <div className="relative">
                   <Mail
@@ -225,7 +227,7 @@ export default function EditClub() {
                   />
                   <input
                     type="email"
-                    placeholder="contact@club.com"
+                    placeholder={t`contact@club.com`}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/10"
@@ -237,7 +239,7 @@ export default function EditClub() {
               {/* Phone Number */}
               <div className="flex flex-col gap-2.5">
                 <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Phone Number
+                  <Trans>Phone Number</Trans>
                 </label>
                 <div className="relative">
                   <Phone
@@ -246,7 +248,7 @@ export default function EditClub() {
                   />
                   <input
                     type="tel"
-                    placeholder="+1 (555) 000-0000"
+                    placeholder={t`+1 (555) 000-0000`}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/10"
@@ -258,7 +260,7 @@ export default function EditClub() {
               {/* Visibility */}
               <div className="flex flex-col gap-2.5">
                 <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Visibility
+                  <Trans>Visibility</Trans>
                 </label>
                 <div className="relative">
                   <ShieldCheck
@@ -270,8 +272,8 @@ export default function EditClub() {
                     onChange={(e) => setVisibility(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/10"
                   >
-                    <option>Public</option>
-                    <option>Private</option>
+                    <option value="Public">{t`Public`}</option>
+                    <option value="Private">{t`Private`}</option>
                   </select>
                   <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none">
                     <svg
@@ -295,7 +297,7 @@ export default function EditClub() {
               {/* Club Type */}
               <div className="flex flex-col gap-2.5">
                 <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Club Type
+                  <Trans>Club Type</Trans>
                 </label>
                 <div className="relative">
                   <Building
@@ -307,9 +309,9 @@ export default function EditClub() {
                     onChange={(e) => setClubType(e.target.value)}
                     className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl pl-11 pr-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/10"
                   >
-                    <option value="Cycling">Cycling</option>
-                    <option value="Running">Running</option>
-                    <option value="Triathlon">Triathlon</option>
+                    <option value="Cycling">{t`Cycling`}</option>
+                    <option value="Running">{t`Running`}</option>
+                    <option value="Triathlon">{t`Triathlon`}</option>
                   </select>
                   <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none">
                     <svg
@@ -334,11 +336,11 @@ export default function EditClub() {
             {/* Description */}
             <div className="flex flex-col gap-2.5 pt-2">
               <label className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                Description
+                <Trans>Description</Trans>
               </label>
               <textarea
                 rows={4}
-                placeholder="Share the story of your club..."
+                placeholder={t`Share the story of your club...`}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-[#1F1F1F] border border-white/5 rounded-xl p-4 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/10 resize-none"
@@ -349,13 +351,13 @@ export default function EditClub() {
             <div className="flex items-center justify-between p-4 bg-[#1F1F1F] border border-white/5 rounded-xl transition-all duration-200 hover:border-white/10">
               <div className="space-y-0.5 pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-white">Women and non-binary only</span>
+                  <span className="text-xs font-bold text-white"><Trans>Women and non-binary only</Trans></span>
                   <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-pink-500/10 text-pink-400 border border-pink-500/20">
-                    Exclusive
+                    <Trans>Exclusive</Trans>
                   </span>
                 </div>
                 <p className="text-[11px] text-gray-400">
-                  Only women and non-binary members can join this club
+                  <Trans>Only women and non-binary members can join this club</Trans>
                 </p>
               </div>
               <button
@@ -382,13 +384,13 @@ export default function EditClub() {
             {/* Club Media Container */}
             <div className="bg-[#181818] border border-white/5 rounded-3xl p-8 space-y-6">
               <h2 className="text-base font-black tracking-tight text-white border-b border-white/[0.08] pb-4">
-                Club Media
+                <Trans>Club Media</Trans>
               </h2>
 
               {/* Hero Banner Upload Zone */}
               <div className="flex flex-col gap-2">
                 <span className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Hero Banner
+                  <Trans>Hero Banner</Trans>
                 </span>
                 <div className="bg-[#1F1F1F] border border-dashed border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group transition-all duration-300 hover:border-[#EB712B]/40 cursor-pointer min-h-[140px]">
                   {bannerFile ? (
@@ -400,7 +402,7 @@ export default function EditClub() {
                       />
                       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <span className="text-[10px] font-black tracking-widest text-white uppercase bg-white/10 border border-white/20 px-4 py-2 rounded-xl">
-                          Change Banner
+                          <Trans>Change Banner</Trans>
                         </span>
                       </div>
                     </div>
@@ -411,10 +413,10 @@ export default function EditClub() {
                         className="text-gray-600 mb-2 group-hover:text-[#EB712B] transition-colors"
                       />
                       <p className="text-xs font-black text-white mb-1">
-                        Click to upload banner
+                        <Trans>Click to upload banner</Trans>
                       </p>
                       <p className="text-[9px] font-semibold text-gray-500">
-                        16:9 ratio recommended [JPG, PNG]
+                        <Trans>16:9 ratio recommended [JPG, PNG]</Trans>
                       </p>
                     </>
                   )}
@@ -430,7 +432,7 @@ export default function EditClub() {
               {/* Club Logo Upload Zone */}
               <div className="flex flex-col gap-2">
                 <span className="text-[9px] font-extrabold text-gray-400 tracking-[0.2em] uppercase">
-                  Club Logo
+                  <Trans>Club Logo</Trans>
                 </span>
                 <div className="flex items-center gap-6 bg-[#1F1F1F] border border-white/5 rounded-2xl p-4">
                   <div className="w-16 h-16 rounded-full bg-[#161616] border border-white/10 flex items-center justify-center relative overflow-hidden group/logo hover:border-[#EB712B]/50 transition-colors flex-shrink-0">
@@ -442,7 +444,7 @@ export default function EditClub() {
                       />
                     ) : (
                       <span className="text-[8px] font-bold text-gray-500 tracking-wider text-center px-2">
-                        Upload Logo
+                        <Trans>Upload Logo</Trans>
                       </span>
                     )}
                     <input
@@ -454,15 +456,14 @@ export default function EditClub() {
                   </div>
                   <div className="flex-1">
                     <p className="text-[9px] font-medium text-gray-400 leading-relaxed max-w-[200px]">
-                      Recommended size: 400x400px. Square format will be
-                      automatically cropped to a circle.
+                      <Trans>Recommended size: 400x400px. Square format will be automatically cropped to a circle.</Trans>
                     </p>
                     <div className="flex gap-4 mt-2">
                       <label
                         htmlFor="logo-upload-input"
                         className="text-[10px] font-extrabold text-[#EB712B] hover:text-[#ff8036] uppercase tracking-wider cursor-pointer"
                       >
-                        Change
+                        <Trans>Change</Trans>
                       </label>
                       <input
                         id="logo-upload-input"
@@ -476,7 +477,7 @@ export default function EditClub() {
                         onClick={handleRemoveLogo}
                         className="text-[10px] font-extrabold text-gray-500 hover:text-white uppercase tracking-wider cursor-pointer"
                       >
-                        Remove
+                        <Trans>Remove</Trans>
                       </button>
                     </div>
                   </div>
@@ -494,17 +495,17 @@ export default function EditClub() {
                 {isLoading || isUploading ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    {isUploading ? "Uploading Images..." : "Saving Changes..."}
+                    {isUploading ? <Trans>Uploading Images...</Trans> : <Trans>Saving Changes...</Trans>}
                   </>
                 ) : (
-                  "Save Changes"
+                  <Trans>Save Changes</Trans>
                 )}
               </button>
             </div>
 
             {/* Footer */}
             <p className="text-[9px] font-medium text-center text-gray-500 tracking-wide pt-2">
-              Last saved: Just now
+              <Trans>Last saved: Just now</Trans>
             </p>
           </div>
         </form>

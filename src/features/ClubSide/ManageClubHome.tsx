@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MoreVertical, CreditCard, Plus, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import News from "./News";
 import Leaderboard from "./Leaderboard";
 import Discount from "./Discount";
@@ -16,7 +18,6 @@ import {
 import { toast } from "sonner";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
-
 
 interface MembershipPlan {
   id: string;
@@ -144,10 +145,10 @@ const ManageClubHome = () => {
     } else if (actionName === "Remove Member" && clubId && targetItem.id) {
       try {
         await removeMember({ clubId: Number(clubId), userId: Number(targetItem.id) }).unwrap();
-        toast.success(`${targetItem.name} removed from club.`);
+        toast.success(t`${targetItem.name} removed from club.`);
         dispatch(fetchClubMembers({ clubId }));
       } catch (err: any) {
-        toast.error(err?.data?.message || "Failed to remove member");
+        toast.error(err?.data?.message || t`Failed to remove member`);
       }
     }
     setOpenMenuIndex(null);
@@ -180,7 +181,7 @@ const ManageClubHome = () => {
           autoRenew: autoRenew === "Yes",
           features: featuresList
         }).unwrap();
-        toast.success("Membership plan updated successfully!");
+        toast.success(t`Membership plan updated successfully!`);
       } else {
         await createPlan({
           clubId: clubId,
@@ -191,7 +192,7 @@ const ManageClubHome = () => {
           autoRenew: autoRenew === "Yes",
           features: featuresList
         }).unwrap();
-        toast.success("Membership plan created successfully!");
+        toast.success(t`Membership plan created successfully!`);
       }
 
       // Reset Form
@@ -208,7 +209,7 @@ const ManageClubHome = () => {
       ]);
       setShowMembershipForm(false);
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to save membership plan.");
+      toast.error(err?.data?.message || t`Failed to save membership plan.`);
       console.error(err);
     }
   };
@@ -232,15 +233,15 @@ const ManageClubHome = () => {
 
     try {
       await deletePlan({ clubId, planId: Number(id) }).unwrap();
-      toast.success("Membership plan deleted successfully!");
+      toast.success(t`Membership plan deleted successfully!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to delete membership plan.");
+      toast.error(err?.data?.message || t`Failed to delete membership plan.`);
       console.error(err);
     }
     setOpenCardMenuId(null);
   };
 
-  const renderSection = (title: string, sub: string, items: any[]) => (
+  const renderSection = (title: React.ReactNode, sub: React.ReactNode, items: any[], sectionKey: string) => (
     <section className="group/section space-y-4 w-full">
       {/* Section Header */}
       <div className="flex justify-between items-center px-1">
@@ -251,7 +252,7 @@ const ManageClubHome = () => {
           </span>
         </h2>
         <button className="text-[10px] font-black text-gray-500 hover:text-white transition-all tracking-[0.2em] uppercase cursor-pointer">
-          View All
+          <Trans>View All</Trans>
         </button>
       </div>
 
@@ -262,7 +263,7 @@ const ManageClubHome = () => {
 
         {items.map((item, i) => {
           const isOpen =
-            openMenuIndex?.section === title && openMenuIndex?.index === i;
+            openMenuIndex?.section === sectionKey && openMenuIndex?.index === i;
           return (
             <div
               key={i}
@@ -316,19 +317,19 @@ const ManageClubHome = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
                   </span>
-                  {item.status.toUpperCase()}
+                  <Trans>ACTIVE NOW</Trans>
                 </span>
 
                 {/* Action Menu Dropdown */}
-                {(permissions.isOwner || (permissions.isAdmin && title === "Club Members")) && (
+                {(permissions.isOwner || (permissions.isAdmin && sectionKey === "members")) && (
                   <div
                     ref={(el: HTMLDivElement | null) => {
-                      menuRefs.current[`${title}-${i}`] = el;
+                      menuRefs.current[`${sectionKey}-${i}`] = el;
                     }}
                     className="relative"
                   >
                     <button
-                      onClick={() => handleMenuToggle(title, i)}
+                      onClick={() => handleMenuToggle(sectionKey, i)}
                       className={`p-2 rounded-xl transition-all cursor-pointer ${
                         isOpen
                           ? "bg-white/10 opacity-100 text-white"
@@ -340,12 +341,12 @@ const ManageClubHome = () => {
 
                   {isOpen && (
                     <div className="absolute right-0 mt-2 w-56 bg-[#181818] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-                      {title !== "Club Owners" && (
+                      {sectionKey !== "owners" && (
                         <button
                           onClick={() => handleAction("Remove Member", item)}
                           className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer"
                         >
-                          Remove Member
+                          <Trans>Remove Member</Trans>
                         </button>
                       )}
                     </div>
@@ -369,7 +370,7 @@ const ManageClubHome = () => {
           backgroundImage: selectedBanner
             ? `url(${selectedBanner})`
             : "none",
-          backgroundColor: "#1F1F1F", // Visible dark fallback if no image is set
+          backgroundColor: "#1F1F1F",
         }}
       >
         {/* Dark gradient overlay for text readability */}
@@ -407,7 +408,7 @@ const ManageClubHome = () => {
                        transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 
                        hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 backdrop-blur-md"
             >
-              Edit Club
+              <Trans>Edit Club</Trans>
             </button>
           )}
         </div>
@@ -424,7 +425,7 @@ const ManageClubHome = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-xs font-bold text-gray-400">Logo</span>
+                <span className="text-xs font-bold text-gray-400"><Trans>Logo</Trans></span>
               )}
             </div>
 
@@ -432,7 +433,7 @@ const ManageClubHome = () => {
             <div className="flex flex-col justify-center">
               <span className="inline-flex items-center w-fit gap-1.5 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/30 rounded-full text-[9px] font-black uppercase tracking-widest mb-2 shadow-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] animate-pulse" />
-                Elite Registry
+                <Trans>Elite Registry</Trans>
               </span>
               <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight break-words drop-shadow-md">
                 {selectedName}
@@ -442,22 +443,28 @@ const ManageClubHome = () => {
 
           {/* Founded Badge */}
           <div className="bg-white/5 border border-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-gray-300 text-[10px] font-bold uppercase tracking-wider shrink-0">
-            Founded 2026
+            <Trans>Founded 2026</Trans>
           </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
       <nav className="flex gap-1 mb-8 border-b border-white/10 overflow-x-auto scrollbar-hide w-full">
-        {["Members", "Membership Plans", "Discount", "News", "Leaderboard"].map(
+        {[
+          { key: "Members", label: t`Members` },
+          { key: "Membership Plans", label: t`Membership Plans` },
+          { key: "Discount", label: t`Discount` },
+          { key: "News", label: t`News` },
+          { key: "Leaderboard", label: t`Leaderboard` },
+        ].map(
           (tab) => {
-            const isActive = activeTab === tab;
+            const isActive = activeTab === tab.key;
             return (
               <button
-                key={tab}
+                key={tab.key}
                 onClick={() => {
-                  setActiveTab(tab);
-                  if (tab !== "Membership Plans") setShowMembershipForm(false);
+                  setActiveTab(tab.key);
+                  if (tab.key !== "Membership Plans") setShowMembershipForm(false);
                 }}
                 className={`relative px-6 py-4 text-xs font-bold uppercase tracking-widest transition-all duration-500 ease-out cursor-pointer whitespace-nowrap ${
                   isActive
@@ -465,7 +472,7 @@ const ManageClubHome = () => {
                     : "text-gray-500 hover:text-gray-200 hover:bg-white/5"
                 }`}
               >
-                {tab}
+                {tab.label}
 
                 {/* Glowing expanding underline */}
                 {isActive && (
@@ -477,30 +484,13 @@ const ManageClubHome = () => {
         )}
       </nav>
 
-      {/* Dynamic Switching Content Area */}
-      <div className="w-full">
-        {activeTab === "Members" && <div>{/* Your Members Content */}</div>}
-
-        {activeTab === "Membership Plans" && (
-          <div>{/* Your Membership Plans Content */}</div>
-        )}
-
-        {activeTab === "Run" && <div>{/* Your Run Content */}</div>}
-
-        {activeTab === "Leaderboard" && (
-          <div>{/* Your Leaderboard Content */}</div>
-        )}
-      </div>
-
       {/* Dynamic Content Switching */}
       <div className="w-full">
         {activeTab === "Members" && (
           <div className="space-y-12 w-full animate-in fade-in duration-300">
-            {renderSection("Club Owners", "02 MEMBERS", clubOwners)}
-
-            {renderSection("Administrators", "04 STAFF", clubAdmins)}
-
-            {renderSection("Club Members", "05 MEMBERS", generalMembers)}
+            {renderSection(<Trans>Club Owners</Trans>, t`${clubOwners.length} MEMBERS`, clubOwners, "owners")}
+            {renderSection(<Trans>Administrators</Trans>, t`${clubAdmins.length} STAFF`, clubAdmins, "admins")}
+            {renderSection(<Trans>Club Members</Trans>, t`${generalMembers.length} MEMBERS`, generalMembers, "members")}
           </div>
         )}
 
@@ -511,9 +501,9 @@ const ManageClubHome = () => {
               {!permissions.canManageMembershipFee ? (
                 <div className="w-full bg-[#181818]/90 backdrop-blur-xl rounded-3xl border border-white/10 p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
                   <CreditCard size={48} className="text-gray-600 mb-6" />
-                  <h3 className="text-lg font-black text-white mb-2 uppercase">Access Restricted</h3>
+                  <h3 className="text-lg font-black text-white mb-2 uppercase"><Trans>Access Restricted</Trans></h3>
                   <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
-                    You do not have the <span className="text-[#EB712B] font-bold">Manage Membership Fee</span> permission required to configure payment plans for this club.
+                    <Trans>You do not have the <span className="text-[#EB712B] font-bold">Manage Membership Fee</span> permission required to configure payment plans for this club.</Trans>
                   </p>
                 </div>
               ) : !showMembershipForm ? (
@@ -531,20 +521,17 @@ const ManageClubHome = () => {
                     </div>
 
                     <h3 className="text-xl font-black tracking-tight text-white mb-3">
-                      Stripe Integration
+                      <Trans>Stripe Integration</Trans>
                     </h3>
                     <p className="text-xs font-medium text-gray-400 mb-8 leading-relaxed">
-                      Please connect your Stripe account first to enable
-                      subscriptions and automated recurring membership payments.
+                      <Trans>Please connect your Stripe account first to enable subscriptions and automated recurring membership payments.</Trans>
                     </p>
 
                     <button
-  onClick={() =>
-    handleAction("Connect to Stripe", selectedName) // <-- changed from clubName to selectedName
-  }
-  className="px-8 py-4 bg-[#EB712B] text-white rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer"
->
-                      <span className="relative z-10">Connect to Stripe</span>
+                      onClick={() => handleAction("Connect to Stripe", selectedName)}
+                      className="px-8 py-4 bg-[#EB712B] text-white rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer"
+                    >
+                      <span className="relative z-10"><Trans>Connect to Stripe</Trans></span>
                     </button>
                   </div>
                 </div>
@@ -554,11 +541,11 @@ const ManageClubHome = () => {
                   <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
                     <h3 className="text-lg font-black tracking-tight text-white">
                       {editingPlanId
-                        ? "Edit Membership Plan"
-                        : "Membership fee plan"}
+                        ? <Trans>Edit Membership Plan</Trans>
+                        : <Trans>Membership fee plan</Trans>}
                     </h3>
                     <span className="text-[9px] font-extrabold bg-[#EB712B]/10 text-[#EB712B] px-2.5 py-1 rounded-full border border-[#EB712B]/20 uppercase tracking-widest animate-pulse">
-                      Stripe Ready
+                      <Trans>Stripe Ready</Trans>
                     </span>
                   </div>
 
@@ -566,13 +553,13 @@ const ManageClubHome = () => {
                     {/* Package Name */}
                     <div className="flex flex-col gap-2.5">
                       <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                        Package Name
+                        <Trans>Package Name</Trans>
                       </label>
                       <input
                         type="text"
                         value={packageName}
                         onChange={(e) => setPackageName(e.target.value)}
-                        placeholder="Annual Junior Membership"
+                        placeholder={t`Annual Junior Membership`}
                         className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
                         required
                       />
@@ -582,11 +569,11 @@ const ManageClubHome = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex flex-col gap-2.5">
                         <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          Price
+                          <Trans>Price</Trans>
                         </label>
                         <div className="relative">
                           <span className="absolute left-4 top-3.5 text-xs font-black text-gray-500">
-                            $
+                            €
                           </span>
                           <input
                             type="number"
@@ -601,7 +588,7 @@ const ManageClubHome = () => {
                       </div>
                       <div className="flex flex-col gap-2.5">
                         <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          Duration
+                          <Trans>Duration</Trans>
                         </label>
                         <div className="relative group/select">
                           <select
@@ -609,10 +596,10 @@ const ManageClubHome = () => {
                             onChange={(e) => setDuration(e.target.value)}
                             className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] appearance-none cursor-pointer font-bold transition-all duration-500 ease-in-out hover:border-[#EB712B]/50 hover:shadow-[0_0_15px_rgba(235,113,43,0.1)]"
                           >
-                            <option>1 Month</option>
-                            <option>3 Months</option>
-                            <option>6 Months</option>
-                            <option>1 Year</option>
+                            <option value="monthly">{t`1 Month`}</option>
+                            <option value="quarterly">{t`3 Months`}</option>
+                            <option value="semi-annual">{t`6 Months`}</option>
+                            <option value="annual">{t`1 Year`}</option>
                           </select>
 
                           {/* Custom Dropdown Arrow */}
@@ -641,7 +628,7 @@ const ManageClubHome = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex flex-col gap-2.5">
                         <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          Auto Renew
+                          <Trans>Auto Renew</Trans>
                         </label>
                         <div className="relative">
                           <select
@@ -649,8 +636,8 @@ const ManageClubHome = () => {
                             onChange={(e) => setAutoRenew(e.target.value)}
                             className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/20"
                           >
-                            <option>Yes</option>
-                            <option>No</option>
+                            <option value="Yes">{t`Yes`}</option>
+                            <option value="No">{t`No`}</option>
                           </select>
                           <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none">
                             <svg
@@ -672,7 +659,7 @@ const ManageClubHome = () => {
                       </div>
                       <div className="flex flex-col gap-2.5">
                         <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          Discount (%)
+                          <Trans>Discount (%)</Trans>
                         </label>
                         <input
                           type="number"
@@ -689,14 +676,14 @@ const ManageClubHome = () => {
                     {/* Feature Adder */}
                     <div className="flex flex-col gap-2.5 pt-2">
                       <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                        Features Inclusion
+                        <Trans>Features Inclusion</Trans>
                       </label>
                       <div className="flex gap-2">
                         <input
                           type="text"
                           value={featureInput}
                           onChange={(e) => setFeatureInput(e.target.value)}
-                          placeholder="Ex: Access to exclusive track days"
+                          placeholder={t`Ex: Access to exclusive track days`}
                           className="flex-1 bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
                         />
                         <button
@@ -746,7 +733,7 @@ const ManageClubHome = () => {
                           }}
                           className="py-4 px-6 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:bg-white/15"
                         >
-                          Cancel
+                          <Trans>Cancel</Trans>
                         </button>
                       )}
                       <button
@@ -755,8 +742,8 @@ const ManageClubHome = () => {
                       >
                         <span className="relative z-10">
                           {editingPlanId
-                            ? "Save Changes"
-                            : "Create Membership Plan"}
+                            ? <Trans>Save Changes</Trans>
+                            : <Trans>Create Membership Plan</Trans>}
                         </span>
                       </button>
                     </div>
@@ -766,22 +753,21 @@ const ManageClubHome = () => {
             </div>
 
             {/* RIGHT SIDE: Dynamic Membership Cards Display Area */}
-            <div className="w-full space-y-6 animate-in fade-in slide-in-from-right-5 duration-500">
+            <div className="w-full space-y-6 animate-in fade-in slide-from-right-5 duration-500">
               <h2 className="text-xl font-black tracking-tight text-white flex items-center gap-3 px-1 mb-2">
-                Membership Cards
+                <Trans>Membership Cards</Trans>
                 <span className="text-[10px] font-extrabold text-[#EB712B] px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/20 backdrop-blur-md">
-                  {membershipPlans.length} Plans Created
+                  <Trans>{membershipPlans.length} Plans Created</Trans>
                 </span>
               </h2>
 
               {membershipPlans.length === 0 ? (
                 <div className="w-full bg-surface/50 backdrop-blur-xl border border-white/[0.04] rounded-3xl p-12 text-center transition-all duration-300 hover:border-white/10">
                   <p className="text-xs font-black text-gray-600 uppercase tracking-[0.15em]">
-                    No membership plans added yet
+                    <Trans>No membership plans added yet</Trans>
                   </p>
                   <p className="text-[10px] text-gray-500 mt-1">
-                    Fill out the form on the left to create and preview cards
-                    here.
+                    <Trans>Fill out the form on the left to create and preview cards here.</Trans>
                   </p>
                 </div>
               ) : (
@@ -810,13 +796,13 @@ const ManageClubHome = () => {
                               onClick={() => handleEditPlan(plan)}
                               className="w-full text-left px-5 py-3 text-xs font-bold text-gray-300 hover:bg-white/[0.04] hover:text-white transition-colors duration-200 cursor-pointer"
                             >
-                              Edit
+                              <Trans>Edit</Trans>
                             </button>
                             <button
                               onClick={() => handleDeletePlan(plan.id)}
                               className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-200 cursor-pointer border-t border-white/[0.03]"
                             >
-                              Delete
+                              <Trans>Delete</Trans>
                             </button>
                           </div>
                         )}
@@ -826,7 +812,7 @@ const ManageClubHome = () => {
                     {/* Pricing Overview */}
                     <div>
                       <span className="inline-block px-3 py-1 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-full text-[9px] font-black uppercase tracking-widest text-[#EB712B] mb-4 transition-all duration-300 group-hover:bg-[#EB712B]/20">
-                        {plan.duration} Subscription
+                        <Trans>{plan.duration} Subscription</Trans>
                       </span>
                       <h3 className="text-lg font-black text-white uppercase tracking-tight break-words pr-12 transition-colors duration-300 group-hover:text-[#EB712B]">
                         {plan.packageName}
@@ -834,11 +820,11 @@ const ManageClubHome = () => {
 
                       <div className="flex items-baseline gap-2 mt-4">
                         <span className="text-3xl font-black text-[#EB712B] tracking-tight transition-all duration-300 group-hover:scale-105 group-hover:text-[#ff8036]">
-                          ${plan.price}
+                          €{plan.price}
                         </span>
                         {plan.discount && (
                           <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-green-500/10 text-green-400 border border-green-500/20 animate-pulse">
-                            -{plan.discount}% Off
+                            -{plan.discount}% <Trans>Off</Trans>
                           </span>
                         )}
                       </div>
@@ -849,7 +835,7 @@ const ManageClubHome = () => {
                     {/* Feature Lists */}
                     <div>
                       <h4 className="text-[9px] font-extrabold uppercase tracking-widest text-gray-500 mb-3">
-                        Included Benefits
+                        <Trans>Included Benefits</Trans>
                       </h4>
                       <ul className="space-y-2">
                         {plan.featuresList.map((feature, idx) => (
@@ -870,23 +856,23 @@ const ManageClubHome = () => {
                     <div className="grid grid-cols-2 gap-4 bg-surface/50 border border-white/5 rounded-2xl p-4 text-[10px] font-extrabold uppercase tracking-[0.05em] transition-all duration-300 group-hover:bg-surface/80">
                       <div>
                         <span className="block text-gray-500 font-bold mb-1">
-                          Auto-Renew
+                          <Trans>Auto-Renew</Trans>
                         </span>
                         <span
                           className={`text-xs transition-colors duration-300 ${plan.autoRenew === "Yes" ? "text-green-400" : "text-gray-400"}`}
                         >
-                          {plan.autoRenew}
+                          {plan.autoRenew === "Yes" ? <Trans>Yes</Trans> : <Trans>No</Trans>}
                         </span>
                       </div>
                       <div>
                         <span className="block text-gray-500 font-bold mb-1">
-                          Stripe Status
+                          <Trans>Stripe Status</Trans>
                         </span>
                         <span className="text-xs text-green-400 flex items-center gap-1">
                           <span className="relative flex h-1.5 w-1.5">
                             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500 shadow-[0_0_8px_#22c55e] animate-ping" />
                           </span>
-                          Connected
+                          <Trans>Connected</Trans>
                         </span>
                       </div>
                     </div>

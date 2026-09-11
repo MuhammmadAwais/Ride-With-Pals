@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Trash2, Plus, GripVertical, Edit2, Eye, ArrowLeft, Shield, Clock, Database, Menu, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import Sidebar from '../../components/Sidebar'; 
-
-
 
 type Block = { id: string; content: string };
 
@@ -27,7 +27,6 @@ const PrivacyProtocol = () => {
     { id: '4', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
     { id: '5', content: '03 Privacy Policy' },
     { id: '6', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
-
   ]);
 
   useEffect(() => {
@@ -37,18 +36,16 @@ const PrivacyProtocol = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      
       console.log("Saving to DB:", { protocolData, blocks });
-      
       setIsEditing(false);
     } catch (error) {
-      alert("Failed to save.");
+      alert(t`Failed to save.`);
     } finally {
       setLoading(false);
     }
   };
 
-  const addBlock = () => setBlocks([...blocks, { id: Date.now().toString(), content: 'New section...' }]);
+  const addBlock = () => setBlocks([...blocks, { id: Date.now().toString(), content: t`New section...` }]);
   const deleteBlock = (id: string) => setBlocks(blocks.filter(b => b.id !== id));
 
   return (
@@ -65,11 +62,13 @@ const PrivacyProtocol = () => {
 
         <div className="p-6 md:p-12 lg:p-16 max-w-5xl mx-auto pb-20">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-text-main mb-8">
-            <ArrowLeft size={18} /> <span className="font-bold text-xs uppercase tracking-widest">Back</span>
+            <ArrowLeft size={18} /> <span className="font-bold text-xs uppercase tracking-widest"><Trans>Back</Trans></span>
           </button>
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
-            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-text-main">Privacy <span className="text-[#EB712B]">Protocol</span></h1>
+            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-text-main">
+              <Trans>Privacy <span className="text-[#EB712B]">Protocol</span></Trans>
+            </h1>
             <button onClick={() => setIsEditing(!isEditing)} className="p-4 bg-surface hover:bg-hover rounded-2xl transition-all border border-border">
               {isEditing ? <Eye size={20} className="text-[#EB712B]" /> : <Edit2 size={20} />}
             </button>
@@ -77,24 +76,30 @@ const PrivacyProtocol = () => {
 
           {/* Metadata Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-            {[
-              { label: 'LAST REVISION', value: protocolData.revision, key: 'revision', icon: Clock },
-              { label: 'DATA CONTROLLER', value: protocolData.controller, key: 'controller', icon: Database },
-              { label: 'LEGAL STATUS', value: protocolData.status, key: 'status', icon: Shield }
-            ].map((item, i) => (
-              <div key={i} className="bg-surface p-6 rounded-2xl border border-border shadow-sm">
-                <p className="text-[10px] font-bold text-[#EB712B] tracking-widest mb-2 flex items-center gap-2"><item.icon size={12} /> {item.label}</p>
-                {isEditing ? (
-                  <input className="w-full bg-main-bg text-sm font-semibold p-2 border border-border rounded text-text-main" value={item.value} onChange={(e) => setProtocolData({...protocolData, [item.key]: e.target.value})} />
-                ) : <p className="text-sm font-semibold truncate text-text-main">{item.value}</p>}
-              </div>
-            ))}
+            <div className="bg-surface p-6 rounded-2xl border border-border shadow-sm">
+              <p className="text-[10px] font-bold text-[#EB712B] tracking-widest mb-2 flex items-center gap-2"><Clock size={12} /> <Trans>LAST REVISION</Trans></p>
+              {isEditing ? (
+                <input className="w-full bg-main-bg text-sm font-semibold p-2 border border-border rounded text-text-main" value={protocolData.revision} onChange={(e) => setProtocolData({...protocolData, revision: e.target.value})} />
+              ) : <p className="text-sm font-semibold truncate text-text-main">{protocolData.revision}</p>}
+            </div>
+            <div className="bg-surface p-6 rounded-2xl border border-border shadow-sm">
+              <p className="text-[10px] font-bold text-[#EB712B] tracking-widest mb-2 flex items-center gap-2"><Database size={12} /> <Trans>DATA CONTROLLER</Trans></p>
+              {isEditing ? (
+                <input className="w-full bg-main-bg text-sm font-semibold p-2 border border-border rounded text-text-main" value={protocolData.controller} onChange={(e) => setProtocolData({...protocolData, controller: e.target.value})} />
+              ) : <p className="text-sm font-semibold truncate text-text-main">{protocolData.controller}</p>}
+            </div>
+            <div className="bg-surface p-6 rounded-2xl border border-border shadow-sm">
+              <p className="text-[10px] font-bold text-[#EB712B] tracking-widest mb-2 flex items-center gap-2"><Shield size={12} /> <Trans>LEGAL STATUS</Trans></p>
+              {isEditing ? (
+                <input className="w-full bg-main-bg text-sm font-semibold p-2 border border-border rounded text-text-main" value={protocolData.status} onChange={(e) => setProtocolData({...protocolData, status: e.target.value})} />
+              ) : <p className="text-sm font-semibold truncate text-text-main">{protocolData.status}</p>}
+            </div>
           </div>
 
           {/* Executive Summary Area */}
           <div className="bg-surface border border-border rounded-3xl p-6 md:p-10 shadow-sm">
             <h3 className="text-[#EB712B] font-bold text-xs uppercase tracking-widest mb-8 flex items-center gap-2">
-              <span className="w-1.5 h-4 bg-[#EB712B] rounded-full"></span> Executive Summary & Policies
+              <span className="w-1.5 h-4 bg-[#EB712B] rounded-full"></span> <Trans>Executive Summary & Policies</Trans>
             </h3>
             <div className="space-y-4">
               <AnimatePresence>
@@ -112,7 +117,7 @@ const PrivacyProtocol = () => {
                     >
                       {block.content}
                     </div>
-                    {isEditing && <button onClick={() => deleteBlock(block.id)} className="text-red-500/30 hover:text-red-500 p-2"><Trash2 size={16} /></button>}
+                    {isEditing && <button onClick={() => deleteBlock(block.id)} className="text-red-500/30 hover:text-red-500 p-2 cursor-pointer"><Trash2 size={16} /></button>}
                   </motion.div>
                 ))}
               </AnimatePresence>
@@ -121,10 +126,10 @@ const PrivacyProtocol = () => {
             {isEditing && (
               <div className="mt-10 flex gap-4 pt-8 border-t border-border">
                 <button onClick={addBlock} className="flex-1 py-4 border border-border rounded-2xl flex items-center justify-center gap-2 hover:bg-hover text-text-muted font-bold text-sm cursor-pointer">
-                  <Plus size={16} /> Add New Section
+                  <Plus size={16} /> <Trans>Add New Section</Trans>
                 </button>
-                <button onClick={handleSave} className="flex-[2] py-4 bg-[#EB712B] hover:bg-[#ff8c4a] rounded-2xl font-black uppercase tracking-widest text-white transition-all flex items-center justify-center gap-2">
-                  <Save size={16} /> {loading ? "Saving..." : "Save All Changes"}
+                <button onClick={handleSave} className="flex-[2] py-4 bg-[#EB712B] hover:bg-[#ff8c4a] rounded-2xl font-black uppercase tracking-widest text-white transition-all flex items-center justify-center gap-2 cursor-pointer">
+                  <Save size={16} /> {loading ? <Trans>Saving...</Trans> : <Trans>Save All Changes</Trans>}
                 </button>
               </div>
             )}

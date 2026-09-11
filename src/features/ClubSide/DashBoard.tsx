@@ -23,6 +23,9 @@ import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiS
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
+import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
 
 const extractArray = (data: any): any[] => {
   if (!data) return [];
@@ -211,9 +214,9 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   const handleRespondRequest = async (requestId: number, status: 'approved' | 'rejected') => {
     try {
       await respondToJoinRequest({ requestId, status }).unwrap();
-      toast.success(`Request ${status} successfully!`);
+      toast.success(status === 'approved' ? t`Request approved successfully!` : t`Request rejected successfully!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || "Failed to process request.");
+      toast.error(err?.data?.message || err?.message || t`Failed to process request.`);
     }
   };
 
@@ -231,11 +234,15 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
               <AlertCircle size={26} />
             </div>
             <div>
-              <h4 className="text-base font-bold text-text-main">Action Required for Monetization & Full Access</h4>
+              <h4 className="text-base font-bold text-text-main">
+                <Trans>Action Required for Monetization & Full Access</Trans>
+              </h4>
               <p className="text-xs text-text-muted mt-1 leading-relaxed">
-                {!isStripeConnected
-                  ? "Connect your Stripe account to collect membership dues, ride fees, and marketplace revenues."
-                  : "Configure your membership plans so athletes can join and subscribe to your club."}
+                {!isStripeConnected ? (
+                  <Trans>Connect your Stripe account to collect membership dues, ride fees, and marketplace revenues.</Trans>
+                ) : (
+                  <Trans>Configure your membership plans so athletes can join and subscribe to your club.</Trans>
+                )}
               </p>
             </div>
           </div>
@@ -243,7 +250,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             onClick={() => navigate(!isStripeConnected ? '/view/clubside/stripe-connect' : '/view/clubside/membership-plans')}
             className="px-6 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-widest rounded-2xl transition-all shadow-md active:scale-95 shrink-0 cursor-pointer"
           >
-            {!isStripeConnected ? "Connect Stripe" : "Create Membership Plans"}
+            {!isStripeConnected ? <Trans>Connect Stripe</Trans> : <Trans>Create Membership Plans</Trans>}
           </button>
         </div>
       )}
@@ -263,9 +270,11 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
               </div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B] bg-[#EB712B]/10 px-2.5 py-1 rounded-full border border-[#EB712B]/20">
-                  Community Pulse
+                  <Trans>Community Pulse</Trans>
                 </span>
-                <h3 className="text-xl font-black text-text-main mt-1">Club Members</h3>
+                <h3 className="text-xl font-black text-text-main mt-1">
+                  <Trans>Club Members</Trans>
+                </h3>
               </div>
             </div>
             <button className="p-2.5 bg-hover border border-border rounded-xl text-text-muted group-hover:text-[#EB712B] group-hover:border-[#EB712B]/40 transition-all">
@@ -276,17 +285,19 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
           <div className="mt-8 flex items-end justify-between relative z-10">
             <div>
               <p className="text-5xl font-black text-text-main tracking-tight">{totalMembersCount}</p>
-              <p className="text-xs text-text-muted mt-2 font-medium">Total Registered Club Athletes</p>
+              <p className="text-xs text-text-muted mt-2 font-medium">
+                <Trans>Total Registered Club Athletes</Trans>
+              </p>
             </div>
             <div className="flex flex-col items-end gap-2">
               {newJoinersCount > 0 && (
                 <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  +{newJoinersCount} New Joiners
+                  <Trans>+{newJoinersCount} New Joiners</Trans>
                 </span>
               )}
               <span className="text-[11px] text-text-muted font-semibold">
-                {pendingRequests.length} Pending Approval
+                <Trans>{pendingRequests.length} Pending Approval</Trans>
               </span>
             </div>
           </div>
@@ -304,15 +315,19 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             <button 
               onClick={(e) => { e.stopPropagation(); navigate('/view/clubside/add-ride'); }} 
               className="p-2 rounded-xl bg-hover border border-border text-text-muted hover:text-[#EB712B] hover:border-[#EB712B]/30 transition-all"
-              title="Create Ride"
+              title={t`Create Ride`}
             >
               <Plus size={18} />
             </button>
           </div>
           <div className="mt-6">
-            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Scheduled Events</span>
+            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">
+              <Trans>Scheduled Events</Trans>
+            </span>
             <p className="text-4xl font-black text-text-main mt-1">{totalRidesCount}</p>
-            <p className="text-[11px] text-blue-400 mt-2 font-semibold">Active & Past Rides</p>
+            <p className="text-[11px] text-blue-400 mt-2 font-semibold">
+              <Trans>Active & Past Rides</Trans>
+            </p>
           </div>
         </div>
 
@@ -327,15 +342,17 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             </div>
             {pendingRequests.length > 0 && (
               <span className="text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full animate-pulse">
-                Needs Action
+                <Trans>Needs Action</Trans>
               </span>
             )}
           </div>
           <div className="mt-6">
-            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Pending Requests</span>
+            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">
+              <Trans>Pending Requests</Trans>
+            </span>
             <p className="text-4xl font-black text-text-main mt-1">{pendingRequests.length}</p>
             <p className="text-[11px] text-purple-400 mt-2 font-semibold">
-              {pendingRequests.length > 0 ? "Review Applications" : "All Requests Approved"}
+              {pendingRequests.length > 0 ? <Trans>Review Applications</Trans> : <Trans>All Requests Approved</Trans>}
             </p>
           </div>
         </div>
@@ -350,14 +367,16 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
               <Percent size={24} />
             </div>
             <span className="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-              {activeDiscountsCount} Active
+              <Trans>{activeDiscountsCount} Active</Trans>
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Club Discounts</span>
+            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">
+              <Trans>Club Discounts</Trans>
+            </span>
             <p className="text-4xl font-black text-text-main mt-1">{totalDiscountsCount}</p>
             <p className="text-[11px] text-amber-400 mt-2 font-semibold">
-              {expiredDiscountsCount > 0 ? `${expiredDiscountsCount} Expired Offers` : "All Coupons Valid"}
+              {expiredDiscountsCount > 0 ? <Trans>{expiredDiscountsCount} Expired Offers</Trans> : <Trans>All Coupons Valid</Trans>}
             </p>
           </div>
         </div>
@@ -374,35 +393,43 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             <button 
               onClick={(e) => { e.stopPropagation(); navigate('/view/clubside/add-product'); }} 
               className="p-2 rounded-xl bg-hover border border-border text-text-muted hover:text-[#EB712B] hover:border-[#EB712B]/30 transition-all"
-              title="Add Product"
+              title={t`Add Product`}
             >
               <Plus size={18} />
             </button>
           </div>
           <div className="mt-6">
-            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Shop Items</span>
+            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">
+              <Trans>Shop Items</Trans>
+            </span>
             <p className="text-4xl font-black text-text-main mt-1">{totalProductsCount}</p>
-            <p className="text-[11px] text-cyan-400 mt-2 font-semibold">Catalog Inventory</p>
+            <p className="text-[11px] text-cyan-400 mt-2 font-semibold">
+              <Trans>Catalog Inventory</Trans>
+            </p>
           </div>
         </div>
 
         {/* ── BENTO TILE 6: Membership Plans ── */}
         <div 
           className="bg-surface p-7 rounded-[32px] border border-border hover:border-rose-500/50 transition-all duration-500 shadow-2xl flex flex-col justify-between group cursor-pointer"
-          onClick={() => navigate('/view/clubside/membership-plans')}
+          onClick={() => navigate('/view/clubside/membership')}
         >
           <div className="flex items-center justify-between">
             <div className="p-3.5 bg-rose-500/10 text-rose-400 rounded-2xl border border-rose-500/20 group-hover:scale-110 transition-transform">
               <Crown size={24} />
             </div>
             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${totalPlansCount > 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}`}>
-              {totalPlansCount > 0 ? `${totalPlansCount} Active` : 'No Plans'}
+              {totalPlansCount > 0 ? <Trans>{totalPlansCount} Active</Trans> : <Trans>No Plans</Trans>}
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Membership Plans</span>
+            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">
+              <Trans>Membership Plans</Trans>
+            </span>
             <p className="text-4xl font-black text-text-main mt-1">{totalPlansCount}</p>
-            <p className="text-[11px] text-rose-400 mt-2 font-semibold">Tiered Dues Architecture</p>
+            <p className="text-[11px] text-rose-400 mt-2 font-semibold">
+              <Trans>Tiered Dues Architecture</Trans>
+            </p>
           </div>
         </div>
 
@@ -415,14 +442,18 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             <div className="p-3.5 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 group-hover:scale-110 transition-transform">
               <ShoppingBag size={24} />
             </div>
-            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${stats?.stripeOnboardingComplete ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
-              {stats?.stripeOnboardingComplete ? 'Stripe Connected' : 'Setup Dues'}
+            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${isStripeConnected ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
+              {isStripeConnected ? <Trans>Stripe Connected</Trans> : <Trans>Setup Dues</Trans>}
             </span>
           </div>
           <div className="mt-6">
-            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">Total Purchases</span>
+            <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">
+              <Trans>Total Purchases</Trans>
+            </span>
             <p className="text-4xl font-black text-text-main mt-1">{totalOrdersCount}</p>
-            <p className="text-[11px] text-emerald-400 mt-2 font-semibold">Shop Orders Placed</p>
+            <p className="text-[11px] text-emerald-400 mt-2 font-semibold">
+              <Trans>Shop Orders Placed</Trans>
+            </p>
           </div>
         </div>
 
@@ -435,12 +466,16 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
         <div className="lg:col-span-2 bg-surface p-8 rounded-[32px] border border-border shadow-2xl relative overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[#EB712B]">Trends</span>
-              <h3 className="text-xl font-black text-text-main mt-0.5">Club Activity & Sales Velocity</h3>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#EB712B]">
+                <Trans>Trends</Trans>
+              </span>
+              <h3 className="text-xl font-black text-text-main mt-0.5">
+                <Trans>Club Activity & Sales Velocity</Trans>
+              </h3>
             </div>
             <div className="flex items-center gap-4 text-xs font-bold bg-main-bg px-4 py-2 rounded-2xl border border-border">
-              <span className="flex items-center gap-1.5 text-[#EB712B]"><span className="w-2.5 h-2.5 rounded-full bg-[#EB712B]" /> Rides</span>
-              <span className="flex items-center gap-1.5 text-blue-400"><span className="w-2.5 h-2.5 rounded-full bg-blue-400" /> Sales</span>
+              <span className="flex items-center gap-1.5 text-[#EB712B]"><span className="w-2.5 h-2.5 rounded-full bg-[#EB712B]" /> <Trans>Rides</Trans></span>
+              <span className="flex items-center gap-1.5 text-blue-400"><span className="w-2.5 h-2.5 rounded-full bg-blue-400" /> <Trans>Sales</Trans></span>
             </div>
           </div>
 
@@ -472,9 +507,11 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
         <div className="bg-surface p-8 rounded-[32px] border border-border shadow-2xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-black text-text-main">Moderation Queue</h3>
+              <h3 className="text-lg font-black text-text-main">
+                <Trans>Moderation Queue</Trans>
+              </h3>
               <button onClick={() => navigate('/view/clubside/joining-requests')} className="text-xs font-bold text-[#EB712B] hover:underline flex items-center gap-1 cursor-pointer">
-                View All <ChevronRight size={14} />
+                <Trans>View All</Trans> <ChevronRight size={14} />
               </button>
             </div>
 
@@ -483,41 +520,58 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto">
                   <ShieldCheck size={28} />
                 </div>
-                <p className="text-xs font-medium text-text-main">Queue Clean</p>
-                <p className="text-[11px] text-text-muted">No pending member join applications.</p>
+                <p className="text-xs font-medium text-text-main">
+                  <Trans>Queue Clean</Trans>
+                </p>
+                <p className="text-[11px] text-text-muted">
+                  <Trans>No pending member join applications.</Trans>
+                </p>
               </div>
             ) : (
               <div className="space-y-3 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-                {pendingRequests.slice(0, 3).map((req: any) => (
-                  <div key={req.id} className="p-3.5 bg-main-bg border border-border rounded-2xl flex items-center justify-between gap-3 hover:border-[#EB712B]/30 transition-all">
-                    <div className="flex items-center gap-3 overflow-hidden">
-                      <img 
-                        src={req.user?.profileImage || req.image || '/default-avatar.png'} 
-                        alt="User" 
-                        className="w-10 h-10 rounded-xl object-cover border border-border shrink-0" 
-                        onError={(e) => { (e.target as HTMLImageElement).src = '/default-avatar.png'; }}
-                      />
-                      <div className="overflow-hidden">
-                        <p className="text-xs font-bold text-text-main truncate">{req.user?.name || req.name || 'Athlete'}</p>
-                        <p className="text-[10px] text-text-muted truncate">{req.user?.email || 'Pending Application'}</p>
+                {pendingRequests.slice(0, 3).map((req: any) => {
+                  const userName = req.user?.name || req.name || 'Athlete';
+                  const rawUrl = req.user?.profileImage || req.image;
+                  const resolvedUrl = rawUrl ? resolveImageUrl(rawUrl) : null;
+                  const initial = userName.charAt(0).toUpperCase();
+
+                  return (
+                    <div key={req.id} className="p-3.5 bg-main-bg border border-border rounded-2xl flex items-center justify-between gap-3 hover:border-[#EB712B]/30 transition-all">
+                      <div className="flex items-center gap-3 overflow-hidden">
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#EB712B]/10 text-[#EB712B] flex items-center justify-center font-bold text-sm border border-border shrink-0">
+                          {resolvedUrl ? (
+                            <img 
+                              src={resolvedUrl} 
+                              alt={userName} 
+                              className="w-full h-full object-cover" 
+                              onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
+                            />
+                          ) : (
+                            <span>{initial}</span>
+                          )}
+                        </div>
+                        <div className="overflow-hidden">
+                          <p className="text-xs font-bold text-text-main truncate">{userName}</p>
+                          <p className="text-[10px] text-text-muted truncate">{req.user?.email || t`Pending Application`}</p>
+                        </div>
                       </div>
+                      <button 
+                        onClick={() => handleRespondRequest(req.id, 'approved')} 
+                        className="px-3 py-1.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-[10px] font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md shrink-0 active:scale-95"
+                      >
+                        <Trans>Accept</Trans>
+                      </button>
                     </div>
-                    <button 
-                      onClick={() => handleRespondRequest(req.id, 'approved')} 
-                      className="px-3 py-1.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-[10px] font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md shrink-0 active:scale-95"
-                    >
-                      Accept
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
 
           <div className="pt-6 border-t border-border mt-6 flex items-center justify-between text-xs text-text-muted">
-            <span>Stripe Account ID:</span>
+            <span><Trans>Stripe Account ID:</Trans></span>
             <span className="font-mono text-[10px] font-bold text-text-main bg-main-bg px-2 py-1 rounded-lg border border-border">
-              {stats?.stripeAccountId || 'Not Connected'}
+              {stats?.stripeAccountId || t`Not Connected`}
             </span>
           </div>
         </div>
@@ -528,23 +582,29 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
       <div className="bg-surface p-8 rounded-[32px] border border-border shadow-2xl">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#EB712B]">Schedule</span>
-            <h3 className="text-xl font-black text-text-main mt-0.5">Recent & Upcoming Rides</h3>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[#EB712B]">
+              <Trans>Schedule</Trans>
+            </span>
+            <h3 className="text-xl font-black text-text-main mt-0.5">
+              <Trans>Recent & Upcoming Rides</Trans>
+            </h3>
           </div>
           <button onClick={() => navigate('/view/clubside/activities')} className="text-xs font-bold text-[#EB712B] hover:underline flex items-center gap-1 cursor-pointer">
-            All Activities <ChevronRight size={14} />
+            <Trans>All Activities</Trans> <ChevronRight size={14} />
           </button>
         </div>
 
         {rides.length === 0 ? (
           <div className="py-12 text-center text-text-muted space-y-3">
             <Bike size={36} className="mx-auto text-text-muted opacity-50" />
-            <p className="text-xs font-medium">No rides created yet for this club.</p>
+            <p className="text-xs font-medium">
+              <Trans>No rides created yet for this club.</Trans>
+            </p>
             <button
               onClick={() => navigate('/view/clubside/add-ride')}
               className="px-5 py-2.5 bg-[#EB712B] text-white text-xs font-bold rounded-2xl hover:bg-[#d05c19] transition-all cursor-pointer shadow-lg shadow-[#EB712B]/20"
             >
-              + Create First Ride
+              <Trans>+ Create First Ride</Trans>
             </button>
           </div>
         ) : (
@@ -552,23 +612,23 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-border text-[10px] uppercase font-bold text-text-muted tracking-widest">
-                  <th className="pb-4 px-4">Ride Name</th>
-                  <th className="pb-4 px-4">Date & Time</th>
-                  <th className="pb-4 px-4">Meeting Point</th>
-                  <th className="pb-4 px-4">Distance</th>
-                  <th className="pb-4 px-4">Pace Level</th>
+                  <th className="pb-4 px-4"><Trans>Ride Name</Trans></th>
+                  <th className="pb-4 px-4"><Trans>Date & Time</Trans></th>
+                  <th className="pb-4 px-4"><Trans>Meeting Point</Trans></th>
+                  <th className="pb-4 px-4"><Trans>Distance</Trans></th>
+                  <th className="pb-4 px-4"><Trans>Pace Level</Trans></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50 text-xs font-medium">
                 {rides.slice(0, 4).map((r: any) => (
                   <tr key={r.id} className="hover:bg-main-bg/50 transition-colors">
-                    <td className="py-4 px-4 font-bold text-text-main">{r.rideName || r.title || 'Untitled Ride'}</td>
+                    <td className="py-4 px-4 font-bold text-text-main">{r.rideName || r.title || t`Untitled Ride`}</td>
                     <td className="py-4 px-4 text-text-muted">{r.date || 'N/A'} {r.time || ''}</td>
-                    <td className="py-4 px-4 text-text-muted">{r.meetingPoint || 'Global'}</td>
+                    <td className="py-4 px-4 text-text-muted">{r.meetingPoint || t`Global`}</td>
                     <td className="py-4 px-4 font-black text-[#EB712B]">{r.distance ? `${r.distance} km` : 'N/A'}</td>
                     <td className="py-4 px-4">
                       <span className="px-2.5 py-1 rounded-full bg-hover border border-border text-text-main text-[10px] font-bold uppercase tracking-wider">
-                        {r.pace || 'Moderate'}
+                        {r.pace || t`Moderate`}
                       </span>
                     </td>
                   </tr>
@@ -579,9 +639,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
         )}
       </div>
 
-      </div>
-
-    
+    </div>
   );
 };
 
@@ -596,8 +654,8 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
 
   const getPageTitle = () => {
     const path = location.pathname.split('/').pop();
-    if (!path) return 'Dashboard';
-    return path === 'dashboard' ? 'Dashboard' : path.charAt(0).toUpperCase() + path.slice(1);
+    if (!path) return <Trans>Dashboard</Trans>;
+    return path === 'dashboard' ? <Trans>Dashboard</Trans> : path.charAt(0).toUpperCase() + path.slice(1);
   };
 
   return (
@@ -610,7 +668,7 @@ export default function DashBoard({ defaultView }: DashBoardProps) {
             <h2 className="text-4xl font-bold capitalize">{getPageTitle()}</h2>
           </div>
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center bg-surface px-4 py-2 rounded-xl border border-border"><Search size={16} className="text-text-muted mr-2" /><input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search..." className="bg-transparent border-none outline-none text-sm w-40 text-text-main placeholder-text-muted" /></div>
+            <div className="hidden md:flex items-center bg-surface px-4 py-2 rounded-xl border border-border"><Search size={16} className="text-text-muted mr-2" /><input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t`Search...`} className="bg-transparent border-none outline-none text-sm w-40 text-text-main placeholder-text-muted" /></div>
             <button className="text-text-muted hover:text-[#EB712B]"><Mail size={20} /></button>
             <button className="text-text-muted hover:text-[#EB712B]"><Bell size={20} /></button>
           </div>

@@ -1,5 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Bike, Trophy, Award, Filter, TrendingUp, Activity } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetClubLeaderboardAppRidesQuery } from '@/features/club/api/clubApiSlice';
@@ -133,8 +135,8 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       
       return items.map((item: any, index: number) => ({
         id: index + 1,
-        name: item.userName || item.name || item.fullName || item.user?.fullName || item.user?.username || 'Unknown Rider',
-        role: item.role || item.user?.role || 'Member',
+        name: item.userName || item.name || item.fullName || item.user?.fullName || item.user?.username || t`Unknown Rider`,
+        role: item.role || item.user?.role || t`Member`,
         team: item.team || 'RWP Squad',
         status: item.status || 'Active',
         rides: item.ridesCount ?? item.rideCount ?? item.totalRides ?? 0,
@@ -158,16 +160,16 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     }
   }, [activeTab, rawLeaderboard, stravaData]);
 
-  const columns: Column<any>[] = [
+  const columns: Column<any>[] = useMemo(() => [
     {
       key: 'id',
-      label: 'Rank',
+      label: t`Rank`,
       sortable: true,
       render: (user) => <div className="text-[#EB712B]/50 font-black text-xl">{user.id < 10 ? `0${user.id}` : user.id}</div>
     },
     {
       key: 'name',
-      label: 'Member Identity',
+      label: t`Member Identity`,
       sortable: true,
       render: (user) => (
         <div className="flex items-center gap-4">
@@ -181,7 +183,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (user) => (
         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border ${user.status === 'Active' ? 'border-emerald-500/20 text-emerald-400 bg-emerald-500/5' : 'border-border text-text-muted'}`}>
@@ -192,20 +194,20 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     },
     {
       key: 'rides',
-      label: 'Performance',
+      label: t`Performance`,
       sortable: true,
       headerClass: "text-right",
       cellClass: "text-right",
       render: (user) => (
         <div>
-          <div className="font-bold text-sm text-text-main">{user.rides} <span className="text-text-muted font-normal">Rides</span></div>
+          <div className="font-bold text-sm text-text-main">{user.rides} <span className="text-text-muted font-normal"><Trans>Rides</Trans></span></div>
           <div className="flex justify-end items-center gap-2 mt-1">
             <span className="text-[9px] text-text-muted font-bold">{user.attendance}</span>
           </div>
         </div>
       )
     }
-  ];
+  ], []);
 
   return (
     <div className="text-text-main p-6 md:p-16 font-sans overflow-x-hidden">
@@ -215,11 +217,11 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/20">
             <TrendingUp size={14} className="text-[#EB712B]" />
-            <span className="text-[10px] font-bold tracking-widest text-[#EB712B] uppercase">Performance Analytics</span>
+            <span className="text-[10px] font-bold tracking-widest text-[#EB712B] uppercase"><Trans>Performance Analytics</Trans></span>
           </div>
-          <h1 className="text-4xl lg:text-6xl font-black text-text-main tracking-tighter">Leaderboard</h1>
+          <h1 className="text-4xl lg:text-6xl font-black text-text-main tracking-tighter"><Trans>Leaderboard</Trans></h1>
           <p className="text-text-muted text-sm max-w-xl">
-            Live metrics and performance ranking for current club members.
+            <Trans>Live metrics and performance ranking for current club members.</Trans>
           </p>
         </div>
 
@@ -230,13 +232,13 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
               onClick={() => setActiveTab('app')}
               className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === 'app' ? 'bg-[#EB712B] text-white shadow-sm' : 'text-text-muted hover:text-text-main'}`}
             >
-              <Bike size={14} /> App Rides
+              <Bike size={14} /> <Trans>App Rides</Trans>
             </button>
             <button
               onClick={() => setActiveTab('strava')}
               className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${activeTab === 'strava' ? 'bg-[#FC4C02] text-white shadow-sm' : 'text-text-muted hover:text-text-main'}`}
             >
-              <Activity size={14} /> Strava
+              <Activity size={14} /> <Trans>Strava</Trans>
             </button>
           </div>
 
@@ -261,9 +263,9 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-        <StatCard title="Active Racers" value={leaderboardData.length.toString()} icon={Bike} />
-        <StatCard title="Total Rides" value={leaderboardData.reduce((acc: number, curr: any) => acc + curr.rides, 0).toString()} icon={Trophy} />
-        <StatCard title="Top Participant" value={leaderboardData[0]?.name || "N/A"} icon={Award} />
+        <StatCard title={t`Active Racers`} value={leaderboardData.length.toString()} icon={Bike} />
+        <StatCard title={t`Total Rides`} value={leaderboardData.reduce((acc: number, curr: any) => acc + curr.rides, 0).toString()} icon={Trophy} />
+        <StatCard title={t`Top Participant`} value={leaderboardData[0]?.name || "N/A"} icon={Award} />
       </div>
 
       {/* Table Section */}
@@ -274,7 +276,7 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
           <DataTable data={leaderboardData} columns={columns} />
         ) : (
           <div className="text-center py-12 text-text-muted font-bold text-xs uppercase tracking-wider">
-            No leaderboard data found for this club under {activeTab === 'app' ? 'App Rides' : 'Strava'}.
+            <Trans>No leaderboard data found for this club under {activeTab === 'app' ? 'App Rides' : 'Strava'}.</Trans>
           </div>
         )}
       </div>

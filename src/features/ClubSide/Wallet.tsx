@@ -15,6 +15,8 @@ import {
   ArrowUpRight,
   Sparkles
 } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useGetClubWalletQuery, type WalletTransaction } from '@/features/wallet/api/walletApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -166,10 +168,10 @@ const WalletDashboard: React.FC = () => {
     return Array.from(set);
   }, [transactions]);
 
-  const columns: Column<WalletTransaction>[] = [
+  const columns: Column<WalletTransaction>[] = useMemo(() => [
     {
       key: 'title',
-      label: 'Transaction & Customer',
+      label: t`Transaction & Customer`,
       sortable: true,
       render: (t) => (
         <div className="flex items-center gap-3">
@@ -189,7 +191,7 @@ const WalletDashboard: React.FC = () => {
     },
     {
       key: 'category',
-      label: 'Category',
+      label: t`Category`,
       sortable: true,
       render: (t) => (
         <span className="px-3 py-1 rounded-full text-xs font-bold bg-hover border border-border text-text-main">
@@ -199,7 +201,7 @@ const WalletDashboard: React.FC = () => {
     },
     {
       key: 'type',
-      label: 'Type',
+      label: t`Type`,
       sortable: true,
       render: (t) => {
         const isCredit = (t.type || '').toLowerCase() === 'credit';
@@ -219,7 +221,7 @@ const WalletDashboard: React.FC = () => {
     },
     {
       key: 'amount',
-      label: 'Amount',
+      label: t`Amount`,
       sortable: true,
       render: (t) => {
         const isCredit = (t.type || '').toLowerCase() === 'credit';
@@ -232,21 +234,21 @@ const WalletDashboard: React.FC = () => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (t) => {
         const status = (t.status || '').toLowerCase();
         if (status === 'completed' || status === 'success') {
           return (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <CheckCircle2 size={13} /> Completed
+              <CheckCircle2 size={13} /> <Trans>Completed</Trans>
             </span>
           );
         }
         if (status === 'pending') {
           return (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
-              <Clock size={13} /> Pending
+              <Clock size={13} /> <Trans>Pending</Trans>
             </span>
           );
         }
@@ -259,7 +261,7 @@ const WalletDashboard: React.FC = () => {
     },
     {
       key: 'date',
-      label: 'Date',
+      label: t`Date`,
       sortable: true,
       render: (t) => (
         <span className="text-xs font-medium text-text-muted">
@@ -267,7 +269,7 @@ const WalletDashboard: React.FC = () => {
         </span>
       ),
     },
-  ];
+  ], [currencySymbol]);
 
   return (
     <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10 space-y-8">
@@ -275,13 +277,13 @@ const WalletDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#EB712B] mb-1">
-            <WalletIcon size={16} /> Club Treasury & Financials
+            <WalletIcon size={16} /> <Trans>Club Treasury & Financials</Trans>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-text-main">
-            Club Wallet Overview
+            <Trans>Club Wallet Overview</Trans>
           </h1>
           <p className="text-sm text-text-muted mt-1">
-            Real-time tracking of membership payments, shop sales, and liquidity for your club.
+            <Trans>Real-time tracking of membership payments, shop sales, and liquidity for your club.</Trans>
           </p>
         </div>
 
@@ -291,7 +293,7 @@ const WalletDashboard: React.FC = () => {
           className="px-4 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-colors cursor-pointer disabled:opacity-50"
         >
           <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          Refresh Data
+          <Trans>Refresh Data</Trans>
         </button>
       </div>
 
@@ -300,7 +302,7 @@ const WalletDashboard: React.FC = () => {
         {/* TOTAL EARNINGS */}
         <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between relative overflow-hidden group">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Total Earnings</span>
+            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Total Earnings</Trans></span>
             <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
               <DollarSign size={20} />
             </div>
@@ -310,7 +312,7 @@ const WalletDashboard: React.FC = () => {
               {currencySymbol}{Number(walletData.totalEarnings || 0).toFixed(2)}
             </div>
             <div className="text-xs text-emerald-500 font-bold mt-1 flex items-center gap-1">
-              <TrendingUp size={14} /> Total cleared revenues
+              <TrendingUp size={14} /> <Trans>Total cleared revenues</Trans>
             </div>
           </div>
         </div>
@@ -318,7 +320,7 @@ const WalletDashboard: React.FC = () => {
         {/* PENDING EARNINGS */}
         <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Pending Earnings</span>
+            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Pending Earnings</Trans></span>
             <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
               <Clock size={20} />
             </div>
@@ -327,14 +329,14 @@ const WalletDashboard: React.FC = () => {
             <div className="text-3xl font-extrabold text-amber-500">
               {currencySymbol}{Number(walletData.pendingEarnings || 0).toFixed(2)}
             </div>
-            <div className="text-xs text-text-muted mt-1">{pendingTx.length} pending transactions awaiting clearance</div>
+            <div className="text-xs text-text-muted mt-1"><Trans>{pendingTx.length} pending transactions awaiting clearance</Trans></div>
           </div>
         </div>
 
         {/* SUCCESS RATE */}
         <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Success Rate</span>
+            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Success Rate</Trans></span>
             <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
               <Sparkles size={20} />
             </div>
@@ -343,21 +345,21 @@ const WalletDashboard: React.FC = () => {
             <div className="text-3xl font-extrabold text-text-main">
               {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}%
             </div>
-            <div className="text-xs text-text-muted mt-1">{completedTx.length} completed / {transactions.length} total</div>
+            <div className="text-xs text-text-muted mt-1"><Trans>{completedTx.length} completed / {transactions.length} total</Trans></div>
           </div>
         </div>
 
         {/* TOTAL TRANSACTIONS */}
         <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Total Transactions</span>
+            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Total Transactions</Trans></span>
             <div className="w-10 h-10 rounded-2xl bg-[#EB712B]/10 text-[#EB712B] flex items-center justify-center">
               <CreditCard size={20} />
             </div>
           </div>
           <div>
             <div className="text-3xl font-extrabold text-text-main">{transactions.length}</div>
-            <div className="text-xs text-text-muted mt-1">Recorded ledger entries</div>
+            <div className="text-xs text-text-muted mt-1"><Trans>Recorded ledger entries</Trans></div>
           </div>
         </div>
       </div>
@@ -368,17 +370,17 @@ const WalletDashboard: React.FC = () => {
         <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold text-text-main">Revenue by Category</h3>
-              <p className="text-xs text-text-muted">Breakdown of earnings across club revenue streams</p>
+              <h3 className="text-lg font-bold text-text-main"><Trans>Revenue by Category</Trans></h3>
+              <p className="text-xs text-text-muted"><Trans>Breakdown of earnings across club revenue streams</Trans></p>
             </div>
             <span className="text-xs font-bold text-[#EB712B] bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20">
-              {categoryBreakdown.length} Streams
+              <Trans>{categoryBreakdown.length} Streams</Trans>
             </span>
           </div>
 
           {categoryBreakdown.length === 0 ? (
             <div className="py-12 text-center text-sm text-text-muted">
-              No revenue categories recorded yet.
+              <Trans>No revenue categories recorded yet.</Trans>
             </div>
           ) : (
             <div className="space-y-4">
@@ -406,17 +408,17 @@ const WalletDashboard: React.FC = () => {
         <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold text-text-main">Top Contributing Members</h3>
-              <p className="text-xs text-text-muted">Members generating the most revenue for the club</p>
+              <h3 className="text-lg font-bold text-text-main"><Trans>Top Contributing Members</Trans></h3>
+              <p className="text-xs text-text-muted"><Trans>Members generating the most revenue for the club</Trans></p>
             </div>
             <span className="text-xs font-bold text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
-              {customerBreakdown.length} Members
+              <Trans>{customerBreakdown.length} Members</Trans>
             </span>
           </div>
 
           {customerBreakdown.length === 0 ? (
             <div className="py-12 text-center text-sm text-text-muted">
-              No member transactions recorded yet.
+              <Trans>No member transactions recorded yet.</Trans>
             </div>
           ) : (
             <div className="space-y-4">
@@ -445,8 +447,8 @@ const WalletDashboard: React.FC = () => {
       <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-bold text-text-main">Club Transaction Ledger</h3>
-            <p className="text-xs text-text-muted">Full historical list of transactions for this club</p>
+            <h3 className="text-lg font-bold text-text-main"><Trans>Club Transaction Ledger</Trans></h3>
+            <p className="text-xs text-text-muted"><Trans>Full historical list of transactions for this club</Trans></p>
           </div>
 
           {/* FILTER AND SEARCH CONTROLS */}
@@ -458,7 +460,7 @@ const WalletDashboard: React.FC = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search transactions..."
+                placeholder={t`Search transactions...`}
                 className="pl-9 pr-4 py-2 rounded-xl bg-main-bg border border-border text-xs font-medium text-text-main focus:outline-none focus:border-[#EB712B] transition-colors w-48 sm:w-64"
               />
             </div>
@@ -475,7 +477,7 @@ const WalletDashboard: React.FC = () => {
                       : 'text-text-muted hover:text-text-main'
                   }`}
                 >
-                  {status}
+                  {status === 'All' ? <Trans>All</Trans> : status === 'Completed' ? <Trans>Completed</Trans> : <Trans>Pending</Trans>}
                 </button>
               ))}
             </div>
@@ -492,7 +494,7 @@ const WalletDashboard: React.FC = () => {
                       : 'text-text-muted hover:text-text-main'
                   }`}
                 >
-                  {type}
+                  {type === 'All' ? <Trans>All</Trans> : type === 'Credit' ? <Trans>Credit</Trans> : <Trans>Debit</Trans>}
                 </button>
               ))}
             </div>
@@ -506,7 +508,7 @@ const WalletDashboard: React.FC = () => {
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   className="bg-transparent text-xs font-bold text-text-main focus:outline-none cursor-pointer"
                 >
-                  <option value="All">All Categories</option>
+                  <option value="All">{t`All Categories`}</option>
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
@@ -520,13 +522,13 @@ const WalletDashboard: React.FC = () => {
         {isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center gap-3">
             <RefreshCw size={24} className="animate-spin text-[#EB712B]" />
-            <p className="text-xs font-bold text-text-muted">Loading club wallet ledger...</p>
+            <p className="text-xs font-bold text-text-muted"><Trans>Loading club wallet ledger...</Trans></p>
           </div>
         ) : (
           <DataTable
             data={filteredTransactions}
             columns={columns}
-            emptyMessage="No club wallet transactions found matching your filters."
+            emptyMessage={t`No club wallet transactions found matching your filters.`}
           />
         )}
       </div>

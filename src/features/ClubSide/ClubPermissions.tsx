@@ -25,6 +25,8 @@ import {
   UserCheck,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
 import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
@@ -38,13 +40,6 @@ import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
 
 // ── Permission Mapping ─────────────────────────────────────────────────────────
 
-const PERMISSION_DEFINITIONS = [
-  { id: 1, key: 'publishRides', label: 'Publish Rides', description: 'Can create and publish group rides' },
-  { id: 2, key: 'publishNews', label: 'Publish News', description: 'Can post club news and announcements' },
-  { id: 3, key: 'publishDiscount', label: 'Manage Discounts', description: 'Can create and manage discount codes' },
-  { id: 4, key: 'acceptOrBanUsers', label: 'Accept / Ban Users', description: 'Can approve or reject join requests' },
-  { id: 5, key: 'manageMembershipFee', label: 'Manage Membership Fees', description: 'Can manage club membership plans and fees' },
-];
 
 const PERMISSION_KEY_TO_ID: Record<string, number> = {
   publishRides: 1,
@@ -79,6 +74,14 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
     setLocalPerms(initialPerms);
   }, [initialPerms]);
 
+  const permissionDefinitions = useMemo(() => [
+    { id: 1, key: 'publishRides', label: t`Publish Rides`, description: t`Can create and publish group rides` },
+    { id: 2, key: 'publishNews', label: t`Publish News`, description: t`Can post club news and announcements` },
+    { id: 3, key: 'publishDiscount', label: t`Manage Discounts`, description: t`Can create and manage discount codes` },
+    { id: 4, key: 'acceptOrBanUsers', label: t`Accept / Ban Users`, description: t`Can approve or reject join requests` },
+    { id: 5, key: 'manageMembershipFee', label: t`Manage Membership Fees`, description: t`Can manage club membership plans and fees` },
+  ], []);
+
   const [applyPermissions] = useApplyPermissionTogglesForSelectedMembersMutation();
   const [grantRevokeFullAccess, { isLoading: isTogglingFull }] = useGrantRevokeFullClubAccessForOneMemberMutation();
   const [assignRole, { isLoading: isAssigningRole }] = useAssignRoleToMemberMutation();
@@ -88,9 +91,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
     if (!targetUserId) return;
     try {
       await assignRole({ clubId, userId: targetUserId, roleId }).unwrap();
-      toast.success(`Role updated for ${fullName}`);
+      toast.success(t`Role updated for ${fullName}`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to assign role.');
+      toast.error(err?.data?.message || t`Failed to assign role.`);
     }
   };
 
@@ -98,9 +101,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
     if (!targetUserId) return;
     try {
       await removeFullAccess({ clubId, userId: targetUserId }).unwrap();
-      toast.success(`Full access removed for ${fullName}`);
+      toast.success(t`Full access removed for ${fullName}`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to remove full access.');
+      toast.error(err?.data?.message || t`Failed to remove full access.`);
     }
   };
 
@@ -113,7 +116,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
     member.fullName ||
     ((member.firstName || '') + ' ' + (member.lastName || '')).trim() ||
     member.username ||
-    'Unnamed Member'
+    t`Unnamed Member`
   );
 
   const targetUserId = Number(member.userId || member.id);
@@ -124,7 +127,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
 
   const handleSave = async () => {
     if (!targetUserId) {
-      toast.error('Invalid member ID');
+      toast.error(t`Invalid member ID`);
       return;
     }
     setIsSaving(true);
@@ -139,9 +142,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
         userIds: [targetUserId],
         permissions: formattedPermissions,
       }).unwrap();
-      toast.success(`Permissions updated for ${fullName}`);
+      toast.success(t`Permissions updated for ${fullName}`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update permissions.');
+      toast.error(err?.data?.message || t`Failed to update permissions.`);
     } finally {
       setIsSaving(false);
     }
@@ -157,11 +160,11 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
       }).unwrap();
       toast.success(
         hasFullAccess
-          ? `Full access revoked for ${fullName}`
-          : `Full access granted to ${fullName}`
+          ? t`Full access revoked for ${fullName}`
+          : t`Full access granted to ${fullName}`
       );
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update full access.');
+      toast.error(err?.data?.message || t`Failed to update full access.`);
     }
   };
 
@@ -209,11 +212,11 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-xs font-bold text-text-main truncate">{fullName}</p>
-            {isOwner && <span title="Club Owner"><Crown size={14} className="text-[#EB712B] shrink-0" /></span>}
-            {isAdmin && !isOwner && <span title="Club Admin"><ShieldCheck size={14} className="text-[#EB712B] shrink-0" /></span>}
+            {isOwner && <span title={t`Club Owner`}><Crown size={14} className="text-[#EB712B] shrink-0" /></span>}
+            {isAdmin && !isOwner && <span title={t`Club Admin`}><ShieldCheck size={14} className="text-[#EB712B] shrink-0" /></span>}
           </div>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-[10px] text-text-muted capitalize font-semibold">{member.role || 'Member'}</span>
+            <span className="text-[10px] text-text-muted capitalize font-semibold">{member.role || t`Member`}</span>
             {member.email && <span className="text-[10px] text-text-muted/60 truncate">• {member.email}</span>}
           </div>
         </div>
@@ -221,14 +224,14 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
         {/* Full Access Badge */}
         {hasFullAccess && !isOwner && (
           <span className="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20 rounded-full shrink-0">
-            Full Access
+            <Trans>Full Access</Trans>
           </span>
         )}
 
         {/* Owner Permanent Access Lock */}
         {isOwner && (
           <span className="text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-full shrink-0 flex items-center gap-1">
-            <Lock size={10} /> Owner
+            <Lock size={10} /> <Trans>Owner</Trans>
           </span>
         )}
 
@@ -252,9 +255,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
           <div className="flex items-center justify-between gap-4 pb-3 border-b border-border">
             <div>
               <p className="text-xs font-bold text-text-main flex items-center gap-1.5">
-                <UserCheck size={14} className="text-[#EB712B]" /> Assign Role
+                <UserCheck size={14} className="text-[#EB712B]" /> <Trans>Assign Role</Trans>
               </p>
-              <p className="text-[10px] text-text-muted mt-0.5">Current: <span className="capitalize font-bold text-text-main">{member.role || 'member'}</span></p>
+              <p className="text-[10px] text-text-muted mt-0.5"><Trans>Current:</Trans> <span className="capitalize font-bold text-text-main">{member.role || 'member'}</span></p>
             </div>
             <div className="flex items-center gap-2">
               {isAssigningRole && <Loader2 size={14} className="animate-spin text-[#EB712B]" />}
@@ -264,9 +267,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
                 disabled={isAssigningRole}
                 className="bg-main-bg border border-border rounded-xl px-3 py-1.5 text-xs text-text-main outline-none focus:border-[#EB712B]/50 cursor-pointer disabled:opacity-50"
               >
-                <option value="" disabled>Change role...</option>
-                <option value="1">Admin</option>
-                <option value="2">User</option>
+                <option value="" disabled>{t`Change role...`}</option>
+                <option value="1">{t`Admin`}</option>
+                <option value="2">{t`User`}</option>
               </select>
             </div>
           </div>
@@ -275,9 +278,9 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
           <div className="flex items-start justify-between gap-4 pb-3 border-b border-border">
             <div>
               <p className="text-xs font-bold text-text-main flex items-center gap-1.5">
-                <Crown size={14} className="text-[#EB712B]" /> Full Admin Access
+                <Crown size={14} className="text-[#EB712B]" /> <Trans>Full Admin Access</Trans>
               </p>
-              <p className="text-[10px] text-text-muted mt-0.5">Overrides all permissions and grants complete access</p>
+              <p className="text-[10px] text-text-muted mt-0.5"><Trans>Overrides all permissions and grants complete access</Trans></p>
             </div>
             <div className="flex items-center gap-2">
               {hasFullAccess && (
@@ -286,14 +289,14 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
                   disabled={isRemovingFull}
                   className="text-[9px] font-bold uppercase text-red-400 hover:text-red-300 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg cursor-pointer disabled:opacity-50 transition-colors"
                 >
-                  {isRemovingFull ? <Loader2 size={10} className="animate-spin" /> : 'Remove'}
+                  {isRemovingFull ? <Loader2 size={10} className="animate-spin" /> : <Trans>Remove</Trans>}
                 </button>
               )}
               <button
                 onClick={handleFullAccess}
                 disabled={isTogglingFull}
                 className="cursor-pointer shrink-0 disabled:opacity-50"
-                title={hasFullAccess ? 'Revoke full access' : 'Grant full access'}
+                title={hasFullAccess ? t`Revoke full access` : t`Grant full access`}
               >
                 {isTogglingFull ? (
                   <Loader2 size={24} className="animate-spin text-[#EB712B]" />
@@ -308,7 +311,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
 
           {/* Individual Permission Items */}
           <div className="space-y-3">
-            {PERMISSION_DEFINITIONS.map(({ key, label, description }) => {
+            {permissionDefinitions.map(({ key, label, description }) => {
               const isChecked = localPerms[key] || hasFullAccess;
               return (
                 <div key={key} className="flex items-start justify-between gap-4">
@@ -320,7 +323,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
                     onClick={() => handleToggle(key)}
                     disabled={hasFullAccess}
                     className="cursor-pointer shrink-0 disabled:opacity-40"
-                    title={hasFullAccess ? 'Member already has full access' : undefined}
+                    title={hasFullAccess ? t`Member already has full access` : undefined}
                   >
                     {isChecked ? (
                       <ToggleRight size={28} className="text-[#EB712B]" />
@@ -341,7 +344,7 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
               className="w-full py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border-0 flex items-center justify-center gap-2 disabled:opacity-50 mt-3"
             >
               {isSaving && <Loader2 size={14} className="animate-spin" />}
-              {isSaving ? 'Saving Permissions...' : 'Save Permissions'}
+              {isSaving ? <Trans>Saving Permissions...</Trans> : <Trans>Save Permissions</Trans>}
             </button>
           )}
         </div>
@@ -424,9 +427,9 @@ const ClubPermissions: React.FC = () => {
             <ShieldAlert size={36} className="text-red-500" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-text-main mb-2">Owner Access Only</h2>
+            <h2 className="text-2xl font-bold text-text-main mb-2"><Trans>Owner Access Only</Trans></h2>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
-              Only the club owner can manage and delegate member permissions. Contact your club owner for access.
+              <Trans>Only the club owner can manage and delegate member permissions. Contact your club owner for access.</Trans>
             </p>
           </div>
         </div>
@@ -445,24 +448,24 @@ const ClubPermissions: React.FC = () => {
               <ShieldCheck size={22} className="text-[#EB712B]" />
             </div>
             <div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-[#EB712B]">Owner Dashboard</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-[#EB712B]"><Trans>Owner Dashboard</Trans></span>
               <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-text-main">
-                Club Permissions
+                <Trans>Club Permissions</Trans>
               </h1>
             </div>
           </div>
           <p className="text-sm text-text-muted max-w-2xl">
-            Delegate specific responsibilities to trusted club members. Expand any member to toggle their individual permissions or grant full admin access.
+            <Trans>Delegate specific responsibilities to trusted club members. Expand any member to toggle their individual permissions or grant full admin access.</Trans>
           </p>
         </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Total Members', value: stats.total, icon: <Users size={18} /> },
-            { label: 'Admins', value: stats.admins, icon: <ShieldCheck size={18} /> },
-            { label: 'Full Access', value: stats.fullAccess, icon: <Crown size={18} /> },
-            { label: 'Regular Members', value: stats.regular, icon: <UserCheck size={18} /> },
+            { label: t`Total Members`, value: stats.total, icon: <Users size={18} /> },
+            { label: t`Admins`, value: stats.admins, icon: <ShieldCheck size={18} /> },
+            { label: t`Full Access`, value: stats.fullAccess, icon: <Crown size={18} /> },
+            { label: t`Regular Members`, value: stats.regular, icon: <UserCheck size={18} /> },
           ].map((stat, i) => (
             <div key={i} className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 text-[#EB712B] shadow-xs">{stat.icon}</div>
@@ -479,10 +482,10 @@ const ClubPermissions: React.FC = () => {
           {/* Filter Tabs */}
           <div className="flex items-center gap-1.5 p-1 bg-surface border border-border rounded-xl self-start md:self-auto overflow-x-auto max-w-full">
             {[
-              { key: 'all', label: 'All' },
-              { key: 'admins', label: 'Admins' },
-              { key: 'full', label: 'Full Access' },
-              { key: 'members', label: 'Regular' },
+              { key: 'all', label: t`All` },
+              { key: 'admins', label: t`Admins` },
+              { key: 'full', label: t`Full Access` },
+              { key: 'members', label: t`Regular` },
             ].map((tab) => (
               <button
                 key={tab.key}
@@ -503,7 +506,7 @@ const ClubPermissions: React.FC = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
             <input
               type="text"
-              placeholder="Search members by name or email..."
+              placeholder={t`Search members by name or email...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border pl-11 pr-4 py-2.5 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
@@ -528,7 +531,7 @@ const ClubPermissions: React.FC = () => {
           <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-3">
             <Users size={32} className="text-text-muted mx-auto opacity-40" />
             <p className="text-xs text-text-muted font-bold uppercase tracking-wider">
-              {searchQuery ? 'No members match your search' : 'No members found in this category'}
+              {searchQuery ? t`No members match your search` : t`No members found in this category`}
             </p>
           </div>
         ) : (

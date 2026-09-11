@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
@@ -138,10 +140,10 @@ const Order = () => {
     );
   }, [orderListResponse, activeTab, searchQuery]);
 
-  const columns: Column<OrderRow>[] = [
+  const columns: Column<OrderRow>[] = useMemo(() => [
     {
       key: 'productName',
-      label: 'Product',
+      label: t`Product`,
       sortable: true,
       render: (order) => (
         <div className="flex items-center gap-3">
@@ -157,31 +159,31 @@ const Order = () => {
     },
     {
       key: 'orderId',
-      label: 'Order ID',
+      label: t`Order ID`,
       sortable: true,
       render: (order) => <p className="text-xs font-mono text-text-muted">#{order.orderId}</p>
     },
     {
       key: 'price',
-      label: 'Price',
+      label: t`Price`,
       sortable: true,
       render: (order) => <p className="text-sm font-semibold text-text-main">{order.price}</p>
     },
     {
       key: 'recipient',
-      label: 'Recipient',
+      label: t`Recipient`,
       sortable: true,
       render: (order) => <p className="font-medium text-text-main">{order.recipient}</p>
     },
     {
       key: 'date',
-      label: 'Date',
+      label: t`Date`,
       sortable: true,
       render: (order) => <p className="text-xs text-text-muted">{order.date}</p>
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (order) => (
         <div className="flex justify-end">
@@ -190,27 +192,27 @@ const Order = () => {
               onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
               className="px-3 py-2 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
             >
-              Delivered
+              <Trans>Delivered</Trans>
             </button>
           ) : (
             <button 
               onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
               className="px-4 py-2 rounded-lg bg-surface border border-border text-[10px] font-bold uppercase hover:bg-[#EB712B] hover:text-white hover:border-[#EB712B] transition-all cursor-pointer text-text-main"
             >
-              Details
+              <Trans>Details</Trans>
             </button>
           )}
         </div>
       )
     }
-  ];
+  ], [navigate]);
 
   return (
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8 overflow-x-hidden">
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Order Management</h1>
-          <p className="text-text-muted text-xs md:text-sm">Oversee real-time logistics and athlete fulfillment streams.</p>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2"><Trans>Order Management</Trans></h1>
+          <p className="text-text-muted text-xs md:text-sm"><Trans>Oversee real-time logistics and athlete fulfillment streams.</Trans></p>
         </div>
         
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full xl:w-auto">
@@ -218,7 +220,7 @@ const Order = () => {
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
             <input
               type="text"
-              placeholder="Search orders, athletes..."
+              placeholder={t`Search orders, athletes...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-main placeholder-text-muted font-medium focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300"
@@ -230,13 +232,13 @@ const Order = () => {
               onClick={() => setActiveTab('Active')} 
               className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Active' ? 'bg-[#EB712B] text-white' : 'text-text-muted hover:text-text-main'}`}
             >
-              Active
+              <Trans>Active</Trans>
             </button>
             <button 
               onClick={() => setActiveTab('Delivered')} 
               className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Delivered' ? 'bg-[#EB712B] text-white' : 'text-text-muted hover:text-text-main'}`}
             >
-              Delivered
+              <Trans>Delivered</Trans>
             </button>
           </div>
         </div>
@@ -244,13 +246,13 @@ const Order = () => {
 
       {!effectiveClubId ? (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
-          Please select a club to manage its orders.
+          <Trans>Please select a club to manage its orders.</Trans>
         </div>
       ) : isLoading ? (
         <TableSkeleton />
       ) : isError ? (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl text-red-500 font-medium text-sm">
-          Failed to load orders. Please check your permissions or try again.
+          <Trans>Failed to load orders. Please check your permissions or try again.</Trans>
         </div>
       ) : orders.length > 0 ? (
         <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl">
@@ -258,7 +260,7 @@ const Order = () => {
         </div>
       ) : (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
-          No orders found under &quot;{activeTab}&quot; matching your filter.
+          <Trans>No orders found under "{activeTab}" matching your filter.</Trans>
         </div>
       )}
     </div>

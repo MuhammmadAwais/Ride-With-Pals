@@ -17,6 +17,8 @@ import { useForClubOwnerOrderListQuery } from "@/features/club/api/shopOrderApiS
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 import { ROUTES } from "@/Constants";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 
 const formatProductImage = (img?: string | null): string => {
   if (!img || img === 'null' || img.trim() === '') return '/Images/BottleImage.png';
@@ -105,10 +107,10 @@ const Product = () => {
   const handleDelete = async (id: number) => {
     try {
       await deleteShopItem({ shopItemId: id }).unwrap();
-      toast.success("Product deleted successfully!");
+      toast.success(t`Product deleted successfully!`);
       if (selectedProduct?.id === id) setSelectedProduct(null);
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to delete product.");
+      toast.error(err?.data?.message || t`Failed to delete product.`);
     }
   };
 
@@ -124,7 +126,7 @@ const Product = () => {
     const baseCols: Column<ProductType>[] = [
       {
         key: "name",
-        label: "Asset Description",
+        label: t`Asset Description`,
         sortable: true,
         render: (p) => (
           <div className="flex items-center gap-4">
@@ -142,7 +144,7 @@ const Product = () => {
       },
       {
         key: "category",
-        label: "Classification",
+        label: t`Classification`,
         sortable: true,
         render: (p) => (
           <span className="bg-surface px-3 py-1 rounded w-fit text-[10px] border border-border hidden md:block text-text-muted">
@@ -152,13 +154,13 @@ const Product = () => {
       },
       {
         key: "price",
-        label: "Unit Value",
+        label: t`Unit Value`,
         sortable: true,
         render: (p) => <span className="font-bold text-sm text-[#c99277]">${p.price}</span>,
       },
       {
         key: "status",
-        label: "Inventory Status",
+        label: t`Inventory Status`,
         sortable: true,
         render: (p) => (
           <div
@@ -226,7 +228,7 @@ const Product = () => {
           onClick={() => setSelectedProduct(null)}
           className="text-text-muted mb-8 hover:text-text-main flex items-center gap-2 text-sm transition-colors cursor-pointer"
         >
-          <ArrowLeft size={16} /> Back to All Gear
+          <ArrowLeft size={16} /> <Trans>Back to All Gear</Trans>
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
@@ -265,31 +267,31 @@ const Product = () => {
                 $ {selectedProduct.price}
               </span>
               <span className="bg-[#1a332a] text-green-500 border border-green-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase whitespace-nowrap">
-                ● IN STOCK: {selectedProduct.units || 42} UNITS
+                <Trans>● IN STOCK: {selectedProduct.units || 42} UNITS</Trans>
               </span>
             </div>
 
             <p className="text-text-muted mb-8 leading-relaxed text-sm md:text-base">
-              {selectedProduct.description || "Official merchandise and gear provided directly by the club."}
+              {selectedProduct.description || <Trans>Official merchandise and gear provided directly by the club.</Trans>}
             </p>
 
             {/* Display Club Details */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
               {selectedProduct.size && (
                 <div className="bg-surface px-4 py-3 rounded-xl border border-border">
-                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Size / Fit</p>
+                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5"><Trans>Size / Fit</Trans></p>
                   <p className="font-bold text-sm text-text-main">{selectedProduct.size}</p>
                 </div>
               )}
               {selectedProduct.gender && (
                 <div className="bg-surface px-4 py-3 rounded-xl border border-border">
-                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Target Gender</p>
+                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5"><Trans>Target Gender</Trans></p>
                   <p className="font-bold text-sm text-text-main">{selectedProduct.gender}</p>
                 </div>
               )}
               {selectedProduct.code && (
                 <div className="bg-surface px-4 py-3 rounded-xl border border-border">
-                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5">Product Code</p>
+                  <p className="text-[9px] text-text-muted uppercase tracking-wider mb-0.5"><Trans>Product Code</Trans></p>
                   <p className="font-mono text-sm font-bold text-[#EB712B]">{selectedProduct.code}</p>
                 </div>
               )}
@@ -312,13 +314,13 @@ const Product = () => {
                     }}
                     className="flex-1 bg-[#EB712B] hover:bg-[#ff8243] text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer border-0 shadow-lg shadow-[#EB712B]/20"
                   >
-                    <Edit2 size={16} /> Edit Product
+                    <Edit2 size={16} /> <Trans>Edit Product</Trans>
                   </button>
                   <button 
                     onClick={() => handleDelete(selectedProduct.id)}
                     className="bg-surface border border-red-500/30 hover:bg-red-500 hover:text-white text-red-400 py-3.5 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Trash2 size={16} /> Delete
+                    <Trash2 size={16} /> <Trans>Delete</Trans>
                   </button>
                 </div>
               </>
@@ -334,16 +336,16 @@ const Product = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-text-main">
-            Club <span className="text-[#EB712B]">Shop & Merchandise</span>
+            <Trans>Club</Trans> <span className="text-[#EB712B]"><Trans>Shop & Merchandise</Trans></span>
           </h1>
           <p className="text-text-muted text-xs md:text-sm mt-1">
-            Manage your club's official merchandise, apparel, and equipment catalog.
+            <Trans>Manage your club's official merchandise, apparel, and equipment catalog.</Trans>
           </p>
         </div>
         {permissions.isAdmin && (
           <Link to={ROUTES.ADD_PRODUCT}>
             <button className="bg-[#EB712B] text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all text-sm cursor-pointer hover:bg-[#d66525] shadow-lg shadow-[#EB712B]/20 border-0">
-              <Plus size={18} /> Add Shop Item
+              <Plus size={18} /> <Trans>Add Shop Item</Trans>
             </button>
           </Link>
         )}
@@ -357,35 +359,37 @@ const Product = () => {
         <div className="md:col-span-2 bg-surface p-6 rounded-2xl border border-border shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between border-b border-border pb-4 mb-4">
-              <h3 className="text-sm font-extrabold uppercase tracking-wider text-text-main">Catalog & Inventory Summary</h3>
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-text-main">
+                <Trans>Catalog & Inventory Summary</Trans>
+              </h3>
               <span className="text-[10px] font-extrabold bg-[#EB712B]/10 text-[#EB712B] px-3 py-1 rounded-full border border-[#EB712B]/20">
-                Live Data
+                <Trans>Live Data</Trans>
               </span>
             </div>
             <div className="grid grid-cols-3 gap-4 text-center py-2">
               <div className="bg-hover p-4 rounded-xl border border-border">
-                <p className="text-[10px] uppercase font-bold text-text-muted">Total Products</p>
+                <p className="text-[10px] uppercase font-bold text-text-muted"><Trans>Total Products</Trans></p>
                 <h4 className="text-xl md:text-2xl font-black text-text-main mt-1">{products.length}</h4>
               </div>
               <div className="bg-hover p-4 rounded-xl border border-border">
-                <p className="text-[10px] uppercase font-bold text-text-muted">Active Catalog Value</p>
+                <p className="text-[10px] uppercase font-bold text-text-muted"><Trans>Active Catalog Value</Trans></p>
                 <h4 className="text-xl md:text-2xl font-black text-[#EB712B] mt-1">${totalCatalogValue}</h4>
               </div>
               <div className="bg-hover p-4 rounded-xl border border-border">
-                <p className="text-[10px] uppercase font-bold text-text-muted">Total Club Orders</p>
+                <p className="text-[10px] uppercase font-bold text-text-muted"><Trans>Total Club Orders</Trans></p>
                 <h4 className="text-xl md:text-2xl font-black text-text-main mt-1">{ordersData?.count || 0}</h4>
               </div>
             </div>
           </div>
           <p className="text-xs text-text-muted mt-4">
-            Manage your club's official apparel, gear, and merchandise listings. Active orders are synced directly with your club shop orders API.
+            <Trans>Manage your club's official apparel, gear, and merchandise listings. Active orders are synced directly with your club shop orders API.</Trans>
           </p>
         </div>
 
         <div className="flex flex-col gap-4">
           <div className="bg-surface p-6 rounded-2xl border border-[#EB712B]/30 flex justify-between items-center shadow-lg hover:border-[#EB712B]/60 transition-all">
             <div>
-              <p className="text-text-muted text-xs uppercase font-bold">Active Orders</p>
+              <p className="text-text-muted text-xs uppercase font-bold"><Trans>Active Orders</Trans></p>
               <h3 className="text-2xl md:text-3xl font-bold mt-1 text-text-main">{activeOrdersCount}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center">
@@ -395,7 +399,7 @@ const Product = () => {
 
           <div className="bg-surface p-6 rounded-2xl border border-emerald-500/30 flex justify-between items-center shadow-lg hover:border-emerald-500/60 transition-all">
             <div>
-              <p className="text-text-muted text-xs uppercase font-bold">Pending Audit</p>
+              <p className="text-text-muted text-xs uppercase font-bold"><Trans>Pending Audit</Trans></p>
               <h3 className="text-2xl md:text-3xl font-bold mt-1 text-text-main">{pendingAuditCount.toString().padStart(2, '0')}</h3>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">

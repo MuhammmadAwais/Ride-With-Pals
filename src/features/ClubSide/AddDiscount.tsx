@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useAddDiscountMutation } from '@/features/club/api/discountApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
@@ -14,15 +16,15 @@ function AddDiscount() {
   if (!permissions.isLoading && !permissions.canPublishDiscount) {
     return (
       <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
-        <h1 className="text-2xl font-black mb-4">Access Denied</h1>
+        <h1 className="text-2xl font-black mb-4"><Trans>Access Denied</Trans></h1>
         <p className="text-text-muted max-w-md mb-6">
-          You do not have the required permissions to publish or manage discounts for this club.
+          <Trans>You do not have the required permissions to publish or manage discounts for this club.</Trans>
         </p>
         <button 
           onClick={() => navigate('/view/clubside/discount')} 
           className="px-6 py-3 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl font-bold transition-all cursor-pointer border-0"
         >
-          Go Back
+          <Trans>Go Back</Trans>
         </button>
       </div>
     );
@@ -45,10 +47,10 @@ function AddDiscount() {
     (document.activeElement as HTMLElement)?.blur();
     let newErrors: Record<string, string> = {};
 
-    if (!formData.title.trim()) newErrors.title = "Discount title is required";
-    if (!formData.code.trim()) newErrors.code = "Discount code is required";
-    if (!formData.percentage) newErrors.percentage = "Percentage is required";
-    if (!formData.validTill) newErrors.validTill = "Valid till date is required";
+    if (!formData.title.trim()) newErrors.title = t`Discount title is required`;
+    if (!formData.code.trim()) newErrors.code = t`Discount code is required`;
+    if (!formData.percentage) newErrors.percentage = t`Percentage is required`;
+    if (!formData.validTill) newErrors.validTill = t`Valid till date is required`;
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -56,7 +58,7 @@ function AddDiscount() {
     }
 
     if (!clubIdStr) {
-      toast.error("No club selected. Please select a club first.");
+      toast.error(t`No club selected. Please select a club first.`);
       return;
     }
 
@@ -71,12 +73,12 @@ function AddDiscount() {
         isActive: true
       }).unwrap();
       
-      toast.success("Discount code created successfully!");
+      toast.success(t`Discount code created successfully!`);
       navigate('/view/clubside/discount');
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to create discount");
+      toast.error(err?.data?.message || t`Failed to create discount`);
       console.error(err);
-      setErrors({ global: err?.data?.message || "Failed to create discount" });
+      setErrors({ global: err?.data?.message || t`Failed to create discount` });
     }
   };
 
@@ -86,11 +88,11 @@ function AddDiscount() {
         onClick={() => navigate('/view/clubside/discount')} 
         className="flex items-center gap-2 text-text-muted hover:text-[#EB712B] transition-colors mb-6 text-sm font-bold uppercase tracking-widest bg-transparent border-0 outline-none cursor-pointer"
       >
-        <ArrowLeft size={20} /> Back
+        <ArrowLeft size={20} /> <Trans>Back</Trans>
       </button>
 
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-black mb-8">Add New Discount</h1>
+        <h1 className="text-4xl font-black mb-8"><Trans>Add New Discount</Trans></h1>
 
         <form onSubmit={handleSave} className="bg-surface border border-border rounded-[32px] p-10 shadow-2xl">
           {errors.global && <p className="text-[#EB712B] text-sm font-bold mb-4">{errors.global}</p>}
@@ -99,9 +101,9 @@ function AddDiscount() {
             {/* Column 1 */}
             <div className="space-y-6">
               <div className="space-y-3">
-                <label className="text-xs uppercase font-bold text-text-muted tracking-widest">DISCOUNT TITLE</label>
+                <label className="text-xs uppercase font-bold text-text-muted tracking-widest"><Trans>DISCOUNT TITLE</Trans></label>
                 <input 
-                  placeholder="Enter title" 
+                  placeholder={t`Enter title`} 
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   className={`w-full h-14 bg-main-bg border rounded-2xl px-4 text-md outline-none focus:border-[#EB712B] text-text-main placeholder-text-muted ${errors.title ? 'border-[#EB712B]' : 'border-border'}`} 
@@ -111,7 +113,7 @@ function AddDiscount() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-3">
-                  <label className="text-xs uppercase font-bold text-text-muted tracking-widest">PERCENTAGE</label>
+                  <label className="text-xs uppercase font-bold text-text-muted tracking-widest"><Trans>PERCENTAGE</Trans></label>
                   <input 
                     placeholder="00" 
                     type="number"
@@ -122,7 +124,7 @@ function AddDiscount() {
                   {errors.percentage && <p className="text-[#EB712B] text-xs font-semibold">{errors.percentage}</p>}
                 </div>
                 <div className="space-y-3">
-                  <label className="text-xs uppercase font-bold text-text-muted tracking-widest">VALID TILL</label>
+                  <label className="text-xs uppercase font-bold text-text-muted tracking-widest"><Trans>VALID TILL</Trans></label>
                   <input 
                     type="date"
                     style={{ colorScheme: 'dark' }}
@@ -138,9 +140,9 @@ function AddDiscount() {
             {/* Column 2 */}
             <div className="space-y-6">
               <div className="space-y-3">
-                <label className="text-xs uppercase font-bold text-text-muted tracking-widest">DESCRIPTION</label>
+                <label className="text-xs uppercase font-bold text-text-muted tracking-widest"><Trans>DESCRIPTION</Trans></label>
                 <textarea 
-                  placeholder="Details..." 
+                  placeholder={t`Details...`} 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   className="w-full h-[148px] bg-main-bg border border-border rounded-2xl p-4 text-md focus:border-[#EB712B] outline-none resize-none text-text-main placeholder-text-muted" 
@@ -150,9 +152,9 @@ function AddDiscount() {
 
             {/* Full Width Bottom Row */}
             <div className="col-span-2 space-y-3">
-              <label className="text-xs uppercase font-bold text-text-muted tracking-widest">DISCOUNT CODE</label>
+              <label className="text-xs uppercase font-bold text-text-muted tracking-widest"><Trans>DISCOUNT CODE</Trans></label>
               <input 
-                placeholder="5457-5A" 
+                placeholder={t`5457-5A`} 
                 value={formData.code}
                 onChange={(e) => setFormData({...formData, code: e.target.value})}
                 className={`w-full h-14 bg-main-bg border rounded-2xl px-4 text-md outline-none focus:border-[#EB712B] text-text-main placeholder-text-muted ${errors.code ? 'border-[#EB712B]' : 'border-border'}`} 
@@ -167,7 +169,7 @@ function AddDiscount() {
             className={`w-full h-16 mt-8 rounded-2xl ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#EB712B] hover:bg-[#ff8243]'} text-white font-black text-sm uppercase transition-all cursor-pointer border-0 outline-none flex items-center justify-center gap-2`}
           >
             {loading && <Loader2 size={16} className="animate-spin" />}
-            {loading ? "Saving..." : "Save"}
+            {loading ? <Trans>Saving...</Trans> : <Trans>Save</Trans>}
           </button>
         </form>
       </div>

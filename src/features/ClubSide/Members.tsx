@@ -14,6 +14,8 @@ import {
   SearchX
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { toast } from 'sonner';
@@ -73,7 +75,7 @@ const MemberAvatar: React.FC<{
       <div 
         onClick={handleClick}
         className="w-10 h-10 rounded-full bg-surface border border-border overflow-hidden shrink-0 shadow-sm cursor-pointer hover:border-[#EB712B] hover:scale-105 transition-all group/avatar relative"
-        title="Click to preview avatar"
+        title={t`Click to preview avatar`}
       >
         <img
           src={photoUrl}
@@ -89,7 +91,7 @@ const MemberAvatar: React.FC<{
     <div 
       onClick={handleClick}
       className="w-10 h-10 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-sm cursor-pointer hover:border-[#EB712B] hover:scale-105 transition-all"
-      title="Click to preview avatar"
+      title={t`Click to preview avatar`}
     >
       <span className="text-xs font-black text-[#EB712B] select-none">
         {initials}
@@ -130,7 +132,7 @@ const MemberRoleCell: React.FC<{
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black tracking-wide bg-[#EB712B]/15 text-[#EB712B] border border-[#EB712B]/30 shadow-sm">
         <Crown size={11} className="shrink-0 fill-[#EB712B]/30" />
-        Owner
+        <Trans>Owner</Trans>
       </span>
     );
   }
@@ -138,7 +140,7 @@ const MemberRoleCell: React.FC<{
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black tracking-wide bg-blue-500/15 text-blue-400 border border-blue-500/30 shadow-sm">
         <Shield size={11} className="shrink-0" />
-        Admin
+        <Trans>Admin</Trans>
       </span>
     );
   }
@@ -146,7 +148,7 @@ const MemberRoleCell: React.FC<{
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black tracking-wide bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm">
         <ShieldCheck size={11} className="shrink-0" />
-        Organizer
+        <Trans>Organizer</Trans>
       </span>
     );
   }
@@ -154,13 +156,13 @@ const MemberRoleCell: React.FC<{
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black tracking-wide bg-purple-500/15 text-purple-400 border border-purple-500/30 shadow-sm">
         <Bike size={11} className="shrink-0" />
-        Athlete
+        <Trans>Athlete</Trans>
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface border border-border text-text-muted">
-      Member
+      <Trans>Member</Trans>
     </span>
   );
 };
@@ -181,7 +183,7 @@ const MemberGenderCell: React.FC<{ userId: number; fallbackGender?: string }> = 
         ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
         : 'bg-pink-500/10 text-pink-400 border border-pink-500/20'
     }`}>
-      {gender}
+      {gender === 'Male' ? <Trans>Male</Trans> : gender === 'Female' ? <Trans>Female</Trans> : gender}
     </span>
   );
 };
@@ -238,7 +240,7 @@ const MemberStatusCell: React.FC<{ status: 'Active' | 'Pending' | 'Suspended' }>
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        <span className="text-xs font-semibold text-emerald-400">Active</span>
+        <span className="text-xs font-semibold text-emerald-400"><Trans>Active</Trans></span>
       </div>
     );
   }
@@ -246,14 +248,14 @@ const MemberStatusCell: React.FC<{ status: 'Active' | 'Pending' | 'Suspended' }>
     return (
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full bg-amber-500"></span>
-        <span className="text-xs font-semibold text-amber-400">Pending</span>
+        <span className="text-xs font-semibold text-amber-400"><Trans>Pending</Trans></span>
       </div>
     );
   }
   return (
     <div className="flex items-center gap-2">
       <span className="h-2 w-2 rounded-full bg-red-500"></span>
-      <span className="text-xs font-semibold text-red-400">{status}</span>
+      <span className="text-xs font-semibold text-red-400">{status === 'Suspended' ? <Trans>Suspended</Trans> : status}</span>
     </div>
   );
 };
@@ -339,13 +341,13 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   }, [activeMenuId]);
 
   const handleRemoveMember = async (userId: string) => {
-    if (!window.confirm("Are you sure you want to remove this member from the club?")) return;
+    if (!window.confirm(t`Are you sure you want to remove this member from the club?`)) return;
     try {
       await removeMember({ clubId: effectiveClubId, userId: Number(userId) }).unwrap();
-      toast.success("Member removed successfully!");
+      toast.success(t`Member removed successfully!`);
       setActiveMenuId(null);
     } catch (err) {
-      toast.error((err as { data?: { message?: string }; message?: string })?.data?.message || (err as Error)?.message || "Failed to remove member.");
+      toast.error((err as { data?: { message?: string }; message?: string })?.data?.message || (err as Error)?.message || t`Failed to remove member.`);
     }
   };
 
@@ -416,7 +418,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
       const cachedUser = userDetailsMap.get(userId);
 
       // Name & Initials
-      const name = cachedUser?.fullName || m.fullName || [m.firstName, m.lastName].filter(Boolean).join(' ') || m.username || m.name || 'Member';
+      const name = cachedUser?.fullName || m.fullName || [m.firstName, m.lastName].filter(Boolean).join(' ') || m.username || m.name || t`Member`;
       const initials = name
         .split(' ')
         .filter(Boolean)
@@ -545,10 +547,10 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
   };
 
   // ── DataTable Columns ──
-  const columns: Column<Member>[] = [
+  const columns: Column<Member>[] = useMemo(() => [
     {
       key: 'name',
-      label: 'Member',
+      label: t`Member`,
       sortable: true,
       render: (row) => (
         <div className="flex items-center gap-3">
@@ -568,7 +570,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
             <div className="text-sm font-bold text-text-main truncate max-w-[180px] sm:max-w-[240px] flex items-center gap-1.5">
               <span className="truncate">{row.name}</span>
               {row.isOwner && (
-                <span title="Club Owner" className="inline-flex">
+                <span title={t`Club Owner`} className="inline-flex">
                   <Crown size={13} className="text-[#EB712B] shrink-0 fill-[#EB712B]/20" />
                 </span>
               )}
@@ -582,7 +584,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
     },
     {
       key: 'role',
-      label: 'Role',
+      label: t`Role`,
       sortable: true,
       render: (row) => (
         <MemberRoleCell
@@ -595,7 +597,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
     },
     {
       key: 'gender',
-      label: 'Gender',
+      label: t`Gender`,
       sortable: true,
       render: (row) => (
         <MemberGenderCell userId={row.userId} fallbackGender={row.gender} />
@@ -603,7 +605,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
     },
     { 
       key: 'phoneNo', 
-      label: 'Phone no.', 
+      label: t`Phone no.`, 
       sortable: true,
       render: (row) => (
         <MemberPhoneCell userId={row.userId} fallbackPhone={row.phoneNo} />
@@ -611,7 +613,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
     },
     { 
       key: 'joinDate', 
-      label: 'Join Date', 
+      label: t`Join Date`, 
       sortable: true,
       render: (row) => (
         <MemberJoinDateCell userId={row.userId} formattedDate={row.joinDate} clubJoinDate={row.clubJoinDate} />
@@ -619,7 +621,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (row) => (
         <MemberStatusCell status={row.status} />
@@ -634,7 +636,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
           <button 
             onClick={(e) => toggleMenu(row.id, e)}
             className="p-2 rounded-xl hover:bg-hover text-text-muted hover:text-text-main transition-colors cursor-pointer"
-            title="Options"
+            title={t`Options`}
           >
             <MoreVertical size={16} />
           </button>
@@ -649,14 +651,14 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 className="w-full text-left px-3 py-2 text-xs font-semibold text-text-main hover:bg-hover rounded-xl transition-colors flex items-center gap-2.5 cursor-pointer"
               >
                 <Eye size={14} className="text-[#EB712B]" />
-                <span>View Profile</span>
+                <span><Trans>View Profile</Trans></span>
               </button>
               
               <button 
                 onClick={() => {
                   setActiveMenuId(null);
                   navigate('/view/clubside/support', { 
-                    state: { 
+                     state: { 
                       targetUserId: row.userId, 
                       targetUserName: row.name, 
                       targetUserAvatar: row.profilePhoto 
@@ -666,20 +668,20 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 className="w-full text-left px-3 py-2 text-xs font-semibold text-text-main hover:bg-hover rounded-xl transition-colors flex items-center gap-2.5 cursor-pointer"
               >
                 <MessageSquare size={14} className="text-blue-400" />
-                <span>Send Message</span>
+                <span><Trans>Send Message</Trans></span>
               </button>
 
               {row.email && row.email !== '—' && (
                 <button 
                   onClick={() => {
                     navigator.clipboard.writeText(row.email);
-                    toast.success(`Copied ${row.email} to clipboard!`);
+                    toast.success(t`Copied ${row.email} to clipboard!`);
                     setActiveMenuId(null);
                   }}
                   className="w-full text-left px-3 py-2 text-xs font-semibold text-text-main hover:bg-hover rounded-xl transition-colors flex items-center gap-2.5 cursor-pointer"
                 >
                   <Copy size={14} className="text-emerald-400" />
-                  <span>Copy Email</span>
+                  <span><Trans>Copy Email</Trans></span>
                 </button>
               )}
 
@@ -692,7 +694,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                     className="w-full text-left px-3 py-2 text-xs font-semibold text-red-400 hover:bg-red-500/10 rounded-xl transition-colors flex items-center gap-2.5 cursor-pointer disabled:opacity-50"
                   >
                     <Ban size={14} />
-                    <span>Remove Member</span>
+                    <span><Trans>Remove Member</Trans></span>
                   </button>
                 </>
               )}
@@ -701,7 +703,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
         </div>
       ),
     },
-  ];
+  ], [activeMenuId, canManageMembers, isRemoving, navigate]);
 
   const isLoading = isMembersLoading || isClubLoading;
 
@@ -712,9 +714,9 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
       {!isEmbedded && (
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
           <div>
-            <h1 className="text-2xl md:text-3xl font-black text-text-main tracking-tight mb-2">Members Management</h1>
+            <h1 className="text-2xl md:text-3xl font-black text-text-main tracking-tight mb-2"><Trans>Members Management</Trans></h1>
             <p className="text-xs md:text-sm text-text-muted max-w-2xl">
-              Efficiently manage your community members, monitor roles, and view accurate membership details.
+              <Trans>Efficiently manage your community members, monitor roles, and view accurate membership details.</Trans>
             </p>
           </div>
         </div>
@@ -732,7 +734,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 : 'text-text-muted hover:text-text-main hover:bg-hover'
             }`}
           >
-            All <span className="text-[10px] opacity-80 font-normal">({stats.total})</span>
+            <Trans>All</Trans> <span className="text-[10px] opacity-80 font-normal">({stats.total})</span>
           </button>
           <button
             onClick={() => setRoleFilter('admins')}
@@ -742,7 +744,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 : 'text-text-muted hover:text-text-main hover:bg-hover'
             }`}
           >
-            Leaders & Admins <span className="text-[10px] opacity-80 font-normal">({stats.admins})</span>
+            <Trans>Leaders & Admins</Trans> <span className="text-[10px] opacity-80 font-normal">({stats.admins})</span>
           </button>
           {stats.athletes > 0 && (
             <button
@@ -753,7 +755,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                   : 'text-text-muted hover:text-text-main hover:bg-hover'
               }`}
             >
-              Athletes <span className="text-[10px] opacity-80 font-normal">({stats.athletes})</span>
+              <Trans>Athletes</Trans> <span className="text-[10px] opacity-80 font-normal">({stats.athletes})</span>
             </button>
           )}
           <button
@@ -764,7 +766,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 : 'text-text-muted hover:text-text-main hover:bg-hover'
             }`}
           >
-            Members <span className="text-[10px] opacity-80 font-normal">({stats.regular})</span>
+            <Trans>Members</Trans> <span className="text-[10px] opacity-80 font-normal">({stats.regular})</span>
           </button>
         </div>
 
@@ -775,7 +777,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
           </div>
           <input
             type="text"
-            placeholder="Search by name, email, role, or phone..."
+            placeholder={t`Search by name, email, role, or phone...`}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full bg-surface border border-border text-text-main text-xs font-medium rounded-2xl pl-10 pr-9 py-2.5 outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all placeholder:text-text-muted shadow-sm"
@@ -805,13 +807,13 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
             <div className="w-16 h-16 rounded-2xl bg-hover border border-border flex items-center justify-center mb-4 text-text-muted">
               <SearchX size={28} className="opacity-40" />
             </div>
-            <h3 className="text-base font-black text-text-main mb-1 uppercase tracking-tight">No members found</h3>
+            <h3 className="text-base font-black text-text-main mb-1 uppercase tracking-tight"><Trans>No members found</Trans></h3>
             <p className="text-xs text-text-muted max-w-sm mb-4">
               {searchInput 
-                ? `No members matched your search "${searchInput}".`
+                ? t`No members matched your search "${searchInput}".`
                 : roleFilter !== 'all' 
-                ? `No members found in the "${roleFilter}" category.`
-                : "This club currently has no joined members."
+                ? t`No members found in the "${roleFilter}" category.`
+                : t`This club currently has no joined members.`
               }
             </p>
             {(searchInput || roleFilter !== 'all') && (
@@ -819,7 +821,7 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
                 onClick={() => { setSearchInput(''); setRoleFilter('all'); }}
                 className="px-4 py-2 bg-hover hover:bg-border text-text-main text-xs font-bold rounded-xl border border-border transition-colors cursor-pointer"
               >
-                Reset Filters
+                <Trans>Reset Filters</Trans>
               </button>
             )}
           </div>
@@ -840,13 +842,13 @@ const Members: React.FC<MembersProps> = ({ clubId: propClubId }) => {
           imageUrl={avatarPreviewData?.url}
           name={avatarPreviewData?.name}
           subtitle={avatarPreviewData?.subtitle}
-          tag="Member Avatar"
+          tag={t`Member Avatar`}
           fallbackInitials={avatarPreviewData?.initials}
           onAction={() => {
             const m = formattedMembers.find(fm => fm.name === avatarPreviewData?.name);
             if (m) setSelectedUserId(m.userId);
           }}
-          actionLabel="View Profile"
+          actionLabel={t`View Profile`}
         />
       </div>
     </div>

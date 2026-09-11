@@ -22,6 +22,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import {
   useListSubscribedMemberQuery,
   useChangeClubMemberFeeStatusMutation,
@@ -42,21 +44,21 @@ const StatusBadge = ({ status, paymentStatus }: { status: string; paymentStatus:
   if (isActive) {
     return (
       <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <CheckCircle2 size={10} /> Active
+        <CheckCircle2 size={10} /> <Trans>Active</Trans>
       </span>
     );
   }
   if (isPending) {
     return (
       <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-        <Clock size={10} /> Pending
+        <Clock size={10} /> <Trans>Pending</Trans>
       </span>
     );
   }
   if (isCancelled) {
     return (
       <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">
-        <XCircle size={10} /> Cancelled
+        <XCircle size={10} /> <Trans>Cancelled</Trans>
       </span>
     );
   }
@@ -107,20 +109,18 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
   const handleMarkAsPaid = async (row: any) => {
     setMarkingPaidId(row.id);
     try {
-      // POST /user/club/membership/manual-pay requires:
-      // clubId, feeId, userId, amount, paymentDate, paymentMethod
-      // row.planId IS the feeId on the subscription row
       await changeClubMemberFeeStatus({
         clubId,
         userId: row.userId,
-        feeId: row.planId,     // planId on the row references the membership fee plan id
+        feeId: row.planId,
         amount: row.plan?.price ? Number(row.plan.price) : 0,
         paymentDate: new Date().toISOString(),
         paymentMethod: 'cash',
       } as any).unwrap();
-      toast.success(`${row.user?.fullName || 'Member'} marked as paid!`);
+      const memberName = row.user?.fullName || t`Member`;
+      toast.success(t`${memberName} marked as paid!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to mark as paid.');
+      toast.error(err?.data?.message || t`Failed to mark as paid.`);
     } finally {
       setMarkingPaidId(null);
     }
@@ -130,9 +130,10 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
     setSendingReminderId(row.id);
     try {
       await sendReminder({ clubId, targetUserId: row.userId }).unwrap();
-      toast.success(`Reminder sent to ${row.user?.fullName || 'member'}!`);
+      const memberName = row.user?.fullName || t`member`;
+      toast.success(t`Reminder sent to ${memberName}!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send reminder.');
+      toast.error(err?.data?.message || t`Failed to send reminder.`);
     } finally {
       setSendingReminderId(null);
     }
@@ -142,9 +143,9 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
     try {
       const res = await sendReminderToEveryone({ clubId }).unwrap();
       const count = (res as any)?.sentCount ?? 'all';
-      toast.success(`Reminders sent to ${count} unpaid member(s)!`);
+      toast.success(t`Reminders sent to ${count} unpaid member(s)!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send reminders.');
+      toast.error(err?.data?.message || t`Failed to send reminders.`);
     }
   };
 
@@ -173,7 +174,7 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={15} />
           <input
             type="text"
-            placeholder="Search by name, email or plan..."
+            placeholder={t`Search by name, email or plan...`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-surface border border-border pl-11 pr-4 py-2.5 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
@@ -185,33 +186,33 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
           className="px-4 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-[11px] font-bold uppercase tracking-wider rounded-xl flex items-center gap-2 cursor-pointer border-0 transition-all disabled:opacity-50 shrink-0"
         >
           {isSendingAll ? <Loader2 size={13} className="animate-spin" /> : <BellRing size={13} />}
-          {isSendingAll ? 'Sending...' : 'Remind All Unpaid'}
+          {isSendingAll ? <Trans>Sending...</Trans> : <Trans>Remind All Unpaid</Trans>}
         </button>
       </div>
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {[
-          { label: 'Total Subscribers', value: total, icon: <Users size={16} /> },
-          {
-            label: 'Active',
-            value: allRows.filter((r: any) => r.status === 'active').length,
-            icon: <CheckCircle2 size={16} />,
-          },
-          {
-            label: 'Pending Payment',
-            value: allRows.filter((r: any) => r.paymentStatus === 'pending' || r.paymentStatus === 'unpaid').length,
-            icon: <Clock size={16} />,
-          },
-        ].map((s, i) => (
-          <div key={i} className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
-            <div className="text-[#EB712B] shrink-0">{s.icon}</div>
-            <div>
-              <p className="text-xl font-black text-text-main">{s.value}</p>
-              <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">{s.label}</p>
-            </div>
+        <div className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
+          <div className="text-[#EB712B] shrink-0"><Users size={16} /></div>
+          <div>
+            <p className="text-xl font-black text-text-main">{total}</p>
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider"><Trans>Total Subscribers</Trans></p>
           </div>
-        ))}
+        </div>
+        <div className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
+          <div className="text-[#EB712B] shrink-0"><CheckCircle2 size={16} /></div>
+          <div>
+            <p className="text-xl font-black text-text-main">{allRows.filter((r: any) => r.status === 'active').length}</p>
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider"><Trans>Active</Trans></p>
+          </div>
+        </div>
+        <div className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
+          <div className="text-[#EB712B] shrink-0"><Clock size={16} /></div>
+          <div>
+            <p className="text-xl font-black text-text-main">{allRows.filter((r: any) => r.paymentStatus === 'pending' || r.paymentStatus === 'unpaid').length}</p>
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider"><Trans>Pending Payment</Trans></p>
+          </div>
+        </div>
       </div>
 
       {/* Table */}
@@ -219,7 +220,7 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
         <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-3">
           <Users size={36} className="text-text-muted mx-auto opacity-40" />
           <p className="text-sm font-bold text-text-muted">
-            {search ? 'No subscribers match your search.' : 'No subscribers found.'}
+            {search ? <Trans>No subscribers match your search.</Trans> : <Trans>No subscribers found.</Trans>}
           </p>
         </div>
       ) : (
@@ -256,7 +257,7 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
                   )}
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-text-main truncate">
-                      {row.user?.fullName || 'Unknown'}
+                      {row.user?.fullName || <Trans>Unknown</Trans>}
                     </p>
                     <p className="text-[10px] text-text-muted truncate">{row.user?.email}</p>
                   </div>
@@ -264,13 +265,13 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
 
                 {/* Plan */}
                 <div className="hidden sm:block shrink-0">
-                  <p className="text-[9px] text-text-muted uppercase font-bold mb-0.5">Plan</p>
+                  <p className="text-[9px] text-text-muted uppercase font-bold mb-0.5"><Trans>Plan</Trans></p>
                   <p className="text-xs font-bold text-text-main">{row.plan?.name || row.planSnapshot?.name || '—'}</p>
                 </div>
 
                 {/* Period */}
                 <div className="hidden sm:block shrink-0">
-                  <p className="text-[9px] text-text-muted uppercase font-bold mb-0.5">Expires</p>
+                  <p className="text-[9px] text-text-muted uppercase font-bold mb-0.5"><Trans>Expires</Trans></p>
                   <p className="text-xs font-medium text-text-main">
                     {row.currentPeriodEnd
                       ? new Date(row.currentPeriodEnd).toLocaleDateString()
@@ -289,7 +290,7 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
                     <button
                       onClick={() => handleMarkAsPaid(row)}
                       disabled={isMarkingPaid}
-                      title="Mark as manually paid"
+                      title={t`Mark as manually paid`}
                       className="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 transition-colors cursor-pointer disabled:opacity-50"
                     >
                       {isMarkingPaid ? (
@@ -302,7 +303,7 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
                   <button
                     onClick={() => handleSendReminder(row)}
                     disabled={isSending}
-                    title="Send subscription reminder"
+                    title={t`Send subscription reminder`}
                     className="p-2 rounded-xl bg-[#EB712B]/10 hover:bg-[#EB712B]/20 border border-[#EB712B]/20 text-[#EB712B] transition-colors cursor-pointer disabled:opacity-50"
                   >
                     {isSending ? (
@@ -322,7 +323,7 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
       {total > LIMIT && (
         <div className="flex items-center justify-between pt-2">
           <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
-            Page {currentPage} of {totalPages} · {total} total
+            <Trans>Page {currentPage} of {totalPages} · {total} total</Trans>
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -347,3 +348,4 @@ const SubscribersList: React.FC<SubscribersListProps> = ({ clubId }) => {
 };
 
 export default SubscribersList;
+

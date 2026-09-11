@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Check, X } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { ClubService } from '@/api/backendApi';
@@ -68,10 +70,10 @@ export const ClubJoiningReq = () => {
     }
   };
 
-  const columns: Column<any>[] = [
+  const columns: Column<any>[] = useMemo(() => [
     {
       key: 'name',
-      label: 'Athlete',
+      label: t`Athlete`,
       sortable: true,
       render: (req) => (
         <div className="flex items-center gap-4">
@@ -85,18 +87,18 @@ export const ClubJoiningReq = () => {
     },
     {
       key: 'org',
-      label: 'Organization',
+      label: t`Organization`,
       sortable: true,
       render: (req) => <div className="text-sm font-medium text-text-muted">{req.org}</div>
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (req) => (
         <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1 rounded-full border border-border uppercase tracking-wider ${req.status === 'accepted' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-surface text-text-muted'}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${req.status === 'accepted' ? 'bg-green-500' : 'bg-yellow-500'}`} />
-          {req.status}
+          {req.status === 'accepted' ? <Trans>Accepted</Trans> : <Trans>Pending</Trans>}
         </span>
       )
     },
@@ -112,16 +114,16 @@ export const ClubJoiningReq = () => {
                 <X size={16} />
               </button>
               <button onClick={(e) => { e.stopPropagation(); handleAccept(req.id); }} className="flex items-center gap-2 text-xs px-4 py-2 bg-[#EB712B] hover:bg-[#ff7e36] text-white rounded-xl font-bold transition-all shadow-lg shadow-[#EB712B]/20">
-                <Check size={14} /> Accept
+                <Check size={14} /> <Trans>Accept</Trans>
               </button>
             </>
           ) : (
-            <span className="text-xs font-bold text-green-500 px-4 py-2">Accepted</span>
+            <span className="text-xs font-bold text-green-500 px-4 py-2"><Trans>Accepted</Trans></span>
           )}
         </div>
       )
     }
-  ];
+  ], []);
 
   return (
     <div className="w-full text-text-main rounded-3xl border border-border shadow-2xl relative overflow-hidden bg-surface">
@@ -132,10 +134,10 @@ export const ClubJoiningReq = () => {
         <div>
           <div className="flex items-center gap-4">
             <div className="w-1 h-8 bg-[#EB712B] rounded-full" />
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main">Joining Requests</h2>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main"><Trans>Joining Requests</Trans></h2>
           </div>
           <p className="text-text-muted text-xs md:text-sm mt-4 max-w-md font-medium leading-relaxed">
-            Manage pending athlete memberships with <span className="text-[#EB712B]">precision and professional oversight</span>.
+            <Trans>Manage pending athlete memberships with precision and professional oversight.</Trans>
           </p>
         </div>
         
@@ -145,7 +147,7 @@ export const ClubJoiningReq = () => {
             <div className="absolute inset-0 w-2 h-2 rounded-full bg-[#EB712B] animate-ping" />
           </div>
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
-            {requests.filter(r => r.status === 'pending').length} Pending
+            {requests.filter(r => r.status === 'pending').length} <Trans>Pending</Trans>
           </span>
         </div>
       </div>
@@ -158,7 +160,7 @@ export const ClubJoiningReq = () => {
           </div>
         ) : requests.length === 0 ? (
           <div className="p-12 text-center text-text-muted">
-            No joining requests available.
+            <Trans>No joining requests available.</Trans>
           </div>
         ) : (
           <DataTable data={requests} columns={columns} />

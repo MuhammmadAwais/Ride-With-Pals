@@ -3,6 +3,8 @@ import { Plus, Search, Tag, AlertCircle, Sparkles, Trash2, Edit2, Loader2, X, Ch
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import {
   useGetClubDiscountsQuery,
   useUpdateDiscountMutation,
@@ -32,7 +34,7 @@ const EditDiscountModal: React.FC<EditDiscountModalProps> = ({ discount, onClose
 
   const handleSave = async () => {
     if (!form.title.trim() || !form.discountCode.trim()) {
-      toast.error('Title and discount code are required.');
+      toast.error(t`Title and discount code are required.`);
       return;
     }
     try {
@@ -45,12 +47,20 @@ const EditDiscountModal: React.FC<EditDiscountModalProps> = ({ discount, onClose
         validTill: form.validTill,
         isActive: form.isActive,
       }).unwrap();
-      toast.success('Discount updated successfully!');
+      toast.success(t`Discount updated successfully!`);
       onClose();
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update discount.');
+      toast.error(err?.data?.message || t`Failed to update discount.`);
     }
   };
+
+  const fields = useMemo(() => [
+    { label: t`Title`, key: 'title', type: 'text', placeholder: t`e.g. Summer Sale` },
+    { label: t`Discount Code`, key: 'discountCode', type: 'text', placeholder: t`e.g. SUMMER20` },
+    { label: t`Discount %`, key: 'discountPercentage', type: 'number', placeholder: t`e.g. 20` },
+    { label: t`Description`, key: 'description', type: 'text', placeholder: t`Brief description...` },
+    { label: t`Valid Till`, key: 'validTill', type: 'date', placeholder: '' },
+  ], []);
 
   return (
     <div
@@ -59,19 +69,13 @@ const EditDiscountModal: React.FC<EditDiscountModalProps> = ({ discount, onClose
     >
       <div className="w-full max-w-md bg-surface border border-border rounded-3xl shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B]">Edit Discount</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B]"><Trans>Edit Discount</Trans></span>
           <button onClick={onClose} className="p-1.5 rounded-xl text-text-muted hover:text-text-main cursor-pointer">
             <X size={18} />
           </button>
         </div>
         <div className="p-6 space-y-4">
-          {[
-            { label: 'Title', key: 'title', type: 'text', placeholder: 'e.g. Summer Sale' },
-            { label: 'Discount Code', key: 'discountCode', type: 'text', placeholder: 'e.g. SUMMER20' },
-            { label: 'Discount %', key: 'discountPercentage', type: 'number', placeholder: 'e.g. 20' },
-            { label: 'Description', key: 'description', type: 'text', placeholder: 'Brief description...' },
-            { label: 'Valid Till', key: 'validTill', type: 'date', placeholder: '' },
-          ].map(({ label, key, type, placeholder }) => (
+          {fields.map(({ label, key, type, placeholder }) => (
             <div key={key}>
               <label className="text-[9px] text-text-muted font-black uppercase tracking-wider block mb-1.5">{label}</label>
               <input
@@ -91,12 +95,12 @@ const EditDiscountModal: React.FC<EditDiscountModalProps> = ({ discount, onClose
             >
               <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-300 ${form.isActive ? 'left-5' : 'left-0.5'}`} />
             </div>
-            <span className="text-xs font-bold text-text-main">Active</span>
+            <span className="text-xs font-bold text-text-main"><Trans>Active</Trans></span>
           </label>
 
           <div className="flex gap-3 pt-2">
             <button onClick={onClose} className="flex-1 py-3 bg-hover border border-border rounded-xl text-xs font-bold text-text-muted cursor-pointer hover:text-text-main transition-all">
-              Cancel
+              <Trans>Cancel</Trans>
             </button>
             <button
               onClick={handleSave}
@@ -104,7 +108,7 @@ const EditDiscountModal: React.FC<EditDiscountModalProps> = ({ discount, onClose
               className="flex-1 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoading ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? <Trans>Saving...</Trans> : <Trans>Save Changes</Trans>}
             </button>
           </div>
         </div>
@@ -122,7 +126,7 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
     if (!discount.code) return;
     navigator.clipboard.writeText(discount.code);
     setCopied(true);
-    toast.success(`Discount code "${discount.code}" copied to clipboard!`);
+    toast.success(t`Discount code "${discount.code}" copied to clipboard!`);
     setTimeout(() => setCopied(false), 2200);
   };
 
@@ -143,7 +147,7 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
                 {discount.title}
               </h3>
               <p className="text-[10px] text-text-muted uppercase tracking-wider font-bold">
-                Promotion
+                <Trans>Promotion</Trans>
               </p>
             </div>
           </div>
@@ -151,7 +155,7 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
           <div className="flex items-center gap-2 shrink-0">
             <div className="bg-gradient-to-r from-[#EB712B]/20 to-orange-500/10 px-3 py-1 rounded-full border border-[#EB712B]/30 flex items-center shadow-xs">
               <span className="text-[#EB712B] text-[11px] font-black uppercase tracking-wider">
-                {discount.percentage || 0}% OFF
+                {discount.percentage || 0}% <Trans>OFF</Trans>
               </span>
             </div>
 
@@ -161,7 +165,7 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
                   type="button"
                   onClick={() => onEdit(discount)}
                   className="p-1.5 rounded-xl text-text-muted hover:text-[#EB712B] hover:bg-[#EB712B]/10 transition-colors cursor-pointer"
-                  title="Edit discount"
+                  title={t`Edit discount`}
                 >
                   <Edit2 size={13} />
                 </button>
@@ -170,7 +174,7 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
                   onClick={() => onDelete(discount.id)}
                   disabled={isDeleting}
                   className="p-1.5 rounded-xl text-text-muted hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer disabled:opacity-50"
-                  title="Delete discount"
+                  title={t`Delete discount`}
                 >
                   {isDeleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
                 </button>
@@ -183,12 +187,12 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
         <div
           onClick={handleCopy}
           className="relative bg-main-bg/90 hover:bg-main-bg border border-dashed border-[#EB712B]/35 hover:border-[#EB712B] p-4 rounded-2xl transition-all duration-200 cursor-pointer group/code select-none shadow-inner"
-          title="Click to copy promo code"
+          title={t`Click to copy promo code`}
         >
           <div className="flex justify-between items-center gap-4">
             <div className="min-w-0 flex-1">
               <span className="text-[9px] text-text-muted uppercase font-black tracking-widest block mb-1">
-                Promo Code
+                <Trans>Promo Code</Trans>
               </span>
               <span className="font-mono text-base sm:text-lg font-black text-text-main tracking-widest block truncate group-hover/code:text-[#EB712B] transition-colors">
                 {discount.code}
@@ -209,12 +213,12 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
               {copied ? (
                 <>
                   <Check size={13} className="text-emerald-400 animate-in zoom-in-50 duration-200" />
-                  <span className="font-mono text-[10px] tracking-wider uppercase">Copied!</span>
+                  <span className="font-mono text-[10px] tracking-wider uppercase"><Trans>Copied!</Trans></span>
                 </>
               ) : (
                 <>
                   <Copy size={13} />
-                  <span className="text-[10px] tracking-wider uppercase">Copy</span>
+                  <span className="text-[10px] tracking-wider uppercase"><Trans>Copy</Trans></span>
                 </>
               )}
             </button>
@@ -222,10 +226,10 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
 
           {/* Expiry line */}
           <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between text-[11px]">
-            <span className="text-text-muted text-[10px] uppercase tracking-wider font-semibold">Valid Until</span>
+            <span className="text-text-muted text-[10px] uppercase tracking-wider font-semibold"><Trans>Valid Until</Trans></span>
             <div className="flex items-center gap-1 text-text-muted font-medium">
               <Calendar size={12} className="text-[#EB712B]" />
-              <span>{discount.expiry || "No Expiry"}</span>
+              <span>{discount.expiry || t`No Expiry`}</span>
             </div>
           </div>
         </div>
@@ -233,10 +237,10 @@ const CouponCard = ({ discount, canManage, onEdit, onDelete, isDeleting }: any) 
         {/* Description */}
         <div className="pt-1">
           <h4 className="text-[10px] font-black text-text-muted uppercase tracking-wider mb-1">
-            Description
+            <Trans>Description</Trans>
           </h4>
           <p className="text-xs text-text-main/85 leading-relaxed line-clamp-2 md:line-clamp-3">
-            {discount.description || "No description provided."}
+            {discount.description || t`No description provided.`}
           </p>
         </div>
       </div>
@@ -285,9 +289,9 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
     setDeletingId(discountId);
     try {
       await deleteDiscount({ discountId }).unwrap();
-      toast.success('Discount deleted successfully!');
+      toast.success(t`Discount deleted successfully!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to delete discount.');
+      toast.error(err?.data?.message || t`Failed to delete discount.`);
     } finally {
       setDeletingId(null);
     }
@@ -365,7 +369,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
       <div className="px-4 py-8 md:p-8 min-h-screen text-text-main w-full font-sans flex items-center justify-center">
         <div className="text-center space-y-3 py-16 bg-surface border border-border rounded-3xl max-w-lg w-full">
           <AlertCircle size={36} className="text-red-500 mx-auto" />
-          <p className="text-sm font-bold text-red-500 uppercase tracking-wider">Failed to load discounts.</p>
+          <p className="text-sm font-bold text-red-500 uppercase tracking-wider"><Trans>Failed to load discounts.</Trans></p>
         </div>
       </div>
     );
@@ -379,17 +383,17 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-border pb-6">
             <div className="space-y-1.5">
               <h1 className="text-2xl md:text-3xl font-black tracking-tight text-text-main flex items-center gap-3">
-                <Sparkles className="text-[#eb712a]" size={28} /> Discount
+                <Sparkles className="text-[#eb712a]" size={28} /> <Trans>Discount</Trans>
               </h1>
               <p className="text-text-muted text-xs md:text-sm max-w-lg leading-relaxed">
-                Active promotional discounts ready to be applied at your checkout.
+                <Trans>Active promotional discounts ready to be applied at your checkout.</Trans>
               </p>
             </div>
             <div className="relative w-full lg:w-72">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-muted" size={16} />
               <input
                 type="text"
-                placeholder="Search promo codes..."
+                placeholder={t`Search promo codes...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-surface border border-border pl-11 pr-4 py-3 rounded-xl text-xs font-bold text-text-main placeholder-text-muted focus:outline-none focus:border-[#EB712B]/40 transition-colors"
@@ -411,7 +415,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center py-20 text-center space-y-3 border border-dashed border-border rounded-3xl">
                 <AlertCircle size={36} className="text-text-muted" />
-                <p className="text-xs font-bold text-text-muted">No promo codes found matching your criteria.</p>
+                <p className="text-xs font-bold text-text-muted"><Trans>No promo codes found matching your criteria.</Trans></p>
               </div>
             )}
           </div>
@@ -429,10 +433,10 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12 max-w-7xl mx-auto border-b border-border pb-6">
         <div className="w-full lg:w-auto space-y-1.5">
           <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
-            <Tag className="text-[#eb712a]" size={28} /> Discounts & Promotions
+            <Tag className="text-[#eb712a]" size={28} /> <Trans>Discounts & Promotions</Trans>
           </h1>
           <p className="text-text-muted text-xs md:text-sm max-w-lg leading-relaxed">
-            Configure and monitor high-performance campaign protocols.
+            <Trans>Configure and monitor high-performance campaign protocols.</Trans>
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
@@ -446,7 +450,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
                   : 'text-text-muted hover:text-text-main bg-transparent'
               }`}
             >
-              Active
+              <Trans>Active</Trans>
             </button>
             <button
               onClick={() => setActiveTab('expired')}
@@ -456,7 +460,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
                   : 'text-text-muted hover:text-text-main bg-transparent'
               }`}
             >
-              Expired
+              <Trans>Expired</Trans>
             </button>
           </div>
 
@@ -469,7 +473,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
               <div className="bg-black/10 p-0.5 rounded-full">
                 <Plus size={14} strokeWidth={3} />
               </div>
-              Add Discount
+              <Trans>Add Discount</Trans>
             </button>
           )}
         </div>
@@ -491,7 +495,7 @@ const Discount: React.FC<DiscountProps> = ({ role = "organizer", clubId }) => {
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center py-20 text-center space-y-3 border border-dashed border-border rounded-3xl">
             <AlertCircle size={36} className="text-text-muted" />
-            <p className="text-xs font-bold text-text-muted">No discounts configured under "{activeTab}".</p>
+            <p className="text-xs font-bold text-text-muted"><Trans>No discounts configured under "{activeTab}".</Trans></p>
           </div>
         )}
       </div>

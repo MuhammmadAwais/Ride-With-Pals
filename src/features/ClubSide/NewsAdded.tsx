@@ -11,6 +11,8 @@ import {
   FileImage,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useAddNewsMutation, useUpdateNewsMutation, useGetNewsByIdQuery } from "@/features/club/api/newsApiSlice";
 import { useUploadFileMutation } from "@/features/auth/api/authApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
@@ -35,15 +37,15 @@ export const NewsAdded = () => {
   if (!permissions.isLoading && !permissions.canPublishNews) {
     return (
       <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
-        <h1 className="text-2xl font-black mb-4">Access Denied</h1>
+        <h1 className="text-2xl font-black mb-4"><Trans>Access Denied</Trans></h1>
         <p className="text-text-muted max-w-md mb-6">
-          You do not have the required permissions to publish or manage news for this club.
+          <Trans>You do not have the required permissions to publish or manage news for this club.</Trans>
         </p>
         <button 
           onClick={() => navigate('/view/clubside/news')} 
           className="px-6 py-3 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl font-bold transition-all cursor-pointer border-0"
         >
-          Go Back
+          <Trans>Go Back</Trans>
         </button>
       </div>
     );
@@ -89,13 +91,13 @@ export const NewsAdded = () => {
 
   const handleSave = async () => {
     if (!title.trim() || !description.trim()) {
-      toast.error("Title and description are required.");
+      toast.error(t`Title and description are required.`);
       return;
     }
     
     try {
       if (!clubId) {
-        toast.error("No club selected.");
+        toast.error(t`No club selected.`);
         return;
       }
       
@@ -115,7 +117,7 @@ export const NewsAdded = () => {
           clubId: Number(clubId),
           image: imageUrl,
         }).unwrap();
-        toast.success("News updated successfully!");
+        toast.success(t`News updated successfully!`);
       } else {
         await addNews({
           title,
@@ -123,13 +125,13 @@ export const NewsAdded = () => {
           clubId: Number(clubId),
           image: imageUrl
         }).unwrap();
-        toast.success("News published successfully!");
+        toast.success(t`News published successfully!`);
       }
 
       navigate("/view/clubside/news");
     } catch (error: any) {
       console.error("Failed to save news:", error);
-      toast.error(error?.data?.message || "Failed to save news.");
+      toast.error(error?.data?.message || t`Failed to save news.`);
     }
   };
 
@@ -139,10 +141,10 @@ export const NewsAdded = () => {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 p-6 border border-border rounded-3xl backdrop-blur-sm bg-surface shadow-lg">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tight text-text-main">
-            {isEditMode ? 'Edit Article' : 'Add News'}
+            {isEditMode ? <Trans>Edit Article</Trans> : <Trans>Add News</Trans>}
           </h1>
           <p className="text-text-muted text-sm font-medium">
-            {isEditMode ? 'Update the news article content and media' : 'Configure new system bulletin or market update'}
+            {isEditMode ? <Trans>Update the news article content and media</Trans> : <Trans>Configure new system bulletin or market update</Trans>}
           </p>
         </div>
 
@@ -150,7 +152,7 @@ export const NewsAdded = () => {
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
             <p className="text-[10px] font-bold tracking-widest text-emerald-500 uppercase">
-              System Ready
+              <Trans>System Ready</Trans>
             </p>
           </div>
           <div className="h-4 w-[1px] bg-border" />
@@ -165,11 +167,11 @@ export const NewsAdded = () => {
           {/* Title Input */}
           <div className="group bg-surface border border-border hover:border-[#EB712B]/30 rounded-3xl p-6 transition-all duration-300 shadow-lg">
             <label className="block text-[12px] font-bold uppercase tracking-[0.15em] mb-4 text-text-muted group-hover:text-text-main transition-colors duration-300">
-              News Title
+              <Trans>News Title</Trans>
             </label>
             <input
               type="text"
-              placeholder="Enter headline..."
+              placeholder={t`Enter headline...`}
               maxLength={120}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -177,7 +179,7 @@ export const NewsAdded = () => {
             />
             <div className="flex justify-between items-center mt-6 pt-4 border-t border-border">
               <span className="text-[10px] text-text-muted font-bold tracking-[0.1em]">
-                Mandatory institutional field
+                <Trans>Mandatory institutional field</Trans>
               </span>
               <span className="text-[9px] text-text-muted font-mono font-bold">
                 {title.length} / 120
@@ -189,7 +191,7 @@ export const NewsAdded = () => {
           <div className="group bg-surface border border-border hover:border-border rounded-3xl p-6 transition-all duration-300 shadow-lg">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
               <label className="text-[11px] font-bold uppercase tracking-[0.15em] text-text-main">
-                Description
+                <Trans>Description</Trans>
               </label>
               <div className="flex items-center justify-between sm:justify-end gap-6">
                 <div className="flex gap-4 text-text-muted">
@@ -203,7 +205,7 @@ export const NewsAdded = () => {
                   ))}
                 </div>
                 <span className="hidden sm:block text-[9px] text-[#EB712B] font-bold uppercase tracking-[0.1em]">
-                  Auto-save active
+                  <Trans>Auto-save active</Trans>
                 </span>
               </div>
             </div>
@@ -211,14 +213,14 @@ export const NewsAdded = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full h-48 md:h-64 bg-transparent outline-none text-sm md:text-base text-text-main placeholder:text-text-muted resize-none transition-all duration-300"
-              placeholder="Compose detailed content..."
+              placeholder={t`Compose detailed content...`}
             ></textarea>
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-border">
               <span className="text-[9px] uppercase font-bold text-text-muted">
-                Rich formatting enabled
+                <Trans>Rich formatting enabled</Trans>
               </span>
               <span className="text-[9px] text-text-muted font-bold uppercase">
-                Word count: {description.trim().split(/\s+/).filter(w => w.length > 0).length}
+                <Trans>Word count:</Trans> {description.trim().split(/\s+/).filter(w => w.length > 0).length}
               </span>
             </div>
           </div>
@@ -229,7 +231,7 @@ export const NewsAdded = () => {
           {/* Upload Box */}
           <div className="bg-surface border border-border rounded-3xl p-6 transition-all duration-300 shadow-lg">
             <label className="block text-[11px] font-bold uppercase tracking-[0.15em] text-text-muted mb-6">
-              Upload Picture
+              <Trans>Upload Picture</Trans>
             </label>
             <input
               type="file"
@@ -253,7 +255,7 @@ export const NewsAdded = () => {
                 <div className="flex flex-col items-center justify-center gap-3">
                   <UploadCloud className="text-[#EB712B]" size={32} />
                   <p className="text-sm font-bold text-text-main">
-                    Drop media here
+                    <Trans>Drop media here</Trans>
                   </p>
                 </div>
               )}
@@ -288,7 +290,7 @@ export const NewsAdded = () => {
           {/* Action Box */}
           <div className="bg-surface border border-border rounded-3xl p-6 shadow-lg">
             <label className="block text-[11px] font-bold uppercase tracking-[0.15em] text-text-main mb-6">
-              Publication Action
+              <Trans>Publication Action</Trans>
             </label>
 
             <button
@@ -298,7 +300,7 @@ export const NewsAdded = () => {
                 loading ? "bg-gray-500 cursor-not-allowed" : "bg-[#EB712B] hover:shadow-[0_0_30px_rgba(235,113,43,0.5)] active:scale-[0.98] cursor-pointer"
               }`}
             >
-            {loading ? (isEditMode ? "Updating..." : "Publishing...") : (isEditMode ? "Update Article" : "Save")}
+            {loading ? (isEditMode ? <Trans>Updating...</Trans> : <Trans>Publishing...</Trans>) : (isEditMode ? <Trans>Update Article</Trans> : <Trans>Save</Trans>)}
             </button>
           </div>
         </div>

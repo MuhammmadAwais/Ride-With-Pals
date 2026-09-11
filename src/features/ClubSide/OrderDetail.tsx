@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, Package, MapPin, Calendar, Clock, CheckCircle2, Loader2, ShieldAlert } from 'lucide-react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useForClubOwnerUpdateOrderStatusMutation, useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
@@ -98,9 +100,9 @@ const OrderDetail = () => {
       }).unwrap();
       console.log("📦 [Order Detail] Status update response:", response);
       setDeliveredOverride(true);
-      toast.success('Order marked as delivered successfully!');
+      toast.success(t`Order marked as delivered successfully!`);
     } catch (err: unknown) {
-      toast.error((err as { data?: { message?: string } })?.data?.message || 'Failed to update order status.');
+      toast.error((err as { data?: { message?: string } })?.data?.message || t`Failed to update order status.`);
       console.error(err);
     }
   };
@@ -113,15 +115,15 @@ const OrderDetail = () => {
           <div className="w-16 h-16 mx-auto bg-red-500/10 rounded-2xl border border-red-500/20 flex items-center justify-center">
             <ShieldAlert size={32} className="text-red-500" />
           </div>
-          <h2 className="text-xl font-bold text-text-main">Access Denied</h2>
+          <h2 className="text-xl font-bold text-text-main"><Trans>Access Denied</Trans></h2>
           <p className="text-sm text-text-muted">
-            Only club owners can view order details.
+            <Trans>Only club owners can view order details.</Trans>
           </p>
           <button
             onClick={() => navigate('/view/clubside/order')}
             className="px-6 py-3 bg-surface border border-border rounded-xl text-xs font-bold uppercase tracking-wider text-text-main hover:bg-hover transition-colors cursor-pointer"
           >
-            Back to Orders
+            <Trans>Back to Orders</Trans>
           </button>
         </div>
       </div>
@@ -129,7 +131,6 @@ const OrderDetail = () => {
   }
 
   return (
-
     <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10">
       {/* Navigation Header - fixed route to point to plain /order */}
       <div className="flex items-center gap-4 mb-8">
@@ -140,14 +141,14 @@ const OrderDetail = () => {
           <div className="p-2 rounded-full bg-surface group-hover:bg-hover border border-border">
             <ChevronLeft size={18} />
           </div>
-          <span className="text-xs font-medium uppercase tracking-widest bg-transparent">Back to Orders</span>
+          <span className="text-xs font-medium uppercase tracking-widest bg-transparent"><Trans>Back to Orders</Trans></span>
         </button>
       </div>
 
       {/* Main Title Section */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-10 gap-4">
         <div>
-          <div className="text-[10px] text-[#EB712B] font-bold uppercase tracking-[0.2em] mb-2">Order Reference</div>
+          <div className="text-[10px] text-[#EB712B] font-bold uppercase tracking-[0.2em] mb-2"><Trans>Order Reference</Trans></div>
           {/* Dynamically displaying the correct ID */}
           <h1 className="text-4xl font-extrabold text-text-main">#{id}</h1>
         </div>
@@ -159,7 +160,7 @@ const OrderDetail = () => {
               : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
           }`}>
             <CheckCircle2 size={12} /> 
-            {isDelivered ? 'Delivered' : (order?.status || 'In Progress')}
+            {isDelivered ? <Trans>Delivered</Trans> : (order?.status || <Trans>In Progress</Trans>)}
           </span>
         </div>
       </div>
@@ -168,23 +169,23 @@ const OrderDetail = () => {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-8">
           <div className="relative h-96 rounded-3xl overflow-hidden bg-surface border border-border group shadow-xl">
-            <img src={order?.image || "/Images/BottleImage4.png"} alt="Product" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+            <img src={order?.image || "/Images/BottleImage4.png"} alt={order?.productName || t`Product`} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-transparent to-transparent" />
             <div className="absolute bottom-0 p-10">
-              <h2 className="text-3xl font-bold mb-2 text-text-main">{order?.productName || "Product Name"}</h2>
-              <p className="text-text-muted">{order?.category || "Category"}</p>
+              <h2 className="text-3xl font-bold mb-2 text-text-main">{order?.productName || t`Product Name`}</h2>
+              <p className="text-text-muted">{order?.category || t`Category`}</p>
             </div>
           </div>
 
           <div className="bg-surface p-10 rounded-3xl border border-border shadow-xl">
-            <h3 className="text-lg font-semibold mb-8 flex items-center gap-2 text-text-main">Technical Specifications</h3>
+            <h3 className="text-lg font-semibold mb-8 flex items-center gap-2 text-text-main"><Trans>Technical Specifications</Trans></h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4">
               {[
-                { l: 'Material', v: 'BPA-Free Polymer' }, { l: 'Capacity', v: '750ml' }, 
-                { l: 'Insulation', v: 'Vacuum Seal' }, { l: 'Weight', v: '340g' }, 
-                { l: 'SKU', v: id }, { l: 'Status', v: 'Pristine' }
-              ].map((s) => (
-                <div key={s.l}>
+                { l: t`Material`, v: 'BPA-Free Polymer' }, { l: t`Capacity`, v: '750ml' }, 
+                { l: t`Insulation`, v: 'Vacuum Seal' }, { l: t`Weight`, v: '340g' }, 
+                { l: t`SKU`, v: id }, { l: t`Status`, v: t`Pristine` }
+              ].map((s, idx) => (
+                <div key={idx}>
                   <p className="text-[10px] text-text-muted uppercase tracking-widest mb-2">{s.l}</p>
                   <p className="text-sm font-medium text-text-main">{s.v}</p>
                 </div>
@@ -196,14 +197,14 @@ const OrderDetail = () => {
         {/* Right Column */}
         <div className="space-y-8">
           <div className="bg-surface p-5 rounded-3xl border border-border shadow-xl">
-            <h3 className="text-lg font-semibold mb-6 text-text-main">Order Summary</h3>
+            <h3 className="text-lg font-semibold mb-6 text-text-main"><Trans>Order Summary</Trans></h3>
             <div className="space-y-6 mb-8">
               {[
-                { icon: <Package size={16}/>, l: 'Customer', v: order?.recipient || 'N/A' },
-                { icon: <MapPin size={16}/>, l: 'Location', v: order?.originalOrder?.shop?.gender || 'Club Store' },
-                { icon: <Calendar size={16}/>, l: 'Date', v: order?.date || 'N/A' }
-              ].map((i) => (
-                <div key={i.l} className="flex items-center gap-4">
+                { icon: <Package size={16}/>, l: t`Customer`, v: order?.recipient || 'N/A' },
+                { icon: <MapPin size={16}/>, l: t`Location`, v: order?.originalOrder?.shop?.gender || t`Club Store` },
+                { icon: <Calendar size={16}/>, l: t`Date`, v: order?.date || 'N/A' }
+              ].map((i, idx) => (
+                <div key={idx} className="flex items-center gap-4">
                   <div className="text-text-muted">{i.icon}</div>
                   <div className="flex-1 flex justify-between">
                     <span className="text-sm text-text-muted">{i.l}</span>
@@ -214,13 +215,13 @@ const OrderDetail = () => {
             </div>
             
             <div className="p-6 rounded-2xl bg-main-bg border border-border mb-6 flex justify-between items-center">
-              <span className="text-text-muted font-medium">Total Amount</span>
+              <span className="text-text-muted font-medium"><Trans>Total Amount</Trans></span>
               <span className="text-2xl font-bold text-[#EB712B]">{order?.price || "$0.00"}</span>
             </div>
 
             {isDelivered ? (
               <div className="w-full py-4 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-center font-bold text-sm uppercase tracking-widest">
-                Delivered
+                <Trans>Delivered</Trans>
               </div>
             ) : (
               <button 
@@ -233,20 +234,24 @@ const OrderDetail = () => {
                 }`}
               >
                 {isUpdating && <Loader2 size={16} className="animate-spin" />}
-                {isUpdating ? 'Updating...' : 'Mark as Delivered'}
+                {isUpdating ? <Trans>Updating...</Trans> : <Trans>Mark as Delivered</Trans>}
               </button>
             )}
           </div>
 
           <div className="bg-surface p-8 rounded-3xl border border-border shadow-xl">
             <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 text-text-main">
-              <Clock size={18} /> Timeline
+              <Clock size={18} /> <Trans>Timeline</Trans>
             </h3>
             <div className="relative border-l border-border ml-2 space-y-8">
-              {['Order Placed', 'Processing', 'In Transit'].map((step, i) => (
-                <div key={step} className="relative pl-6">
-                  <div className={`absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full ${i < 2 ? 'bg-emerald-500' : 'bg-border'}`} />
-                  <p className={`text-sm font-semibold ${i < 2 ? 'text-text-main' : 'text-text-muted'}`}>{step}</p>
+              {[
+                { name: t`Order Placed`, done: true },
+                { name: t`Processing`, done: true },
+                { name: t`In Transit`, done: false }
+              ].map((step, i) => (
+                <div key={i} className="relative pl-6">
+                  <div className={`absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full ${step.done ? 'bg-emerald-500' : 'bg-border'}`} />
+                  <p className={`text-sm font-semibold ${step.done ? 'text-text-main' : 'text-text-muted'}`}>{step.name}</p>
                   <p className="text-[10px] text-text-muted mt-1 uppercase tracking-wider">{order?.date || "N/A"}</p>
                 </div>
               ))}

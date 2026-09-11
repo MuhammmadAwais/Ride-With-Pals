@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Phone, Video, MoreVertical, Send, Paperclip, Mic, MessageSquare } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 const initialChats: any[] = [];
 
@@ -35,10 +37,10 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
     <div className="h-full w-full flex text-text-main overflow-hidden rounded-2xl border border-border bg-main-bg">
       {/* Sidebar / Inbox - Expanded width */}
       <div className="w-[380px] min-w-[380px] border-r border-border flex flex-col p-6 bg-surface">
-        <h2 className="font-bold text-base mb-4 px-2">Messages</h2>
+        <h2 className="font-bold text-base mb-4 px-2"><Trans>Messages</Trans></h2>
         <div className="relative mb-4 px-2 group">
           <Search className="absolute left-6 top-3.5 text-text-muted group-hover:text-[#EB712B] transition-colors" size={18} />
-          <input className="w-full bg-main-bg rounded-xl py-4 pl-12 pr-4 border border-border outline-none text-xs focus:border-[#EB712B]/50 transition-all text-text-main placeholder-text-muted" placeholder="Search messages..." />
+          <input className="w-full bg-main-bg rounded-xl py-4 pl-12 pr-4 border border-border outline-none text-xs focus:border-[#EB712B]/50 transition-all text-text-main placeholder-text-muted" placeholder={t`Search messages...`} />
         </div>
         <div className="flex-1 overflow-y-auto space-y-2 px-2 custom-scrollbar">
           {chats.map(c => (
@@ -48,7 +50,6 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
                 <div className="flex justify-between items-center mb-1.5">
                   <p className="font-bold text-xs">{c.name}</p>
                   
-                  {/* Athlete unread badge style (Changed from green to #EB712B orange circle with counter) */}
                   {role === 'athlete' ? (
                     c.unreadCount > 0 ? (
                       <div className="bg-[#EB712B] text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold text-white">
@@ -56,7 +57,6 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
                       </div>
                     ) : null
                   ) : (
-                    /* Owner/Organizer status toggle badge */
                     <button 
                       onClick={(e) => toggleStatus(e, c.id)} 
                       className={`text-[9px] px-2.5 py-0.5 rounded-full font-bold ${c.ticketStatus === 'Pending' ? 'bg-orange-500/20 text-orange-500' : 'bg-green-500/20 text-green-500'}`}
@@ -65,7 +65,7 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
                     </button>
                   )}
                 </div>
-                <p className="text-[11px] text-text-muted truncate">View chat...</p>
+                <p className="text-[11px] text-text-muted truncate"><Trans>View chat...</Trans></p>
               </div>
             </div>
           ))}
@@ -80,8 +80,8 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
               <div className="flex items-center gap-4">
                 <img src={selectedChat.avatar} className="w-12 h-12 rounded-full object-cover" alt="avatar" />
                 <div>
-                  <p className="font-bold text-sm text-text-main">{role === 'athlete' ? 'Customer Support Team' : selectedChat.name}</p>
-                  <p className="text-[11px] text-[#EB712B] tracking-wide font-medium mt-0.5">{role === 'athlete' ? 'Always here to help' : selectedChat.status}</p>
+                  <p className="font-bold text-sm text-text-main">{role === 'athlete' ? <Trans>Customer Support Team</Trans> : selectedChat.name}</p>
+                  <p className="text-[11px] text-[#EB712B] tracking-wide font-medium mt-0.5">{role === 'athlete' ? <Trans>Always here to help</Trans> : selectedChat.status}</p>
                 </div>
               </div>
               <div className="flex gap-6 text-text-muted">
@@ -104,9 +104,9 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
             <div className="px-8 py-6 border-t border-border bg-surface">
               <div className="flex items-center gap-4 bg-main-bg px-6 py-4 rounded-2xl border border-border focus-within:border-[#EB712B]/50 transition-all">
                 <Paperclip className="text-text-muted cursor-pointer hover:text-text-main transition-colors" size={20} />
-                <input className="flex-1 bg-transparent outline-none text-sm text-text-main placeholder-text-muted" placeholder={role === 'athlete' ? "Ask support a question..." : "Type a message..."} value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()} />
+                <input className="flex-1 bg-transparent outline-none text-sm text-text-main placeholder-text-muted" placeholder={role === 'athlete' ? t`Ask support a question...` : t`Type a message...`} value={newMessage} onChange={(e) => setNewMessage(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()} />
                 <Mic className="text-text-muted cursor-pointer hover:text-text-main transition-colors" size={20} />
-                <button onClick={handleSendMessage} className="bg-[#EB712B] p-3.5 rounded-xl hover:bg-[#d66525] transition-all text-white"><Send size={18} /></button>
+                <button onClick={handleSendMessage} className="bg-[#EB712B] p-3.5 rounded-xl hover:bg-[#d66525] transition-all text-white cursor-pointer"><Send size={18} /></button>
               </div>
             </div>
           </>
@@ -115,9 +115,9 @@ const SupportHelp: React.FC<SupportHelpProps> = ({ role = 'organizer' }) => {
             <div className="w-28 h-28 bg-surface rounded-full flex items-center justify-center mb-8 border border-border">
               <MessageSquare size={50} className="text-[#EB712B]" />
             </div>
-            <h2 className="text-2xl font-bold mb-2 text-text-main">Customer Support</h2>
-            <p className="text-text-muted text-sm mb-8 text-center max-w-xs">Select a conversation from the sidebar to start messaging or helping out.</p>
-            <button className="border border-[#EB712B] text-[#EB712B] px-8 py-3 rounded-xl font-bold hover:bg-[#EB712B] hover:text-white transition-all cursor-pointer">Open Session</button>
+            <h2 className="text-2xl font-bold mb-2 text-text-main"><Trans>Customer Support</Trans></h2>
+            <p className="text-text-muted text-sm mb-8 text-center max-w-xs"><Trans>Select a conversation from the sidebar to start messaging or helping out.</Trans></p>
+            <button className="border border-[#EB712B] text-[#EB712B] px-8 py-3 rounded-xl font-bold hover:bg-[#EB712B] hover:text-white transition-all cursor-pointer"><Trans>Open Session</Trans></button>
           </div>
         )}
       </div>

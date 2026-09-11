@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Upload, ArrowLeft, LayoutDashboard, FileText, X, Loader2, Package, Sparkles, CreditCard } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useAddItemToShopMutation, useUpdateItemToShopMutation } from '@/features/club/api/shopApiSlice';
 import { useUploadFileMutation } from '@/features/auth/api/authApiSlice';
 import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiSlice';
@@ -72,15 +74,15 @@ const AddProduct = () => {
 
   const handleSubmit = async () => {
     if (!clubIdStr) {
-      toast.error('No club selected. Please select an active club first.');
+      toast.error(t`No club selected. Please select an active club first.`);
       return;
     }
     if (!name.trim()) {
-      toast.error('Please provide a product name.');
+      toast.error(t`Please provide a product name.`);
       return;
     }
     if (!price || Number(price) <= 0) {
-      toast.error('Please provide a valid unit price.');
+      toast.error(t`Please provide a valid unit price.`);
       return;
     }
 
@@ -105,7 +107,7 @@ const AddProduct = () => {
           gender: gender === 'None' ? undefined : gender,
           image: finalImageUrl,
         }).unwrap();
-        toast.success('Product updated successfully!');
+        toast.success(t`Product updated successfully!`);
       } else {
         await addItem({
           clubId: Number(clubIdStr),
@@ -116,7 +118,7 @@ const AddProduct = () => {
           gender: gender === 'None' ? undefined : gender,
           image: finalImageUrl,
         }).unwrap();
-        toast.success('Product added to club shop!');
+        toast.success(t`Product added to club shop!`);
       }
 
       navigate(ROUTES.PRODUCT);
@@ -125,7 +127,7 @@ const AddProduct = () => {
       if (msg.toLowerCase().includes('stripe') || msg.toLowerCase().includes('payment')) {
         setShowStripeModal(true);
       } else {
-        toast.error(msg || 'Failed to save product. Please check your inputs.');
+        toast.error(msg || t`Failed to save product. Please check your inputs.`);
       }
     }
   };
@@ -133,15 +135,15 @@ const AddProduct = () => {
   if (!permissions.isLoading && !permissions.isAdmin) {
     return (
       <div className="p-10 min-h-screen text-text-main bg-main-bg flex flex-col items-center justify-center text-center">
-        <h1 className="text-2xl font-black mb-4">Access Denied</h1>
+        <h1 className="text-2xl font-black mb-4"><Trans>Access Denied</Trans></h1>
         <p className="text-text-muted max-w-md mb-6">
-          Only club administrators and organizers can manage merchandise products for this club.
+          <Trans>Only club administrators and organizers can manage merchandise products for this club.</Trans>
         </p>
         <button 
           onClick={() => navigate(ROUTES.PRODUCT)} 
           className="px-6 py-3 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl font-bold transition-all cursor-pointer border-0"
         >
-          Go Back
+          <Trans>Go Back</Trans>
         </button>
       </div>
     );
@@ -157,13 +159,13 @@ const AddProduct = () => {
               onClick={() => navigate(ROUTES.PRODUCT)} 
               className="flex items-center gap-2 text-[#EB712B] text-xs font-bold uppercase mb-2 hover:opacity-80 tracking-widest cursor-pointer bg-transparent border-0 outline-none"
             >
-              <ArrowLeft size={16} /> Back to Shop Inventory
+              <ArrowLeft size={16} /> <Trans>Back to Shop Inventory</Trans>
             </button>
             <h1 className="text-2xl md:text-3xl font-black text-white">
-              {incomingProduct ? 'Edit Shop Item' : 'Add Shop Item'}
+              {incomingProduct ? <Trans>Edit Shop Item</Trans> : <Trans>Add Shop Item</Trans>}
             </h1>
             <p className="text-text-muted text-xs md:text-sm mt-1">
-              List and manage official merchandise for your club members.
+              <Trans>List and manage official merchandise for your club members.</Trans>
             </p>
           </div>
 
@@ -173,7 +175,7 @@ const AddProduct = () => {
               disabled={isLoading}
               className="bg-transparent border border-border text-text-main px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-hover transition-all cursor-pointer disabled:opacity-50"
             >
-              Cancel
+              <Trans>Cancel</Trans>
             </button>
             <button
               onClick={handleSubmit}
@@ -181,7 +183,7 @@ const AddProduct = () => {
               className="bg-[#EB712B] hover:bg-[#ff8243] text-white px-6 py-2.5 rounded-xl font-bold text-xs transition-all cursor-pointer disabled:opacity-70 flex items-center gap-2 border-0 shadow-lg shadow-[#EB712B]/20"
             >
               {isLoading && <Loader2 size={16} className="animate-spin" />}
-              {isLoading ? 'Saving...' : incomingProduct ? 'Update Product' : 'Publish to Shop'}
+              {isLoading ? <Trans>Saving...</Trans> : incomingProduct ? <Trans>Update Product</Trans> : <Trans>Publish to Shop</Trans>}
             </button>
           </div>
         </div>
@@ -194,9 +196,9 @@ const AddProduct = () => {
                 <CreditCard size={18} />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-white">Stripe Gateway Not Connected</h4>
+                <h4 className="text-xs font-bold text-white"><Trans>Stripe Gateway Not Connected</Trans></h4>
                 <p className="text-[11px] text-text-muted">
-                  Connect Stripe to enable automatic card checkout and direct bank payouts for merchandise sales.
+                  <Trans>Connect Stripe to enable automatic card checkout and direct bank payouts for merchandise sales.</Trans>
                 </p>
               </div>
             </div>
@@ -204,7 +206,7 @@ const AddProduct = () => {
               onClick={() => navigate(ROUTES.STRIPE_CONNECT)}
               className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0"
             >
-              Configure Stripe
+              <Trans>Configure Stripe</Trans>
             </button>
           </div>
         )}
@@ -215,13 +217,13 @@ const AddProduct = () => {
             {/* Product Media Dropzone */}
             <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-4">
               <h2 className="text-sm font-bold flex items-center gap-2 text-white">
-                <LayoutDashboard size={18} className="text-[#EB712B]" /> Product Media
+                <LayoutDashboard size={18} className="text-[#EB712B]" /> <Trans>Product Media</Trans>
               </h2>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {previewImages.map((img, index) => (
                   <div key={index} className="relative aspect-square border border-border rounded-2xl overflow-hidden bg-main-bg flex items-center justify-center group">
-                    <img src={img} alt="Product" className="w-full h-full object-cover" />
+                    <img src={img} alt={t`Product`} className="w-full h-full object-cover" />
                     <button 
                       onClick={() => removeImage(index)} 
                       className="absolute top-2 right-2 bg-black/70 hover:bg-red-500 p-1.5 rounded-xl cursor-pointer text-white transition-colors border-0"
@@ -252,9 +254,9 @@ const AddProduct = () => {
                       </div>
                     )}
                     <span className="text-xs font-bold text-white">
-                      {isUploading ? 'Uploading...' : 'Upload Image'}
+                      {isUploading ? <Trans>Uploading...</Trans> : <Trans>Upload Image</Trans>}
                     </span>
-                    <span className="text-[10px] text-text-muted mt-1">PNG, JPG up to 10MB</span>
+                    <span className="text-[10px] text-text-muted mt-1"><Trans>PNG, JPG up to 10MB</Trans></span>
                   </div>
                 )}
               </div>
@@ -263,26 +265,26 @@ const AddProduct = () => {
             {/* Product Details */}
             <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-6">
               <h2 className="text-sm font-bold flex items-center gap-2 text-white">
-                <FileText size={18} className="text-[#EB712B]" /> Item Specifications
+                <FileText size={18} className="text-[#EB712B]" /> <Trans>Item Specifications</Trans>
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
-                    Product Name *
+                    <Trans>Product Name *</Trans>
                   </label>
                   <input 
                     type="text"
                     value={name} 
                     onChange={(e) => setName(e.target.value)} 
-                    placeholder="e.g. Official Team Jersey 2026"
+                    placeholder={t`e.g. Official Team Jersey 2026`}
                     className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors" 
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
-                    Price ($) *
+                    <Trans>Price ($) *</Trans>
                   </label>
                   <input 
                     type="number"
@@ -290,7 +292,7 @@ const AddProduct = () => {
                     step="0.01"
                     value={price} 
                     onChange={(e) => setPrice(e.target.value)} 
-                    placeholder="e.g. 45.00"
+                    placeholder={t`e.g. 45.00`}
                     className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors" 
                   />
                 </div>
@@ -299,49 +301,49 @@ const AddProduct = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
-                    Size / Dimension
+                    <Trans>Size / Dimension</Trans>
                   </label>
                   <select 
                     value={size} 
                     onChange={(e) => setSize(e.target.value)} 
                     className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
                   >
-                    <option value="XS">XS - Extra Small</option>
-                    <option value="S">S - Small</option>
-                    <option value="M">M - Medium</option>
-                    <option value="L">L - Large</option>
-                    <option value="XL">XL - Extra Large</option>
-                    <option value="XXL">XXL - Double Extra Large</option>
-                    <option value="One Size">One Size Fits All</option>
+                    <option value="XS">{t`XS - Extra Small`}</option>
+                    <option value="S">{t`S - Small`}</option>
+                    <option value="M">{t`M - Medium`}</option>
+                    <option value="L">{t`L - Large`}</option>
+                    <option value="XL">{t`XL - Extra Large`}</option>
+                    <option value="XXL">{t`XXL - Double Extra Large`}</option>
+                    <option value="One Size">{t`One Size Fits All`}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
-                    Target Gender
+                    <Trans>Target Gender</Trans>
                   </label>
                   <select 
                     value={gender} 
                     onChange={(e) => setGender(e.target.value)} 
                     className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
                   >
-                    <option value="Unisex">Unisex / Universal</option>
-                    <option value="Male">Men's Apparel</option>
-                    <option value="Female">Women's Apparel</option>
-                    <option value="None">Not Applicable</option>
+                    <option value="Unisex">{t`Unisex / Universal`}</option>
+                    <option value="Male">{t`Men's Apparel`}</option>
+                    <option value="Female">{t`Women's Apparel`}</option>
+                    <option value="None">{t`Not Applicable`}</option>
                   </select>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
-                  Description
+                  <Trans>Description</Trans>
                 </label>
                 <textarea 
                   value={description} 
                   onChange={(e) => setDescription(e.target.value)} 
                   rows={4} 
-                  placeholder="Provide fabric composition, sizing fit guidelines, care instructions, or delivery details..."
+                  placeholder={t`Provide fabric composition, sizing fit guidelines, care instructions, or delivery details...`}
                   className="w-full bg-main-bg border border-border rounded-xl p-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors resize-none" 
                 />
               </div>
@@ -353,10 +355,10 @@ const AddProduct = () => {
             <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-4 sticky top-6">
               <div className="flex items-center justify-between border-b border-border pb-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                  <Sparkles size={14} className="text-[#EB712B]" /> Member View Preview
+                  <Sparkles size={14} className="text-[#EB712B]" /> <Trans>Member View Preview</Trans>
                 </h3>
                 <span className="text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-0.5 rounded-full">
-                  Official Merch
+                  <Trans>Official Merch</Trans>
                 </span>
               </div>
 
@@ -364,11 +366,11 @@ const AddProduct = () => {
               <div className="bg-main-bg border border-border rounded-2xl overflow-hidden p-4 space-y-4">
                 <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-surface border border-border flex items-center justify-center">
                   {previewImages[0] ? (
-                    <img src={previewImages[0]} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={previewImages[0]} alt={t`Preview`} className="w-full h-full object-cover" />
                   ) : (
                     <div className="flex flex-col items-center justify-center text-text-muted gap-2">
                       <Package size={32} className="text-[#EB712B]/40" />
-                      <span className="text-[10px] uppercase font-bold tracking-wider">Item Image</span>
+                      <span className="text-[10px] uppercase font-bold tracking-wider"><Trans>Item Image</Trans></span>
                     </div>
                   )}
                   <div className="absolute top-2.5 left-2.5 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-black text-white uppercase border border-white/10">
@@ -379,27 +381,27 @@ const AddProduct = () => {
                 <div className="space-y-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] uppercase font-bold text-text-muted tracking-wider">
-                      {gender !== 'None' ? gender : 'Gear'}
+                      {gender !== 'None' ? gender : t`Gear`}
                     </span>
-                    <span className="text-xs font-black text-emerald-400">● In Stock</span>
+                    <span className="text-xs font-black text-emerald-400"><Trans>● In Stock</Trans></span>
                   </div>
                   <h4 className="text-base font-black text-white truncate">
-                    {name || 'Product Title'}
+                    {name || t`Product Title`}
                   </h4>
                   <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
-                    {description || 'Product description will appear here for club members browsing the shop.'}
+                    {description || t`Product description will appear here for club members browsing the shop.`}
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-border flex items-center justify-between">
                   <div>
-                    <span className="text-[9px] uppercase font-bold text-text-muted block">Price</span>
+                    <span className="text-[9px] uppercase font-bold text-text-muted block"><Trans>Price</Trans></span>
                     <span className="text-lg font-black text-[#EB712B]">
                       ${price ? Number(price).toFixed(2) : '0.00'}
                     </span>
                   </div>
                   <div className="px-4 py-2 rounded-xl bg-[#EB712B]/20 text-[#EB712B] text-xs font-bold uppercase tracking-wider border border-[#EB712B]/30">
-                    Club Store
+                    <Trans>Club Store</Trans>
                   </div>
                 </div>
               </div>
@@ -417,9 +419,9 @@ const AddProduct = () => {
             </div>
 
             <div className="text-center space-y-2">
-              <h3 className="text-xl font-bold text-white">Stripe Setup Required</h3>
+              <h3 className="text-xl font-bold text-white"><Trans>Stripe Setup Required</Trans></h3>
               <p className="text-xs text-text-muted leading-relaxed">
-                To publish merchandise and collect card payments from members, your club needs to connect a verified Stripe merchant account.
+                <Trans>To publish merchandise and collect card payments from members, your club needs to connect a verified Stripe merchant account.</Trans>
               </p>
             </div>
 
@@ -428,13 +430,13 @@ const AddProduct = () => {
                 onClick={() => navigate(ROUTES.STRIPE_CONNECT)}
                 className="w-full py-3.5 bg-[#EB712B] hover:bg-[#ff8243] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border-0 shadow-lg shadow-[#EB712B]/25"
               >
-                Set Up Stripe Gateway
+                <Trans>Set Up Stripe Gateway</Trans>
               </button>
               <button
                 onClick={() => setShowStripeModal(false)}
                 className="w-full py-3 bg-surface hover:bg-hover border border-border text-text-muted hover:text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
               >
-                Continue Editing
+                <Trans>Continue Editing</Trans>
               </button>
             </div>
           </div>

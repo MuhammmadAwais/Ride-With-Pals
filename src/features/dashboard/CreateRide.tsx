@@ -9,6 +9,8 @@ import { updateStepFields, setStep, resetRideForm } from '@/features/club/slices
 import { backendApi } from '@/api/backendApi';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { ROUTES } from '@/Constants';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 export const CreateRide: React.FC = () => {
   const navigate = useNavigate();
@@ -94,7 +96,7 @@ export const CreateRide: React.FC = () => {
     if (!file) return;
 
     if (!file.name.endsWith('.gpx')) {
-      toast.error('Only .gpx files are accepted.');
+      toast.error(t`Only .gpx files are accepted.`);
       return;
     }
 
@@ -108,12 +110,12 @@ export const CreateRide: React.FC = () => {
       const fileName = uploadRes?.fileName || uploadRes?.data?.fileName;
       if (fileName) {
         dispatch(updateStepFields({ gpxFile: fileName }));
-        toast.success('GPX route uploaded successfully.');
+        toast.success(t`GPX route uploaded successfully.`);
       } else {
-        toast.error('Failed to parse uploaded file name.');
+        toast.error(t`Failed to parse uploaded file name.`);
       }
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || err.message || 'GPX file upload failed.');
+      toast.error(err?.response?.data?.message || err.message || t`GPX file upload failed.`);
     } finally {
       setIsUploadingGpx(false);
     }
@@ -123,28 +125,28 @@ export const CreateRide: React.FC = () => {
   const validateStep = (stepNum: number) => {
     const newErrors: Record<string, string> = {};
     if (stepNum === 1) {
-      if (!formState.rideName.trim()) newErrors.rideName = "Ride name is required";
-      if (!formState.date) newErrors.date = "Date is required";
-      if (!formState.time) newErrors.time = "Time is required";
-      if (!formState.meetingPoint.trim()) newErrors.meetingPoint = "Meeting point is required";
-      if (!formState.distance || formState.distance <= 0) newErrors.distance = "Valid distance is required";
-      if (!formState.gpxFile) newErrors.gpxFile = "GPX Route file is required";
+      if (!formState.rideName.trim()) newErrors.rideName = t`Ride name is required`;
+      if (!formState.date) newErrors.date = t`Date is required`;
+      if (!formState.time) newErrors.time = t`Time is required`;
+      if (!formState.meetingPoint.trim()) newErrors.meetingPoint = t`Meeting point is required`;
+      if (!formState.distance || formState.distance <= 0) newErrors.distance = t`Valid distance is required`;
+      if (!formState.gpxFile) newErrors.gpxFile = t`GPX Route file is required`;
     } else if (stepNum === 2) {
-      if (!formState.pace) newErrors.pace = "Pace selection is required";
+      if (!formState.pace) newErrors.pace = t`Pace selection is required`;
       if (formState.isRecurringActivity) {
         if (formState.recurringActivities.length === 0) {
-          newErrors.recurringActivities = "Please select at least one day for recurrence";
+          newErrors.recurringActivities = t`Please select at least one day for recurrence`;
         }
         if (!formState.expiryDate) {
-          newErrors.expiryDate = "Expiry date is required for recurring rides";
+          newErrors.expiryDate = t`Expiry date is required for recurring rides`;
         }
       }
     } else if (stepNum === 3) {
       if (formState.rideLeaders.length === 0) {
-        newErrors.rideLeaders = "Please assign at least one ride leader";
+        newErrors.rideLeaders = t`Please assign at least one ride leader`;
       }
       if (formState.isPaymentRequired && (!formState.price || Number(formState.price) <= 0)) {
-        newErrors.price = "Price is required and must be greater than 0 when payment is required";
+        newErrors.price = t`Price is required and must be greater than 0 when payment is required`;
       }
     }
     setErrors(newErrors);
@@ -155,7 +157,7 @@ export const CreateRide: React.FC = () => {
     if (validateStep(formState.currentStep)) {
       dispatch(setStep(formState.currentStep + 1));
     } else {
-      toast.error("Please fill in all required fields correctly.");
+      toast.error(t`Please fill in all required fields correctly.`);
     }
   };
 
@@ -165,12 +167,12 @@ export const CreateRide: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!validateStep(3)) {
-      toast.error("Please fill in all required fields correctly.");
+      toast.error(t`Please fill in all required fields correctly.`);
       return;
     }
 
     if (!activeClubId) {
-      toast.error("No active club selected. Please select or create a club first.");
+      toast.error(t`No active club selected. Please select or create a club first.`);
       return;
     }
 
@@ -242,10 +244,10 @@ export const CreateRide: React.FC = () => {
       if (response.status === 200 || response.status === 201) {
         setShowSuccessToast(true);
       } else {
-        toast.error("Failed to host the ride.");
+        toast.error(t`Failed to host the ride.`);
       }
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || err.message || "Failed to host the ride.");
+      toast.error(err?.response?.data?.message || err.message || t`Failed to host the ride.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -253,17 +255,17 @@ export const CreateRide: React.FC = () => {
 
   // Sports matching mobile app and backend
   const sportsOptions = [
-    { id: 2, name: 'Running', hasDiscipline: true },
-    { id: 1, name: 'Cycling', hasDiscipline: true },
-    { id: 4, name: 'Swimming', hasDiscipline: false },
-    { id: 5, name: 'Social', hasDiscipline: false },
+    { id: 2, name: t`Running`, hasDiscipline: true },
+    { id: 1, name: t`Cycling`, hasDiscipline: true },
+    { id: 4, name: t`Swimming`, hasDiscipline: false },
+    { id: 5, name: t`Social`, hasDiscipline: false },
   ];
 
   // Activity Types matching mobile app and backend category types
   const activityTypeOptions = [
-    { id: 1, name: 'Social' },
-    { id: 2, name: 'Training' },
-    { id: 3, name: 'Competition' },
+    { id: 1, name: t`Social` },
+    { id: 2, name: t`Training` },
+    { id: 3, name: t`Competition` },
   ];
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -281,9 +283,9 @@ export const CreateRide: React.FC = () => {
             className="bg-surface border border-[#EB712B]/30 rounded-[32px] p-8 max-w-md text-center shadow-[0_0_40px_rgba(235,113,43,0.2)] space-y-4"
           >
             <CheckCircle2 size={64} className="text-[#EB712B] mx-auto animate-pulse" />
-            <h3 className="text-2xl font-black text-white">Ride Created!</h3>
+            <h3 className="text-2xl font-black text-white"><Trans>Ride Created!</Trans></h3>
             <p className="text-sm text-text-muted">
-              Your ride <strong>{formState.rideName}</strong> was published successfully. Redirecting you to activities...
+              <Trans>Your ride <strong>{formState.rideName}</strong> was published successfully. Redirecting you to activities...</Trans>
             </p>
           </div>
         </div>
@@ -294,15 +296,17 @@ export const CreateRide: React.FC = () => {
         onClick={() => navigate(ROUTES.ACTIVITIES)} 
         className="flex items-center gap-2 text-text-muted hover:text-[#EB712B] transition-colors mb-6 text-sm font-bold uppercase tracking-widest bg-transparent border-0 outline-none cursor-pointer"
       >
-        <ArrowLeft size={20} /> Back to Activities
+        <ArrowLeft size={20} /> <Trans>Back to Activities</Trans>
       </button>
 
       <div className="max-w-4xl mx-auto space-y-8" ref={dropdownRef}>
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-white">Add Ride</h1>
-            <p className="text-text-muted text-xs md:text-sm mt-1">Create a new group ride activity and sync with your club members.</p>
+            <h1 className="text-3xl md:text-4xl font-black text-white"><Trans>Add Ride</Trans></h1>
+            <p className="text-text-muted text-xs md:text-sm mt-1">
+              <Trans>Create a new group ride activity and sync with your club members.</Trans>
+            </p>
           </div>
 
           {/* Stepper Progress bar */}
@@ -334,7 +338,7 @@ export const CreateRide: React.FC = () => {
             <div className="space-y-6 animate-fade-in">
               {/* Ride Name */}
               <div className="space-y-2">
-                <label className="text-text-muted text-xs font-semibold block">Ride Name</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Ride Name</Trans></label>
                 <input 
                   type="text" 
                   value={formState.rideName}
@@ -351,7 +355,7 @@ export const CreateRide: React.FC = () => {
               {/* Date & Time */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-text-muted text-xs font-semibold block">Date</label>
+                  <label className="text-text-muted text-xs font-semibold block"><Trans>Date</Trans></label>
                   <div className="relative">
                     <input 
                       type="date" 
@@ -368,7 +372,7 @@ export const CreateRide: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-text-muted text-xs font-semibold block">Time</label>
+                  <label className="text-text-muted text-xs font-semibold block"><Trans>Time</Trans></label>
                   <input 
                     type="time" 
                     value={formState.time}
@@ -384,7 +388,7 @@ export const CreateRide: React.FC = () => {
 
               {/* Sports Dropdown */}
               <div className="space-y-2 relative">
-                <label className="text-text-muted text-xs font-semibold block">Sports</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Sports</Trans></label>
                 <button
                   type="button"
                   onClick={() => toggleDropdown('sports')}
@@ -415,7 +419,7 @@ export const CreateRide: React.FC = () => {
               {/* Sport Discipline (Shown when Sport has disciplines like Running or Cycling) */}
               {selectedSport.hasDiscipline && (
                 <div className="space-y-2.5">
-                  <label className="text-text-muted text-xs font-semibold block">Sport Discipline</label>
+                  <label className="text-text-muted text-xs font-semibold block"><Trans>Sport Discipline</Trans></label>
                   <div className="flex items-center gap-6">
                     <label 
                       className="flex items-center gap-2.5 cursor-pointer select-none"
@@ -424,7 +428,7 @@ export const CreateRide: React.FC = () => {
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${formState.isAsphalt ? 'border-[#EB712B]' : 'border-border'}`}>
                         {formState.isAsphalt && <div className="w-2.5 h-2.5 rounded-full bg-[#EB712B]" />}
                       </div>
-                      <span className={`text-sm ${formState.isAsphalt ? 'text-white font-medium' : 'text-text-muted'}`}>Asphalt</span>
+                      <span className={`text-sm ${formState.isAsphalt ? 'text-white font-medium' : 'text-text-muted'}`}><Trans>Asphalt</Trans></span>
                     </label>
 
                     <label 
@@ -434,7 +438,7 @@ export const CreateRide: React.FC = () => {
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${formState.isTrail ? 'border-[#EB712B]' : 'border-border'}`}>
                         {formState.isTrail && <div className="w-2.5 h-2.5 rounded-full bg-[#EB712B]" />}
                       </div>
-                      <span className={`text-sm ${formState.isTrail ? 'text-white font-medium' : 'text-text-muted'}`}>Trail</span>
+                      <span className={`text-sm ${formState.isTrail ? 'text-white font-medium' : 'text-text-muted'}`}><Trans>Trail</Trans></span>
                     </label>
                   </div>
                 </div>
@@ -442,13 +446,13 @@ export const CreateRide: React.FC = () => {
 
               {/* Activity Type Dropdown */}
               <div className="space-y-2 relative">
-                <label className="text-text-muted text-xs font-semibold block">Activity Type</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Activity Type</Trans></label>
                 <button
                   type="button"
                   onClick={() => toggleDropdown('activityType')}
                   className="w-full h-13 bg-[#1e1e1e] border border-border/60 rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] transition-all text-white flex items-center justify-between cursor-pointer"
                 >
-                  <span>{activityTypeOptions.find(t => t.id === formState.categoryTypeId)?.name || 'Social'}</span>
+                  <span>{activityTypeOptions.find(t => t.id === formState.categoryTypeId)?.name || t`Social`}</span>
                   <ChevronDown size={18} className={`text-text-muted transition-transform ${openDropdown === 'activityType' ? 'rotate-180 text-[#EB712B]' : ''}`} />
                 </button>
                 {openDropdown === 'activityType' && (
@@ -472,7 +476,7 @@ export const CreateRide: React.FC = () => {
 
               {/* Upload GPX File */}
               <div className="space-y-2">
-                <label className="text-text-muted text-xs font-semibold block">Upload GPX File</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Upload GPX File</Trans></label>
                 <input 
                   type="file" 
                   ref={fileInputRef} 
@@ -492,7 +496,7 @@ export const CreateRide: React.FC = () => {
                           {formState.gpxFile}
                         </span>
                         <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                          <CheckCircle2 size={10} /> GPX Attached
+                          <CheckCircle2 size={10} /> <Trans>GPX Attached</Trans>
                         </span>
                       </div>
                     </div>
@@ -501,7 +505,7 @@ export const CreateRide: React.FC = () => {
                       onClick={() => fileInputRef.current?.click()}
                       className="text-[#EB712B] text-xs font-bold uppercase hover:underline cursor-pointer border-0 outline-none bg-transparent shrink-0"
                     >
-                      Change File
+                      <Trans>Change File</Trans>
                     </button>
                   </div>
                 ) : (
@@ -512,15 +516,15 @@ export const CreateRide: React.FC = () => {
                     {isUploadingGpx ? (
                       <>
                         <Loader2 className="animate-spin text-[#EB712B]" size={28} />
-                        <span className="text-xs text-text-muted">Uploading route file...</span>
+                        <span className="text-xs text-text-muted"><Trans>Uploading route file...</Trans></span>
                       </>
                     ) : (
                       <>
                         <div className="w-12 h-12 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center text-[#EB712B]">
                           <FileCode size={24} />
                         </div>
-                        <p className="text-sm font-medium text-white">Click to upload GPX file</p>
-                        <p className="text-xs text-text-muted">.gpx file</p>
+                        <p className="text-sm font-medium text-white"><Trans>Click to upload GPX file</Trans></p>
+                        <p className="text-xs text-text-muted"><Trans>.gpx file</Trans></p>
                       </>
                     )}
                   </div>
@@ -530,7 +534,7 @@ export const CreateRide: React.FC = () => {
 
               {/* Meeting Point */}
               <div className="space-y-2">
-                <label className="text-text-muted text-xs font-semibold block">Meeting Point</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Meeting Point</Trans></label>
                 <div className="relative flex items-center">
                   <div className="absolute left-4 text-[#EB712B] pointer-events-none">
                     <MapPin size={18} />
@@ -554,7 +558,7 @@ export const CreateRide: React.FC = () => {
 
               {/* Ending Point (Optional) */}
               <div className="space-y-2">
-                <label className="text-text-muted text-xs font-semibold block">Ending Point (Optional)</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Ending Point (Optional)</Trans></label>
                 <div className="relative flex items-center">
                   <div className="absolute left-4 text-[#EB712B] pointer-events-none">
                     <MapPin size={18} />
@@ -574,7 +578,7 @@ export const CreateRide: React.FC = () => {
 
               {/* Distance */}
               <div className="space-y-2">
-                <label className="text-text-muted text-xs font-semibold block">Distance (km)</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Distance (km)</Trans></label>
                 <input 
                   type="number" 
                   value={formState.distance || ''}
@@ -590,7 +594,7 @@ export const CreateRide: React.FC = () => {
 
               {/* Description */}
               <div className="space-y-2">
-                <label className="text-text-muted text-xs font-semibold block">Description</label>
+                <label className="text-text-muted text-xs font-semibold block"><Trans>Description</Trans></label>
                 <textarea 
                   value={formState.description}
                   onChange={(e) => dispatch(updateStepFields({ description: e.target.value }))}
@@ -605,7 +609,7 @@ export const CreateRide: React.FC = () => {
                 onClick={handleNext}
                 className="w-full h-14 mt-6 rounded-2xl bg-[#EB712B] hover:bg-[#ff8243] text-white font-bold text-base transition-all cursor-pointer border-0 outline-none flex items-center justify-center shadow-lg shadow-[#EB712B]/20"
               >
-                Next
+                <Trans>Next</Trans>
               </button>
             </div>
           )}
@@ -614,14 +618,20 @@ export const CreateRide: React.FC = () => {
           {formState.currentStep === 2 && (
             <div className="space-y-8 animate-fade-in">
               <div className="border-b border-border pb-4">
-                <h3 className="text-lg font-bold text-white uppercase tracking-wider">Step 2: Pace, Recurrence & Stops</h3>
-                <p className="text-xs text-text-muted">Specify riding speed target, recurrence configurations, and rest stops.</p>
+                <h3 className="text-lg font-bold text-white uppercase tracking-wider">
+                  <Trans>Step 2: Pace, Recurrence & Stops</Trans>
+                </h3>
+                <p className="text-xs text-text-muted">
+                  <Trans>Specify riding speed target, recurrence configurations, and rest stops.</Trans>
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Pace Selection Dropdown */}
                 <div className="space-y-2 relative">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Expected Pace</label>
+                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                    <Trans>Expected Pace</Trans>
+                  </label>
                   <button
                     type="button"
                     onClick={() => toggleDropdown('pace')}
@@ -632,13 +642,17 @@ export const CreateRide: React.FC = () => {
                   </button>
                   {openDropdown === 'pace' && (
                     <div className="absolute left-0 w-full bg-main-bg border border-border rounded-2xl shadow-2xl overflow-hidden mt-1 z-30">
-                      {['Relaxed', 'Medium', 'Fast'].map((item) => (
+                      {[
+                        { key: 'Relaxed', label: <Trans>Relaxed</Trans> },
+                        { key: 'Medium', label: <Trans>Medium</Trans> },
+                        { key: 'Fast', label: <Trans>Fast</Trans> }
+                      ].map((item) => (
                         <div
-                          key={item}
+                          key={item.key}
                           className="p-4 hover:bg-hover cursor-pointer text-text-main text-sm transition-colors border-b border-border last:border-0"
-                          onClick={() => { dispatch(updateStepFields({ pace: item })); toggleDropdown(null); }}
+                          onClick={() => { dispatch(updateStepFields({ pace: item.key })); toggleDropdown(null); }}
                         >
-                          {item}
+                          {item.label}
                         </div>
                       ))}
                     </div>
@@ -647,13 +661,15 @@ export const CreateRide: React.FC = () => {
 
                 {/* Elevation Gain */}
                 <div className="space-y-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Elevation Gain (meters)</label>
+                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                    <Trans>Elevation Gain (meters)</Trans>
+                  </label>
                   <input 
                     type="number" 
                     value={formState.elevationGain || ''}
                     onChange={(e) => dispatch(updateStepFields({ elevationGain: Number(e.target.value) }))}
                     className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main"
-                    placeholder="e.g. 500"
+                    placeholder={t`e.g. 500`}
                   />
                 </div>
 
@@ -661,8 +677,8 @@ export const CreateRide: React.FC = () => {
                 <div className="space-y-3 md:col-span-2 bg-main-bg p-6 rounded-2xl border border-border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-white">Is this a Recurring Ride?</h4>
-                      <p className="text-xs text-text-muted">Enable to repeat this ride on selected days of the week.</p>
+                      <h4 className="text-sm font-bold text-white"><Trans>Is this a Recurring Ride?</Trans></h4>
+                      <p className="text-xs text-text-muted"><Trans>Enable to repeat this ride on selected days of the week.</Trans></p>
                     </div>
                     <button
                       type="button"
@@ -677,7 +693,9 @@ export const CreateRide: React.FC = () => {
 
                   {formState.isRecurringActivity && (
                     <div className="pt-4 border-t border-border space-y-4">
-                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Select Recurrence Days</label>
+                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                        <Trans>Select Recurrence Days</Trans>
+                      </label>
                       <div className="flex flex-wrap gap-2">
                         {daysOfWeek.map((day) => {
                           const isSelected = formState.recurringActivities.includes(day);
@@ -708,7 +726,9 @@ export const CreateRide: React.FC = () => {
                       </div>
                       {errors.recurringActivities && <p className="text-red-500 text-xs">{errors.recurringActivities}</p>}
                       <div className="pt-2 space-y-2">
-                        <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Expiry Date</label>
+                        <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                          <Trans>Expiry Date</Trans>
+                        </label>
                         <div className="relative">
                           <input 
                             type="date"
@@ -735,8 +755,8 @@ export const CreateRide: React.FC = () => {
                 <div className="space-y-3 md:col-span-2 bg-main-bg p-6 rounded-2xl border border-border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-white">Stops Configurations</h4>
-                      <p className="text-xs text-text-muted">Mark whether this ride has scheduled rest or checkpoint stops.</p>
+                      <h4 className="text-sm font-bold text-white"><Trans>Stops Configurations</Trans></h4>
+                      <p className="text-xs text-text-muted"><Trans>Mark whether this ride has scheduled rest or checkpoint stops.</Trans></p>
                     </div>
                     <button
                       type="button"
@@ -751,7 +771,9 @@ export const CreateRide: React.FC = () => {
 
                   {formState.isStops && (
                     <div className="pt-4 border-t border-border space-y-4">
-                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Specify Rest Stop Coordinates / Km Markers (e.g. 15, 30)</label>
+                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                        <Trans>Specify Rest Stop Coordinates / Km Markers (e.g. 15, 30)</Trans>
+                      </label>
                       <input 
                         type="text"
                         value={formState.stops.join(', ')}
@@ -762,7 +784,7 @@ export const CreateRide: React.FC = () => {
                           dispatch(updateStepFields({ stops: parsed }));
                         }}
                         className="w-full h-14 bg-main-bg border border-border rounded-2xl px-5 text-sm outline-none focus:border-[#EB712B] transition-all text-text-main"
-                        placeholder="e.g. 15, 30"
+                        placeholder={t`e.g. 15, 30`}
                       />
                     </div>
                   )}
@@ -772,8 +794,8 @@ export const CreateRide: React.FC = () => {
                 <div className="space-y-3 md:col-span-2 bg-main-bg p-6 rounded-2xl border border-border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-white">Specify Recommended Slots</h4>
-                      <p className="text-xs text-text-muted">Recommend preferred parts of the day for cyclists participating in this ride.</p>
+                      <h4 className="text-sm font-bold text-white"><Trans>Specify Recommended Slots</Trans></h4>
+                      <p className="text-xs text-text-muted"><Trans>Recommend preferred parts of the day for cyclists participating in this ride.</Trans></p>
                     </div>
                     <button
                       type="button"
@@ -788,7 +810,9 @@ export const CreateRide: React.FC = () => {
 
                   {formState.isRecommendedSlots && (
                     <div className="pt-4 border-t border-border space-y-4">
-                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Recommended Time Slots</label>
+                      <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                        <Trans>Recommended Time Slots</Trans>
+                      </label>
                       <div className="flex flex-wrap gap-2">
                         {slotsOptions.map((slot) => {
                           const isSelected = formState.recommendedSlots.includes(slot);
@@ -826,14 +850,14 @@ export const CreateRide: React.FC = () => {
                   onClick={handlePrev}
                   className="h-16 rounded-2xl bg-surface border border-border hover:bg-hover text-text-main font-black text-sm uppercase transition-all cursor-pointer outline-none"
                 >
-                  Previous
+                  <Trans>Previous</Trans>
                 </button>
                 <button 
                   type="button"
                   onClick={handleNext}
                   className="h-16 rounded-2xl bg-[#EB712B] hover:bg-[#ff8243] text-white font-black text-sm uppercase transition-all cursor-pointer border-0 outline-none"
                 >
-                  Next Step
+                  <Trans>Next Step</Trans>
                 </button>
               </div>
             </div>
@@ -843,16 +867,20 @@ export const CreateRide: React.FC = () => {
           {formState.currentStep === 3 && (
             <div className="space-y-8 animate-fade-in">
               <div className="border-b border-border pb-4">
-                <h3 className="text-lg font-bold text-white uppercase tracking-wider">Step 3: Access, Leaders & Support</h3>
-                <p className="text-xs text-text-muted">Establish ride visibility, assign leaders, and configure support vehicles.</p>
+                <h3 className="text-lg font-bold text-white uppercase tracking-wider">
+                  <Trans>Step 3: Access, Leaders & Support</Trans>
+                </h3>
+                <p className="text-xs text-text-muted">
+                  <Trans>Establish ride visibility, assign leaders, and configure support vehicles.</Trans>
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Public Visibility Toggle */}
                 <div className="flex items-center justify-between bg-main-bg p-6 rounded-2xl border border-border">
                   <div>
-                    <h4 className="text-sm font-bold text-white">Public Visibility</h4>
-                    <p className="text-xs text-text-muted">If active, anyone in the community can view and join this ride.</p>
+                    <h4 className="text-sm font-bold text-white"><Trans>Public Visibility</Trans></h4>
+                    <p className="text-xs text-text-muted"><Trans>If active, anyone in the community can view and join this ride.</Trans></p>
                   </div>
                   <button
                     type="button"
@@ -868,8 +896,8 @@ export const CreateRide: React.FC = () => {
                 {/* Women & Non-Binary Focus Toggle */}
                 <div className="flex items-center justify-between bg-main-bg p-6 rounded-2xl border border-border">
                   <div>
-                    <h4 className="text-sm font-bold text-white">Women and Non-Binary Focus</h4>
-                    <p className="text-xs text-text-muted">Mark if this is primarily oriented for women/non-binary cyclists.</p>
+                    <h4 className="text-sm font-bold text-white"><Trans>Women and Non-Binary Focus</Trans></h4>
+                    <p className="text-xs text-text-muted"><Trans>Mark if this is primarily oriented for women/non-binary cyclists.</Trans></p>
                   </div>
                   <button
                     type="button"
@@ -886,8 +914,8 @@ export const CreateRide: React.FC = () => {
                 <div className="space-y-4 bg-main-bg p-6 rounded-2xl border border-border md:col-span-2">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-bold text-white">Registration Payment Required</h4>
-                      <p className="text-xs text-text-muted">Enable if participants must complete payments to RSVP to this ride.</p>
+                      <h4 className="text-sm font-bold text-white"><Trans>Registration Payment Required</Trans></h4>
+                      <p className="text-xs text-text-muted"><Trans>Enable if participants must complete payments to RSVP to this ride.</Trans></p>
                     </div>
                     <button
                       type="button"
@@ -909,13 +937,13 @@ export const CreateRide: React.FC = () => {
                   {formState.isPaymentRequired && (
                     <div className="pt-4 border-t border-border space-y-2">
                       <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
-                        Registration Fee / Price ($ or local currency)
+                        <Trans>Registration Fee / Price ($ or local currency)</Trans>
                       </label>
                       <input
                         type="number"
                         step="0.01"
                         min="0.01"
-                        placeholder="e.g. 15.00"
+                        placeholder={t`e.g. 15.00`}
                         value={formState.price || ''}
                         onChange={(e) => {
                           const val = e.target.value === '' ? 0 : Number(e.target.value);
@@ -933,7 +961,9 @@ export const CreateRide: React.FC = () => {
 
                 {/* Support Car Driver Dropdown */}
                 <div className="space-y-2 relative md:col-span-2">
-                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Support Car Driver</label>
+                  <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                    <Trans>Support Car Driver</Trans>
+                  </label>
                   <button
                     type="button"
                     onClick={() => toggleDropdown('supportDriver')}
@@ -942,7 +972,7 @@ export const CreateRide: React.FC = () => {
                     <span>
                       {formState.supportCarDriver 
                         ? formState.supportCarDriver.name 
-                        : 'Select support driver (Optional)'
+                        : t`Select support driver (Optional)`
                       }
                     </span>
                     <ChevronDown size={18} className="text-text-muted" />
@@ -953,7 +983,7 @@ export const CreateRide: React.FC = () => {
                         className="p-4 hover:bg-hover cursor-pointer text-text-muted text-sm transition-colors border-b border-border italic"
                         onClick={() => { dispatch(updateStepFields({ supportCarDriver: null })); toggleDropdown(null); }}
                       >
-                        No support car driver
+                        <Trans>No support car driver</Trans>
                       </div>
                       {isLoadingMembers ? (
                         <div className="p-4 flex items-center justify-center"><Loader2 size={16} className="animate-spin text-[#EB712B]" /></div>
@@ -984,8 +1014,12 @@ export const CreateRide: React.FC = () => {
                 {/* Ride Leaders Multi-Select */}
                 <div className="space-y-4 md:col-span-2">
                   <div>
-                    <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">Assign Ride Leaders</label>
-                    <p className="text-xs text-text-muted mt-1">Assign one or more leaders to manage the group and navigation during the ride.</p>
+                    <label className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] block">
+                      <Trans>Assign Ride Leaders</Trans>
+                    </label>
+                    <p className="text-xs text-text-muted mt-1">
+                      <Trans>Assign one or more leaders to manage the group and navigation during the ride.</Trans>
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -1035,7 +1069,7 @@ export const CreateRide: React.FC = () => {
                   onClick={handlePrev}
                   className="h-16 rounded-2xl bg-surface border border-border hover:bg-hover text-text-main font-black text-sm uppercase transition-all cursor-pointer outline-none"
                 >
-                  Previous
+                  <Trans>Previous</Trans>
                 </button>
                 <button 
                   type="button"
@@ -1044,7 +1078,7 @@ export const CreateRide: React.FC = () => {
                   className="h-16 rounded-2xl bg-[#EB712B] hover:bg-[#ff8243] text-white font-black text-sm uppercase transition-all cursor-pointer border-0 outline-none flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <Loader2 size={16} className="animate-spin" />}
-                  {isSubmitting ? "Publishing..." : "Publish Ride"}
+                  {isSubmitting ? <Trans>Publishing...</Trans> : <Trans>Publish Ride</Trans>}
                 </button>
               </div>
             </div>

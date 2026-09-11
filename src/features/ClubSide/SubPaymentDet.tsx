@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, CalendarDays, LockKeyhole, User, ShieldCheck } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 const SubPaymentDet = () => {
   const navigate = useNavigate();
@@ -39,40 +41,40 @@ const SubPaymentDet = () => {
       {/* Container max-w-2xl keeps it contained but comfortable */}
       <div className="w-full max-w-2xl">
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-text-main transition-colors mb-8 text-xs font-bold uppercase tracking-[0.2em]">
-          <ArrowLeft size={16} /> Return to plan
+          <ArrowLeft size={16} /> <Trans>Return to plan</Trans>
         </button>
 
         <form onSubmit={(e) => { e.preventDefault(); navigate('/dashboard'); }} className="bg-surface border border-border rounded-[32px] p-8 md:p-10 shadow-xl">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-black">Secure Payment</h2>
+            <h2 className="text-2xl font-black"><Trans>Secure Payment</Trans></h2>
             <ShieldCheck className="text-[#EB712B]" size={28} />
           </div>
 
           <div className="space-y-5">
             <div className="relative">
               <CreditCard className="absolute left-4 top-4 text-text-muted" size={20} />
-              <input name="number" placeholder="0000 0000 0000 0000" className={inputClasses('number')} value={formData.number} onChange={handleChange} onFocus={() => setFocused('number')} onBlur={() => setFocused(null)} maxLength={19} required />
+              <input name="number" placeholder={t`0000 0000 0000 0000`} className={inputClasses('number')} value={formData.number} onChange={handleChange} onFocus={() => setFocused('number')} onBlur={() => setFocused(null)} maxLength={19} required />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="relative">
                 <CalendarDays className="absolute left-4 top-4 text-text-muted" size={20} />
-                <input name="expiry" placeholder="MM/YY" className={inputClasses('expiry')} value={formData.expiry} onChange={handleChange} onFocus={() => setFocused('expiry')} onBlur={() => setFocused(null)} maxLength={5} required />
+                <input name="expiry" placeholder={t`MM/YY`} className={inputClasses('expiry')} value={formData.expiry} onChange={handleChange} onFocus={() => setFocused('expiry')} onBlur={() => setFocused(null)} maxLength={5} required />
               </div>
               <div className="relative">
                 <LockKeyhole className="absolute left-4 top-4 text-text-muted" size={20} />
-                <input name="cvv" placeholder="CVV" type="text" className={inputClasses('cvv')} value={formData.cvv} onChange={handleChange} onFocus={() => setFocused('cvv')} onBlur={() => setFocused(null)} maxLength={4} required />
+                <input name="cvv" placeholder={t`CVV`} type="text" className={inputClasses('cvv')} value={formData.cvv} onChange={handleChange} onFocus={() => setFocused('cvv')} onBlur={() => setFocused(null)} maxLength={4} required />
               </div>
             </div>
 
             <div className="relative">
               <User className="absolute left-4 top-4 text-text-muted" size={20} />
-              <input name="holder" placeholder="Cardholder Name" className={inputClasses('holder')} value={formData.holder} onChange={handleChange} onFocus={() => setFocused('holder')} onBlur={() => setFocused(null)} required />
+              <input name="holder" placeholder={t`Cardholder Name`} className={inputClasses('holder')} value={formData.holder} onChange={handleChange} onFocus={() => setFocused('holder')} onBlur={() => setFocused(null)} required />
             </div>
           </div>
 
           <button type="submit" className="w-full h-14 mt-8 rounded-2xl bg-[#EB712B] text-white font-black text-sm uppercase tracking-[0.2em] transition-all cursor-pointer">
-            COMPLETE PAYMENT
+            <Trans>COMPLETE PAYMENT</Trans>
           </button>
         </form>
       </div>
@@ -81,3 +83,4 @@ const SubPaymentDet = () => {
 };
 
 export default SubPaymentDet;
+

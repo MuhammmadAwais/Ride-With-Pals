@@ -24,6 +24,8 @@ import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 
 ChartJS.register(
   CategoryScale,
@@ -177,7 +179,7 @@ const ActivitiesRegistry = () => {
       labels,
       datasets: [
         {
-          label: "Total Distance (km)",
+          label: t`Total Distance (km)`,
           data: distancePerMonth,
           borderColor: "#EB712B",
           backgroundColor: "rgba(235, 113, 43, 0.1)",
@@ -186,7 +188,7 @@ const ActivitiesRegistry = () => {
           pointRadius: 4,
         },
         {
-          label: "Active Rides",
+          label: t`Active Rides`,
           data: ridesCountPerMonth,
           borderColor: "#3b82f6",
           backgroundColor: "rgba(59, 130, 246, 0.1)",
@@ -214,7 +216,7 @@ const ActivitiesRegistry = () => {
   const columns: Column<Activity>[] = [
     {
       key: 'name',
-      label: 'Activity',
+      label: t`Activity`,
       sortable: true,
       render: (act) => (
         <div className="flex items-center gap-4">
@@ -228,7 +230,7 @@ const ActivitiesRegistry = () => {
     },
     {
       key: 'leader',
-      label: 'Leadership',
+      label: t`Leadership`,
       sortable: false,
       render: (act) => (
         <img src={act.leaderImageUrl} className="w-10 h-10 rounded-full object-cover border border-border" alt="" />
@@ -236,7 +238,7 @@ const ActivitiesRegistry = () => {
     },
     {
       key: 'distance',
-      label: 'Metrics',
+      label: t`Metrics`,
       sortable: true,
       render: (act) => (
         <div>
@@ -249,7 +251,7 @@ const ActivitiesRegistry = () => {
     },
     {
       key: 'level',
-      label: 'Level',
+      label: t`Level`,
       sortable: true,
       render: (act) => (
         <span className="px-3 py-1 rounded-full text-[10px] font-bold border border-border bg-hover text-text-muted uppercase">{act.level}</span>
@@ -257,7 +259,7 @@ const ActivitiesRegistry = () => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (act) => (
         <div className="flex items-center gap-2 text-xs font-medium text-text-main uppercase">
@@ -298,43 +300,43 @@ const ActivitiesRegistry = () => {
     <div className="p-4 md:p-8 text-text-main font-sans">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-text-main">Activities</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-text-main"><Trans>Activities</Trans></h1>
           <p className="text-text-muted mt-2 text-sm max-w-md">
-            Review and manage all recorded rides across your club network.
+            <Trans>Review and manage all recorded rides across your club network.</Trans>
           </p>
         </div>
         <button
           onClick={() => navigate(ROUTES.ADD_RIDE)}
           className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-[#EB712B]/20 flex items-center gap-2 cursor-pointer border-0 outline-none"
         >
-          <Plus size={16} /> Create Ride
+          <Plus size={16} /> <Trans>Create Ride</Trans>
         </button>
       </div>
 
       {/* Dynamic Summaries */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <SummaryCard
-          label="TOTAL ACTIVE"
+          label={t`TOTAL ACTIVE`}
           value={totalActiveCount}
-          subtext={`${activities.length} total recorded`}
+          subtext={t`${activities.length} total recorded`}
           icon={<Bike size={20} />}
         />
         <SummaryCard
-          label="AVG DISTANCE"
+          label={t`AVG DISTANCE`}
           value={avgDistance}
-          subtext={`Across ${activities.length} ${activities.length === 1 ? 'activity' : 'activities'}`}
+          subtext={t`Across ${activities.length} ${activities.length === 1 ? 'activity' : 'activities'}`}
           icon={<BarChart3 size={20} />}
         />
         <SummaryCard
-          label="ELEVATION GAIN"
+          label={t`ELEVATION GAIN`}
           value={totalElevationGain}
-          subtext="Total cumulative elevation"
+          subtext={t`Total cumulative elevation`}
           icon={<TrendingUp size={20} />}
         />
         <SummaryCard
-          label="LIVE STATUS"
+          label={t`LIVE STATUS`}
           value={liveStatusCount}
-          subtext="Activities currently live"
+          subtext={t`Activities currently live`}
           icon={<Bike size={20} />}
           isLive={true}
         />
@@ -344,17 +346,21 @@ const ActivitiesRegistry = () => {
       <div className="flex flex-col gap-6">
         {/* Tab Switcher */}
         <div className="flex bg-surface p-1.5 rounded-xl border border-border w-full md:w-fit">
-          {["Active", "Completed", "Archived"].map((tab) => (
+          {[
+            { key: "Active", label: <Trans>Active</Trans> },
+            { key: "Completed", label: <Trans>Completed</Trans> },
+            { key: "Archived", label: <Trans>Archived</Trans> },
+          ].map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
               className={`flex-1 md:flex-none px-3 md:px-6 py-2.5 text-xs font-bold rounded-lg transition-all duration-300 ${
-                activeTab === tab
+                activeTab === tab.key
                   ? "bg-[#EB712B] text-white shadow-lg"
                   : "text-text-muted hover:text-text-main"
               }`}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -365,7 +371,7 @@ const ActivitiesRegistry = () => {
             <TableSkeleton />
           ) : filteredActivities.length === 0 ? (
             <div className="p-12 text-center text-text-muted">
-              No activities found for this club yet.
+              <Trans>No activities found for this club yet.</Trans>
             </div>
           ) : (
             <DataTable data={filteredActivities} columns={columns} />
@@ -375,8 +381,8 @@ const ActivitiesRegistry = () => {
 
       {/* Dynamic Activity Metrics Chart */}
       <div className="p-8 bg-surface rounded-3xl border border-border mt-8">
-        <h3 className="text-xl font-bold mb-1 text-text-main">Activity Metrics Over Time</h3>
-        <p className="text-xs text-text-muted mb-4">Monthly distribution of distance and rides created across your club.</p>
+        <h3 className="text-xl font-bold mb-1 text-text-main"><Trans>Activity Metrics Over Time</Trans></h3>
+        <p className="text-xs text-text-muted mb-4"><Trans>Monthly distribution of distance and rides created across your club.</Trans></p>
         <div className="h-64">
           <Line data={dynamicChartData} options={chartOptions as any} />
         </div>

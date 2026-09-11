@@ -26,6 +26,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { 
   useGetAllNewsQuery, 
   useGetAllNewsCommentsQuery, 
@@ -65,18 +67,18 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
     try {
       await addComment({ newsId, comment: newComment.trim() }).unwrap();
       setNewComment('');
-      toast.success('Comment posted successfully!');
+      toast.success(t`Comment posted successfully!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to post comment.');
+      toast.error(err?.data?.message || t`Failed to post comment.`);
     }
   };
 
   const handleDelete = async (commentId: number) => {
     try {
       await deleteComment({ newsId, newsCommentId: commentId }).unwrap();
-      toast.success('Comment deleted.');
+      toast.success(t`Comment deleted.`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to delete comment.');
+      toast.error(err?.data?.message || t`Failed to delete comment.`);
     }
   };
 
@@ -84,7 +86,7 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
     <div className="space-y-4 pt-4 border-t border-border mt-4">
       <h4 className="text-xs font-black uppercase tracking-wider text-text-muted flex items-center gap-2">
         <MessageSquare size={13} />
-        <span>Discussion ({comments.length})</span>
+        <span><Trans>Discussion ({comments.length})</Trans></span>
       </h4>
 
       {isLoading ? (
@@ -92,7 +94,7 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
           <Loader2 size={16} className="animate-spin text-[#EB712B]" />
         </div>
       ) : comments.length === 0 ? (
-        <p className="text-xs text-text-muted italic">No comments yet. Start the conversation!</p>
+        <p className="text-xs text-text-muted italic"><Trans>No comments yet. Start the conversation!</Trans></p>
       ) : (
         <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
           {comments.map((c: any) => {
@@ -107,7 +109,7 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
                 <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-text-main truncate">
-                      {c.user?.fullName || c.user?.name || 'Club Member'}
+                      {c.user?.fullName || c.user?.name || t`Club Member`}
                     </span>
                     <span className="text-[10px] text-text-muted">
                       {c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}
@@ -120,9 +122,9 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
                   <button
                     onClick={() => handleDelete(c.id)}
                     className="text-text-muted hover:text-red-400 p-1 rounded transition-colors text-[10px] shrink-0 cursor-pointer"
-                    title="Delete comment"
+                    title={t`Delete comment`}
                   >
-                    Delete
+                    <Trans>Delete</Trans>
                   </button>
                 )}
               </div>
@@ -134,7 +136,7 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
       <form onSubmit={handleSubmit} className="flex gap-2 pt-1">
         <input
           type="text"
-          placeholder="Write a comment..."
+          placeholder={t`Write a comment...`}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           className="flex-1 bg-surface border border-border px-4 py-2.5 rounded-xl text-xs text-text-main placeholder:text-text-muted focus:outline-none focus:border-[#EB712B]/50 transition-colors"
@@ -145,7 +147,7 @@ const ArticleComments = ({ newsId }: { newsId: number }) => {
           className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-[#EB712B] text-white text-xs font-black uppercase tracking-wider rounded-xl hover:bg-[#ff8036] disabled:opacity-40 transition-all cursor-pointer"
         >
           {isAdding ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
-          <span>Post</span>
+          <span><Trans>Post</Trans></span>
         </button>
       </form>
     </div>
@@ -185,7 +187,7 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover/thumb:opacity-40 transition-opacity" />
           <span className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[9px] font-mono tracking-widest text-white/90 uppercase font-semibold">
-            Club Dispatch
+            <Trans>Club Dispatch</Trans>
           </span>
         </div>
 
@@ -212,7 +214,7 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
                   <button
                     onClick={() => onEdit(item)}
                     className="p-1.5 rounded-lg text-text-muted hover:text-[#EB712B] hover:bg-hover transition-colors cursor-pointer"
-                    title="Edit article"
+                    title={t`Edit article`}
                   >
                     <Edit2 size={13} />
                   </button>
@@ -221,7 +223,7 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
                   onClick={() => onDelete(Number(item.id))}
                   disabled={isDeleting}
                   className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer disabled:opacity-50"
-                  title="Delete article"
+                  title={t`Delete article`}
                 >
                   {isDeleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
                 </button>
@@ -281,7 +283,7 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="inline-flex items-center gap-1 text-xs font-bold text-[#EB712B] hover:text-[#ff8036] transition-colors cursor-pointer"
               >
-                <span>{isExpanded ? 'Collapse' : 'Read Article'}</span>
+                <span>{isExpanded ? <Trans>Collapse</Trans> : <Trans>Read Article</Trans>}</span>
                 {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
             </div>
@@ -354,7 +356,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 10 * 1024 * 1024) {
-        toast.error('Image size must be under 10MB.');
+        toast.error(t`Image size must be under 10MB.`);
         return;
       }
       setSelectedFile(file);
@@ -391,11 +393,11 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      toast.error('Please enter an article title.');
+      toast.error(t`Please enter an article title.`);
       return;
     }
     if (!description.trim()) {
-      toast.error('Please enter article content.');
+      toast.error(t`Please enter article content.`);
       return;
     }
 
@@ -418,7 +420,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           clubId: Number(clubId),
           image: imageUrl || undefined,
         }).unwrap();
-        toast.success('Article updated successfully!');
+        toast.success(t`Article updated successfully!`);
       } else {
         await addNews({
           title: title.trim(),
@@ -426,7 +428,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           clubId: Number(clubId),
           image: imageUrl || undefined,
         }).unwrap();
-        toast.success('Article published to club feed!');
+        toast.success(t`Article published to club feed!`);
       }
       onClose();
     } catch (err: any) {
@@ -445,7 +447,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
         onClose();
         onPermissionDenied?.();
       } else {
-        toast.error(message || 'Failed to publish article. Please try again.');
+        toast.error(message || t`Failed to publish article. Please try again.`);
       }
     } finally {
       setIsSubmitting(false);
@@ -466,10 +468,10 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-black text-text-main uppercase tracking-tight">
-                {editingArticle ? 'Edit Club Dispatch' : 'New Club Dispatch'}
+                {editingArticle ? <Trans>Edit Club Dispatch</Trans> : <Trans>New Club Dispatch</Trans>}
               </h3>
               <p className="text-xs text-text-muted">
-                {clubName ? `Publishing to ${clubName}` : 'Share an announcement or recap with the club'}
+                {clubName ? t`Publishing to ${clubName}` : <Trans>Share an announcement or recap with the club</Trans>}
               </p>
             </div>
           </div>
@@ -489,7 +491,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           {/* Cover Image Upload Area */}
           <div className="space-y-1.5">
             <label className="text-[11px] font-mono tracking-wider text-text-muted uppercase font-bold block">
-              Article Cover Image
+              <Trans>Article Cover Image</Trans>
             </label>
 
             {previewUrl ? (
@@ -505,13 +507,13 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
                     onClick={() => fileInputRef.current?.click()}
                     className="px-3.5 py-1.5 rounded-lg bg-black/70 backdrop-blur-md text-white text-xs font-bold hover:bg-black transition-colors cursor-pointer border border-white/20"
                   >
-                    Change Image
+                    <Trans>Change Image</Trans>
                   </button>
                   <button
                     type="button"
                     onClick={handleRemoveImage}
                     className="p-1.5 rounded-lg bg-red-600/80 backdrop-blur-md text-white hover:bg-red-600 transition-colors cursor-pointer"
-                    title="Remove image"
+                    title={t`Remove image`}
                   >
                     <Trash2 size={15} />
                   </button>
@@ -524,10 +526,10 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
               >
                 <UploadCloud size={28} className="text-[#EB712B] mx-auto mb-2 group-hover:scale-110 transition-transform" />
                 <p className="text-xs sm:text-sm font-bold text-text-main">
-                  Click to select or upload a cover image
+                  <Trans>Click to select or upload a cover image</Trans>
                 </p>
                 <p className="text-[11px] text-text-muted mt-1">
-                  JPG, PNG, or WebP up to 10MB (recommended aspect 16:9)
+                  <Trans>JPG, PNG, or WebP up to 10MB (recommended aspect 16:9)</Trans>
                 </p>
               </div>
             )}
@@ -544,12 +546,12 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           {/* Article Title */}
           <div className="space-y-1.5">
             <label className="text-[11px] font-mono tracking-wider text-text-muted uppercase font-bold block">
-              Article Title <span className="text-[#EB712B]">*</span>
+              <Trans>Article Title</Trans> <span className="text-[#EB712B]">*</span>
             </label>
             <input
               type="text"
               required
-              placeholder="e.g., Weekend Gravel Ride Briefing & Pace Groups"
+              placeholder={t`e.g., Weekend Gravel Ride Briefing & Pace Groups`}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-surface border border-border px-4 py-3 rounded-xl text-sm font-bold text-text-main placeholder:text-text-muted/60 focus:outline-none focus:border-[#EB712B]/60 transition-colors"
@@ -560,7 +562,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-[11px] font-mono tracking-wider text-text-muted uppercase font-bold block">
-                Content & Briefing <span className="text-[#EB712B]">*</span>
+                <Trans>Content & Briefing</Trans> <span className="text-[#EB712B]">*</span>
               </label>
 
               {/* Formatting Helper Buttons */}
@@ -569,7 +571,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
                   type="button"
                   onClick={() => insertFormatting('**', '**')}
                   className="p-1 rounded hover:bg-hover hover:text-text-main transition-colors text-xs font-bold"
-                  title="Bold (**text**)"
+                  title={t`Bold (**text**)`}
                 >
                   <Bold size={13} />
                 </button>
@@ -577,7 +579,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
                   type="button"
                   onClick={() => insertFormatting('*', '*')}
                   className="p-1 rounded hover:bg-hover hover:text-text-main transition-colors text-xs font-bold"
-                  title="Italic (*text*)"
+                  title={t`Italic (*text*)`}
                 >
                   <Italic size={13} />
                 </button>
@@ -585,7 +587,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
                   type="button"
                   onClick={() => insertFormatting('\n• ')}
                   className="p-1 rounded hover:bg-hover hover:text-text-main transition-colors text-xs font-bold"
-                  title="Bullet list"
+                  title={t`Bullet list`}
                 >
                   <List size={13} />
                 </button>
@@ -593,7 +595,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
                   type="button"
                   onClick={() => insertFormatting('\n> ')}
                   className="p-1 rounded hover:bg-hover hover:text-text-main transition-colors text-xs font-bold"
-                  title="Quote"
+                  title={t`Quote`}
                 >
                   <Quote size={13} />
                 </button>
@@ -604,7 +606,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
               id="article-description-input"
               required
               rows={7}
-              placeholder="Share full details with club members: route recaps, elevation profiles, meetup coordinates, pacing guidelines, or general announcements..."
+              placeholder={t`Share full details with club members: route recaps, elevation profiles, meetup coordinates, pacing guidelines, or general announcements...`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-surface border border-border p-4 rounded-xl text-xs sm:text-sm text-text-main placeholder:text-text-muted/60 focus:outline-none focus:border-[#EB712B]/60 transition-colors leading-relaxed resize-y custom-scrollbar"
@@ -620,7 +622,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
             disabled={isBusy}
             className="px-4 py-2.5 rounded-xl border border-border text-xs font-bold text-text-muted hover:text-text-main hover:bg-hover transition-colors cursor-pointer"
           >
-            Cancel
+            <Trans>Cancel</Trans>
           </button>
 
           <button
@@ -632,12 +634,12 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
             {isBusy ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                <span>{editingArticle ? 'Saving...' : 'Publishing...'}</span>
+                <span>{editingArticle ? <Trans>Saving...</Trans> : <Trans>Publishing...</Trans>}</span>
               </>
             ) : (
               <>
                 <Sparkles size={14} />
-                <span>{editingArticle ? 'Update Dispatch' : 'Publish Dispatch'}</span>
+                <span>{editingArticle ? <Trans>Update Dispatch</Trans> : <Trans>Publish Dispatch</Trans>}</span>
               </>
             )}
           </button>
@@ -687,16 +689,16 @@ const PublishRestrictedModal: React.FC<PublishRestrictedModalProps> = ({
         {/* Text */}
         <div className="space-y-2">
           <span className="text-[10px] font-mono tracking-widest text-[#EB712B] uppercase font-bold">
-            Author Permissions Required
+            <Trans>Author Permissions Required</Trans>
           </span>
           <h3 className="text-xl font-black text-text-main uppercase tracking-tight">
-            Publishing Restricted
+            <Trans>Publishing Restricted</Trans>
           </h3>
           <p className="text-xs sm:text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
-            Publishing official club dispatches to <span className="text-text-main font-semibold">{clubName || "this club"}</span> is reserved for club organizers, team managers, and verified contributors.
+            <Trans>Publishing official club dispatches to <span className="text-text-main font-semibold">{clubName || "this club"}</span> is reserved for club organizers, team managers, and verified contributors.</Trans>
           </p>
           <p className="text-xs text-text-muted/80 leading-relaxed pt-1">
-            Have a ride briefing, event recap, or notice you'd like to share? Contact club leadership to request contributor permissions.
+            <Trans>Have a ride briefing, event recap, or notice you'd like to share? Contact club leadership to request contributor permissions.</Trans>
           </p>
         </div>
 
@@ -708,7 +710,7 @@ const PublishRestrictedModal: React.FC<PublishRestrictedModalProps> = ({
             className="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-[#EB712B] hover:bg-[#ff8036] text-white font-black text-xs uppercase tracking-wider transition-all duration-300 active:scale-95 shadow-lg shadow-[#EB712B]/20 cursor-pointer"
           >
             <MessageSquare size={15} />
-            <span>Message Club Leadership</span>
+            <span><Trans>Message Club Leadership</Trans></span>
             <ArrowRight size={13} />
           </button>
           
@@ -717,7 +719,7 @@ const PublishRestrictedModal: React.FC<PublishRestrictedModalProps> = ({
             onClick={onClose}
             className="w-full py-2.5 px-4 rounded-xl border border-border hover:bg-hover text-text-muted hover:text-text-main font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
           >
-            Understood
+            <Trans>Understood</Trans>
           </button>
         </div>
       </div>
@@ -785,9 +787,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
     setDeletingId(id);
     try {
       await deleteNews({ id }).unwrap();
-      toast.success('Article deleted successfully!');
+      toast.success(t`Article deleted successfully!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to delete article.');
+      toast.error(err?.data?.message || t`Failed to delete article.`);
     } finally {
       setDeletingId(null);
     }
@@ -822,7 +824,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
         } 
       });
     } else {
-      toast.error("Unable to find club leadership contact details.");
+      toast.error(t`Unable to find club leadership contact details.`);
     }
   };
 
@@ -834,13 +836,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
       const readingMinutes = Math.max(1, Math.ceil((item.description || item.content || '').split(/\s+/).filter(Boolean).length / 150));
       return {
         id: item.id?.toString() || index.toString(),
-        title: item.title || 'Untitled Article',
-        date: item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent',
-        previewText: item.description || (item.content ? item.content.slice(0, 180) + '...' : 'No description provided.'),
-        fullContent: item.description || item.content || 'No content provided.',
+        title: item.title || t`Untitled Article`,
+        date: item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : t`Recent`,
+        previewText: item.description || (item.content ? item.content.slice(0, 180) + '...' : t`No description provided.`),
+        fullContent: item.description || item.content || t`No content provided.`,
         image: image,
-        readingTime: `${readingMinutes} min read`,
-        author: item.user?.fullName || item.author || 'Club Leadership',
+        readingTime: t`${readingMinutes} min read`,
+        author: item.user?.fullName || item.author || t`Club Leadership`,
         authorInitials: (item.user?.fullName || item.author || 'CL').slice(0, 2).toUpperCase(),
         totalCommentsCount: item.totalCommentsCount || 0
       };
@@ -861,9 +863,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
       <div className="p-8 font-sans">
         <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-4">
           <Bookmark size={36} className="text-[#EB712B] mx-auto mb-2" />
-          <h2 className="text-xl font-bold text-text-main">No Club Selected</h2>
+          <h2 className="text-xl font-bold text-text-main"><Trans>No Club Selected</Trans></h2>
           <p className="text-sm text-text-muted max-w-sm mx-auto">
-            Please select or join a club to view its community news feed.
+            <Trans>Please select or join a club to view its community news feed.</Trans>
           </p>
         </div>
       </div>
@@ -880,14 +882,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
             <h2 className="text-xl sm:text-2xl font-black tracking-tight text-text-main uppercase">
-              Club Dispatches & News
+              <Trans>Club Dispatches & News</Trans>
             </h2>
             <span className="px-2.5 py-0.5 rounded-full bg-surface border border-border text-[10px] font-mono font-bold text-text-muted">
-              {newsItems.length} {newsItems.length === 1 ? 'Article' : 'Articles'}
+              {newsItems.length} {newsItems.length === 1 ? t`Article` : t`Articles`}
             </span>
           </div>
           <p className="text-xs text-text-muted">
-            Official announcements, ride recaps, and community notices from club leadership.
+            <Trans>Official announcements, ride recaps, and community notices from club leadership.</Trans>
           </p>
         </div>
 
@@ -897,7 +899,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={13} />
               <input
                 type="text"
-                placeholder="Filter articles..."
+                placeholder={t`Filter articles...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-surface border border-border pl-8 pr-7 py-2 rounded-xl text-xs text-text-main placeholder:text-text-muted focus:outline-none focus:border-[#EB712B]/50 transition-colors"
@@ -920,7 +922,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 active:scale-95 cursor-pointer shrink-0 shadow-md shadow-[#EB712B]/20"
           >
             <Plus size={15} />
-            <span>Publish Article</span>
+            <span><Trans>Publish Article</Trans></span>
           </button>
         </div>
       </div>
@@ -935,12 +937,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
               <Newspaper size={22} />
             </div>
             <h3 className="text-base font-bold text-text-main">
-              {searchQuery ? "No matching dispatches found" : "No Club Dispatches Yet"}
+              {searchQuery ? <Trans>No matching dispatches found</Trans> : <Trans>No Club Dispatches Yet</Trans>}
             </h3>
             <p className="text-xs text-text-muted max-w-sm mx-auto">
               {searchQuery 
-                ? `No articles matched "${searchQuery}". Try a different keyword.` 
-                : "Official club updates, ride briefings, and announcements will appear here."}
+                ? t`No articles matched "${searchQuery}". Try a different keyword.` 
+                : <Trans>Official club updates, ride briefings, and announcements will appear here.</Trans>}
             </p>
             {!searchQuery && (
               <div className="pt-2">
@@ -949,7 +951,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
                   onClick={handlePublishClick}
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-hover hover:bg-[#EB712B] hover:text-white border border-border rounded-xl text-xs font-bold uppercase tracking-wider text-text-main transition-colors cursor-pointer"
                 >
-                  <Plus size={14} /> Create First Post
+                  <Plus size={14} /> <Trans>Create First Post</Trans>
                 </button>
               </div>
             )}

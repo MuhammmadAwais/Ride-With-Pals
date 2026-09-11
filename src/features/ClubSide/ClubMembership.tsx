@@ -8,7 +8,7 @@
  *
  * Athlete view — list available plans + subscribe + active membership banner
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/Constants';
 import {
@@ -35,6 +35,8 @@ import {
   Eye,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
 import {
@@ -70,20 +72,27 @@ const useModalScrollLock = () => {
   }, []);
 };
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  active:    { label: 'Paid',       color: 'text-green-400',  bg: 'bg-green-500/10 border border-green-500/20' },
-  paid:      { label: 'Paid',       color: 'text-green-400',  bg: 'bg-green-500/10 border border-green-500/20' },
-  pending:   { label: 'Pending',    color: 'text-amber-400',  bg: 'bg-amber-500/10 border border-amber-500/20' },
-  not_renewed:{ label: 'Not Renewed', color: 'text-red-400',  bg: 'bg-red-500/10 border border-red-500/20' },
-  exempt:    { label: 'Exempt',     color: 'text-slate-400',  bg: 'bg-slate-500/10 border border-slate-500/20' },
-  cancelled: { label: 'Cancelled',  color: 'text-red-400',   bg: 'bg-red-500/10 border border-red-500/20' },
-};
-
 const getStatusConfig = (row: any) => {
-  if (row.isExempt || row.paymentStatus === 'exempt' || row.status === 'exempt') return STATUS_CONFIG.exempt;
-  if (!row.planId && !row.plan) return { label: 'No Fee Assigned', color: 'text-slate-400', bg: 'bg-slate-500/10 border border-slate-500/20' };
-  const key = row.paymentStatus || row.status || '';
-  return STATUS_CONFIG[key.toLowerCase()] || { label: key || 'Unknown', color: 'text-text-muted', bg: 'bg-surface border border-border' };
+  if (row.isExempt || row.paymentStatus === 'exempt' || row.status === 'exempt') {
+    return { label: t`Exempt`, color: 'text-slate-400', bg: 'bg-slate-500/10 border border-slate-500/20' };
+  }
+  if (!row.planId && !row.plan) {
+    return { label: t`No Fee Assigned`, color: 'text-slate-400', bg: 'bg-slate-500/10 border border-slate-500/20' };
+  }
+  const key = (row.paymentStatus || row.status || '').toLowerCase();
+  switch (key) {
+    case 'active':
+    case 'paid':
+      return { label: t`Paid`, color: 'text-green-400', bg: 'bg-green-500/10 border border-green-500/20' };
+    case 'pending':
+      return { label: t`Pending`, color: 'text-amber-400', bg: 'bg-amber-500/10 border border-amber-500/20' };
+    case 'not_renewed':
+      return { label: t`Not Renewed`, color: 'text-red-400', bg: 'bg-red-500/10 border border-red-500/20' };
+    case 'cancelled':
+      return { label: t`Cancelled`, color: 'text-red-400', bg: 'bg-red-500/10 border border-red-500/20' };
+    default:
+      return { label: row.paymentStatus || row.status || t`Unknown`, color: 'text-text-muted', bg: 'bg-surface border border-border' };
+  }
 };
 
 const fmtDate = (d?: string | Date | null) => d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
@@ -123,7 +132,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
     return (
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
         <div className="bg-surface border border-border rounded-3xl p-8 flex items-center gap-3 text-sm font-bold text-text-main shadow-2xl">
-          <Loader2 size={20} className="animate-spin text-[#EB712B]" /> Loading Plan Details...
+          <Loader2 size={20} className="animate-spin text-[#EB712B]" /> <Trans>Loading Plan Details...</Trans>
         </div>
       </div>
     );
@@ -134,9 +143,9 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
         <div className="bg-surface border border-border rounded-3xl p-8 max-w-sm w-full text-center space-y-4 shadow-2xl">
           <AlertCircle size={32} className="text-red-400 mx-auto" />
-          <p className="text-sm font-bold text-text-main">Failed to load plan details</p>
+          <p className="text-sm font-bold text-text-main"><Trans>Failed to load plan details</Trans></p>
           <button onClick={onClose} className="w-full py-2.5 bg-main-bg border border-border rounded-xl text-xs font-bold text-text-main hover:bg-hover transition-all cursor-pointer">
-            Close
+            <Trans>Close</Trans>
           </button>
         </div>
       </div>
@@ -154,10 +163,12 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B]">Plan #{planId}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#EB712B]">
+                  <Trans>Plan #{planId}</Trans>
+                </span>
                 {plan.saveAsDraft && (
                   <span className="px-2 py-0.5 bg-slate-500/10 border border-slate-500/20 rounded-full text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                    Draft
+                    <Trans>Draft</Trans>
                   </span>
                 )}
               </div>
@@ -172,13 +183,13 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
         {/* Pricing Banner */}
         <div className="bg-main-bg border border-border rounded-2xl p-5 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Fee Amount</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted"><Trans>Fee Amount</Trans></p>
             <div className="text-3xl font-black text-[#EB712B] mt-0.5">
               {fmtCurrency(Number(plan.price) || 0, plan.currency)}
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Billing Cycle</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted"><Trans>Billing Cycle</Trans></p>
             <span className="inline-block mt-1 px-3 py-1 bg-surface border border-border rounded-xl text-xs font-bold capitalize text-text-main">
               {plan.billingInterval}
             </span>
@@ -188,22 +199,24 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
         {/* Configuration details */}
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-main-bg/50 border border-border/60 rounded-2xl p-3.5 space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Auto Renew</p>
-            <p className="text-xs font-bold text-text-main">{plan.autoRenew ? 'Enabled (Automatic)' : 'Disabled (Manual)'}</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted"><Trans>Auto Renew</Trans></p>
+            <p className="text-xs font-bold text-text-main">
+              {plan.autoRenew ? <Trans>Enabled (Automatic)</Trans> : <Trans>Disabled (Manual)</Trans>}
+            </p>
           </div>
           <div className="bg-main-bg/50 border border-border/60 rounded-2xl p-3.5 space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Assignment Target</p>
-            <p className="text-xs font-bold text-text-main capitalize">{plan.assignmentTarget || 'All Members'}</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted"><Trans>Assignment Target</Trans></p>
+            <p className="text-xs font-bold text-text-main capitalize">{plan.assignmentTarget || <Trans>All Members</Trans>}</p>
           </div>
           {plan.startDate && (
             <div className="bg-main-bg/50 border border-border/60 rounded-2xl p-3.5 space-y-1">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">Start Date</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted"><Trans>Start Date</Trans></p>
               <p className="text-xs font-bold text-text-main">{fmtDate(plan.startDate)}</p>
             </div>
           )}
           {plan.endDate && (
             <div className="bg-main-bg/50 border border-border/60 rounded-2xl p-3.5 space-y-1">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">End Date</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted"><Trans>End Date</Trans></p>
               <p className="text-xs font-bold text-text-main">{fmtDate(plan.endDate)}</p>
             </div>
           )}
@@ -211,7 +224,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
 
         {/* Features List */}
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2">Included Features & Benefits</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2"><Trans>Included Features & Benefits</Trans></p>
           {plan.features && plan.features.length > 0 ? (
             <div className="space-y-2 bg-main-bg border border-border rounded-2xl p-4">
               {plan.features.map((f: string, idx: number) => (
@@ -224,7 +237,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
               ))}
             </div>
           ) : (
-            <p className="text-xs text-text-muted italic">No specific features listed for this plan.</p>
+            <p className="text-xs text-text-muted italic"><Trans>No specific features listed for this plan.</Trans></p>
           )}
         </div>
 
@@ -238,7 +251,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
             }}
             className="px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all"
           >
-            <Trash2 size={13} /> Delete Plan
+            <Trash2 size={13} /> <Trans>Delete Plan</Trans>
           </button>
           <button
             type="button"
@@ -248,7 +261,7 @@ const PlanDetailModal: React.FC<PlanDetailModalProps> = ({
             }}
             className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition-all shadow-md"
           >
-            <Edit2 size={13} /> Edit Plan
+            <Edit2 size={13} /> <Trans>Edit Plan</Trans>
           </button>
         </div>
       </div>
@@ -330,7 +343,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !price || Number(price) <= 0) {
-      toast.error('Please fill in all required fields.');
+      toast.error(t`Please fill in all required fields.`);
       return;
     }
     try {
@@ -359,14 +372,14 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
       };
       if (isEditing) {
         await updatePlan({ ...payload, feeId: plan.id }).unwrap();
-        toast.success('Plan updated successfully!');
+        toast.success(t`Plan updated successfully!`);
       } else {
         await createPlan(payload).unwrap();
-        toast.success('Plan created successfully!');
+        toast.success(t`Plan created successfully!`);
       }
       onClose();
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to save plan.');
+      toast.error(err?.data?.message || t`Failed to save plan.`);
     }
   };
 
@@ -390,9 +403,9 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
         <div className="flex justify-between items-center pb-2 border-b border-border">
           <div>
             <h3 className="text-lg font-black uppercase tracking-wider text-text-main">
-              {isEditing ? 'Edit Membership Plan' : 'Create Membership Plan'}
+              {isEditing ? <Trans>Edit Membership Plan</Trans> : <Trans>Create Membership Plan</Trans>}
             </h3>
-            <p className="text-[11px] text-text-muted mt-0.5">Configure billing interval, pricing, and payment rules</p>
+            <p className="text-[11px] text-text-muted mt-0.5"><Trans>Configure billing interval, pricing, and payment rules</Trans></p>
           </div>
           <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main cursor-pointer p-1">
             <X size={20} />
@@ -401,19 +414,19 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Plan Name *</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1"><Trans>Plan Name *</Trans></label>
             <input value={name} onChange={(e) => setName(e.target.value)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
-              placeholder="e.g. Annual Membership Fee 2026" />
+              placeholder={t`e.g. Annual Membership Fee 2026`} />
           </div>
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Price *</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1"><Trans>Price *</Trans></label>
             <input type="number" step="any" value={price} onChange={(e) => setPrice(e.target.value)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
               placeholder="25.00" min="0" />
           </div>
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Currency</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1"><Trans>Currency</Trans></label>
             <select value={currency} onChange={(e) => setCurrency(e.target.value)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs text-text-main outline-none focus:border-[#EB712B]">
               {['EUR', 'USD', 'GBP', 'CAD', 'AUD'].map((c) => <option key={c} value={c}>{c}</option>)}
@@ -421,14 +434,14 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
           </div>
 
           <div className="col-span-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-2">Billing Interval</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-2"><Trans>Billing Interval</Trans></label>
             <div className="flex flex-wrap gap-2">
               {[
-                { value: 'one-time', label: 'One-time' },
-                { value: 'monthly', label: 'Monthly' },
-                { value: 'quarterly', label: 'Quarterly' },
-                { value: 'semi-annual', label: 'Semi-annual' },
-                { value: 'annual', label: 'Annual' },
+                { value: 'one-time', label: t`One-time` },
+                { value: 'monthly', label: t`Monthly` },
+                { value: 'quarterly', label: t`Quarterly` },
+                { value: 'semi-annual', label: t`Semi-annual` },
+                { value: 'annual', label: t`Annual` },
               ].map((opt) => (
                 <button key={opt.value} type="button" onClick={() => setBillingInterval(opt.value)}
                   className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer border ${
@@ -445,11 +458,11 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
           <div className="col-span-2 border border-border rounded-2xl p-4 bg-main-bg/40 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-bold text-text-main">Custom Validity Dates (Optional)</p>
+                <p className="text-xs font-bold text-text-main"><Trans>Custom Validity Dates (Optional)</Trans></p>
                 <p className="text-[10px] text-text-muted">
                   {showCustomDates
-                    ? "Specify a fixed start and end date for this plan"
-                    : "By default, plan starts immediately and renews automatically per interval"}
+                    ? <Trans>Specify a fixed start and end date for this plan</Trans>
+                    : <Trans>By default, plan starts immediately and renews automatically per interval</Trans>}
                 </p>
               </div>
               <button
@@ -471,7 +484,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
               <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border/50 animate-in fade-in duration-200">
                 <div>
                   <label htmlFor="planStartDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
-                    Start Date
+                    <Trans>Start Date</Trans>
                   </label>
                   <input
                     id="planStartDate"
@@ -487,7 +500,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
                 </div>
                 <div>
                   <label htmlFor="planEndDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">
-                    End Date
+                    <Trans>End Date</Trans>
                   </label>
                   <input
                     id="planEndDate"
@@ -505,27 +518,27 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
             )}
           </div>
 
-          <Toggle val={allowStripe} set={setAllowStripe} label="Allow Stripe" sub="Online payment via card" />
-          <Toggle val={allowManual} set={setAllowManual} label="Allow Manual" sub="Offline / Cash transfer" />
-          <Toggle val={autoRenew} set={setAutoRenew} label="Auto-Renew" sub="Automatically renew plan" />
-          <Toggle val={saveAsDraft} set={setSaveAsDraft} label="Save as Draft" sub="Keep hidden until active" />
+          <Toggle val={allowStripe} set={setAllowStripe} label={t`Allow Stripe`} sub={t`Online payment via card`} />
+          <Toggle val={allowManual} set={setAllowManual} label={t`Allow Manual`} sub={t`Offline / Cash transfer`} />
+          <Toggle val={autoRenew} set={setAutoRenew} label={t`Auto-Renew`} sub={t`Automatically renew plan`} />
+          <Toggle val={saveAsDraft} set={setSaveAsDraft} label={t`Save as Draft`} sub={t`Keep hidden until active`} />
 
           <div className="col-span-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1">Assignment Target</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1"><Trans>Assignment Target</Trans></label>
             <select value={assignmentTarget} onChange={(e) => setAssignmentTarget(e.target.value as any)}
               className="w-full bg-main-bg border border-border rounded-xl p-3 text-xs text-text-main outline-none focus:border-[#EB712B]">
-              <option value="all">All Club Members</option>
-              <option value="specific">Specific Members</option>
-              <option value="none">None (Voluntary)</option>
+              <option value="all">{t`All Club Members`}</option>
+              <option value="specific">{t`Specific Members`}</option>
+              <option value="none">{t`None (Voluntary)`}</option>
             </select>
           </div>
 
           {assignmentTarget === 'specific' && (
             <div className="col-span-2 border border-border rounded-2xl p-4 bg-main-bg/40 animate-in fade-in duration-200">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-3">Select Members to Assign</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-3"><Trans>Select Members to Assign</Trans></label>
               {membersLoading ? (
                 <div className="flex items-center gap-2 text-xs text-text-muted">
-                  <Loader2 size={14} className="animate-spin" /> Loading members...
+                  <Loader2 size={14} className="animate-spin" /> <Trans>Loading members...</Trans>
                 </div>
               ) : membersList && membersList.length > 0 ? (
                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto custom-scrollbar">
@@ -556,14 +569,14 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-text-muted">No members found in this club.</p>
+                <p className="text-xs text-text-muted"><Trans>No members found in this club.</Trans></p>
               )}
             </div>
           )}
         </div>
 
         <div>
-          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-2">Features</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-2"><Trans>Features</Trans></label>
           <div className="space-y-2 mb-2 max-h-36 overflow-y-auto custom-scrollbar pr-1">
             {features.map((f, i) => (
               <div key={i} className="flex items-center justify-between bg-main-bg border border-border rounded-xl px-3 py-2">
@@ -577,7 +590,7 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
             <input value={featureInput} onChange={(e) => setFeatureInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
               className="flex-1 bg-main-bg border border-border rounded-xl p-3 text-xs outline-none focus:border-[#EB712B] text-text-main"
-              placeholder="Add a feature..." />
+              placeholder={t`Add a feature...`} />
             <button type="button" onClick={handleAddFeature}
               className="px-4 py-3 bg-surface border border-border rounded-xl text-xs font-bold text-text-muted hover:text-text-main hover:border-[#EB712B]/40 transition-colors cursor-pointer">
               <Plus size={14} />
@@ -588,12 +601,12 @@ const PlanForm: React.FC<PlanFormProps> = ({ clubId, plan, onClose }) => {
         <div className="flex gap-3 pt-2">
           <button type="button" onClick={onClose} disabled={isBusy}
             className="flex-1 py-3 bg-surface border border-border text-text-main text-xs font-bold uppercase tracking-wider rounded-xl transition-colors cursor-pointer outline-none disabled:opacity-50">
-            Cancel
+            <Trans>Cancel</Trans>
           </button>
           <button type="submit" disabled={isBusy}
             className="flex-1 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black uppercase tracking-wider rounded-xl transition-colors cursor-pointer border-0 outline-none disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#EB712B]/20">
             {isBusy && <Loader2 size={14} className="animate-spin" />}
-            {isBusy ? 'Saving...' : (isEditing ? 'Update Plan' : 'Create Plan')}
+            {isBusy ? <Trans>Saving...</Trans> : (isEditing ? <Trans>Update Plan</Trans> : <Trans>Create Plan</Trans>)}
           </button>
         </div>
       </form>
@@ -615,7 +628,7 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
 
   const handleSubmit = async () => {
     if (!amount || Number(amount) <= 0) {
-      toast.error('Please enter a valid amount');
+      toast.error(t`Please enter a valid amount`);
       return;
     }
     try {
@@ -628,10 +641,11 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
         paymentMethod,
         note: note.trim() || undefined,
       } as any).unwrap();
-      toast.success(`${row.user?.fullName || 'Member'} marked as paid!`);
+      const memberName = row.user?.fullName || t`Member`;
+      toast.success(t`${memberName} marked as paid!`);
       onClose();
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to mark as paid.');
+      toast.error(err?.data?.message || t`Failed to mark as paid.`);
     }
   };
 
@@ -640,35 +654,40 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
       <div className="bg-surface border border-border rounded-3xl p-6 w-full max-w-sm space-y-5 shadow-2xl">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-black text-text-main">Mark as Paid Manually</h3>
+            <h3 className="text-base font-black text-text-main"><Trans>Mark as Paid Manually</Trans></h3>
             <p className="text-[10px] text-text-muted mt-0.5">{row.user?.fullName}</p>
           </div>
           <button onClick={onClose} className="text-text-muted hover:text-text-main cursor-pointer p-1"><X size={18} /></button>
         </div>
 
         <div>
-          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Amount (€)</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5"><Trans>Amount (€)</Trans></label>
           <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
             className="w-full bg-main-bg border border-border rounded-xl p-3 text-sm text-text-main outline-none focus:border-[#EB712B]"
             placeholder="0.00" min="0" step="any" />
         </div>
 
         <div>
-          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Payment Method</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5"><Trans>Payment Method</Trans></label>
           <div className="grid grid-cols-2 gap-2">
-            {(['cash', 'bank_transfer', 'bizum', 'other'] as const).map((m) => (
-              <button key={m} type="button" onClick={() => setPaymentMethod(m)}
+            {[
+              { id: 'cash', label: t`Cash` },
+              { id: 'bank_transfer', label: t`Bank Transfer` },
+              { id: 'bizum', label: t`Bizum` },
+              { id: 'other', label: t`Other` },
+            ].map((m) => (
+              <button key={m.id} type="button" onClick={() => setPaymentMethod(m.id as any)}
                 className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer border capitalize ${
-                  paymentMethod === m ? 'bg-[#EB712B] text-white border-[#EB712B]' : 'bg-main-bg border-border text-text-muted hover:border-[#EB712B]/40'
+                  paymentMethod === m.id ? 'bg-[#EB712B] text-white border-[#EB712B]' : 'bg-main-bg border-border text-text-muted hover:border-[#EB712B]/40'
                 }`}>
-                {m.replace('_', ' ')}
+                {m.label}
               </button>
             ))}
           </div>
         </div>
 
         <div>
-          <label htmlFor="markPaymentDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Payment Date</label>
+          <label htmlFor="markPaymentDate" className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5"><Trans>Payment Date</Trans></label>
           <input 
             id="markPaymentDate"
             name="markPaymentDate"
@@ -683,21 +702,21 @@ const MarkAsPaidModal: React.FC<{ row: any; clubId: number; onClose: () => void 
         </div>
 
         <div>
-          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5">Note (Optional)</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-text-muted block mb-1.5"><Trans>Note (Optional)</Trans></label>
           <input value={note} onChange={(e) => setNote(e.target.value)}
             className="w-full bg-main-bg border border-border rounded-xl p-3 text-sm text-text-main outline-none focus:border-[#EB712B]"
-            placeholder="e.g. Paid at club office" />
+            placeholder={t`e.g. Paid at club office`} />
         </div>
 
         <div className="flex gap-3">
           <button onClick={onClose}
             className="flex-1 py-3 bg-surface border border-border text-text-main text-xs font-bold rounded-xl cursor-pointer">
-            Cancel
+            <Trans>Cancel</Trans>
           </button>
           <button onClick={handleSubmit} disabled={isLoading}
             className="flex-1 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-bold rounded-xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2">
             {isLoading && <Loader2 size={13} className="animate-spin" />}
-            {isLoading ? 'Saving...' : 'Mark as Paid'}
+            {isLoading ? <Trans>Saving...</Trans> : <Trans>Mark as Paid</Trans>}
           </button>
         </div>
       </div>
@@ -715,13 +734,14 @@ const ChangeFeeModal: React.FC<{ row: any; clubId: number; plans: any[]; onClose
   const [changeFee, { isLoading }] = useChangeAssignedFeeMutation();
 
   const handleSubmit = async () => {
-    if (!selectedFeeId) { toast.error('Please select a fee plan'); return; }
+    if (!selectedFeeId) { toast.error(t`Please select a fee plan`); return; }
     try {
       await changeFee({ clubId, userId: row.userId || row.id, newFeeId: selectedFeeId }).unwrap();
-      toast.success(`Fee plan changed for ${row.user?.fullName || 'member'}!`);
+      const memberName = row.user?.fullName || t`member`;
+      toast.success(t`Fee plan changed for ${memberName}!`);
       onClose();
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to change fee.');
+      toast.error(err?.data?.message || t`Failed to change fee.`);
     }
   };
 
@@ -730,7 +750,7 @@ const ChangeFeeModal: React.FC<{ row: any; clubId: number; plans: any[]; onClose
       <div className="bg-surface border border-border rounded-3xl p-6 w-full max-w-sm space-y-5 shadow-2xl">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-black text-text-main">Change Assigned Fee</h3>
+            <h3 className="text-base font-black text-text-main"><Trans>Change Assigned Fee</Trans></h3>
             <p className="text-[10px] text-text-muted mt-0.5">{row.user?.fullName}</p>
           </div>
           <button onClick={onClose} className="text-text-muted hover:text-text-main cursor-pointer p-1"><X size={18} /></button>
@@ -749,11 +769,11 @@ const ChangeFeeModal: React.FC<{ row: any; clubId: number; plans: any[]; onClose
           ))}
         </div>
         <div className="flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 bg-surface border border-border text-text-main text-xs font-bold rounded-xl cursor-pointer">Cancel</button>
+          <button onClick={onClose} className="flex-1 py-3 bg-surface border border-border text-text-main text-xs font-bold rounded-xl cursor-pointer"><Trans>Cancel</Trans></button>
           <button onClick={handleSubmit} disabled={isLoading || !selectedFeeId}
             className="flex-1 py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-bold rounded-xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2">
             {isLoading && <Loader2 size={13} className="animate-spin" />}
-            {isLoading ? 'Changing...' : 'Change Fee'}
+            {isLoading ? <Trans>Changing...</Trans> : <Trans>Change Fee</Trans>}
           </button>
         </div>
       </div>
@@ -780,29 +800,32 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
   const handleSendReminder = async () => {
     try {
       await sendReminder({ clubId, targetUserId: row.userId }).unwrap();
-      toast.success(`Payment reminder sent to ${row.user?.fullName || 'member'}!`);
+      const memberName = row.user?.fullName || t`member`;
+      toast.success(t`Payment reminder sent to ${memberName}!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send reminder.');
+      toast.error(err?.data?.message || t`Failed to send reminder.`);
     }
   };
 
   const handleExempt = async () => {
     try {
       await exemptMember({ clubId, feeId: targetFeeId, userId: row.userId || row.id, isExempt: !isExempt }).unwrap();
-      toast.success(isExempt ? 'Exemption removed.' : `${row.user?.fullName || 'Member'} exempted from payment.`);
+      const memberName = row.user?.fullName || t`Member`;
+      toast.success(isExempt ? t`Exemption removed.` : t`${memberName} exempted from payment.`);
       onClose();
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to update exemption.');
+      toast.error(err?.data?.message || t`Failed to update exemption.`);
     }
   };
 
   const handleResetPending = async () => {
     try {
       await resetPending({ clubId, feeId: targetFeeId, userId: row.userId || row.id }).unwrap();
-      toast.success(`${row.user?.fullName || 'Member'} reset to pending.`);
+      const memberName = row.user?.fullName || t`Member`;
+      toast.success(t`${memberName} reset to pending.`);
       onClose();
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to reset status.');
+      toast.error(err?.data?.message || t`Failed to reset status.`);
     }
   };
 
@@ -839,7 +862,7 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
               )}
             </div>
             <div>
-              <p className="text-sm font-black text-text-main">{row.fullName || row.memberName || row.name || row.user?.fullName || 'Member'}</p>
+              <p className="text-sm font-black text-text-main">{row.fullName || row.memberName || row.name || row.user?.fullName || t`Member`}</p>
               <p className="text-[10px] text-text-muted">{row.email || row.user?.email}</p>
             </div>
           </div>
@@ -854,12 +877,12 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
         {/* Fee Info */}
         {row.plan && (
           <div className="bg-main-bg border border-border rounded-2xl p-4 space-y-2">
-            <p className="text-[9px] font-black uppercase tracking-widest text-text-muted">Membership Fee</p>
+            <p className="text-[9px] font-black uppercase tracking-widest text-text-muted"><Trans>Membership Fee</Trans></p>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-bold text-text-main">{row.plan?.name || row.planSnapshot?.name}</p>
                 <p className="text-[10px] text-text-muted mt-0.5">
-                  {row.currentPeriodEnd ? `Expires: ${fmtDate(row.currentPeriodEnd)}` : '—'}
+                  {row.currentPeriodEnd ? t`Expires: ${fmtDate(row.currentPeriodEnd)}` : '—'}
                 </p>
               </div>
               <p className="text-base font-black text-[#EB712B]">
@@ -871,45 +894,45 @@ const MemberActionSheet: React.FC<{ row: any; clubId: number; plans: any[]; onCl
 
         {/* Fee Actions */}
         <div>
-          <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-2">Fee Actions</p>
+          <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-2"><Trans>Fee Actions</Trans></p>
           <div className="space-y-2">
             {targetFeeId && (
               <>
                 <FeeAction
                   icon={<Send size={16} className="text-[#EB712B]" />}
-                  label="Send Payment Request"
-                  sublabel="Send reminder via email and push notification"
+                  label={t`Send Payment Request`}
+                  sublabel={t`Send reminder via email and push notification`}
                   onClick={handleSendReminder}
                   isLoading={isSendingReminder}
                   accent
                 />
                 <FeeAction
                   icon={<CheckCircle2 size={16} className="text-green-400" />}
-                  label="Mark as Paid Manually"
-                  sublabel="Record a cash or offline payment"
+                  label={t`Mark as Paid Manually`}
+                  sublabel={t`Record a cash or offline payment`}
                   onClick={() => setShowMarkPaid(true)}
                 />
               </>
             )}
             <FeeAction
               icon={<ArrowLeftRight size={16} className="text-sky-400" />}
-              label={targetFeeId ? "Change Assigned Fee" : "Assign Fee Plan"}
-              sublabel={targetFeeId ? "Move this member to a different fee plan" : "Assign a membership fee plan to this member"}
+              label={targetFeeId ? t`Change Assigned Fee` : t`Assign Fee Plan`}
+              sublabel={targetFeeId ? t`Move this member to a different fee plan` : t`Assign a membership fee plan to this member`}
               onClick={() => setShowChangeFee(true)}
             />
             {targetFeeId && (
               <>
                 <FeeAction
                   icon={<Percent size={16} className="text-slate-400" />}
-                  label={isExempt ? 'Remove Exemption' : 'Exempt from Payment'}
-                  sublabel={isExempt ? 'Re-assign this member to the fee' : 'Mark as not required to pay'}
+                  label={isExempt ? t`Remove Exemption` : t`Exempt from Payment`}
+                  sublabel={isExempt ? t`Re-assign this member to the fee` : t`Mark as not required to pay`}
                   onClick={handleExempt}
                   isLoading={isExempting}
                 />
                 <FeeAction
                   icon={<RefreshCw size={16} className="text-amber-400" />}
-                  label="Reset to Pending"
-                  sublabel="Clear payment status and reset to pending"
+                  label={t`Reset to Pending`}
+                  sublabel={t`Clear payment status and reset to pending`}
                   onClick={handleResetPending}
                   isLoading={isResetting}
                 />
@@ -938,12 +961,12 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
   const recipientCount = target === 'pending' ? pendingCount : notRenewedCount;
 
   const handleSend = async () => {
-    if (!selectedFeeId) { toast.error('Please select a fee plan'); return; }
+    if (!selectedFeeId) { toast.error(t`Please select a fee plan`); return; }
     try {
       await sendNotification({ clubId, feeId: selectedFeeId, target }).unwrap();
-      toast.success(`Reminders sent to ${recipientCount} ${target} member${recipientCount !== 1 ? 's' : ''}!`);
+      toast.success(t`Reminders sent to ${recipientCount} ${target} member(s)!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send reminders.');
+      toast.error(err?.data?.message || t`Failed to send reminders.`);
     }
   };
 
@@ -953,11 +976,11 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
       <div className="bg-surface border border-border rounded-3xl p-6 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-6 h-6 bg-[#EB712B] text-white rounded-full text-xs font-black flex items-center justify-center">1</span>
-          <p className="text-xs font-black uppercase tracking-wider text-text-main">Select Membership Fee</p>
+          <p className="text-xs font-black uppercase tracking-wider text-text-main"><Trans>Select Membership Fee</Trans></p>
         </div>
         <div className="space-y-2">
           {plans.length === 0 ? (
-            <p className="text-xs text-text-muted text-center py-4">No active fee plans found.</p>
+            <p className="text-xs text-text-muted text-center py-4"><Trans>No active fee plans found.</Trans></p>
           ) : (
             plans.map((plan) => (
               <button key={plan.id} type="button" onClick={() => setSelectedFeeId(plan.id)}
@@ -969,8 +992,8 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
                     <p className="text-xs font-bold text-text-main">{plan.name}</p>
                     <p className="text-[10px] text-text-muted mt-0.5">
                       {fmtCurrency(plan.price, plan.currency)} / {plan.billingInterval}
-                      {pendingCount > 0 && <span className="ml-2 text-amber-400">· {pendingCount} pending</span>}
-                      {notRenewedCount > 0 && <span className="ml-2 text-red-400">· {notRenewedCount} not renewed</span>}
+                      {pendingCount > 0 && <span className="ml-2 text-amber-400">· <Trans>{pendingCount} pending</Trans></span>}
+                      {notRenewedCount > 0 && <span className="ml-2 text-red-400">· <Trans>{notRenewedCount} not renewed</Trans></span>}
                     </p>
                   </div>
                   {selectedFeeId === plan.id && <Check size={14} className="text-[#EB712B] shrink-0" />}
@@ -985,7 +1008,7 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
       <div className="bg-surface border border-border rounded-3xl p-6 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-6 h-6 bg-[#EB712B] text-white rounded-full text-xs font-black flex items-center justify-center">2</span>
-          <p className="text-xs font-black uppercase tracking-wider text-text-main">Select Recipients</p>
+          <p className="text-xs font-black uppercase tracking-wider text-text-main"><Trans>Select Recipients</Trans></p>
         </div>
         <div className="space-y-2">
           <button type="button" onClick={() => setTarget('pending')}
@@ -998,8 +1021,8 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
               {target === 'pending' && <Check size={11} className="text-white" />}
             </div>
             <div className="text-left">
-              <p className="text-xs font-bold text-text-main">All pending members</p>
-              <p className="text-[10px] text-text-muted mt-0.5">{pendingCount} members who haven't paid yet</p>
+              <p className="text-xs font-bold text-text-main"><Trans>All pending members</Trans></p>
+              <p className="text-[10px] text-text-muted mt-0.5"><Trans>{pendingCount} members who haven't paid yet</Trans></p>
             </div>
           </button>
           <button type="button" onClick={() => setTarget('expired')}
@@ -1012,8 +1035,8 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
               {target === 'expired' && <Check size={11} className="text-white" />}
             </div>
             <div className="text-left">
-              <p className="text-xs font-bold text-text-main">Not renewed members</p>
-              <p className="text-[10px] text-text-muted mt-0.5">{notRenewedCount} members whose fee has expired</p>
+              <p className="text-xs font-bold text-text-main"><Trans>Not renewed members</Trans></p>
+              <p className="text-[10px] text-text-muted mt-0.5"><Trans>{notRenewedCount} members whose fee has expired</Trans></p>
             </div>
           </button>
         </div>
@@ -1023,18 +1046,18 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
       <div className="bg-surface border border-border rounded-3xl p-6 space-y-4">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-6 h-6 bg-[#EB712B] text-white rounded-full text-xs font-black flex items-center justify-center">3</span>
-          <p className="text-xs font-black uppercase tracking-wider text-text-main">Preview Message</p>
+          <p className="text-xs font-black uppercase tracking-wider text-text-main"><Trans>Preview Message</Trans></p>
         </div>
         <div className="bg-[#EB712B]/5 border border-[#EB712B]/20 rounded-2xl p-4 space-y-2">
           <div className="flex items-center gap-2">
             <BellRing size={14} className="text-[#EB712B]" />
-            <p className="text-xs font-black text-text-main">Your membership fee is pending</p>
+            <p className="text-xs font-black text-text-main"><Trans>Your membership fee is pending</Trans></p>
           </div>
           <p className="text-[11px] text-text-muted leading-relaxed">
-            Hi [Member Name],<br />
-            Your {selectedPlan?.name || 'membership fee'} of {selectedPlan ? fmtCurrency(selectedPlan.price, selectedPlan.currency) : '—'} is {target === 'pending' ? 'pending' : 'expired'}.
-            {selectedPlan?.endDate && <><br />Due date: {fmtDate(selectedPlan.endDate)}</>}<br />
-            <span className="text-[#EB712B]">Tap here to pay →</span>
+            <Trans>Hi [Member Name],</Trans><br />
+            <Trans>Your {selectedPlan?.name || 'membership fee'} of {selectedPlan ? fmtCurrency(selectedPlan.price, selectedPlan.currency) : '—'} is {target === 'pending' ? 'pending' : 'expired'}.</Trans>
+            {selectedPlan?.endDate && <><br /><Trans>Due date: {fmtDate(selectedPlan.endDate)}</Trans></>}<br />
+            <span className="text-[#EB712B]"><Trans>Tap here to pay →</Trans></span>
           </p>
         </div>
       </div>
@@ -1043,7 +1066,7 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
       <button onClick={handleSend} disabled={isSending || !selectedFeeId || recipientCount === 0}
         className="w-full py-4 bg-[#EB712B] hover:bg-[#d05c19] text-white text-sm font-black rounded-2xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-3 transition-all shadow-lg shadow-[#EB712B]/20">
         {isSending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-        {isSending ? 'Sending...' : `Send to ${recipientCount} Member${recipientCount !== 1 ? 's' : ''}`}
+        {isSending ? <Trans>Sending...</Trans> : <Trans>Send to {recipientCount} Member(s)</Trans>}
       </button>
     </div>
   );
@@ -1052,14 +1075,6 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
 // ─────────────────────────────────────────────────────────────────────────────
 // MEMBERS TAB (matches mobile "Member" + "Fee Detail" tabs)
 // ─────────────────────────────────────────────────────────────────────────────
-
-const STATUS_TABS = [
-  { key: '', label: 'All' },
-  { key: 'paid', label: 'Paid' },
-  { key: 'pending', label: 'Pending' },
-  { key: 'not_renewed', label: 'Not Renewed' },
-  { key: 'exempt', label: 'Exempt' },
-];
 
 const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans }) => {
   const [statusFilter, setStatusFilter] = useState('');
@@ -1074,10 +1089,18 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
 
   const members: any[] = Array.isArray(membersData) ? membersData : [];
 
-  const columns: Column<any>[] = [
+  const statusTabs = useMemo(() => [
+    { key: '', label: t`All` },
+    { key: 'paid', label: t`Paid` },
+    { key: 'pending', label: t`Pending` },
+    { key: 'not_renewed', label: t`Not Renewed` },
+    { key: 'exempt', label: t`Exempt` },
+  ], []);
+
+  const columns: Column<any>[] = useMemo(() => [
     {
       key: 'name',
-      label: 'Member',
+      label: t`Member`,
       sortable: true,
       render: (row) => {
         const name = row.fullName || row.memberName || row.name || row.user?.fullName || `Member #${row.userId || row.id}`;
@@ -1085,7 +1108,7 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
           <div 
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setSelectedMember(row)}
-            title="Click to view member actions"
+            title={t`Click to view member actions`}
           >
             <div className="w-10 h-10 rounded-full bg-hover flex items-center justify-center flex-shrink-0 border border-border overflow-hidden">
               {row.profileImage || row.profilePicUrl || row.user?.profilePicUrl ? (
@@ -1106,29 +1129,29 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
     },
     {
       key: 'plan',
-      label: 'Fee Plan',
+      label: t`Fee Plan`,
       sortable: true,
       render: (row) => {
-        const planName = row.planName || row.plan?.name || 'Club Membership';
+        const planName = row.planName || row.plan?.name || t`Club Membership`;
         return (
           <div>
             <div className="text-sm font-medium text-text-main">{planName}</div>
-            {row.currentPeriodEnd && <div className="text-[10px] text-text-muted">Valid until {fmtDate(row.currentPeriodEnd)}</div>}
+            {row.currentPeriodEnd && <div className="text-[10px] text-text-muted"><Trans>Valid until {fmtDate(row.currentPeriodEnd)}</Trans></div>}
           </div>
         );
       }
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       sortable: true,
       render: (row) => {
         const status = row.status || 'pending';
         const statusBadge = {
-          active: { label: 'Paid', bg: 'bg-green-500/10 text-green-400 border-green-500/20' },
-          pending: { label: 'Pending', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-          not_renewed: { label: 'Not Renewed', bg: 'bg-red-500/10 text-red-400 border-red-500/20' },
-          exempt: { label: 'Exempt', bg: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
+          active: { label: t`Paid`, bg: 'bg-green-500/10 text-green-400 border-green-500/20' },
+          pending: { label: t`Pending`, bg: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
+          not_renewed: { label: t`Not Renewed`, bg: 'bg-red-500/10 text-red-400 border-red-500/20' },
+          exempt: { label: t`Exempt`, bg: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
         }[status as string] || { label: status, bg: 'bg-slate-500/10 text-slate-400 border-slate-500/20' };
         
         return (
@@ -1147,14 +1170,14 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
           <button 
             onClick={() => setSelectedMember(row)}
             className="p-2 rounded-lg hover:bg-[#EB712B]/10 text-text-muted hover:text-[#EB712B] transition-colors"
-            title="View Actions"
+            title={t`View Actions`}
           >
             <ArrowLeftRight size={16} />
           </button>
         </div>
       )
     }
-  ];
+  ], []);
 
   return (
     <>
@@ -1170,7 +1193,7 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
       <div className="space-y-5">
         {/* Status Filters */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-          {STATUS_TABS.map((tab) => (
+          {statusTabs.map((tab) => (
             <button key={tab.key} onClick={() => setStatusFilter(tab.key)}
               className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shrink-0 border ${
                 statusFilter === tab.key
@@ -1186,7 +1209,7 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
         {/* Member Count */}
         <div className="flex items-center justify-between">
           <p className="text-xs text-text-muted">
-            {isFetching ? 'Loading...' : `${members.length} member${members.length !== 1 ? 's' : ''}`}
+            {isFetching ? <Trans>Loading...</Trans> : <Trans>{members.length} member(s)</Trans>}
           </p>
         </div>
 
@@ -1198,9 +1221,9 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
         ) : members.length === 0 ? (
           <div className="bg-surface border border-dashed border-border rounded-2xl p-8 text-center">
             <Users size={28} className="text-text-muted mx-auto mb-2 opacity-40" />
-            <p className="text-sm font-bold text-text-muted">No members found</p>
+            <p className="text-sm font-bold text-text-muted"><Trans>No members found</Trans></p>
             <p className="text-xs text-text-muted mt-1">
-              {statusFilter ? `No members with status "${statusFilter}".` : 'No subscribed members yet.'}
+              {statusFilter ? <Trans>No members with status "{statusFilter}".</Trans> : <Trans>No subscribed members yet.</Trans>}
             </p>
           </div>
         ) : (
@@ -1236,12 +1259,12 @@ const OverviewTab: React.FC<{
 
   const handleSendReminder = async () => {
     const firstPlan = plans[0];
-    if (!firstPlan) { toast.error('No active fee plans'); return; }
+    if (!firstPlan) { toast.error(t`No active fee plans`); return; }
     try {
       await sendNotification({ clubId, feeId: firstPlan.id, target: 'pending' }).unwrap();
-      toast.success('Payment reminders sent to all pending members!');
+      toast.success(t`Payment reminders sent to all pending members!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to send reminders.');
+      toast.error(err?.data?.message || t`Failed to send reminders.`);
     }
   };
 
@@ -1257,26 +1280,37 @@ const OverviewTab: React.FC<{
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Collected', value: fmtCurrency(totalCollected), icon: <DollarSign size={18} className="text-emerald-500" />, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-              { label: 'Expected', value: fmtCurrency(totalExpected), icon: <TrendingUp size={18} className="text-[#EB712B]" />, color: 'text-[#EB712B]', bg: 'bg-[#EB712B]/10' },
-              { label: 'Paid', value: String(paidCount), icon: <CheckCircle2 size={18} className="text-emerald-500" />, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-              { label: 'Pending', value: String(pendingCount + notRenewedCount), icon: <Clock size={18} className="text-amber-500" />, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-            ].map((stat) => (
-              <div key={stat.label} className="group relative bg-surface border border-border rounded-3xl p-5 overflow-hidden hover:border-[#EB712B]/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-full blur-2xl transition-opacity duration-500 -mr-10 -mt-10" />
-                <div className={`w-10 h-10 ${stat.bg} rounded-2xl flex items-center justify-center mb-3 shadow-inner`}>{stat.icon}</div>
-                <p className={`text-2xl font-black tracking-tight ${stat.color} drop-shadow-sm`}>{stat.value}</p>
-                <p className="text-[10px] text-text-muted mt-1 uppercase tracking-widest font-black opacity-80">{stat.label}</p>
-              </div>
-            ))}
+            <div className="group relative bg-surface border border-border rounded-3xl p-5 overflow-hidden hover:border-[#EB712B]/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-full blur-2xl transition-opacity duration-500 -mr-10 -mt-10" />
+              <div className="w-10 h-10 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-3 shadow-inner"><DollarSign size={18} className="text-emerald-500" /></div>
+              <p className="text-2xl font-black tracking-tight text-emerald-400 drop-shadow-sm">{fmtCurrency(totalCollected)}</p>
+              <p className="text-[10px] text-text-muted mt-1 uppercase tracking-widest font-black opacity-80"><Trans>Collected</Trans></p>
+            </div>
+            <div className="group relative bg-surface border border-border rounded-3xl p-5 overflow-hidden hover:border-[#EB712B]/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-full blur-2xl transition-opacity duration-500 -mr-10 -mt-10" />
+              <div className="w-10 h-10 bg-[#EB712B]/10 rounded-2xl flex items-center justify-center mb-3 shadow-inner"><TrendingUp size={18} className="text-[#EB712B]" /></div>
+              <p className="text-2xl font-black tracking-tight text-[#EB712B] drop-shadow-sm">{fmtCurrency(totalExpected)}</p>
+              <p className="text-[10px] text-text-muted mt-1 uppercase tracking-widest font-black opacity-80"><Trans>Expected</Trans></p>
+            </div>
+            <div className="group relative bg-surface border border-border rounded-3xl p-5 overflow-hidden hover:border-[#EB712B]/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-full blur-2xl transition-opacity duration-500 -mr-10 -mt-10" />
+              <div className="w-10 h-10 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-3 shadow-inner"><CheckCircle2 size={18} className="text-emerald-500" /></div>
+              <p className="text-2xl font-black tracking-tight text-emerald-400 drop-shadow-sm">{paidCount}</p>
+              <p className="text-[10px] text-text-muted mt-1 uppercase tracking-widest font-black opacity-80"><Trans>Paid</Trans></p>
+            </div>
+            <div className="group relative bg-surface border border-border rounded-3xl p-5 overflow-hidden hover:border-[#EB712B]/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-full blur-2xl transition-opacity duration-500 -mr-10 -mt-10" />
+              <div className="w-10 h-10 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-3 shadow-inner"><Clock size={18} className="text-amber-500" /></div>
+              <p className="text-2xl font-black tracking-tight text-amber-400 drop-shadow-sm">{pendingCount + notRenewedCount}</p>
+              <p className="text-[10px] text-text-muted mt-1 uppercase tracking-widest font-black opacity-80"><Trans>Pending</Trans></p>
+            </div>
           </div>
 
           {/* Progress Bar */}
           {totalExpected > 0 && (
             <div className="bg-gradient-to-br from-surface to-main-bg border border-border rounded-3xl p-6 space-y-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-black uppercase tracking-widest text-text-muted">Collection Progress</p>
+                <p className="text-xs font-black uppercase tracking-widest text-text-muted"><Trans>Collection Progress</Trans></p>
                 <div className="px-3 py-1 bg-[#EB712B]/10 rounded-full">
                   <p className="text-xs font-black text-[#EB712B]">{progress.toFixed(0)}%</p>
                 </div>
@@ -1286,7 +1320,7 @@ const OverviewTab: React.FC<{
                   style={{ width: `${progress}%` }} />
               </div>
               <p className="text-[11px] font-bold text-text-muted/80">
-                <span className="text-text-main">{fmtCurrency(totalCollected)}</span> collected of <span className="text-text-main">{fmtCurrency(totalExpected)}</span> expected
+                <Trans><span className="text-text-main">{fmtCurrency(totalCollected)}</span> collected of <span className="text-text-main">{fmtCurrency(totalExpected)}</span> expected</Trans>
               </p>
             </div>
           )}
@@ -1296,7 +1330,7 @@ const OverviewTab: React.FC<{
             <button onClick={handleSendReminder} disabled={isSendingReminder || plans.length === 0}
               className="w-full py-4 bg-[#EB712B] hover:bg-[#d05c19] text-white text-sm font-black rounded-2xl cursor-pointer disabled:opacity-50 flex items-center justify-center gap-3 transition-all shadow-lg shadow-[#EB712B]/20">
               {isSendingReminder ? <Loader2 size={16} className="animate-spin" /> : <Bell size={16} />}
-              {isSendingReminder ? 'Sending...' : `Send Reminder to ${pendingCount} Pending Member${pendingCount !== 1 ? 's' : ''}`}
+              {isSendingReminder ? <Trans>Sending...</Trans> : <Trans>Send Reminder to {pendingCount} Pending Member(s)</Trans>}
             </button>
           )}
         </>
@@ -1304,12 +1338,12 @@ const OverviewTab: React.FC<{
 
       {/* Plans */}
       <div>
-        <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-3">Active Fee Plans</p>
+        <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-3"><Trans>Active Fee Plans</Trans></p>
         {plans.length === 0 ? (
           <div className="bg-surface border border-dashed border-border rounded-2xl p-8 text-center">
             <Crown size={28} className="text-text-muted mx-auto mb-2 opacity-40" />
-            <p className="text-sm font-bold text-text-muted">No fee plans created yet</p>
-            <p className="text-xs text-text-muted mt-1">Click "+ Add Plan" to create your first membership fee.</p>
+            <p className="text-sm font-bold text-text-muted"><Trans>No fee plans created yet</Trans></p>
+            <p className="text-xs text-text-muted mt-1"><Trans>Click "+ Add Plan" to create your first membership fee.</Trans></p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -1321,7 +1355,7 @@ const OverviewTab: React.FC<{
                   <div
                     onClick={() => onViewDetail(plan.id)}
                     className="flex-1 min-w-0 cursor-pointer"
-                    title="Click to view plan details"
+                    title={t`Click to view plan details`}
                   >
                     <div className="flex items-center gap-3 flex-wrap mb-2">
                       <div className="flex items-center gap-2">
@@ -1329,13 +1363,13 @@ const OverviewTab: React.FC<{
                         <h3 className="text-lg font-black text-text-main truncate group-hover:text-[#EB712B] transition-colors">{plan.name}</h3>
                       </div>
                       {plan.saveAsDraft && (
-                        <span className="px-2.5 py-1 bg-slate-500/10 border border-slate-500/20 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest shadow-sm">Draft</span>
+                        <span className="px-2.5 py-1 bg-slate-500/10 border border-slate-500/20 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest shadow-sm"><Trans>Draft</Trans></span>
                       )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mt-5">
                       <div>
-                        <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">Fee Amount</p>
+                        <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1"><Trans>Fee Amount</Trans></p>
                         <div className="flex items-baseline gap-1">
                           <span className="text-xl font-black text-text-main">{fmtCurrency(plan.price, plan.currency)}</span>
                           <span className="text-[10px] font-bold text-text-muted uppercase">/ {plan.billingInterval}</span>
@@ -1343,7 +1377,7 @@ const OverviewTab: React.FC<{
                       </div>
                       {plan.endDate && (
                         <div>
-                          <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">Valid Until</p>
+                          <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1"><Trans>Valid Until</Trans></p>
                           <p className="text-sm font-bold text-text-main mt-1">{fmtDate(plan.endDate)}</p>
                         </div>
                       )}
@@ -1351,7 +1385,7 @@ const OverviewTab: React.FC<{
 
                     {plan.features && plan.features.length > 0 && (
                       <div className="mt-5 border-t border-border/50 pt-4">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-3">Included Features</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-text-muted mb-3"><Trans>Included Features</Trans></p>
                         <div className="flex flex-wrap gap-2">
                           {plan.features.slice(0, 3).map((f: string, i: number) => (
                             <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-main-bg border border-border rounded-xl">
@@ -1360,7 +1394,7 @@ const OverviewTab: React.FC<{
                             </div>
                           ))}
                           {plan.features.length > 3 && (
-                            <span className="px-3 py-1.5 bg-main-bg border border-border rounded-xl text-[10px] font-bold text-text-muted">+{plan.features.length - 3} more</span>
+                            <span className="px-3 py-1.5 bg-main-bg border border-border rounded-xl text-[10px] font-bold text-text-muted">+{plan.features.length - 3} <Trans>more</Trans></span>
                           )}
                         </div>
                       </div>
@@ -1371,18 +1405,18 @@ const OverviewTab: React.FC<{
                     <button
                       type="button"
                       onClick={() => onViewDetail(plan.id)}
-                      title="View Plan Details"
+                      title={t`View Plan Details`}
                       className="w-9 h-9 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-[#EB712B] hover:border-[#EB712B]/30 transition-all cursor-pointer shadow-sm hover:shadow-md"
                     >
                       <Eye size={15} />
                     </button>
                     <button onClick={() => onEdit(plan)}
-                      title="Edit Plan"
+                      title={t`Edit Plan`}
                       className="w-9 h-9 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-sky-400 hover:border-sky-400/30 transition-all cursor-pointer shadow-sm hover:shadow-md">
                       <Edit2 size={15} />
                     </button>
                     <button onClick={() => onDelete(plan.id)} disabled={isDeleting}
-                      title="Delete Plan"
+                      title={t`Delete Plan`}
                       className="w-9 h-9 bg-main-bg border border-border rounded-xl flex items-center justify-center text-text-muted hover:text-red-400 hover:border-red-500/30 transition-all cursor-pointer disabled:opacity-50 shadow-sm hover:shadow-md">
                       {isDeleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
                     </button>
@@ -1429,7 +1463,7 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
         navigate(ROUTES.STRIPE_CONNECT);
       }
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to initiate Stripe connection.');
+      toast.error(err?.data?.message || t`Failed to initiate Stripe connection.`);
       navigate(ROUTES.STRIPE_CONNECT);
     }
   };
@@ -1437,9 +1471,9 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
   const handleDelete = async (planId: number) => {
     try {
       await deletePlan({ planId, clubId }).unwrap();
-      toast.success('Plan deleted successfully!');
+      toast.success(t`Plan deleted successfully!`);
     } catch (err: any) {
-      toast.error(err?.data?.message || 'Failed to delete plan.');
+      toast.error(err?.data?.message || t`Failed to delete plan.`);
     }
   };
 
@@ -1448,11 +1482,11 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
     setShowForm(true);
   };
 
-  const TABS = [
-    { key: 'overview', label: 'Overview', icon: <TrendingUp size={13} /> },
-    { key: 'send', label: 'Send Requests', icon: <Send size={13} /> },
-    { key: 'members', label: 'Members', icon: <Users size={13} /> },
-  ];
+  const TABS = useMemo(() => [
+    { key: 'overview', label: t`Overview`, icon: <TrendingUp size={13} /> },
+    { key: 'send', label: t`Send Requests`, icon: <Send size={13} /> },
+    { key: 'members', label: t`Members`, icon: <Users size={13} /> },
+  ], []);
 
   return (
     <>
@@ -1486,12 +1520,12 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-center gap-3">
             <CreditCard size={18} className="text-amber-400 shrink-0" />
             <div className="flex-1">
-              <p className="text-xs font-bold text-amber-400">Stripe Not Connected</p>
-              <p className="text-[10px] text-amber-400/70 mt-0.5">Connect Stripe to accept online membership payments.</p>
+              <p className="text-xs font-bold text-amber-400"><Trans>Stripe Not Connected</Trans></p>
+              <p className="text-[10px] text-amber-400/70 mt-0.5"><Trans>Connect Stripe to accept online membership payments.</Trans></p>
             </div>
             <button onClick={handleConnectStripe} disabled={isConnectingStripe}
               className="px-4 py-2 bg-amber-500/20 border border-amber-500/30 text-amber-400 text-xs font-bold rounded-xl cursor-pointer hover:bg-amber-500/30 transition-all disabled:opacity-50 shrink-0">
-              {isConnectingStripe ? <Loader2 size={12} className="animate-spin" /> : 'Connect'}
+              {isConnectingStripe ? <Loader2 size={12} className="animate-spin" /> : <Trans>Connect</Trans>}
             </button>
           </div>
         )}
@@ -1510,7 +1544,7 @@ const OwnerMembershipView: React.FC<{ clubId: number }> = ({ clubId }) => {
           </div>
           <button onClick={() => { setEditingPlan(null); setShowForm(true); }}
             className="px-5 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white text-xs font-black rounded-xl cursor-pointer flex items-center gap-2 transition-all shadow-md shadow-[#EB712B]/20 sm:ml-auto">
-            <Plus size={14} /> Add Plan
+            <Plus size={14} /> <Trans>Add Plan</Trans>
           </button>
         </div>
 
@@ -1551,8 +1585,8 @@ const ClubMembership: React.FC = () => {
       <div className="min-h-screen bg-main-bg text-text-main p-8 flex items-center justify-center">
         <div className="bg-surface border border-border rounded-3xl p-12 text-center max-w-md space-y-4">
           <Crown size={40} className="text-text-muted mx-auto opacity-40" />
-          <h2 className="text-xl font-bold text-text-main">No Club Selected</h2>
-          <p className="text-sm text-text-muted">Select a club to view membership plans.</p>
+          <h2 className="text-xl font-bold text-text-main"><Trans>No Club Selected</Trans></h2>
+          <p className="text-sm text-text-muted"><Trans>Select a club to view membership plans.</Trans></p>
         </div>
       </div>
     );
@@ -1578,15 +1612,15 @@ const ClubMembership: React.FC = () => {
               </div>
               <div>
                 <span className="text-[9px] font-black uppercase tracking-widest text-[#EB712B]">
-                  Club Management
+                  <Trans>Club Management</Trans>
                 </span>
                 <h1 className="text-2xl md:text-4xl font-black tracking-tighter text-text-main">
-                  Club Membership
+                  <Trans>Club Membership</Trans>
                 </h1>
               </div>
             </div>
             <p className="text-sm text-text-muted max-w-2xl">
-              Create and manage membership fee plans. Track payments, send reminders, and manage member statuses.
+              <Trans>Create and manage membership fee plans. Track payments, send reminders, and manage member statuses.</Trans>
             </p>
           </div>
         </div>

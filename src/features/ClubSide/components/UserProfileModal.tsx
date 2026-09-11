@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Phone, Calendar, Loader2, User, MessageSquare, Clock, MapPin, Activity, Eye } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 import { useGetOtherUserInfoQuery } from '@/features/auth/api/authApiSlice';
 import { useNavigate } from 'react-router-dom';
 import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
@@ -49,7 +51,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
     });
   };
 
-  const genderLabel = user?.genderId === 1 ? 'Male' : user?.genderId === 2 ? 'Female' : 'Not specified';
+  const genderLabel = user?.genderId === 1 ? t`Male` : user?.genderId === 2 ? t`Female` : t`Not specified`;
   const resolvedAvatar = resolveImageUrl(user?.profileImage);
 
   const initials = user?.fullName
@@ -79,13 +81,13 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#EB712B]"></span>
             <span className="text-xs font-black uppercase tracking-widest text-[#EB712B]">
-              Member Profile
+              <Trans>Member Profile</Trans>
             </span>
           </div>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-main-bg border border-border hover:border-[#EB712B]/40 flex items-center justify-center text-text-muted hover:text-text-main transition-colors cursor-pointer"
-            title="Close modal"
+            title={t`Close modal`}
           >
             <X size={16} />
           </button>
@@ -96,15 +98,15 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-16 space-y-4">
               <Loader2 size={32} className="animate-spin text-[#EB712B]" />
-              <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Loading user profile...</p>
+              <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Loading user profile...</Trans></p>
             </div>
           ) : isError || !user ? (
             <div className="flex flex-col items-center justify-center py-16 space-y-4 text-center">
               <div className="w-16 h-16 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
                 <User size={28} className="text-red-400" />
               </div>
-              <h3 className="text-base font-bold text-text-main">Profile not found</h3>
-              <p className="text-xs text-text-muted max-w-xs">Unable to load details for this user.</p>
+              <h3 className="text-base font-bold text-text-main"><Trans>Profile not found</Trans></h3>
+              <p className="text-xs text-text-muted max-w-xs"><Trans>Unable to load details for this user.</Trans></p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -115,13 +117,13 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
                 <div 
                   className="relative shrink-0 group/avatar cursor-pointer"
                   onClick={() => setIsAvatarLightboxOpen(true)}
-                  title="Click to view full photo"
+                  title={t`Click to view full photo`}
                 >
                   <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-[#EB712B]/40 shadow-xl bg-surface flex items-center justify-center">
                     {resolvedAvatar && !avatarError ? (
                       <img
                         src={resolvedAvatar}
-                        alt={user.fullName || 'Member'}
+                        alt={user.fullName || t`Member`}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover/avatar:scale-105"
                         onError={() => setAvatarError(true)}
                       />
@@ -142,13 +144,13 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
                 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-black text-text-main truncate">
-                    {user.fullName || 'No name provided'}
+                    {user.fullName || t`No name provided`}
                   </h3>
                   <p className="text-xs text-[#EB712B] font-bold mt-0.5 truncate">{user.email}</p>
                   
                   <div className="flex items-center justify-center sm:justify-start gap-2 mt-3 flex-wrap">
                     <span className="px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20 rounded-full text-[10px] font-black uppercase tracking-wider">
-                      {user.isAthleteProfile ? 'Athlete' : 'Club Member'}
+                      {user.isAthleteProfile ? <Trans>Athlete</Trans> : <Trans>Club Member</Trans>}
                     </span>
                     {user.country && (
                       <span className="px-3 py-1 bg-white/5 text-text-muted border border-white/10 rounded-full text-[10px] font-bold flex items-center gap-1">
@@ -163,46 +165,46 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-4 bg-main-bg/80 rounded-2xl border border-white/5 space-y-1">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest flex items-center gap-1.5">
-                    <Phone size={12} className="text-[#EB712B]" /> Phone
+                    <Phone size={12} className="text-[#EB712B]" /> <Trans>Phone</Trans>
                   </p>
-                  <p className="text-xs font-bold text-text-main truncate">{user.phone || 'Not provided'}</p>
+                  <p className="text-xs font-bold text-text-main truncate">{user.phone || t`Not provided`}</p>
                 </div>
 
                 <div className="p-4 bg-main-bg/80 rounded-2xl border border-white/5 space-y-1">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest flex items-center gap-1.5">
-                    <Calendar size={12} className="text-[#EB712B]" /> Date of Birth
+                    <Calendar size={12} className="text-[#EB712B]" /> <Trans>Date of Birth</Trans>
                   </p>
-                  <p className="text-xs font-bold text-text-main truncate">{user.dob || 'Not provided'}</p>
+                  <p className="text-xs font-bold text-text-main truncate">{user.dob || t`Not provided`}</p>
                 </div>
 
                 <div className="p-4 bg-main-bg/80 rounded-2xl border border-white/5 space-y-1">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest flex items-center gap-1.5">
-                    <User size={12} className="text-[#EB712B]" /> Gender
+                    <User size={12} className="text-[#EB712B]" /> <Trans>Gender</Trans>
                   </p>
                   <p className="text-xs font-bold text-text-main truncate">{genderLabel}</p>
                 </div>
 
                 <div className="p-4 bg-main-bg/80 rounded-2xl border border-white/5 space-y-1">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest flex items-center gap-1.5">
-                    <Calendar size={12} className="text-[#EB712B]" /> Member Since
+                    <Calendar size={12} className="text-[#EB712B]" /> <Trans>Member Since</Trans>
                   </p>
                   <p className="text-xs font-bold text-text-main truncate">
-                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Recent'}
+                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : t`Recent`}
                   </p>
                 </div>
 
                 <div className="p-4 bg-main-bg/80 rounded-2xl border border-white/5 space-y-1">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest flex items-center gap-1.5">
-                    <Activity size={12} className="text-[#EB712B]" /> Preferred Unit
+                    <Activity size={12} className="text-[#EB712B]" /> <Trans>Preferred Unit</Trans>
                   </p>
                   <p className="text-xs font-bold text-text-main capitalize truncate">
-                    {user.unit || user.scale || 'Kilometer'}
+                    {user.unit || user.scale || t`Kilometer`}
                   </p>
                 </div>
 
                 <div className="p-4 bg-main-bg/80 rounded-2xl border border-white/5 space-y-1">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest flex items-center gap-1.5">
-                    <Clock size={12} className="text-[#EB712B]" /> Time Format / Zone
+                    <Clock size={12} className="text-[#EB712B]" /> <Trans>Time Format / Zone</Trans>
                   </p>
                   <p className="text-xs font-bold text-text-main truncate">
                     {user.timeFormat || '12h'} {user.timezone ? `(${user.timezone})` : ''}
@@ -214,7 +216,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
               {user.description && (
                 <div className="p-5 bg-main-bg/80 rounded-2xl border border-white/5">
                   <p className="text-[9px] text-text-muted font-black uppercase tracking-widest mb-2">
-                    Biography / About
+                    <Trans>Biography / About</Trans>
                   </p>
                   <p className="text-xs text-text-main leading-relaxed font-medium italic">
                     "{user.description}"
@@ -228,7 +230,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
                   onClick={handleSendMessage}
                   className="flex-1 bg-[#EB712B] hover:bg-[#ff7e36] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#EB712B]/20 transition-all cursor-pointer active:scale-95"
                 >
-                  <MessageSquare size={16} /> Send Direct Message
+                  <MessageSquare size={16} /> <Trans>Send Direct Message</Trans>
                 </button>
               </div>
             </div>
@@ -241,9 +243,9 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
         isOpen={isAvatarLightboxOpen}
         onClose={() => setIsAvatarLightboxOpen(false)}
         imageUrl={resolvedAvatar}
-        name={user?.fullName || "Member"}
+        name={user?.fullName || t`Member`}
         subtitle={user?.email || undefined}
-        tag="Avatar Preview"
+        tag={t`Avatar Preview`}
         fallbackInitials={initials}
       />
     </div>

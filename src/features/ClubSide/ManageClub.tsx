@@ -8,8 +8,10 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Trans } from "@lingui/react/macro";
+import { t } from "@lingui/core/macro";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useTableSort } from "@/hooks/useTableSort";
@@ -62,7 +64,7 @@ export const ManageClub = () => {
   // Map API data to table format
   const mappedClubs = uniqueClubs.map(club => ({
     id: club.id,
-    name: club.clubName || "Unnamed Club",
+    name: club.clubName || t`Unnamed Club`,
     img: club.coverImage || "/Images/CyclingPicture.jpg",
     logo: club.logo || "/Images/CyclingPicture.jpg",
     sub: `TYPE ID ${club.clubTypeId}`,
@@ -80,10 +82,10 @@ export const ManageClub = () => {
     currentPage * itemsPerPage
   );
 
-  const columns: Column<typeof mappedClubs[0]>[] = [
+  const columns: Column<typeof mappedClubs[0]>[] = useMemo(() => [
     {
       key: 'name',
-      label: 'Club Information',
+      label: t`Club Information`,
       sortable: true,
       render: (club) => (
         <div className="flex items-center gap-4">
@@ -103,7 +105,7 @@ export const ManageClub = () => {
     },
     {
       key: 'owner',
-      label: 'Owner',
+      label: t`Owner`,
       sortable: true,
       render: (club) => (
         <div className="text-sm flex items-center gap-2">
@@ -116,7 +118,7 @@ export const ManageClub = () => {
     },
     {
       key: 'count',
-      label: 'Member Count',
+      label: t`Member Count`,
       sortable: true,
       render: (club) => (
         <div className="text-sm font-bold">
@@ -129,7 +131,7 @@ export const ManageClub = () => {
     },
     {
       key: 'rank',
-      label: 'Global Rank',
+      label: t`Global Rank`,
       sortable: true,
       render: (club) => (
         <div className="text-sm font-bold text-[#EB712B]">
@@ -139,17 +141,17 @@ export const ManageClub = () => {
     },
     {
       key: 'status',
-      label: 'Status',
+      label: t`Status`,
       render: () => (
         <span className="flex items-center gap-1.5 px-2 py-1 bg-green-900/20 text-green-500 text-[10px] font-bold rounded border border-green-900/30 w-fit">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>{" "}
-          ACTIVE
+          <Trans>ACTIVE</Trans>
         </span>
       )
     },
     {
-      key: 'rank', // just a key, rendered completely by render fn
-      label: 'Actions',
+      key: 'rank',
+      label: t`Actions`,
       headerClass: 'text-right',
       cellClass: 'text-right',
       render: (club) => {
@@ -169,12 +171,12 @@ export const ManageClub = () => {
             }}
             className="px-5 py-2.5 bg-hover border border-border rounded-lg text-[10px] font-bold tracking-wider text-gray-300 hover:bg-[#222] hover:text-white hover:border-[#EB712B]/50 transition-all duration-300 cursor-pointer inline-block"
           >
-            {isAthlete ? "VIEW" : "MANAGE"}
+            {isAthlete ? <Trans>VIEW</Trans> : <Trans>MANAGE</Trans>}
           </button>
         );
       }
     }
-  ];
+  ], [user?.role, uniqueClubs, navigate, setActiveClub]);
 
   return (
     <motion.div
@@ -199,9 +201,9 @@ export const ManageClub = () => {
             <ArrowLeft size={24} />
           </a>
           <div>
-            <h1 className="text-3xl font-bold mb-1 text-text-main">MANAGE CLUBS</h1>
+            <h1 className="text-3xl font-bold mb-1 text-text-main"><Trans>MANAGE CLUBS</Trans></h1>
             <p className="text-text-muted text-sm">
-              High-performance oversight for your athletic organizations.
+              <Trans>High-performance oversight for your athletic organizations.</Trans>
             </p>
           </div>
         </div>
@@ -209,65 +211,67 @@ export const ManageClub = () => {
           onClick={() => navigate('/profile-setup')}
           className="bg-[#EB712B] flex items-center gap-2 px-6 py-2 rounded text-sm font-bold hover:bg-orange-600 transition cursor-pointer"
         >
-          <Plus size={18} /> Register New Club
+          <Plus size={18} /> <Trans>Register New Club</Trans>
         </button>
       </div>
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {[
-          {
-            label: "ACTIVE MEMBERS",
-            value: "14,204",
-            sub: "+12% from last cycle",
-            icon: TrendingUp,
-            color: "text-green-500",
-          },
-          {
-            label: "GLOBAL RANK AVG",
-            value: "#42",
-            sub: "ELITE TIER STATUS",
-            icon: Award,
-            color: "text-orange-500",
-          },
-          {
-            label: "AVG ENGAGEMENT",
-            value: "84.2%",
-            sub: "High Intensity Threshold",
-            icon: Zap,
-            color: "text-orange-500",
-          },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-surface p-6 border border-border hover:border-[#EB712B]/50 transition-all duration-300 flex flex-col justify-between"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <p className="text-[23px] text-text-muted font-bold uppercase tracking-wider">
-                {stat.label}
-              </p>
-              <stat.icon size={35} className="text-text-muted opacity-60" />
-            </div>
-            <div>
-              <p className="text-4xl font-bold mb-1">{stat.value}</p>
-              <p className={`text-[15px] font-bold ${stat.color}`}>
-                {stat.sub}
-              </p>
-            </div>
+        <div className="bg-surface p-6 border border-border hover:border-[#EB712B]/50 transition-all duration-300 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <p className="text-[23px] text-text-muted font-bold uppercase tracking-wider">
+              <Trans>ACTIVE MEMBERS</Trans>
+            </p>
+            <TrendingUp size={35} className="text-text-muted opacity-60" />
           </div>
-        ))}
+          <div>
+            <p className="text-4xl font-bold mb-1">{mappedClubs.reduce((acc, c) => acc + (Number(c.count) || 0), 0) || '0'}</p>
+            <p className="text-[15px] font-bold text-green-500">
+              <Trans>Verified Members</Trans>
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-surface p-6 border border-border hover:border-[#EB712B]/50 transition-all duration-300 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <p className="text-[23px] text-text-muted font-bold uppercase tracking-wider">
+              <Trans>TOTAL CLUBS</Trans>
+            </p>
+            <Award size={35} className="text-text-muted opacity-60" />
+          </div>
+          <div>
+            <p className="text-4xl font-bold mb-1">{uniqueClubs.length}</p>
+            <p className="text-[15px] font-bold text-orange-500">
+              <Trans>ELITE TIER STATUS</Trans>
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-surface p-6 border border-border hover:border-[#EB712B]/50 transition-all duration-300 flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <p className="text-[23px] text-text-muted font-bold uppercase tracking-wider">
+              <Trans>AVG ENGAGEMENT</Trans>
+            </p>
+            <Zap size={35} className="text-text-muted opacity-60" />
+          </div>
+          <div>
+            <p className="text-4xl font-bold mb-1">94.2%</p>
+            <p className="text-[15px] font-bold text-orange-500">
+              <Trans>High Intensity Threshold</Trans>
+            </p>
+          </div>
+        </div>
+
         <div className="bg-[#EB712B]/5 p-6 border border-[#EB712B]/20 flex flex-col justify-between">
           <div className="flex justify-between items-start mb-4">
             <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
-              GROWTH FORECAST
+              <Trans>GROWTH FORECAST</Trans>
             </p>
             <TrendingUp size={16} className="text-[#EB712B]" />
           </div>
           <div>
             <p className="text-xl font-bold mb-1 leading-tight text-text-main">
-              Projected +2,500
-              <br />
-              members
+              <Trans>Projected +2,500<br />members</Trans>
             </p>
             <div className="mt-4 w-full h-1 bg-hover rounded-full overflow-hidden">
               <div className="w-3/4 h-full bg-[#EB712B]" />
@@ -285,18 +289,18 @@ export const ManageClub = () => {
             <DataTable data={currentClubs} columns={columns} sortConfig={sortConfig} onRequestSort={requestSort} />
             {/* Pagination */}
             <div className="p-4 flex justify-between items-center text-[10px] font-bold uppercase text-text-muted bg-surface border border-border border-t-0 rounded-b-xl">
-              <p>Page {currentPage} of 2</p>
+              <p><Trans>Page {currentPage} of {Math.max(1, Math.ceil(sortedClubs.length / itemsPerPage))}</Trans></p>
               <div className="flex gap-2">
                 <button
-                  onClick={() => setCurrentPage(1)}
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                   className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
                 >
                   <ChevronLeft size={16} />
                 </button>
                 <button
-                  onClick={() => setCurrentPage(2)}
-                  disabled={currentPage === 2}
+                  onClick={() => setCurrentPage(prev => Math.min(Math.ceil(sortedClubs.length / itemsPerPage), prev + 1))}
+                  disabled={currentPage >= Math.ceil(sortedClubs.length / itemsPerPage)}
                   className="p-2 border border-border rounded hover:bg-hover disabled:opacity-20 cursor-pointer text-text-main"
                 >
                   <ChevronRight size={16} />
@@ -315,15 +319,9 @@ export const ManageClub = () => {
               <TrendingUp className="text-[#EB712B]" size={32} />
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-3 text-text-main">Club Intelligence</h3>
+              <h3 className="text-xl font-bold mb-3 text-text-main"><Trans>Club Intelligence</Trans></h3>
               <p className="text-text-muted">
-                Your managed entities have maintained a{" "}
-                <span className="text-[#EB712B] font-bold">
-                  98% technical compliance
-                </span>{" "}
-                rate this fiscal quarter. System analytics suggest no hardware
-                interventions required for the next 45 days based on current
-                intensity trends.
+                <Trans>Your managed entities have maintained a <span className="text-[#EB712B] font-bold">98% technical compliance</span> rate this fiscal quarter. System analytics suggest no hardware interventions required for the next 45 days based on current intensity trends.</Trans>
               </p>
             </div>
           </div>
@@ -334,14 +332,9 @@ export const ManageClub = () => {
               <Award className="text-emerald-500" size={32} />
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-3 text-text-main">Global Standing</h3>
+              <h3 className="text-xl font-bold mb-3 text-text-main"><Trans>Global Standing</Trans></h3>
               <p className="text-text-muted">
-                Elite status verified across all portfolios. Your operational
-                efficiency is currently ranked in the top{" "}
-                <span className="text-emerald-600 font-bold">
-                  5% of gear management professionals
-                </span>{" "}
-                worldwide within the Technical Athletics sector.
+                <Trans>Elite status verified across all portfolios. Your operational efficiency is currently ranked in the top <span className="text-emerald-600 font-bold">5% of gear management professionals</span> worldwide within the Technical Athletics sector.</Trans>
               </p>
             </div>
           </div>
