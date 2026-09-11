@@ -138,6 +138,42 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Club'],
     }),
 
+    getClubJoinCodes: builder.query<ClubTypes.ClubJoinCode[], ClubTypes.GetClubJoinCodesParams>({
+      query: (params) => ({
+        url: '/user/club/join/codes',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Club'],
+    }),
+
+    createClubJoinCode: builder.mutation<ClubTypes.ClubJoinCode, ClubTypes.CreateClubJoinCodeRequest>({
+      query: (body) => ({
+        url: '/user/club/join/code',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
+
+    updateClubJoinCode: builder.mutation<ClubTypes.ClubJoinCode, ClubTypes.UpdateClubJoinCodeRequest>({
+      query: (body) => ({
+        url: '/user/club/join/code',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
+
+    deleteClubJoinCode: builder.mutation<any, ClubTypes.DeleteClubJoinCodeRequest>({
+      query: (body) => ({
+        url: '/user/club/join/code',
+        method: 'DELETE',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
+
     getClubDashboardStats: builder.query<ClubTypes.GetClubDashboardStatsResponseResponse, ClubTypes.GetClubDashboardStatsParams>({
       query: (params) => ({
         url: '/user/club/dashboard/stats',
@@ -246,6 +282,10 @@ export const {
   useGetClubMembersListQuery,
   useGetClubJoinRequestQuery,
   useManageJoinGroupRequestMutation,
+  useGetClubJoinCodesQuery,
+  useCreateClubJoinCodeMutation,
+  useUpdateClubJoinCodeMutation,
+  useDeleteClubJoinCodeMutation,
   useGetClubDashboardStatsQuery,
   useGetClubInfoByIdQuery,
   useUpdateClubInfoByIdMutation,

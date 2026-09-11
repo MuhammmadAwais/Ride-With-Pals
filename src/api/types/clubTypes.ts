@@ -611,4 +611,47 @@ export type RemoveClubMemberRequest = {
     userId: number;
 }
 
+export interface ClubJoinCode {
+    id: number;
+    clubId: number;
+    code: string;
+    expiresAt: string | null;
+    usageLimit: number;
+    usedCount: number;
+    isActive: boolean;
+    createdById?: number;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: {
+        id?: number;
+        name?: string;
+        email?: string;
+        profileImage?: string;
+    };
+}
 
+export type GetClubJoinCodesParams = {
+    clubId: number;
+}
+
+export type CreateClubJoinCodeRequest = {
+    clubId: number;
+    code: string;
+    expiresAt: string;
+    usageLimit: number;
+    isActive?: boolean;
+}
+
+export type UpdateClubJoinCodeRequest = {
+    id: number;
+    clubId: number;
+    code: string;
+    expiresAt: string;
+    usageLimit: number;
+    isActive: boolean;
+}
+
+export type DeleteClubJoinCodeRequest = {
+    id: number;
+    clubId: number;
+}

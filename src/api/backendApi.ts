@@ -355,6 +355,26 @@ export const ClubService = logWrapper("ClubService", {
     return response.data;
   },
 
+  getClubJoinCodes: async (params: { clubId: number }) => {
+    const response = await backendApi.get('/user/club/join/codes', { params });
+    return response.data;
+  },
+
+  createClubJoinCode: async (data: { clubId: number; code: string; expiresAt: string; usageLimit: number; isActive?: boolean }) => {
+    const response = await backendApi.post('/user/club/join/code', data);
+    return response.data;
+  },
+
+  updateClubJoinCode: async (data: { id: number; clubId: number; code: string; expiresAt: string; usageLimit: number; isActive: boolean }) => {
+    const response = await backendApi.put('/user/club/join/code', data);
+    return response.data;
+  },
+
+  deleteClubJoinCode: async (data: { id: number; clubId: number }) => {
+    const response = await backendApi.delete('/user/club/join/code', { data });
+    return response.data;
+  },
+
   getClubDashboardStats: async (params?: Record<string, any>) => {
     const response = await backendApi.get('/user/club/dashboard/stats', { params });
     return response.data;
