@@ -31,6 +31,8 @@ import { useActiveClub } from '@/hooks/useActiveClub';
 import { useClubPermissions } from '@/hooks/useClubPermissions';
 import { useGetClubMembersListQuery } from '@/features/club/api/clubApiSlice';
 import {
+  useGetClubPermissionsQuery,
+  useSavePermissionsForRoleMutation,
   useApplyPermissionTogglesForSelectedMembersMutation,
   useGrantRevokeFullClubAccessForOneMemberMutation,
   useAssignRoleToMemberMutation,
@@ -353,11 +355,299 @@ const MemberCard: React.FC<MemberCardProps> = ({ member, clubId }) => {
   );
 };
 
+// ── Role Baseline Defaults Component ──────────────────────────────────────────
+
+interface RoleDefaultsSectionProps {
+  clubId: number;
+}
+
+const RoleDefaultsSection: React.FC<RoleDefaultsSectionProps> = ({ clubId }) => {
+  const { data: permissionsData, isLoading, refetch } = useGetClubPermissionsQuery(
+    { clubId },
+    { skip: !clubId }
+  );
+
+  const [saveRolePermissions] = useSavePermissionsForRoleMutation();
+  const [savingRoleId, setSavingRoleId] = useState<number | null>(null);
+
+  const permissionDefinitions = useMemo(() => [
+    { id: 1, key: 'publishRides', label: t`Publish Rides`, description: t`Can create and publish group rides for the club` },
+    { id: 2, key: 'publishNews', label: t`Publish News`, description: t`Can write and publish news articles and announcements` },
+    { id: 3, key: 'publishDiscount', label: t`Manage Discounts`, description: t`Can issue and configure partner discount vouchers` },
+    { id: 4, key: 'acceptOrBanUsers', label: t`Accept / Ban Users`, description: t`Can moderate join requests and athlete access` },
+    { id: 5, key: 'manageMembershipFee', label: t`Manage Membership Fees`, description: t`Can configure membership plans and dues` },
+  ], []);
+
+  // Admin Defaults (Role 1)
+  const [adminPerms, setAdminPerms] = useState<Record<number, boolean>>({
+    1: true,
+    2: true,
+    3: true,
+    4: true,
+    5: true,
+  });
+
+  // Regular Member Defaults (Role 2)
+  const [memberPerms, setMemberPerms] = useState<Record<number, boolean>>({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+  });
+
+  // Populate from API
+  useEffect(() => {
+    if (!permissionsData) return;
+    const rolePerms = permissionsData.rolePermissions || [];
+    
+    // Admin (roleId 1)
+    const adminRows = rolePerms.filter((p: any) => p.roleId === 1 || p.roleName?.toLowerCase().includes('admin'));
+    if (adminRows.length > 0) {
+      const nextAdmin: Record<number, boolean> = {};
+      adminRows.forEach((p: any) => {
+        nextAdmin[p.permissionId] = Boolean(p.isAllowed);
+      });
+      setAdminPerms(prev => ({ ...prev, ...nextAdmin }));
+    }
+
+    // Member (roleId 2)
+    const memberRows = rolePerms.filter((p: any) => p.roleId === 2 || p.roleName?.toLowerCase().includes('user') || p.roleName?.toLowerCase().includes('member'));
+    if (memberRows.length > 0) {
+      const nextMember: Record<number, boolean> = {};
+      memberRows.forEach((p: any) => {
+        nextMember[p.permissionId] = Boolean(p.isAllowed);
+      });
+      setMemberPerms(prev => ({ ...prev, ...nextMember }));
+    }
+  }, [permissionsData]);
+
+  const handleSaveRole = async (roleId: number, perms: Record<number, boolean>, roleTitle: string) => {
+    setSavingRoleId(roleId);
+    try {
+      const payload = permissionDefinitions.map((def) => ({
+        permissionId: def.id,
+        isAllowed: Boolean(perms[def.id]),
+      }));
+
+      await saveRolePermissions({
+        clubId,
+        roleId,
+        permissions: payload,
+      }).unwrap();
+
+      toast.success(t`${roleTitle} baseline permissions saved successfully!`);
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.data?.message || t`Failed to save role permissions.`);
+    } finally {
+      setSavingRoleId(null);
+    }
+  };
+
+  const handleToggleAll = (
+    value: boolean, 
+    setter: React.Dispatch<React.SetStateAction<Record<number, boolean>>>
+  ) => {
+    const updated: Record<number, boolean> = {};
+    permissionDefinitions.forEach((def) => {
+      updated[def.id] = value;
+    });
+    setter(updated);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="py-16 flex items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-[#EB712B]" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-300">
+      <div className="p-4 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-2xl flex items-center gap-3 text-xs text-[#EB712B] font-medium">
+        <ShieldCheck size={18} className="shrink-0" />
+        <span>
+          <Trans>Configure default permissions inherited whenever an athlete is assigned the Administrator role or joins as a standard club member.</Trans>
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Administrator Role Card */}
+        <div className="bg-surface border border-border rounded-3xl p-6 shadow-xl flex flex-col justify-between space-y-6">
+          <div className="space-y-5">
+            <div className="flex items-center justify-between pb-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#EB712B]/10 border border-[#EB712B]/20 flex items-center justify-center text-[#EB712B]">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-text-main">
+                    <Trans>Administrator Defaults</Trans>
+                  </h3>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#EB712B]">
+                    <Trans>Role ID: 1 • Club Admins</Trans>
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleToggleAll(true, setAdminPerms)}
+                  className="px-2.5 py-1 text-[10px] font-bold text-text-muted hover:text-text-main bg-main-bg border border-border rounded-lg transition-colors cursor-pointer"
+                >
+                  <Trans>All</Trans>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleAll(false, setAdminPerms)}
+                  className="px-2.5 py-1 text-[10px] font-bold text-text-muted hover:text-text-main bg-main-bg border border-border rounded-lg transition-colors cursor-pointer"
+                >
+                  <Trans>None</Trans>
+                </button>
+              </div>
+            </div>
+
+            <p className="text-xs text-text-muted leading-relaxed">
+              <Trans>Default baseline capabilities granted to all administrators across this club.</Trans>
+            </p>
+
+            <div className="space-y-3">
+              {permissionDefinitions.map((def) => {
+                const isChecked = Boolean(adminPerms[def.id]);
+                return (
+                  <div
+                    key={def.id}
+                    onClick={() => setAdminPerms(prev => ({ ...prev, [def.id]: !prev[def.id] }))}
+                    className="flex items-center justify-between p-3.5 bg-main-bg border border-border rounded-2xl cursor-pointer hover:border-[#EB712B]/30 transition-all select-none"
+                  >
+                    <div className="pr-3">
+                      <p className="text-xs font-bold text-text-main">{def.label}</p>
+                      <p className="text-[10px] text-text-muted mt-0.5">{def.description}</p>
+                    </div>
+                    <div className="shrink-0">
+                      {isChecked ? (
+                        <ToggleRight size={26} className="text-[#EB712B]" />
+                      ) : (
+                        <ToggleLeft size={26} className="text-text-muted" />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleSaveRole(1, adminPerms, t`Administrator`)}
+            disabled={savingRoleId === 1}
+            className="w-full py-3 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-[#EB712B]/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            {savingRoleId === 1 ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                <span><Trans>Saving...</Trans></span>
+              </>
+            ) : (
+              <span><Trans>Save Administrator Defaults</Trans></span>
+            )}
+          </button>
+        </div>
+
+        {/* Regular Member Role Card */}
+        <div className="bg-surface border border-border rounded-3xl p-6 shadow-xl flex flex-col justify-between space-y-6">
+          <div className="space-y-5">
+            <div className="flex items-center justify-between pb-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500">
+                  <UserCheck size={20} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-text-main">
+                    <Trans>Regular Member Defaults</Trans>
+                  </h3>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
+                    <Trans>Role ID: 2 • Standard Athletes</Trans>
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleToggleAll(true, setMemberPerms)}
+                  className="px-2.5 py-1 text-[10px] font-bold text-text-muted hover:text-text-main bg-main-bg border border-border rounded-lg transition-colors cursor-pointer"
+                >
+                  <Trans>All</Trans>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleAll(false, setMemberPerms)}
+                  className="px-2.5 py-1 text-[10px] font-bold text-text-muted hover:text-text-main bg-main-bg border border-border rounded-lg transition-colors cursor-pointer"
+                >
+                  <Trans>None</Trans>
+                </button>
+              </div>
+            </div>
+
+            <p className="text-xs text-text-muted leading-relaxed">
+              <Trans>Default baseline capabilities granted to standard athlete members when accepted into the club.</Trans>
+            </p>
+
+            <div className="space-y-3">
+              {permissionDefinitions.map((def) => {
+                const isChecked = Boolean(memberPerms[def.id]);
+                return (
+                  <div
+                    key={def.id}
+                    onClick={() => setMemberPerms(prev => ({ ...prev, [def.id]: !prev[def.id] }))}
+                    className="flex items-center justify-between p-3.5 bg-main-bg border border-border rounded-2xl cursor-pointer hover:border-blue-500/30 transition-all select-none"
+                  >
+                    <div className="pr-3">
+                      <p className="text-xs font-bold text-text-main">{def.label}</p>
+                      <p className="text-[10px] text-text-muted mt-0.5">{def.description}</p>
+                    </div>
+                    <div className="shrink-0">
+                      {isChecked ? (
+                        <ToggleRight size={26} className="text-blue-500" />
+                      ) : (
+                        <ToggleLeft size={26} className="text-text-muted" />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleSaveRole(2, memberPerms, t`Regular Member`)}
+            disabled={savingRoleId === 2}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            {savingRoleId === 2 ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                <span><Trans>Saving...</Trans></span>
+              </>
+            ) : (
+              <span><Trans>Save Member Defaults</Trans></span>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ── Main Page Component ────────────────────────────────────────────────────────
 
 const ClubPermissions: React.FC = () => {
   const { clubId } = useActiveClub();
   const permissions = useClubPermissions(clubId || undefined);
+  const [mainView, setMainView] = useState<'members' | 'roleDefaults'>('members');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'admins' | 'full' | 'members'>('all');
 
@@ -459,91 +749,123 @@ const ClubPermissions: React.FC = () => {
           </p>
         </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { label: t`Total Members`, value: stats.total, icon: <Users size={18} /> },
-            { label: t`Admins`, value: stats.admins, icon: <ShieldCheck size={18} /> },
-            { label: t`Full Access`, value: stats.fullAccess, icon: <Crown size={18} /> },
-            { label: t`Regular Members`, value: stats.regular, icon: <UserCheck size={18} /> },
-          ].map((stat, i) => (
-            <div key={i} className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 text-[#EB712B] shadow-xs">{stat.icon}</div>
-              <div>
-                <p className="text-xl font-black text-text-main">{stat.value}</p>
-                <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">{stat.label}</p>
+        {/* Main View Switcher */}
+        <div className="flex items-center gap-2 p-1.5 bg-surface border border-border rounded-2xl self-start">
+          <button
+            onClick={() => setMainView('members')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              mainView === 'members'
+                ? 'bg-[#EB712B] text-white shadow-md'
+                : 'text-text-muted hover:text-text-main hover:bg-hover'
+            }`}
+          >
+            <Users size={15} />
+            <span><Trans>Member Delegation</Trans></span>
+          </button>
+          <button
+            onClick={() => setMainView('roleDefaults')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              mainView === 'roleDefaults'
+                ? 'bg-[#EB712B] text-white shadow-md'
+                : 'text-text-muted hover:text-text-main hover:bg-hover'
+            }`}
+          >
+            <ShieldCheck size={15} />
+            <span><Trans>Role Baseline Defaults</Trans></span>
+          </button>
+        </div>
+
+        {mainView === 'roleDefaults' ? (
+          <RoleDefaultsSection clubId={effectiveClubId} />
+        ) : (
+          <>
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: t`Total Members`, value: stats.total, icon: <Users size={18} /> },
+                { label: t`Admins`, value: stats.admins, icon: <ShieldCheck size={18} /> },
+                { label: t`Full Access`, value: stats.fullAccess, icon: <Crown size={18} /> },
+                { label: t`Regular Members`, value: stats.regular, icon: <UserCheck size={18} /> },
+              ].map((stat, i) => (
+                <div key={i} className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 text-[#EB712B] shadow-xs">{stat.icon}</div>
+                  <div>
+                    <p className="text-xl font-black text-text-main">{stat.value}</p>
+                    <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider">{stat.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Controls: Search & Tabs */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-1.5 p-1 bg-surface border border-border rounded-xl self-start md:self-auto overflow-x-auto max-w-full">
+                {[
+                  { key: 'all', label: t`All` },
+                  { key: 'admins', label: t`Admins` },
+                  { key: 'full', label: t`Full Access` },
+                  { key: 'members', label: t`Regular` },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key as any)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      activeTab === tab.key
+                        ? 'bg-[#EB712B] text-white shadow-sm'
+                        : 'text-text-muted hover:text-text-main hover:bg-hover'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Input */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                <input
+                  type="text"
+                  placeholder={t`Search members by name or email...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-surface border border-border pl-11 pr-4 py-2.5 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
+                />
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Controls: Search & Tabs */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          {/* Filter Tabs */}
-          <div className="flex items-center gap-1.5 p-1 bg-surface border border-border rounded-xl self-start md:self-auto overflow-x-auto max-w-full">
-            {[
-              { key: 'all', label: t`All` },
-              { key: 'admins', label: t`Admins` },
-              { key: 'full', label: t`Full Access` },
-              { key: 'members', label: t`Regular` },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                  activeTab === tab.key
-                    ? 'bg-[#EB712B] text-white shadow-sm'
-                    : 'text-text-muted hover:text-text-main hover:bg-hover'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-            <input
-              type="text"
-              placeholder={t`Search members by name or email...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface border border-border pl-11 pr-4 py-2.5 rounded-xl text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B]/50 transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Member List */}
-        {isLoadingMembers ? (
-          <div className="space-y-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-surface border border-border rounded-2xl p-4 animate-pulse flex items-center gap-4">
-                <div className="w-10 h-10 bg-[#222] rounded-xl" />
-                <div className="flex-1 space-y-2">
-                  <div className="w-1/3 h-3 bg-[#222] rounded" />
-                  <div className="w-1/5 h-2 bg-[#222] rounded" />
-                </div>
+            {/* Member List */}
+            {isLoadingMembers ? (
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-surface border border-border rounded-2xl p-4 animate-pulse flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#222] rounded-xl" />
+                    <div className="flex-1 space-y-2">
+                      <div className="w-1/3 h-3 bg-[#222] rounded" />
+                      <div className="w-1/5 h-2 bg-[#222] rounded" />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : filteredMembers.length === 0 ? (
-          <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-3">
-            <Users size={32} className="text-text-muted mx-auto opacity-40" />
-            <p className="text-xs text-text-muted font-bold uppercase tracking-wider">
-              {searchQuery ? t`No members match your search` : t`No members found in this category`}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filteredMembers.map((member: any) => (
-              <MemberCard
-                key={member.userId || member.id}
-                member={member}
-                clubId={effectiveClubId}
-              />
-            ))}
-          </div>
+            ) : filteredMembers.length === 0 ? (
+              <div className="bg-surface border border-border rounded-3xl p-12 text-center space-y-3">
+                <Users size={32} className="text-text-muted mx-auto opacity-40" />
+                <p className="text-xs text-text-muted font-bold uppercase tracking-wider">
+                  {searchQuery ? t`No members match your search` : t`No members found in this category`}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredMembers.map((member: any) => (
+                  <MemberCard
+                    key={member.userId || member.id}
+                    member={member}
+                    clubId={effectiveClubId}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
