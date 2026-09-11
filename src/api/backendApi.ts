@@ -641,6 +641,11 @@ export const SubscriptionService = logWrapper("SubscriptionService", {
     return response.data;
   },
 
+  disconnectStripe: async (data: { clubId: number }, params?: Record<string, any>) => {
+    const response = await backendApi.delete('/user/club/stripe/disconnect', { data, params });
+    return response.data;
+  },
+
   sendSubscriptionReminder: async (data?: any, params?: Record<string, any>) => {
     const response = await backendApi.post('/user/club/membership/remind', data, { params });
     return response.data;

@@ -27,10 +27,20 @@ export const stripeApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: ['Club'],
     }),
+
+    disconnectStripe: builder.mutation<any, { clubId: number }>({
+      query: (body) => ({
+        url: '/user/club/stripe/disconnect',
+        method: 'DELETE',
+        body,
+      }),
+      invalidatesTags: ['Club'],
+    }),
   }),
 });
 
 export const {
   useConnectStripeMutation,
   useCheckStripeAccountStatusQuery,
+  useDisconnectStripeMutation,
 } = stripeApiSlice;

@@ -8,6 +8,7 @@
  * - Provides enterprise-level status reporting, error recovery, and direct support integration.
  */
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   CreditCard,
@@ -28,6 +29,9 @@ import {
   Users,
   Building2,
   Lock,
+  Unlink,
+  AlertTriangle,
+  X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Trans } from '@lingui/react/macro';
@@ -37,6 +41,7 @@ import { useClubPermissions } from '@/hooks/useClubPermissions';
 import {
   useConnectStripeMutation,
   useCheckStripeAccountStatusQuery,
+  useDisconnectStripeMutation,
 } from '@/features/club/api/stripeApiSlice';
 import { ROUTES } from '@/Constants';
 
@@ -55,8 +60,10 @@ const StripeConnect: React.FC = () => {
   );
 
   const [connectStripe, { isLoading: isConnecting }] = useConnectStripeMutation();
+  const [disconnectStripe, { isLoading: isDisconnecting }] = useDisconnectStripeMutation();
   const [connectError, setConnectError] = useState<string | null>(null);
   const [copiedAccount, setCopiedAccount] = useState(false);
+  const [isDisconnectModalOpen, setIsDisconnectModalOpen] = useState(false);
 
   const stripeData = (stripeStatus as any)?.response || stripeStatus || {};
   const isConnected = Boolean(
@@ -105,6 +112,21 @@ const StripeConnect: React.FC = () => {
       },
     });
   };
+
+  const handleDisconnect = async () => {
+    if (!clubId) return;
+    try {
+      await disconnectStripe({ clubId: Number(clubId) }).unwrap();
+      toast.success(t`Stripe account disconnected successfully.`);
+      setIsDisconnectModalOpen(false);
+      refetch();
+    } catch (err: any) {
+      console.error("Failed to disconnect Stripe account:", err);
+      toast.error(err?.data?.message || err?.response?.data?.message || err?.message || t`Failed to disconnect Stripe account.`);
+    }
+  };
+
+  const modalRoot = typeof document !== 'undefined' ? (document.getElementById('modal-root') || document.body) : null;
 
   // ── Access guard ──────────────────────────────────────────────────────────────
   if (permissions.isLoading || isLoadingStatus) {
@@ -263,6 +285,15 @@ const StripeConnect: React.FC = () => {
                   >
                     {isConnecting ? <Loader2 size={15} className="animate-spin text-[#EB712B]" /> : <ExternalLink size={15} />}
                     <Trans>Stripe Portal</Trans>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsDisconnectModalOpen(true)}
+                    disabled={isDisconnecting}
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer disabled:opacity-50 hover:border-red-500/50"
+                  >
+                    <Unlink size={15} />
+                    <Trans>Disconnect</Trans>
                   </button>
                   <button
                     onClick={() => navigate(ROUTES.DASHBOARD)}
@@ -455,6 +486,93 @@ const StripeConnect: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Disconnect Confirmation Modal */}
+      {isDisconnectModalOpen && modalRoot && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => { if (e.target === e.currentTarget && !isDisconnecting) setIsDisconnectModalOpen(false); }}
+        >
+          <div className="bg-[#1C1214] border border-red-500/30 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-red-500/20 bg-[#221316]">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30">
+                  <Unlink size={18} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-white">
+                    <Trans>Disconnect Stripe Account</Trans>
+                  </h3>
+                  <p className="text-xs text-red-400 font-medium">
+                    <Trans>Revoke merchant gateway connection</Trans>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => { if (!isDisconnecting) setIsDisconnectModalOpen(false); }}
+                className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              <p className="text-xs text-gray-300 leading-relaxed">
+                <Trans>
+                  Are you sure you want to disconnect your Stripe merchant account from this club? 
+                  Once disconnected:
+                </Trans>
+              </p>
+
+              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-xs text-red-200 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-red-400">
+                  <AlertTriangle size={15} />
+                  <span><Trans>Impact of Disconnection</Trans></span>
+                </div>
+                <ul className="list-disc list-inside space-y-1.5 text-gray-300">
+                  <li><Trans>Members will no longer be able to pay recurring dues or subscribe.</Trans></li>
+                  <li><Trans>Merchandise shop checkout will be disabled for this club.</Trans></li>
+                  <li><Trans>Automated bank payouts for new transactions will stop.</Trans></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-red-500/20 bg-[#221316]">
+              <button
+                type="button"
+                onClick={() => setIsDisconnectModalOpen(false)}
+                disabled={isDisconnecting}
+                className="px-5 py-2.5 rounded-xl border border-white/10 text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              >
+                <Trans>Cancel</Trans>
+              </button>
+              <button
+                type="button"
+                onClick={handleDisconnect}
+                disabled={isDisconnecting}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-black text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-lg shadow-red-600/30"
+              >
+                {isDisconnecting ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span><Trans>Disconnecting...</Trans></span>
+                  </>
+                ) : (
+                  <>
+                    <Unlink size={14} />
+                    <span><Trans>Confirm Disconnect</Trans></span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        modalRoot
+      )}
     </div>
   );
 };
