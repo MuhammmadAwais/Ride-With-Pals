@@ -241,7 +241,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { isDark } = useTheme();
 
   // Whether this user can manage clubs (has at least one managed/owned club)
-  const hasManageableClubs = myClubs.length > 0;
+  const hasManageableClubs = Array.isArray(myClubs) && myClubs.length > 0;
 
   const [profileMenuOpen,  setProfileMenuOpen]  = useState(false);
   const [logoutModalOpen,  setLogoutModalOpen]  = useState(false);

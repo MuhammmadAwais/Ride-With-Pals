@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MoreVertical, CreditCard, Plus, X } from "lucide-react";
+import { MoreVertical, CreditCard, Plus, X, Trash2, Edit3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
+import { DeleteClubModal } from "@/components/common/DeleteClubModal";
 
 interface MembershipPlan {
   id: string;
@@ -40,6 +41,7 @@ const ManageClubHome = () => {
   const selectedName = activeClub?.clubName || "Club Name";
 
   const [activeTab, setActiveTab] = useState("Members");
+  const [isDeleteClubModalOpen, setIsDeleteClubModalOpen] = useState(false);
 
   // State to track which menu is open across sections
   const [openMenuIndex, setOpenMenuIndex] = useState<{
@@ -399,18 +401,35 @@ const ManageClubHome = () => {
             </svg>
           </button>
 
-          {/* ADDED EDIT CLUB BUTTON */}
-          {permissions.isAdmin && (
-            <button
-              onClick={() => navigate("/edit-club")}
-              className="px-6 py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black 
-                       tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 
-                       transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 
-                       hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 backdrop-blur-md"
-            >
-              <Trans>Edit Club</Trans>
-            </button>
-          )}
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            {permissions.isAdmin && (
+              <button
+                onClick={() => navigate("/edit-club")}
+                className="flex items-center gap-2 px-5 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black 
+                         tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 
+                         transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 
+                         hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 backdrop-blur-md"
+              >
+                <Edit3 size={14} />
+                <span><Trans>Edit Club</Trans></span>
+              </button>
+            )}
+
+            {permissions.isOwner && (
+              <button
+                type="button"
+                onClick={() => setIsDeleteClubModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-3 bg-red-600/40 hover:bg-red-600 text-red-200 hover:text-white rounded-2xl text-xs font-black 
+                         tracking-wider uppercase cursor-pointer shadow-lg shadow-black/40 
+                         transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 border border-red-500/40 backdrop-blur-md"
+                title={t`Delete Club`}
+              >
+                <Trash2 size={14} />
+                <span className="hidden sm:inline"><Trans>Delete</Trans></span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Club Info Overlay Section */}
@@ -889,6 +908,19 @@ const ManageClubHome = () => {
 
         {activeTab === "Leaderboard" && <Leaderboard />}
       </div>
+
+      {/* Delete Club Modal */}
+      {clubId && (
+        <DeleteClubModal
+          isOpen={isDeleteClubModalOpen}
+          onClose={() => setIsDeleteClubModalOpen(false)}
+          clubId={clubId}
+          clubName={activeClub?.clubName}
+          clubLogo={activeClub?.logo}
+          clubLocation={activeClub?.location}
+          clubType={activeClub?.clubTypeId === 2 ? 'Running' : activeClub?.clubTypeId === 3 ? 'Triathlon' : 'Cycling'}
+        />
+      )}
     </div>
   );
 };

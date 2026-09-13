@@ -52,30 +52,22 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <>{children}</>;
   }
 
-  // 4. Club-side route guard: if user is trying to access /view/clubside/* but has no managed clubs,
-  //    redirect them to the Athlete Interface instead of showing an empty dashboard.
-  //    myClubs is loaded on app boot; if empty it means they don't own/admin any club.
-  //    We allow access if myClubs hasn't loaded yet (length === 0 is ambiguous on first load),
-  //    so we only block when we know the user's role is NOT owner/organizer.
-  const isClubSideRoute = location.pathname.startsWith('/view/clubside');
-  const userRole = user?.role;
-  const isClubOwnerOrOrganizer = userRole === 'owner' || userRole === 'organizer';
+  // 4. Club-side route guard: if user is trying to access /view/clubside/* or /manage-club/*
+  //    but has 0 managed clubs, redirect them to the Athlete Interface.
+  const isClubSideRoute = location.pathname.startsWith('/view/clubside') || location.pathname.startsWith('/manage-club');
+  const isClubLoading = useAppSelector((s) => s.club.isLoading);
 
-  if (isClubSideRoute && !isClubOwnerOrOrganizer && myClubs.length === 0) {
-    // Non-owner user trying to access club management — redirect to athlete interface
+  if (isClubSideRoute && !isClubLoading && Array.isArray(myClubs) && myClubs.length === 0) {
     return <Navigate to={ROUTES.CLUBS} replace />;
   }
 
-  // If they hit /dashboard or any root-like protected path without a specific intent, route them based on their current active role.
+  // If they hit /dashboard or any root-like protected path without a specific intent, route them based on active manageable clubs.
   if (location.pathname === '/dashboard') {
-      if (!user?.role) {
-         return <Navigate to="/select-role" replace />;
-      }
-      if (user.role === 'owner' || user.role === 'organizer') {
-         return <Navigate to="/view/clubside/dashboard" replace />;
-      } else {
-         return <Navigate to="/view/userside/clubs" replace />;
-      }
+    if (Array.isArray(myClubs) && myClubs.length > 0) {
+      return <Navigate to="/view/clubside/dashboard" replace />;
+    } else {
+      return <Navigate to="/view/userside/clubs" replace />;
+    }
   }
 
   return <>{children}</>;

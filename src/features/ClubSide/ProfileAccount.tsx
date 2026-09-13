@@ -27,10 +27,15 @@ import {
   Bell,
   Edit3,
   MessageSquare,
+  Building,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { logout } from "@/features/auth/slices/authSlice";
+import { useActiveClub } from "@/hooks/useActiveClub";
+import { useClubPermissions } from "@/hooks/useClubPermissions";
+import { DeleteClubModal } from "@/components/common/DeleteClubModal";
 import { 
   useUpdatePasswordMutation, 
   useUpdateScaleUnitSettingsMutation, 
@@ -71,10 +76,15 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
   const [mounted, setMounted] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  // Active Club & Permissions
+  const { clubId, activeClub } = useActiveClub();
+  const permissions = useClubPermissions(clubId || undefined);
+
   // Modals & States
   const [isAvatarPreviewOpen, setIsAvatarPreviewOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteClubModalOpen, setIsDeleteClubModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordData, setPasswordData] = useState({
     current: "",
@@ -90,6 +100,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
         setIsAvatarPreviewOpen(false);
         setIsPasswordModalOpen(false);
         setIsDeleteModalOpen(false);
+        setIsDeleteClubModalOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -673,11 +684,46 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             </div>
           )}
           
-          {/* CARD 7: Danger Zone */}
+          {/* CARD 7: Club Danger Zone (Organizer & Club Owner Only) */}
+          {role === 'organizer' && activeClub && permissions.isOwner && (
+            <div className="bg-[#201517] p-8 rounded-[2rem] border border-red-500/30 shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-all hover:border-red-500/50">
+              <div className="space-y-2 max-w-2xl">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 rounded-xl bg-red-500/15 text-red-400 border border-red-500/30">
+                    <Trash2 size={16} />
+                  </span>
+                  <h3 className="text-sm text-red-400 font-black uppercase tracking-widest">
+                    <Trans>Club Danger Zone</Trans>
+                  </h3>
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-white mb-1 flex items-center gap-2">
+                    <Building size={16} className="text-[#EB712B]" />
+                    <span>{activeClub.clubName || t`Active Club`}</span>
+                  </h4>
+                  <p className="text-xs text-gray-400 leading-relaxed font-medium">
+                    <Trans>
+                      Permanently delete this club, its membership rosters, scheduled rides, club shop items, and discounts. All members will immediately lose access. This action is irreversible.
+                    </Trans>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDeleteClubModalOpen(true)}
+                className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-lg shadow-red-600/30 whitespace-nowrap shrink-0 hover:scale-105 active:scale-95 border border-red-500/40"
+              >
+                <Trash2 size={14} />
+                <span><Trans>Delete Club</Trans></span>
+              </button>
+            </div>
+          )}
+
+          {/* CARD 8: Danger Zone */}
           <div className="bg-red-500/5 p-8 rounded-[2rem] border border-red-500/20 shadow-2xl md:col-span-2 lg:col-span-3 xl:col-span-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
               <h3 className="text-sm text-red-500 font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                <AlertTriangle size={16} /> <Trans>Danger Zone</Trans>
+                <AlertTriangle size={16} /> <Trans>Account Danger Zone</Trans>
               </h3>
               <p className="text-xs text-red-500/70 font-medium"><Trans>Permanently delete your account and all associated data. This action cannot be undone.</Trans></p>
             </div>
@@ -978,6 +1024,19 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
             </div>
           </div>
         </div>
+      )}
+
+      {/* Delete Club Modal */}
+      {clubId && (
+        <DeleteClubModal
+          isOpen={isDeleteClubModalOpen}
+          onClose={() => setIsDeleteClubModalOpen(false)}
+          clubId={clubId}
+          clubName={activeClub?.clubName}
+          clubLogo={activeClub?.logo}
+          clubLocation={activeClub?.location}
+          clubType={activeClub?.clubTypeId === 2 ? 'Running' : activeClub?.clubTypeId === 3 ? 'Triathlon' : 'Cycling'}
+        />
       )}
 
     </div>

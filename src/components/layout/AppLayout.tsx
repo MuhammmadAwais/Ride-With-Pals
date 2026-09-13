@@ -14,7 +14,7 @@
  *  - GSAP entry animation plays on every route change (opacity 0 → 1, y 18 → 0).
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -41,12 +41,14 @@ function deriveTitle(pathname: string): string {
 const AppLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const contentRef = useRef<HTMLElement>(null);
   const pageTitle = deriveTitle(location.pathname);
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const myClubs = useAppSelector((s) => s.club.myClubs);
-  const { activeClub, setActiveClub } = useActiveClub();
+  const isClubLoading = useAppSelector((s) => s.club.isLoading);
+  const { activeClub, setActiveClub, clearActiveClub } = useActiveClub();
   const [isModalManuallyOpened, setIsModalManuallyOpened] = useState(false);
   const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
   const isSupportPage = location.pathname.includes('/support');
@@ -57,6 +59,15 @@ const AppLayout: React.FC = () => {
       dispatch(fetchMyClubs());
     }
   }, [isAuthenticated, dispatch]);
+
+  // If user is inside clubside, but clubs have loaded and user has 0 clubs,
+  // clear active club and safely redirect away from club management to athlete view
+  useEffect(() => {
+    if (isClubSide && !isClubLoading && Array.isArray(myClubs) && myClubs.length === 0) {
+      clearActiveClub();
+      navigate('/view/userside/clubs', { replace: true });
+    }
+  }, [isClubSide, isClubLoading, myClubs, clearActiveClub, navigate]);
 
   // ── GSAP: Page content entry animation on route change ───────────────────
   useGSAP(
@@ -73,12 +84,12 @@ const AppLayout: React.FC = () => {
 
   // Auto-select club if there is only 1 and we are in clubside
   useEffect(() => {
-    if (isClubSide && !activeClub && myClubs.length === 1) {
+    if (isClubSide && !activeClub && Array.isArray(myClubs) && myClubs.length === 1) {
       setActiveClub(myClubs[0]);
     }
   }, [isClubSide, activeClub, myClubs, setActiveClub]);
 
-  const shouldForceModalOpen = isClubSide && !activeClub && myClubs.length > 1;
+  const shouldForceModalOpen = isClubSide && !activeClub && Array.isArray(myClubs) && myClubs.length > 1;
   const showModal = isModalManuallyOpened || shouldForceModalOpen;
 
   return (

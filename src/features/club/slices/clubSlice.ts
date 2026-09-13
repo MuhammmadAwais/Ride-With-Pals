@@ -3,16 +3,17 @@ import { ClubService } from '../services/clubService';
 import type { ClubState, Club } from '../types/clubTypes';
 import { toast } from 'sonner';
 
-const extractArray = (res: any) => {
+const extractArray = (res: any): any[] => {
+  if (!res) return [];
   if (Array.isArray(res)) return res;
-  if (res?.response?.rows && Array.isArray(res.response.rows)) return res.response.rows;
-  if (res?.response?.data && Array.isArray(res.response.data)) return res.response.data;
-  if (res?.response && Array.isArray(res.response)) return res.response;
-  if (res?.data?.data && Array.isArray(res.data.data)) return res.data.data;
-  if (res?.data?.rows && Array.isArray(res.data.rows)) return res.data.rows;
-  if (res?.data && Array.isArray(res.data)) return res.data;
-  if (res?.rows && Array.isArray(res.rows)) return res.rows;
-  return res?.response?.rows || res?.response?.data || res?.data?.data || res?.data || res?.response || res || [];
+  if (Array.isArray(res?.response?.rows)) return res.response.rows;
+  if (Array.isArray(res?.response?.data)) return res.response.data;
+  if (Array.isArray(res?.response)) return res.response;
+  if (Array.isArray(res?.data?.data)) return res.data.data;
+  if (Array.isArray(res?.data?.rows)) return res.data.rows;
+  if (Array.isArray(res?.data)) return res.data;
+  if (Array.isArray(res?.rows)) return res.rows;
+  return [];
 };
 
 const initialState: ClubState & {
@@ -185,7 +186,22 @@ const clubSlice = createSlice({
     },
     setCurrentClub(state, action) {
       state.currentClub = action.payload;
-    }
+    },
+    deleteClubFromState(state, action: { payload: number | string }) {
+      const clubId = Number(action.payload);
+      if (Array.isArray(state.myClubs)) {
+        state.myClubs = state.myClubs.filter((c: any) => Number(c?.id || c?.clubId) !== clubId);
+      }
+      if (Array.isArray(state.joinedClubs)) {
+        state.joinedClubs = state.joinedClubs.filter((c: any) => Number(c?.id || c?.clubId) !== clubId);
+      }
+      if (Array.isArray(state.exploreClubs)) {
+        state.exploreClubs = state.exploreClubs.filter((c: any) => Number(c?.id || c?.clubId) !== clubId);
+      }
+      if (state.currentClub && Number(state.currentClub.id || (state.currentClub as any).clubId) === clubId) {
+        state.currentClub = null;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -316,5 +332,5 @@ const clubSlice = createSlice({
   },
 });
 
-export const { clearClubError, setCurrentClub } = clubSlice.actions;
+export const { clearClubError, setCurrentClub, deleteClubFromState } = clubSlice.actions;
 export default clubSlice.reducer;
