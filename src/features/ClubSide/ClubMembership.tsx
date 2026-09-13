@@ -73,6 +73,9 @@ const useModalScrollLock = () => {
 };
 
 const getStatusConfig = (row: any) => {
+  if (row.isOwner || row.role?.toLowerCase() === 'owner') {
+    return { label: t`Owner (Exempt)`, color: 'text-amber-400', bg: 'bg-amber-500/10 border border-amber-500/20' };
+  }
   if (row.isExempt || row.paymentStatus === 'exempt' || row.status === 'exempt') {
     return { label: t`Exempt`, color: 'text-slate-400', bg: 'bg-slate-500/10 border border-slate-500/20' };
   }
@@ -1095,6 +1098,9 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
 
   const unpaidMembers = useMemo(() => {
     return members.filter((m: any) => {
+      const isOwner = m.isOwner === true || m.role?.toLowerCase() === 'owner';
+      const isExempt = m.isExempt === true || m.status === 'exempt' || m.paymentStatus === 'exempt';
+      if (isOwner || isExempt) return false;
       const st = (m.status || m.paymentStatus || '').toLowerCase();
       return st === 'pending' || st === 'not_renewed' || st === 'unpaid' || st === 'overdue';
     });

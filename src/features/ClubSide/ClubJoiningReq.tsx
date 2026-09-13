@@ -32,6 +32,22 @@ import {
 } from '@/features/club/api/clubApiSlice';
 import type { ClubJoinCode } from '@/api/types/clubTypes';
 
+const extractArray = (data: unknown): any[] => {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  const obj = data as Record<string, unknown>;
+  if (Array.isArray(obj?.response)) return obj.response;
+  if (Array.isArray(obj?.data)) return obj.data;
+  if (Array.isArray(obj?.rows)) return obj.rows;
+  const responseObj = obj?.response as Record<string, unknown> | undefined;
+  if (Array.isArray(responseObj?.rows)) return responseObj.rows;
+  if (Array.isArray(responseObj?.data)) return responseObj.data;
+  const dataObj = obj?.data as Record<string, unknown> | undefined;
+  if (Array.isArray(dataObj?.rows)) return dataObj.rows;
+  if (Array.isArray(dataObj?.data)) return dataObj.data;
+  return [];
+};
+
 export const ClubJoiningReq = () => {
   const [activeTab, setActiveTab] = useState<'requests' | 'codes'>('requests');
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,9 +107,7 @@ export const ClubJoiningReq = () => {
 
   // Normalize requests data
   const requests = useMemo(() => {
-    const rawList = Array.isArray(requestsData) 
-      ? requestsData 
-      : (requestsData as any)?.response || (requestsData as any)?.data || [];
+    const rawList = extractArray(requestsData);
       
     return rawList.map((req: any) => ({
       id: req.id?.toString() || Math.random().toString(),
@@ -108,10 +122,21 @@ export const ClubJoiningReq = () => {
 
   // Normalize join codes data
   const joinCodes: ClubJoinCode[] = useMemo(() => {
-    if (!joinCodesData) return [];
-    if (Array.isArray(joinCodesData)) return joinCodesData;
-    return (joinCodesData as any)?.response || (joinCodesData as any)?.data || [];
-  }, [joinCodesData]);
+    const rawList = extractArray(joinCodesData);
+    return rawList.map((item: any) => ({
+      id: Number(item.id),
+      clubId: Number(item.clubId || currentClubId),
+      code: String(item.code || ''),
+      usageLimit: Number(item.usageLimit ?? 100),
+      usedCount: Number(item.usedCount ?? 0),
+      isActive: item.isActive !== false && (item as any).isActive !== 0,
+      expiresAt: item.expiresAt || null,
+      createdAt: item.createdAt || '',
+      updatedAt: item.updatedAt || '',
+      createdById: item.createdById,
+      createdBy: item.createdBy,
+    }));
+  }, [joinCodesData, currentClubId]);
 
   // Filtered requests
   const filteredRequests = useMemo(() => {
@@ -314,12 +339,14 @@ export const ClubJoiningReq = () => {
       label: t`Usage`,
       sortable: true,
       render: (item) => {
-        const percent = Math.min(100, Math.round((item.usedCount / (item.usageLimit || 1)) * 100));
+        const used = item.usedCount || 0;
+        const limit = item.usageLimit || 1;
+        const percent = Math.min(100, Math.round((used / limit) * 100));
         return (
           <div className="w-36">
             <div className="flex justify-between text-xs font-semibold text-text-muted mb-1.5">
-              <span>{item.usedCount} <Trans>used</Trans></span>
-              <span>{item.usageLimit} <Trans>max</Trans></span>
+              <span>{used} <Trans>used</Trans></span>
+              <span>{item.usageLimit || 0} <Trans>max</Trans></span>
             </div>
             <div className="w-full bg-border h-1.5 rounded-full overflow-hidden">
               <div 

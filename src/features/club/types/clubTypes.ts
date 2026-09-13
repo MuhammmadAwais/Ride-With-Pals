@@ -20,6 +20,9 @@ export interface Club {
   totalMembers?: number;
   membersCount?: number;
   ownerId?: number;
+  userId?: number;
+  isOwner?: boolean;
+  owned?: boolean;
   createdAt?: string;
 }
 

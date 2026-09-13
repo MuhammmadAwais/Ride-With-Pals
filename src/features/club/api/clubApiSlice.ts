@@ -138,7 +138,7 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Club'],
     }),
 
-    getClubJoinCodes: builder.query<ClubTypes.ClubJoinCode[], ClubTypes.GetClubJoinCodesParams>({
+    getClubJoinCodes: builder.query<any, ClubTypes.GetClubJoinCodesParams>({
       query: (params) => ({
         url: '/user/club/join/codes',
         method: 'GET',

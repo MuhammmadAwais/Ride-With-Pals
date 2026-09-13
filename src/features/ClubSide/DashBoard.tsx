@@ -10,6 +10,7 @@ import Sidebar from '../../components/Sidebar';
 import { 
   useGetClubDashboardStatsQuery, 
   useGetJoinedClubsQuery,
+  useGetClubInfoByIdQuery,
   useGetClubRidesQuery,
   useGetClubMembersListQuery,
   useGetClubJoinRequestQuery,
@@ -67,7 +68,7 @@ const DashboardSkeleton = () => (
 
 export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   const navigate = useNavigate();
-  const { clubId, setActiveClub } = useActiveClub();
+  const { activeClub, clubId, setActiveClub } = useActiveClub();
   const myClubsFromRedux = useAppSelector((state) => state.club.myClubs) || [];
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
 
@@ -84,8 +85,17 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   }, [clubId, joinedClubsData, myClubsFromRedux, setActiveClub]);
 
   const effectiveClubId = clubId ? Number(clubId) : 0;
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const activeClubObj = activeClub || myClubsFromRedux.find((c: any) => Number(c.id || c.clubId) === effectiveClubId);
 
   // Real API Calls for Dashboard Metrics
+  const { data: clubInfoData } = useGetClubInfoByIdQuery(
+    { clubId: effectiveClubId },
+    { skip: !effectiveClubId }
+  );
+  const clubDetail = (clubInfoData as any)?.response || clubInfoData;
+  const ownerIdFromClubDetail = Number(clubDetail?.userId || clubDetail?.ownerId || 0);
+
   const { data: fetchedStats, isLoading: isLoadingStats } = useGetClubDashboardStatsQuery(
     { clubId: effectiveClubId },
     { skip: !!passedStats || !effectiveClubId }
@@ -239,15 +249,48 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
     }
   };
 
-  // Filter members with pending/unpaid dues
+  // Filter members with pending/unpaid dues (excluding club owner, manager, and exempt members)
   const unpaidMembers = React.useMemo(() => {
     const rawList = extractArray(subscribersResponse);
+    const membersList = extractArray(membersResponse);
+    const ownerMember = membersList.find((m: any) => 
+      String(m.role || '').toLowerCase() === 'owner' || 
+      m.isOwner === true
+    );
+    const ownerIdFromMembers = Number(ownerMember?.userId || ownerMember?.user?.id || 0);
+    const effectiveOwnerId = ownerIdFromClubDetail || ownerIdFromMembers || Number(activeClubObj?.userId || activeClubObj?.ownerId || 0);
+
+    const currentUserIdNum = Number(currentUser?.id || (currentUser as any)?.userId || 0);
+    const currentUserName = String(currentUser?.fullName || currentUser?.name || '').trim().toLowerCase();
+
     return rawList.filter((sub: any) => {
+      const subUserId = Number(sub.userId || sub.user?.id || 0);
+      const subUserName = String(sub.user?.fullName || sub.user?.name || sub.name || '').trim().toLowerCase();
+      const subRole = String(sub.role || sub.user?.role || '').toLowerCase();
+
+      // Check if this subscriber is the owner or the current managing user
+      const isOwnerOrManager = Boolean(
+        sub.isOwner === true ||
+        subRole === 'owner' ||
+        subRole === 'admin' ||
+        (effectiveOwnerId > 0 && subUserId > 0 && subUserId === effectiveOwnerId) ||
+        (currentUserIdNum > 0 && subUserId > 0 && subUserId === currentUserIdNum) ||
+        (currentUserName && subUserName && currentUserName === subUserName)
+      );
+
+      const isExempt = Boolean(
+        sub.isExempt === true ||
+        sub.status === 'exempt' ||
+        sub.paymentStatus === 'exempt'
+      );
+
+      if (isOwnerOrManager || isExempt) return false;
+
       const pStatus = (sub.paymentStatus || sub.status || '').toLowerCase();
-      return pStatus === 'unpaid' || pStatus === 'pending' || pStatus === 'expired';
+      return pStatus === 'unpaid' || pStatus === 'pending' || pStatus === 'expired' || pStatus === 'not_renewed' || pStatus === 'overdue';
     }).map((sub: any) => ({
       id: sub.id,
-      userId: sub.userId,
+      userId: sub.userId || sub.user?.id,
       name: sub.user?.fullName || sub.user?.name || t`Club Athlete`,
       email: sub.user?.email || '',
       profileImage: sub.user?.profileImage,
@@ -257,7 +300,7 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
       paymentStatus: sub.paymentStatus || sub.status || 'unpaid',
       createdAt: sub.createdAt,
     }));
-  }, [subscribersResponse]);
+  }, [subscribersResponse, membersResponse, ownerIdFromClubDetail, activeClubObj, currentUser]);
 
   const handleSendSingleReminder = async (targetUserId: number, memberName: string) => {
     if (!effectiveClubId) return;
