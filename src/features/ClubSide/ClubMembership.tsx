@@ -1079,6 +1079,10 @@ const SendRequestsPanel: React.FC<{ clubId: number; plans: any[]; overview: any 
 const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans }) => {
   const [statusFilter, setStatusFilter] = useState('');
   const [selectedMember, setSelectedMember] = useState<any | null>(null);
+  const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
+  const [isSendingBulk, setIsSendingBulk] = useState(false);
+
+  const [sendReminder] = useSendSubscriptionReminderMutation();
 
   const { data: membersData, isLoading, isFetching } = useListSubscribedMemberQuery({
     clubId,
@@ -1089,6 +1093,59 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
 
   const members: any[] = Array.isArray(membersData) ? membersData : [];
 
+  const unpaidMembers = useMemo(() => {
+    return members.filter((m: any) => {
+      const st = (m.status || m.paymentStatus || '').toLowerCase();
+      return st === 'pending' || st === 'not_renewed' || st === 'unpaid' || st === 'overdue';
+    });
+  }, [members]);
+
+  const allSelected = useMemo(() => {
+    if (members.length === 0) return false;
+    return members.every((m: any) => selectedMemberIds.includes(m.userId || m.id));
+  }, [members, selectedMemberIds]);
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedMemberIds([]);
+    } else {
+      const allIds = members.map((m: any) => m.userId || m.id).filter(Boolean);
+      setSelectedMemberIds(allIds);
+    }
+  };
+
+  const toggleSelectUnpaid = () => {
+    const unpaidIds = unpaidMembers.map((m: any) => m.userId || m.id).filter(Boolean);
+    setSelectedMemberIds(unpaidIds);
+    toast.info(t`Selected ${unpaidIds.length} unpaid member(s)`);
+  };
+
+  const toggleSelectRow = (id: number) => {
+    setSelectedMemberIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleSendBulkReminders = async () => {
+    if (selectedMemberIds.length === 0) return;
+    setIsSendingBulk(true);
+    let successCount = 0;
+    try {
+      await Promise.allSettled(
+        selectedMemberIds.map((targetUserId) =>
+          sendReminder({ clubId, targetUserId }).unwrap()
+        )
+      );
+      successCount = selectedMemberIds.length;
+      toast.success(t`Sent payment reminders to ${successCount} selected member(s)!`);
+      setSelectedMemberIds([]);
+    } catch (err: any) {
+      toast.error(err?.data?.message || t`Failed to send payment reminders.`);
+    } finally {
+      setIsSendingBulk(false);
+    }
+  };
+
   const statusTabs = useMemo(() => [
     { key: '', label: t`All` },
     { key: 'paid', label: t`Paid` },
@@ -1098,6 +1155,26 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
   ], []);
 
   const columns: Column<any>[] = useMemo(() => [
+    {
+      key: 'select',
+      label: '',
+      sortable: false,
+      render: (row) => {
+        const id = row.userId || row.id;
+        const isChecked = selectedMemberIds.includes(id);
+        return (
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={(e) => {
+              e.stopPropagation();
+              toggleSelectRow(id);
+            }}
+            className="w-4 h-4 rounded border-border accent-[#EB712B] cursor-pointer"
+          />
+        );
+      },
+    },
     {
       key: 'name',
       label: t`Member`,
@@ -1169,7 +1246,7 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
         <div className="flex justify-end">
           <button 
             onClick={() => setSelectedMember(row)}
-            className="p-2 rounded-lg hover:bg-[#EB712B]/10 text-text-muted hover:text-[#EB712B] transition-colors"
+            className="p-2 rounded-lg hover:bg-[#EB712B]/10 text-text-muted hover:text-[#EB712B] transition-colors cursor-pointer"
             title={t`View Actions`}
           >
             <ArrowLeftRight size={16} />
@@ -1177,7 +1254,7 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
         </div>
       )
     }
-  ], []);
+  ], [selectedMemberIds]);
 
   return (
     <>
@@ -1191,20 +1268,89 @@ const MembersTab: React.FC<{ clubId: number; plans: any[] }> = ({ clubId, plans 
       )}
 
       <div className="space-y-5">
-        {/* Status Filters */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-          {statusTabs.map((tab) => (
-            <button key={tab.key} onClick={() => setStatusFilter(tab.key)}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shrink-0 border ${
-                statusFilter === tab.key
-                  ? 'bg-[#EB712B] text-white border-[#EB712B]'
-                  : 'bg-surface border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/30'
-              }`}>
-              {statusFilter === tab.key && <Check size={10} />}
-              {tab.label}
+        {/* Status Filters & Selection Helpers */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+            {statusTabs.map((tab) => (
+              <button key={tab.key} onClick={() => setStatusFilter(tab.key)}
+                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                  statusFilter === tab.key
+                    ? 'bg-[#EB712B] text-white border-[#EB712B]'
+                    : 'bg-surface border-border text-text-muted hover:text-text-main hover:border-[#EB712B]/30'
+                }`}>
+                {statusFilter === tab.key && <Check size={10} />}
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            {unpaidMembers.length > 0 && (
+              <button
+                type="button"
+                onClick={toggleSelectUnpaid}
+                className="px-3.5 py-2 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-bold hover:bg-amber-500/20 transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Bell size={13} />
+                <span><Trans>Select Unpaid ({unpaidMembers.length})</Trans></span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={toggleSelectAll}
+              className="px-3.5 py-2 rounded-xl border border-border bg-surface text-text-muted hover:text-text-main text-xs font-bold transition-all cursor-pointer"
+            >
+              {allSelected ? <Trans>Deselect All</Trans> : <Trans>Select All</Trans>}
             </button>
-          ))}
+          </div>
         </div>
+
+        {/* Selected Members Bulk Action Bar */}
+        {selectedMemberIds.length > 0 && (
+          <div className="p-4 rounded-2xl bg-[#EB712B]/10 border border-[#EB712B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in duration-200">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full bg-[#EB712B] text-white font-black text-xs flex items-center justify-center">
+                {selectedMemberIds.length}
+              </span>
+              <div>
+                <p className="text-xs font-bold text-white">
+                  <Trans>{selectedMemberIds.length} member(s) selected</Trans>
+                </p>
+                <p className="text-[10px] text-text-muted">
+                  <Trans>Send targeted payment reminder notifications to selected members.</Trans>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => setSelectedMemberIds([])}
+                className="px-3 py-2 text-xs font-bold text-text-muted hover:text-white transition-colors cursor-pointer"
+              >
+                <Trans>Clear</Trans>
+              </button>
+              <button
+                type="button"
+                onClick={handleSendBulkReminders}
+                disabled={isSendingBulk}
+                className="px-5 py-2 rounded-xl bg-[#EB712B] hover:bg-[#ff8243] text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-[#EB712B]/20 flex items-center gap-2 disabled:opacity-50"
+              >
+                {isSendingBulk ? (
+                  <>
+                    <Loader2 size={14} className="animate-spin" />
+                    <span><Trans>Sending...</Trans></span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={14} />
+                    <span><Trans>Remind Selected ({selectedMemberIds.length})</Trans></span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Member Count */}
         <div className="flex items-center justify-between">
