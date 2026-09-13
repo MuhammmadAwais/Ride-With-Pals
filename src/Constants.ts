@@ -30,6 +30,7 @@ export const ROUTES = {
   DASHBOARD:          '/view/clubside/dashboard',
   ACTIVITIES:         '/view/clubside/activities',
   ADD_RIDE:           '/view/clubside/add-ride',
+  EDIT_RIDE:          '/view/clubside/edit-ride/:id',
   PRODUCT:            '/view/clubside/product',
   SHOP_CLUB:          '/view/clubside/product',
   ADD_PRODUCT:        '/view/clubside/add-product',

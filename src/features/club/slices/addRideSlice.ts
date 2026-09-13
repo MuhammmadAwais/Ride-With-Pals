@@ -33,14 +33,17 @@ export interface AddRideState {
   isWomenAndNonBinary: boolean;
   isPaymentRequired: boolean;
   price?: number;
+  termsAndConditions?: string;
   rideLeaders: { userId: number; name: string }[];
   supportCarDriver: { userId?: number; name: string } | null;
+  clubId?: number;
 
   // UI state
   currentStep: number;
 }
 
 const initialState: AddRideState = {
+  clubId: undefined,
   rideName: '',
   date: '',
   time: '',
@@ -68,6 +71,7 @@ const initialState: AddRideState = {
   isWomenAndNonBinary: false,
   isPaymentRequired: false,
   price: 0,
+  termsAndConditions: '',
   rideLeaders: [],
   supportCarDriver: null,
   currentStep: 1,

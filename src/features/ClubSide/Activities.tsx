@@ -1,21 +1,13 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Bike,
-  BarChart3,
-  TrendingUp,
   CheckCircle2,
   ChevronRight,
   Plus,
   Eye,
   Edit2,
-  Trash2,
-  X,
-  Calendar,
-  Clock,
+  Copy,
   MapPin,
-  Loader2,
-  AlertTriangle,
   Image as ImageIcon,
 } from "lucide-react";
 import { ROUTES } from "@/Constants";
@@ -32,11 +24,9 @@ import {
 } from "chart.js";
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
-import { 
-  useGetClubRidesQuery, 
-  useUpdateRideInfoMutation, 
-  useDeleteRideMutation 
-} from "@/features/club/api/clubApiSlice";
+import { useGetClubRidesQuery } from "@/features/club/api/clubApiSlice";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { updateStepFields, resetRideForm } from "@/features/club/slices/addRideSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 import { resolveImageUrl } from "@/features/public-club/services/clubGeocoding";
@@ -79,6 +69,19 @@ interface Activity {
   activityTypeId?: number;
   sportSubTypeId?: number;
   isPublic?: boolean;
+  isRecurringActivity?: boolean;
+  recurringActivities?: string[];
+  expiryDate?: string;
+  isStops?: boolean;
+  stops?: number[];
+  isWomenAndNonBinary?: boolean;
+  isPaymentRequired?: boolean;
+  price?: number;
+  termsAndConditions?: string;
+  gpxFile?: string;
+  rideLeaders?: any[];
+  supportCarDriver?: any;
+  rawRide?: any;
 }
 
 const getInitials = (name: string) => {
@@ -127,6 +130,7 @@ const SummaryCard = ({ label, value, subtext, icon, isLive }: any) => (
 
 const ActivitiesRegistry = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState("Active");
 
   const { clubId: clubIdStr } = useActiveClub();
@@ -138,10 +142,7 @@ const ActivitiesRegistry = () => {
     { skip: !clubId }
   );
 
-  const [updateRide, { isLoading: isUpdating }] = useUpdateRideInfoMutation();
-  const [deleteRide, { isLoading: isDeleting }] = useDeleteRideMutation();
-
-  // Modals state
+  // Lightbox Modal state
   const [lightboxData, setLightboxData] = useState<{
     isOpen: boolean;
     imageUrl?: string;
@@ -151,10 +152,6 @@ const ActivitiesRegistry = () => {
     actionLabel?: string;
     onAction?: () => void;
   }>({ isOpen: false });
-
-  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
-  const [editFormData, setEditFormData] = useState<any>({});
-  const [deletingActivity, setDeletingActivity] = useState<Activity | null>(null);
 
   const activities = useMemo<Activity[]>(() => {
     const rows = ridesData?.rows || (Array.isArray(ridesData) ? ridesData : []);
@@ -209,10 +206,23 @@ const ActivitiesRegistry = () => {
           time: ride.time ? String(ride.time).substring(0, 5) : "",
           description: ride.description || "",
           pace: ride.pace || "Medium",
-          categoryTypeId: ride.categoryTypeId,
-          activityTypeId: ride.activityTypeId,
-          sportSubTypeId: ride.sportSubTypeId,
-          isPublic: ride.isPublic,
+          categoryTypeId: ride.categoryTypeId || 1,
+          activityTypeId: ride.activityTypeId || 2,
+          sportSubTypeId: ride.sportSubTypeId || 5,
+          isPublic: ride.isPublic !== undefined ? ride.isPublic : true,
+          isRecurringActivity: Boolean(ride.isRecurringActivity),
+          recurringActivities: ride.recurringActivities || [],
+          expiryDate: ride.expiryDate || "",
+          isStops: Boolean(ride.isStops),
+          stops: ride.stops || [],
+          isWomenAndNonBinary: Boolean(ride.isWomenAndNonBinary),
+          isPaymentRequired: Boolean(ride.isPaymentRequired || (ride.price && Number(ride.price) > 0)),
+          price: Number(ride.price || 0),
+          termsAndConditions: ride.termsAndConditions || "",
+          gpxFile: ride.gpxFile || "",
+          rideLeaders: ride.rideLeaders || [],
+          supportCarDriver: ride.supportCarDriver || null,
+          rawRide: ride,
         });
       }
     });
@@ -306,74 +316,30 @@ const ActivitiesRegistry = () => {
     return true;
   });
 
-  // Handlers for Edit
+  // Handler for Option A Edit (Full 3-Step Wizard Navigation matching Mobile App)
   const handleOpenEdit = (act: Activity, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    setEditingActivity(act);
-    setEditFormData({
-      id: act.id,
-      rideName: act.name,
-      meetingPoint: act.region,
-      endingPoint: act.endingPoint || "",
-      distance: act.numericDistance || 0,
-      elevationGain: act.elevationGain || 0,
-      date: act.date || "",
-      time: act.time || "",
-      pace: act.pace || "Medium",
-      description: act.description || "",
-      level: act.level || "INTERMEDIATE",
-    });
+    navigate(`/view/clubside/edit-ride/${act.id}`);
   };
 
-  const handleSaveEdit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editFormData.rideName?.trim()) {
-      toast.error(t`Activity name is required.`);
-      return;
-    }
-    if (!editFormData.meetingPoint?.trim()) {
-      toast.error(t`Meeting point is required.`);
-      return;
-    }
-
-    try {
-      const payload: any = {
-        id: editFormData.id,
-        clubId,
-        rideName: editFormData.rideName.trim(),
-        meetingPoint: editFormData.meetingPoint.trim(),
-        endingPoint: editFormData.endingPoint?.trim() || undefined,
-        distance: Number(editFormData.distance) || 0,
-        elevationGain: Number(editFormData.elevationGain) || 0,
-        date: editFormData.date || undefined,
-        time: editFormData.time ? (editFormData.time.length === 5 ? `${editFormData.time}:00` : editFormData.time) : undefined,
-        pace: editFormData.pace,
-        description: editFormData.description?.trim() || "",
-      };
-
-      await updateRide(payload).unwrap();
-      toast.success(t`Activity updated successfully!`);
-      setEditingActivity(null);
-    } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || t`Failed to update activity.`);
-    }
-  };
-
-  // Handlers for Delete
-  const handleOpenDelete = (act: Activity, e?: React.MouseEvent) => {
+  // Handler for Duplicate Activity
+  const handleDuplicate = (act: Activity, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    setDeletingActivity(act);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!deletingActivity) return;
-    try {
-      await deleteRide({ id: deletingActivity.id }).unwrap();
-      toast.success(t`Activity "${deletingActivity.name}" deleted successfully.`);
-      setDeletingActivity(null);
-    } catch (err: any) {
-      toast.error(err?.data?.message || err?.message || t`Failed to delete activity.`);
-    }
+    dispatch(resetRideForm());
+    dispatch(
+      updateStepFields({
+        rideName: `${act.name} (Copy)`,
+        meetingPoint: act.region,
+        endingPoint: act.endingPoint || "",
+        distance: act.numericDistance || 0,
+        elevationGain: act.elevationGain || 0,
+        pace: act.pace || "Medium",
+        description: act.description || "",
+        currentStep: 1,
+      })
+    );
+    toast.info(t`Loaded activity template. You can customize and publish.`);
+    navigate(ROUTES.ADD_RIDE);
   };
 
   const columns: Column<Activity>[] = [
@@ -523,27 +489,27 @@ const ActivitiesRegistry = () => {
             <Eye size={15} />
           </button>
 
-          {/* Edit Activity (Admin/Owner) */}
+          {/* Edit Activity (Admin/Owner) -> Full 3-Step Wizard Option A */}
           {(permissions.canPublishRides || permissions.isOwner || permissions.isAdmin) && (
             <button
               type="button"
               onClick={(e) => handleOpenEdit(act, e)}
               className="w-8 h-8 rounded-lg bg-hover border border-border hover:border-blue-500/50 hover:bg-blue-500/10 hover:text-blue-400 text-text-muted flex items-center justify-center transition-all cursor-pointer"
-              title={t`Edit activity`}
+              title={t`Edit activity (3-Step Wizard)`}
             >
               <Edit2 size={14} />
             </button>
           )}
 
-          {/* Delete Activity (Admin/Owner) */}
+          {/* Duplicate Activity (Admin/Owner) */}
           {(permissions.canPublishRides || permissions.isOwner || permissions.isAdmin) && (
             <button
               type="button"
-              onClick={(e) => handleOpenDelete(act, e)}
-              className="w-8 h-8 rounded-lg bg-hover border border-border hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400 text-text-muted flex items-center justify-center transition-all cursor-pointer"
-              title={t`Delete activity`}
+              onClick={(e) => handleDuplicate(act, e)}
+              className="w-8 h-8 rounded-lg bg-hover border border-border hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:text-emerald-400 text-text-muted flex items-center justify-center transition-all cursor-pointer"
+              title={t`Duplicate activity template`}
             >
-              <Trash2 size={14} />
+              <Copy size={14} />
             </button>
           )}
 
@@ -603,54 +569,51 @@ const ActivitiesRegistry = () => {
         <SummaryCard
           label={t`TOTAL ACTIVE`}
           value={totalActiveCount}
-          subtext={t`${activities.length} total recorded`}
-          icon={<Bike size={20} />}
+          subtext={t`Scheduled & In-Progress`}
+          icon={<CheckCircle2 size={24} />}
+          isLive={liveStatusCount > 0}
         />
         <SummaryCard
-          label={t`AVG DISTANCE`}
+          label={t`AVERAGE DISTANCE`}
           value={avgDistance}
-          subtext={t`Across ${activities.length} ${activities.length === 1 ? 'activity' : 'activities'}`}
-          icon={<BarChart3 size={20} />}
+          subtext={t`Across all recorded rides`}
+          icon={<ChevronRight size={24} />}
         />
         <SummaryCard
           label={t`ELEVATION GAIN`}
           value={totalElevationGain}
-          subtext={t`Total cumulative elevation`}
-          icon={<TrendingUp size={20} />}
+          subtext={t`Cumulative vertical ascent`}
+          icon={<ChevronRight size={24} />}
         />
         <SummaryCard
           label={t`LIVE STATUS`}
-          value={liveStatusCount}
-          subtext={t`Activities currently live`}
-          icon={<Bike size={20} />}
-          isLive={true}
+          value={liveStatusCount > 0 ? t`Active (${liveStatusCount})` : t`Standby`}
+          subtext={liveStatusCount > 0 ? t`Rides currently on the road` : t`No active live rides`}
+          icon={<CheckCircle2 size={24} />}
+          isLive={liveStatusCount > 0}
         />
       </div>
 
-      {/* --- TABS AND TABLE SECTION --- */}
-      <div className="flex flex-col gap-6">
-        {/* Tab Switcher */}
-        <div className="flex bg-surface p-1.5 rounded-xl border border-border w-full md:w-fit">
-          {[
-            { key: "Active", label: <Trans>Active</Trans> },
-            { key: "Completed", label: <Trans>Completed</Trans> },
-            { key: "Archived", label: <Trans>Archived</Trans> },
-          ].map((tab) => (
+      {/* Main Table Area */}
+      <div className="space-y-4">
+        {/* Navigation Tabs */}
+        <div className="flex border-b border-border">
+          {["Active", "Completed", "Archived"].map((tab) => (
             <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 md:flex-none px-3 md:px-6 py-2.5 text-xs font-bold rounded-lg transition-all duration-300 ${
-                activeTab === tab.key
-                  ? "bg-[#EB712B] text-white shadow-lg"
-                  : "text-text-muted hover:text-text-main"
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`pb-4 px-6 text-sm font-bold transition-all border-b-2 cursor-pointer outline-none ${
+                activeTab === tab
+                  ? "border-[#EB712B] text-[#EB712B]"
+                  : "border-transparent text-text-muted hover:text-text-main"
               }`}
             >
-              {tab.label}
+              {tab === "Active" ? <Trans>Active</Trans> : tab === "Completed" ? <Trans>Completed</Trans> : <Trans>Archived</Trans>}
             </button>
           ))}
         </div>
 
-        {/* Table Container */}
+        {/* Dynamic Data Table */}
         <div className="bg-surface rounded-3xl border border-border overflow-hidden shadow-2xl relative min-h-[200px]">
           {isLoading ? (
             <TableSkeleton />
@@ -687,220 +650,8 @@ const ActivitiesRegistry = () => {
         actionLabel={lightboxData.actionLabel}
         onAction={lightboxData.onAction}
       />
-
-      {/* --- EDIT ACTIVITY MODAL --- */}
-      {editingActivity && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
-          onClick={(e) => { if (e.target === e.currentTarget) setEditingActivity(null); }}
-        >
-          <div 
-            className="bg-surface border border-border rounded-3xl p-6 md:p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto space-y-6 text-text-main"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <div>
-                <h3 className="text-xl font-bold text-text-main flex items-center gap-2">
-                  <Edit2 size={18} className="text-[#EB712B]" />
-                  <Trans>Edit Activity</Trans>
-                </h3>
-                <p className="text-xs text-text-muted mt-0.5">
-                  <Trans>Update details for activity #{editingActivity.id}</Trans>
-                </p>
-              </div>
-              <button 
-                type="button"
-                onClick={() => setEditingActivity(null)}
-                className="w-8 h-8 rounded-full bg-hover border border-border hover:border-[#EB712B] flex items-center justify-center text-text-muted hover:text-text-main transition-colors cursor-pointer"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            {/* Edit Form */}
-            <form onSubmit={handleSaveEdit} className="space-y-4">
-              {/* Activity Name */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-text-muted block"><Trans>Activity Name</Trans></label>
-                <input
-                  type="text"
-                  value={editFormData.rideName || ""}
-                  onChange={(e) => setEditFormData({ ...editFormData, rideName: e.target.value })}
-                  className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                  placeholder={t`e.g. Morning Championship Practice`}
-                  required
-                />
-              </div>
-
-              {/* Date & Time Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block flex items-center gap-1">
-                    <Calendar size={13} className="text-[#EB712B]" /> <Trans>Date</Trans>
-                  </label>
-                  <input
-                    type="date"
-                    value={editFormData.date || ""}
-                    onChange={(e) => setEditFormData({ ...editFormData, date: e.target.value })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block flex items-center gap-1">
-                    <Clock size={13} className="text-[#EB712B]" /> <Trans>Time</Trans>
-                  </label>
-                  <input
-                    type="time"
-                    value={editFormData.time || ""}
-                    onChange={(e) => setEditFormData({ ...editFormData, time: e.target.value })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Meeting Point & Ending Point */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block flex items-center gap-1">
-                    <MapPin size={13} className="text-[#EB712B]" /> <Trans>Meeting Point</Trans>
-                  </label>
-                  <input
-                    type="text"
-                    value={editFormData.meetingPoint || ""}
-                    onChange={(e) => setEditFormData({ ...editFormData, meetingPoint: e.target.value })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                    required
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block flex items-center gap-1">
-                    <MapPin size={13} className="text-text-muted" /> <Trans>Ending Point (Optional)</Trans>
-                  </label>
-                  <input
-                    type="text"
-                    value={editFormData.endingPoint || ""}
-                    onChange={(e) => setEditFormData({ ...editFormData, endingPoint: e.target.value })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Distance, Elevation & Pace */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block"><Trans>Distance (km)</Trans></label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={editFormData.distance || ""}
-                    onChange={(e) => setEditFormData({ ...editFormData, distance: Number(e.target.value) })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block"><Trans>Elevation Gain (m)</Trans></label>
-                  <input
-                    type="number"
-                    value={editFormData.elevationGain || ""}
-                    onChange={(e) => setEditFormData({ ...editFormData, elevationGain: Number(e.target.value) })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-text-muted block"><Trans>Pace</Trans></label>
-                  <select
-                    value={editFormData.pace || "Medium"}
-                    onChange={(e) => setEditFormData({ ...editFormData, pace: e.target.value })}
-                    className="w-full h-11 bg-main-bg border border-border rounded-xl px-3 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
-                  >
-                    <option value="Relaxed">Relaxed</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Fast">Fast</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-text-muted block"><Trans>Description</Trans></label>
-                <textarea
-                  value={editFormData.description || ""}
-                  onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                  rows={3}
-                  className="w-full bg-main-bg border border-border rounded-xl p-3.5 text-sm text-text-main outline-none focus:border-[#EB712B] transition-colors resize-none"
-                  placeholder={t`Ride details, required gear, meeting instructions...`}
-                />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-                <button
-                  type="button"
-                  onClick={() => setEditingActivity(null)}
-                  className="px-5 py-2.5 rounded-xl border border-border hover:bg-hover text-xs font-bold text-text-muted hover:text-text-main transition-colors cursor-pointer"
-                >
-                  <Trans>Cancel</Trans>
-                </button>
-                <button
-                  type="submit"
-                  disabled={isUpdating}
-                  className="px-6 py-2.5 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-[#EB712B]/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {isUpdating ? <Loader2 size={14} className="animate-spin" /> : null}
-                  <Trans>Save Changes</Trans>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* --- DELETE CONFIRMATION MODAL --- */}
-      {deletingActivity && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
-          onClick={() => setDeletingActivity(null)}
-        >
-          <div 
-            className="bg-surface border border-border rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl space-y-5 text-text-main"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mx-auto">
-              <AlertTriangle size={24} />
-            </div>
-
-            <div className="text-center space-y-1.5">
-              <h3 className="text-lg font-bold text-text-main"><Trans>Delete Activity?</Trans></h3>
-              <p className="text-xs text-text-muted leading-relaxed">
-                <Trans>Are you sure you want to delete</Trans> <strong className="text-text-main">"{deletingActivity.name}"</strong>? <Trans>This will permanently remove the activity from your club schedule and participants.</Trans>
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setDeletingActivity(null)}
-                className="flex-1 py-3 rounded-xl border border-border hover:bg-hover text-xs font-bold text-text-muted hover:text-text-main transition-colors cursor-pointer"
-              >
-                <Trans>Cancel</Trans>
-              </button>
-              <button
-                type="button"
-                disabled={isDeleting}
-                onClick={handleConfirmDelete}
-                className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-              >
-                {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
-                <Trans>Delete</Trans>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
 export default ActivitiesRegistry;
-

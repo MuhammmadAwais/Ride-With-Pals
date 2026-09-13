@@ -150,6 +150,7 @@ export const router = createBrowserRouter(
         <Route path="activities" element={<Activities />} />
         <Route path="calendar" element={<DashboardCalendar />} />
         <Route path="rides/create" element={<CreateRide />} />
+        <Route path="rides/edit/:id" element={<CreateRide />} />
         <Route path="chat" element={<LegacyChatRedirect />} />
         <Route path="profile" element={<ProfileAccount />} />
       </Route>
@@ -170,6 +171,7 @@ export const router = createBrowserRouter(
           <Route path="dashboard" element={<DashboardOverview />} />
           <Route path="activities" element={<Activities />} />
           <Route path="add-ride" element={<CreateRide />} />
+          <Route path="edit-ride/:id" element={<CreateRide />} />
           <Route path="product" element={<Product />} />
           <Route path="shop" element={<Product />} />
           <Route path="add-product" element={<AddProduct />} />

@@ -57,19 +57,6 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Ride'],
     }),
 
-    deleteRide: builder.mutation<any, { id: number } | { rideId: number } | number>({
-      query: (arg) => {
-        const id = typeof arg === 'number' ? arg : (arg as any).id || (arg as any).rideId;
-        return {
-          url: '/user/ride',
-          method: 'DELETE',
-          body: { id },
-          params: { id },
-        };
-      },
-      invalidatesTags: ['Ride'],
-    }),
-
     getClubs: builder.query<ClubTypes.ClubsResponseResponse, ClubTypes.GetClubsParams | void>({
       query: (params) => ({
         url: '/user/clubs/all',
@@ -304,7 +291,6 @@ export const {
   useGetOwnRidesQuery,
   useGetRideInfoByIdQuery,
   useUpdateRideInfoMutation,
-  useDeleteRideMutation,
   useGetClubsQuery,
   useJoinClubMutation,
   useGetJoinedClubsQuery,
