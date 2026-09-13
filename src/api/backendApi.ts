@@ -30,9 +30,15 @@ backendApi.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // For file uploads or FormData requests, extend timeout to 60s to prevent premature network timeouts
+    if (config.url?.includes('/upload') || config.data instanceof FormData) {
+      config.timeout = 60000;
+    }
+
     // Let Axios handle the boundary for FormData
     if (config.data instanceof FormData && config.headers) {
       delete config.headers["Content-Type"];
+      delete config.headers["content-type"];
     }
 
     console.log(`🚀 [API Request] ${config.method?.toUpperCase()} ${config.url}`, config.params || config.data || '');

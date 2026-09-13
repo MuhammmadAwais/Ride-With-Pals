@@ -9,6 +9,7 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { setAthleteProfileSuccess } from "@/features/auth/slices/authSlice";
 import { useUserInfoQuery } from "@/features/auth/api/authApiSlice";
 import { WORLD_COUNTRIES } from "@/lib/countries";
+import { optimizeImageForUpload } from "@/lib/imageOptimizer";
 
 const AthleteProfileForm = () => {
   const navigate = useNavigate();
@@ -142,11 +143,12 @@ const AthleteProfileForm = () => {
     setImagePreviewUrl(objectUrl);
 
     setIsUploadingImage(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      const response = await backendApi.post('/user/upload/file', formData);
+      const optimizedFile = await optimizeImageForUpload(file);
+      const formData = new FormData();
+      formData.append('file', optimizedFile);
+
+      const response = await backendApi.post('/user/upload/file', formData, { timeout: 60000 });
       const uploadRes = response.data?.response || response.data;
       const fileName = uploadRes?.fileName || uploadRes?.data?.fileName;
       if (fileName) {

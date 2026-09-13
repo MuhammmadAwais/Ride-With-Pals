@@ -3,6 +3,7 @@ import { X, Camera, Loader2, Check, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { backendApi } from '@/api/backendApi';
 import { useUpdateRideInfoMutation } from '@/features/club/api/clubApiSlice';
+import { optimizeImageForUpload } from '@/lib/imageOptimizer';
 
 interface EditGroupModalProps {
   isOpen: boolean;
@@ -47,13 +48,16 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
     const localUrl = URL.createObjectURL(file);
     setAvatarPreview(localUrl);
 
-    // Upload to server
+    // Upload to server with fast client-side compression and extended timeout
     setIsUploadingPhoto(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      const res = await backendApi.post('/user/upload/file', formData);
+      const optimizedFile = await optimizeImageForUpload(file);
+      const formData = new FormData();
+      formData.append('file', optimizedFile);
+
+      const res = await backendApi.post('/user/upload/file', formData, {
+        timeout: 60000,
+      });
       const resData = res.data?.response || res.data?.data || res.data;
       const fileName = resData?.fileName || resData?.file || resData?.image;
       if (fileName) {
@@ -62,7 +66,7 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
       }
     } catch (err: any) {
       console.error('Failed to upload group photo', err);
-      toast.error(err?.response?.data?.message || 'Failed to upload photo');
+      toast.error(err?.response?.data?.message || err?.message || 'Failed to upload photo. Using local preview.');
     } finally {
       setIsUploadingPhoto(false);
     }
@@ -81,30 +85,32 @@ export const EditGroupModal: React.FC<EditGroupModalProps> = ({
         rideName: title.trim(),
         description: description.trim(),
       };
-      if (uploadedLogoName) {
-        payload.logo = uploadedLogoName;
-        payload.coverImage = uploadedLogoName;
-      }
+
+      // Strictly purge fields not accepted by backend PUT /user/ride schema
+      delete payload.logo;
+      delete payload.coverImage;
+      delete payload.image;
+      delete payload.clubIds;
+      delete payload.elevationGain;
+      delete payload.level;
+      delete payload.difficultyLevel;
 
       await updateRideInfo(payload).unwrap();
+
+      const resolvedAvatar = uploadedLogoName
+        ? (uploadedLogoName.startsWith('http') ? uploadedLogoName : `https://api.ridewithpals.com/uploads/${uploadedLogoName.replace(/^uploads\//, '')}`)
+        : (avatarPreview || currentAvatar);
 
       toast.success('Group details updated successfully!');
       onSuccess({
         title: title.trim(),
         description: description.trim(),
-        avatar: avatarPreview || currentAvatar,
+        avatar: resolvedAvatar,
       });
       onClose();
     } catch (err: any) {
       console.error('Update ride error', err);
-      // Even if endpoint has minor schema variation, update locally and notify
-      toast.success('Group information updated!');
-      onSuccess({
-        title: title.trim(),
-        description: description.trim(),
-        avatar: avatarPreview || currentAvatar,
-      });
-      onClose();
+      toast.error(err?.data?.message || err?.message || 'Failed to update group information.');
     }
   };
 
