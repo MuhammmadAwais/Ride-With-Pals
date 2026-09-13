@@ -210,7 +210,7 @@ export const clubApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['Club'],
     }),
 
-    getClubLeaderboardAppRides: builder.query<any, { clubId: number }>({
+    getClubLeaderboardAppRides: builder.query<any, { clubId: number; startDate?: string; endDate?: string }>({
       query: (params) => ({
         url: '/user/club/leaderboard/rides',
         method: 'GET',

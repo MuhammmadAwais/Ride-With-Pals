@@ -28,6 +28,7 @@ import {
   ShieldAlert,
   User,
   Users,
+  Coins,
 } from "lucide-react";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useAppSelector } from "@/hooks/useAppSelector";
@@ -63,6 +64,10 @@ export default function EditClub() {
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [isWomenAndNonBinary, setIsWomenAndNonBinary] = useState(false);
+  const [restrictUnpaidMembers, setRestrictUnpaidMembers] = useState(false);
+  const [restrictClubShop, setRestrictClubShop] = useState(false);
+  const [restrictJoinActivities, setRestrictJoinActivities] = useState(false);
+  const [currency, setCurrency] = useState("EUR");
   const [bannerFile, setBannerFile] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<string | null>(null);
   const [bannerFileObj, setBannerFileObj] = useState<File | null>(null);
@@ -76,6 +81,10 @@ export default function EditClub() {
       setPhone(activeClub.phone || "");
       setVisibility(activeClub.clubPrivacyId === 2 ? "Private" : "Public");
       setIsWomenAndNonBinary(Boolean(activeClub.isWomenAndNonBinary));
+      setRestrictUnpaidMembers(Boolean(activeClub.restrictUnpaidMembers));
+      setRestrictClubShop(Boolean(activeClub.restrictClubShop));
+      setRestrictJoinActivities(Boolean(activeClub.restrictJoinActivities));
+      setCurrency((activeClub.currency || "EUR").toUpperCase());
 
       let typeStr = "Cycling";
       if (activeClub.clubTypeId === 2) {
@@ -165,6 +174,10 @@ export default function EditClub() {
         location,
         description,
         isWomenAndNonBinary,
+        restrictUnpaidMembers,
+        restrictClubShop: restrictUnpaidMembers ? restrictClubShop : false,
+        restrictJoinActivities: restrictUnpaidMembers ? restrictJoinActivities : false,
+        currency: currency.toLowerCase(),
         logo: updatedLogo || "",
         clubImage: updatedBanner || ""
       }).unwrap();
@@ -578,6 +591,138 @@ export default function EditClub() {
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Club Governance & Membership Restrictions Card */}
+            <div className="bg-[#1F1F1F] border border-white/5 rounded-3xl p-6 sm:p-7 space-y-6">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
+                      <Trans>Governance & Membership Restrictions</Trans>
+                    </h3>
+                    <p className="text-xs text-gray-400 font-medium mt-0.5">
+                      <Trans>Configure participation rules and enforcement for unpaid club members.</Trans>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Currency Selector */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-[#161616] border border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-white/5 text-gray-400">
+                    <Coins size={18} />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-white block">
+                      <Trans>Club Operating Currency</Trans>
+                    </span>
+                    <span className="text-[11px] text-gray-400 block mt-0.5">
+                      <Trans>Default currency applied to memberships, merchandise, and wallet accounting.</Trans>
+                    </span>
+                  </div>
+                </div>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="bg-[#262626] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#EB712B] cursor-pointer"
+                >
+                  <option value="EUR">EUR (€) — Euro</option>
+                  <option value="USD">USD ($) — US Dollar</option>
+                  <option value="GBP">GBP (£) — British Pound</option>
+                </select>
+              </div>
+
+              {/* Master Toggle: Restrict Unpaid Members */}
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-[#161616] border border-white/5">
+                <div className="pr-4">
+                  <span className="text-xs font-bold text-white block">
+                    <Trans>Restrict Unpaid Members</Trans>
+                  </span>
+                  <span className="text-[11px] text-gray-400 block mt-0.5">
+                    <Trans>Enable rules that limit club privileges when athlete fees are overdue.</Trans>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !restrictUnpaidMembers;
+                    setRestrictUnpaidMembers(next);
+                    if (!next) {
+                      setRestrictJoinActivities(false);
+                      setRestrictClubShop(false);
+                    }
+                  }}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    restrictUnpaidMembers ? 'bg-[#EB712B]' : 'bg-[#333333]'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                      restrictUnpaidMembers ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Sub-Restrictions (active only if restrictUnpaidMembers is true) */}
+              <div className={`space-y-3 transition-opacity duration-200 ${restrictUnpaidMembers ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                {/* Restrict Activities */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-[#161616]/60 border border-white/5">
+                  <div className="pr-4">
+                    <span className="text-xs font-bold text-white block">
+                      <Trans>Restrict Group Rides & Events</Trans>
+                    </span>
+                    <span className="text-[11px] text-gray-400 block mt-0.5">
+                      <Trans>Unpaid members cannot register for or RSVP to club activities.</Trans>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!restrictUnpaidMembers}
+                    onClick={() => setRestrictJoinActivities(!restrictJoinActivities)}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      restrictJoinActivities && restrictUnpaidMembers ? 'bg-[#EB712B]' : 'bg-[#333333]'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        restrictJoinActivities && restrictUnpaidMembers ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Restrict Club Shop */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-[#161616]/60 border border-white/5">
+                  <div className="pr-4">
+                    <span className="text-xs font-bold text-white block">
+                      <Trans>Restrict Official Club Shop</Trans>
+                    </span>
+                    <span className="text-[11px] text-gray-400 block mt-0.5">
+                      <Trans>Only members with active paid status can purchase official merchandise.</Trans>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!restrictUnpaidMembers}
+                    onClick={() => setRestrictClubShop(!restrictClubShop)}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      restrictClubShop && restrictUnpaidMembers ? 'bg-[#EB712B]' : 'bg-[#333333]'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        restrictClubShop && restrictUnpaidMembers ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
                 </div>
               </div>
             </div>

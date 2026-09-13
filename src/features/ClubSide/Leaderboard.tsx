@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Bike, Trophy, Award, Filter, TrendingUp, Activity } from 'lucide-react';
+import { Bike, Trophy, Award, Filter, TrendingUp, Activity, Calendar, ExternalLink } from 'lucide-react';
 import { Trans } from '@lingui/react/macro';
 import { t } from '@lingui/core/macro';
 import DataTable from "@/components/ui/DataTable";
 import type { Column } from "@/components/ui/DataTable";
 import { useGetClubLeaderboardAppRidesQuery } from '@/features/club/api/clubApiSlice';
-import { useGetStravaLeaderboardDataQuery } from '@/features/club/api/stravaApiSlice';
+import { useGetStravaLeaderboardDataQuery, useCheckStravaStatusQuery } from '@/features/club/api/stravaApiSlice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
@@ -13,7 +13,6 @@ import { resolveImageUrl } from '@/features/public-club/services/clubGeocoding';
 const LeaderboardAvatar = ({ avatar, name }: { avatar?: string | null; name: string }) => {
   const [hasError, setHasError] = useState(false);
 
-  // Reset error if avatar changes
   useEffect(() => {
     setHasError(false);
   }, [avatar]);
@@ -55,12 +54,10 @@ const LeaderboardAvatar = ({ avatar, name }: { avatar?: string | null; name: str
 
 const StatCard = ({ title, value, icon: Icon }: any) => (
   <div className="relative p-5 sm:p-6 bg-surface border border-border/80 backdrop-blur-xl rounded-3xl overflow-hidden hover:border-[#EB712B]/40 hover:shadow-xl transition-all duration-300 group flex items-center gap-4 sm:gap-5">
-    {/* Large Prominent Icon Container */}
     <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent border border-[#EB712B]/25 flex items-center justify-center shrink-0 group-hover:bg-[#EB712B] group-hover:scale-105 transition-all duration-300 shadow-md">
       <Icon size={28} className="text-[#EB712B] group-hover:text-white transition-colors duration-300 shrink-0" />
     </div>
 
-    {/* Text & Value Side-by-Side with Icon */}
     <div className="min-w-0 flex-1 space-y-1">
       <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-text-muted font-black truncate">
         {title}
@@ -70,7 +67,6 @@ const StatCard = ({ title, value, icon: Icon }: any) => (
       </div>
     </div>
 
-    {/* Bottom Accent Bar on Hover */}
     <div className="absolute bottom-0 inset-x-0 h-1 bg-border/40 overflow-hidden">
       <div className="w-full h-full bg-gradient-to-r from-transparent via-[#EB712B]/60 to-[#EB712B] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
     </div>
@@ -98,8 +94,15 @@ const LeaderboardSkeleton = () => (
 
 export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
   const [activeTab, setActiveTab] = useState<'app' | 'strava'>('app');
-  const joinedClubs = useAppSelector((state) => state.club.myClubs) || [];
   
+  // App Rides Month Filter ('all' | '0'..'11')
+  const currentMonthIdx = new Date().getMonth();
+  const [selectedMonth, setSelectedMonth] = useState<string>('all');
+
+  // Strava Period Filter ('week' | 'month' | 'year')
+  const [stravaPeriod, setStravaPeriod] = useState<'week' | 'month' | 'year'>('month');
+
+  const joinedClubs = useAppSelector((state) => state.club.myClubs) || [];
   const { clubId: reduxClubId, setActiveClub } = useActiveClub();
 
   let activeClubId = clubId || reduxClubId;
@@ -113,17 +116,39 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     if (clubObj) setActiveClub(clubObj as any);
   };
 
+  // Compute date range for App rides when filtering by month
+  const dateParams = useMemo(() => {
+    if (selectedMonth === 'all') return {};
+    const year = new Date().getFullYear();
+    const month = parseInt(selectedMonth, 10);
+    const start = new Date(Date.UTC(year, month, 1)).toISOString().split('T')[0];
+    const end = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59)).toISOString().split('T')[0];
+    return { startDate: start, endDate: end };
+  }, [selectedMonth]);
+
   // App Rides query
   const { data: rawLeaderboard, isLoading: isLoadingApp } = useGetClubLeaderboardAppRidesQuery(
-    { clubId: Number(activeClubId) },
+    { 
+      clubId: Number(activeClubId),
+      ...dateParams,
+    },
     { skip: !activeClubId || activeTab !== 'app' }
   );
 
   // Strava query
   const { data: stravaData, isLoading: isLoadingStrava } = useGetStravaLeaderboardDataQuery(
-    { clubId: Number(activeClubId) },
+    { 
+      clubId: Number(activeClubId),
+      period: stravaPeriod,
+    },
     { skip: !activeClubId || activeTab !== 'strava' }
   );
+
+  // Strava account sync status
+  const { data: stravaStatusData } = useCheckStravaStatusQuery(undefined, {
+    skip: activeTab !== 'strava',
+  });
+  const isStravaConnected = Boolean(stravaStatusData?.connected);
 
   const isLoading = activeTab === 'app' ? isLoadingApp : isLoadingStrava;
 
@@ -150,11 +175,11 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
       return items.map((item: any, index: number) => ({
         id: index + 1,
         name: item.fullName || item.name || item.userName || (item.firstname ? `${item.firstname} ${item.lastname || ''}`.trim() : 'Strava Rider'),
-        role: 'Strava',
-        team: item.totalDistance ? `${item.totalDistance} km` : (item.totalKm ? `${item.totalKm} km` : 'Strava Sync'),
+        role: 'Strava Sync',
+        team: item.totalDistance ? `${parseFloat(item.totalDistance).toFixed(1)} km` : (item.totalKm ? `${parseFloat(item.totalKm).toFixed(1)} km` : 'Strava Sync'),
         status: 'Active',
         rides: item.totalRides ?? item.ridesCount ?? item.rideCount ?? 0,
-        attendance: item.totalElevation ? `${item.totalElevation}m elev` : '100%',
+        attendance: item.totalElevation ? `${Math.round(item.totalElevation)}m elev` : '100%',
         avatar: item.profileImage || item.profile || item.profile_medium || item.profilePhoto || item.avatar || item.user?.profileImage || null
       }));
     }
@@ -194,26 +219,35 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
     },
     {
       key: 'rides',
-      label: t`Performance`,
+      label: activeTab === 'strava' ? t`Distance / Rides` : t`Performance`,
       sortable: true,
       headerClass: "text-right",
       cellClass: "text-right",
       render: (user) => (
         <div>
-          <div className="font-bold text-sm text-text-main">{user.rides} <span className="text-text-muted font-normal"><Trans>Rides</Trans></span></div>
+          <div className="font-bold text-sm text-text-main">
+            {activeTab === 'strava' ? user.team : `${user.rides} ${t`Rides`}`}
+          </div>
           <div className="flex justify-end items-center gap-2 mt-1">
-            <span className="text-[9px] text-text-muted font-bold">{user.attendance}</span>
+            <span className="text-[10px] text-text-muted font-bold">
+              {activeTab === 'strava' ? `${user.rides} rides • ${user.attendance}` : user.attendance}
+            </span>
           </div>
         </div>
       )
     }
-  ], []);
+  ], [activeTab]);
+
+  const monthNames = [
+    t`January`, t`February`, t`March`, t`April`, t`May`, t`June`,
+    t`July`, t`August`, t`September`, t`October`, t`November`, t`December`
+  ];
 
   return (
     <div className="text-text-main p-6 md:p-16 font-sans overflow-x-hidden">
       
       {/* Header */}
-      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-8">
+      <header className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-8">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/20">
             <TrendingUp size={14} className="text-[#EB712B]" />
@@ -221,12 +255,13 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
           </div>
           <h1 className="text-4xl lg:text-6xl font-black text-text-main tracking-tighter"><Trans>Leaderboard</Trans></h1>
           <p className="text-text-muted text-sm max-w-xl">
-            <Trans>Live metrics and performance ranking for current club members.</Trans>
+            <Trans>Live metrics, mileage rankings, and activity statistics for club athletes.</Trans>
           </p>
         </div>
 
         {/* Club Selector & Source Tabs */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+          {/* Source Tabs */}
           <div className="flex bg-surface p-1 rounded-xl border border-border">
             <button
               onClick={() => setActiveTab('app')}
@@ -242,12 +277,13 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
             </button>
           </div>
 
+          {/* Club Dropdown */}
           {joinedClubs.length > 0 && (
             <div className="relative">
               <select
                 value={activeClubId ?? ''}
                 onChange={handleClubChange}
-                className="w-full sm:w-64 bg-surface border border-border rounded-xl px-4 py-3 text-xs font-bold text-text-main appearance-none cursor-pointer hover:border-[#EB712B]/40 transition-colors focus:outline-none"
+                className="w-full sm:w-60 bg-surface border border-border rounded-xl px-4 py-2.5 text-xs font-bold text-text-main appearance-none cursor-pointer hover:border-[#EB712B]/40 transition-colors focus:outline-none"
               >
                 {joinedClubs.map((club: any) => (
                   <option key={club.id} value={club.id} className="bg-surface text-text-main">
@@ -261,10 +297,80 @@ export const Leaderboard = ({ clubId }: { clubId?: string | number }) => {
         </div>
       </header>
 
+      {/* Filter Toolbar Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-surface border border-border mb-10">
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold uppercase tracking-wider text-text-muted flex items-center gap-1.5">
+            <Calendar size={14} className="text-[#EB712B]" />
+            {activeTab === 'app' ? <Trans>Time Horizon:</Trans> : <Trans>Strava Period:</Trans>}
+          </span>
+
+          {activeTab === 'app' ? (
+            <div className="flex items-center gap-2">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-main-bg border border-border rounded-xl px-3 py-1.5 text-xs font-bold text-text-main focus:outline-none focus:border-[#EB712B] cursor-pointer"
+              >
+                <option value="all">{t`All Time`}</option>
+                <option value={currentMonthIdx.toString()}>{t`Current Month (${monthNames[currentMonthIdx]})`}</option>
+                {monthNames.map((name, i) => (
+                  <option key={i} value={i.toString()}>{name}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="flex bg-main-bg p-1 rounded-xl border border-border">
+              {(['week', 'month', 'year'] as const).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setStravaPeriod(p)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    stravaPeriod === p ? 'bg-[#FC4C02] text-white' : 'text-text-muted hover:text-text-main'
+                  }`}
+                >
+                  {p === 'week' && <Trans>Week</Trans>}
+                  {p === 'month' && <Trans>Month</Trans>}
+                  {p === 'year' && <Trans>Year</Trans>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {activeTab === 'strava' && (
+          <div className="flex items-center gap-2">
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+              isStravaConnected ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isStravaConnected ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+              {isStravaConnected ? <Trans>Strava Connected</Trans> : <Trans>Strava Not Linked</Trans>}
+            </span>
+            {!isStravaConnected && (
+              <a
+                href="/view/clubside/manageclub"
+                className="text-xs text-[#FC4C02] font-bold hover:underline flex items-center gap-1"
+              >
+                <span><Trans>Link in Settings</Trans></span>
+                <ExternalLink size={12} />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <StatCard title={t`Active Racers`} value={leaderboardData.length.toString()} icon={Bike} />
-        <StatCard title={t`Total Rides`} value={leaderboardData.reduce((acc: number, curr: any) => acc + curr.rides, 0).toString()} icon={Trophy} />
+        <StatCard 
+          title={activeTab === 'strava' ? t`Total Kilometers` : t`Total Rides`} 
+          value={
+            activeTab === 'strava'
+              ? `${leaderboardData.reduce((acc: number, curr: any) => acc + (parseFloat(curr.team) || 0), 0).toFixed(0)} km`
+              : leaderboardData.reduce((acc: number, curr: any) => acc + curr.rides, 0).toString()
+          } 
+          icon={Trophy} 
+        />
         <StatCard title={t`Top Participant`} value={leaderboardData[0]?.name || "N/A"} icon={Award} />
       </div>
 

@@ -9,6 +9,7 @@ import {
   UploadCloud,
   Trash2,
   FileImage,
+  Pin,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Trans } from '@lingui/react/macro';
@@ -56,12 +57,14 @@ export const NewsAdded = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isPinned, setIsPinned] = useState(false);
 
   // Pre-fill form when editing
   useEffect(() => {
     if (existingNews) {
       setTitle(existingNews.title || '');
       setDescription(existingNews.description || '');
+      setIsPinned(Boolean((existingNews as any).isPinned));
       if (existingNews.image) {
         setPreviewUrl(resolveImageUrl(existingNews.image));
       }
@@ -116,6 +119,7 @@ export const NewsAdded = () => {
           description,
           clubId: Number(clubId),
           image: imageUrl,
+          isPinned,
         }).unwrap();
         toast.success(t`News updated successfully!`);
       } else {
@@ -123,7 +127,8 @@ export const NewsAdded = () => {
           title,
           description,
           clubId: Number(clubId),
-          image: imageUrl
+          image: imageUrl,
+          isPinned,
         }).unwrap();
         toast.success(t`News published successfully!`);
       }
@@ -285,6 +290,38 @@ export const NewsAdded = () => {
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Pin Announcement Toggle Box */}
+          <div className="bg-surface border border-border rounded-3xl p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`p-2.5 rounded-xl border transition-colors ${isPinned ? 'bg-[#EB712B]/15 text-[#EB712B] border-[#EB712B]/30' : 'bg-main-bg text-text-muted border-border'}`}>
+                  <Pin size={18} className={isPinned ? 'rotate-45' : ''} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-text-main">
+                    <Trans>Pin Announcement</Trans>
+                  </h4>
+                  <p className="text-[11px] text-text-muted mt-0.5">
+                    <Trans>Feature this bulletin at top of club feed.</Trans>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPinned(!isPinned)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  isPinned ? 'bg-[#EB712B]' : 'bg-hover'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                    isPinned ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
 
           {/* Action Box */}

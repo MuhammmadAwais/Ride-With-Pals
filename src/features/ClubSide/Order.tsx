@@ -1,10 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Search, ChevronRight } from 'lucide-react';
 import { Trans } from '@lingui/react/macro';
 import { t } from '@lingui/core/macro';
-import DataTable from "@/components/ui/DataTable";
-import type { Column } from "@/components/ui/DataTable";
+import DataTable, { type Column } from '@/components/ui/DataTable';
 import { useForClubOwnerOrderListQuery } from '@/features/club/api/shopOrderApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -12,17 +11,19 @@ import { useGetJoinedClubsQuery } from '@/features/club/api/clubApiSlice';
 import type { ResponseElement } from '@/api/types/shopOrderTypes';
 import type { Club } from '@/features/club/types/clubTypes';
 
-export interface OrderRow {
+interface OrderRow {
   id?: string;
   orderId: string;
   productName: string;
   category: string;
   image: string;
   price: string;
+  quantity: number;
   recipient: string;
   address: string;
   date: string;
-  status: 'Active' | 'Delivered';
+  statusId: number;
+  statusName: string;
   originalOrder: ResponseElement;
 }
 
@@ -41,28 +42,28 @@ const extractArray = (data: unknown): ResponseElement[] => {
 };
 
 const TableSkeleton = () => (
-  <div className="animate-pulse space-y-3 p-4 bg-surface rounded-3xl border border-border">
+  <div className="animate-pulse space-y-3 p-6">
     {[1, 2, 3, 4, 5].map((i) => (
-      <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-border last:border-0">
-        <div className="flex items-center gap-3 flex-1">
-          <div className="w-10 h-10 rounded-2xl bg-hover/50" />
+      <div key={i} className="flex items-center justify-between py-4 border-b border-border last:border-0">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-hover" />
           <div className="space-y-2">
-            <div className="w-24 h-4 bg-hover/50 rounded" />
-            <div className="w-16 h-3 bg-hover/50 rounded" />
+            <div className="w-32 h-4 bg-hover rounded" />
+            <div className="w-20 h-3 bg-hover rounded" />
           </div>
         </div>
-        <div className="w-20 h-4 bg-hover/50 rounded" />
-        <div className="w-16 h-4 bg-hover/50 rounded" />
-        <div className="w-24 h-4 bg-hover/50 rounded" />
-        <div className="w-16 h-4 bg-hover/50 rounded" />
-        <div className="w-20 h-8 bg-hover/50 rounded-lg" />
+        <div className="w-16 h-4 bg-hover rounded" />
+        <div className="w-24 h-4 bg-hover rounded" />
+        <div className="w-20 h-7 bg-hover rounded-full" />
       </div>
     ))}
   </div>
 );
 
+type OrderTab = 'All' | 'Pending' | 'Approved' | 'Delivered' | 'Cancelled';
+
 const Order = () => {
-  const [activeTab, setActiveTab] = useState<'Active' | 'Delivered'>('Active');
+  const [activeTab, setActiveTab] = useState<OrderTab>('All');
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -77,7 +78,6 @@ const Order = () => {
         ? joinedClubsData
         : (Array.isArray((joinedClubsData as { rows?: unknown[] })?.rows) ? (joinedClubsData as { rows?: unknown[] }).rows || [] : myClubsFromRedux);
       if (Array.isArray(clubsList) && clubsList.length > 0) {
-        console.log("📌 [Order Management] Auto-selecting active club:", clubsList[0]);
         setActiveClub(clubsList[0] as Club);
       }
     }
@@ -85,28 +85,27 @@ const Order = () => {
 
   const effectiveClubId = clubIdStr ? Number(clubIdStr) : 0;
 
+  const statusIdsParam = useMemo(() => {
+    switch (activeTab) {
+      case 'Pending': return '1';
+      case 'Approved': return '2';
+      case 'Delivered': return '4';
+      case 'Cancelled': return '3';
+      case 'All':
+      default:
+        return undefined;
+    }
+  }, [activeTab]);
+
   const { data: orderListResponse, isLoading, isError } = useForClubOwnerOrderListQuery(
     {
       clubId: effectiveClubId,
-      limit: 50,
+      limit: 100,
       offset: 0,
-      statusIds: activeTab === 'Active' ? '1,2,3' : '4',
+      statusIds: statusIdsParam,
     },
     { skip: !effectiveClubId }
   );
-
-  useEffect(() => {
-    if (effectiveClubId) {
-      console.log("📦 [Order Management] Sending GET /user/club/shop/orders request for Club ID:", effectiveClubId, "Tab:", activeTab);
-    }
-  }, [effectiveClubId, activeTab]);
-
-  useEffect(() => {
-    if (orderListResponse) {
-      console.log("📦 [Order Management] Received order list API response:", orderListResponse);
-      console.log("📦 [Order Management] Extracted rows:", extractArray(orderListResponse));
-    }
-  }, [orderListResponse]);
 
   const orders = useMemo(() => {
     const rows = extractArray(orderListResponse);
@@ -115,17 +114,23 @@ const Order = () => {
       const addressStr = addressObj?.street 
         ? `${addressObj.street || ''}, ${addressObj.city || ''}` 
         : (o.deliveryMethod || 'Pickup');
+      
+      const sId = Number(o.statusId || 1);
+      const sName = o.statusName || (sId === 4 ? 'Delivered' : sId === 2 ? 'Approved' : sId === 3 ? 'Cancelled' : 'Pending');
+
       return {
         id: o.id?.toString(),
         orderId: o.id?.toString() || '0',
         productName: o.shop?.name || 'Unknown Product',
-        category: o.shop?.size || 'Uncategorized',
+        category: o.shop?.size || 'Official Gear',
         image: o.shop?.image || '/Images/CycleImage.png',
         price: `€${o.totalPrice ? parseFloat(o.totalPrice).toFixed(2) : '0.00'}`,
-        recipient: o.buyer?.fullName || 'Unknown User',
+        quantity: o.quantity || 1,
+        recipient: o.buyer?.fullName || 'Athlete',
         address: addressStr,
         date: o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'N/A',
-        status: activeTab,
+        statusId: sId,
+        statusName: sName,
         originalOrder: o
       };
     });
@@ -138,21 +143,26 @@ const Order = () => {
       o.recipient.toLowerCase().includes(query) ||
       o.orderId.toLowerCase().includes(query)
     );
-  }, [orderListResponse, activeTab, searchQuery]);
+  }, [orderListResponse, searchQuery]);
 
   const columns: Column<OrderRow>[] = useMemo(() => [
     {
       key: 'productName',
-      label: t`Product`,
+      label: t`Product & Gear`,
       sortable: true,
       render: (order) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-hover flex items-center justify-center overflow-hidden border border-border">
-            <img src={order.image} alt={order.productName} className="w-full h-full object-cover" />
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-surface-elevated flex items-center justify-center overflow-hidden border border-border shrink-0 shadow-sm">
+            <img 
+              src={order.image} 
+              alt={order.productName} 
+              onError={(e) => (e.currentTarget.src = '/Images/CycleImage.png')} 
+              className="w-full h-full object-cover" 
+            />
           </div>
           <div>
-            <h3 className="text-xs md:text-sm font-bold text-text-main">{order.productName}</h3>
-            <p className="text-[9px] md:text-[10px] text-text-muted font-medium uppercase">{order.category}</p>
+            <h3 className="text-sm font-bold text-text-main hover:text-[#EB712B] transition-colors">{order.productName}</h3>
+            <p className="text-[11px] text-text-muted font-medium uppercase mt-0.5">{order.category} • {order.quantity} qty</p>
           </div>
         </div>
       )
@@ -161,47 +171,70 @@ const Order = () => {
       key: 'orderId',
       label: t`Order ID`,
       sortable: true,
-      render: (order) => <p className="text-xs font-mono text-text-muted">#{order.orderId}</p>
+      render: (order) => <p className="text-xs font-mono font-bold text-text-muted">#{order.orderId}</p>
     },
     {
       key: 'price',
-      label: t`Price`,
+      label: t`Total Price`,
       sortable: true,
-      render: (order) => <p className="text-sm font-semibold text-text-main">{order.price}</p>
+      render: (order) => <p className="text-sm font-extrabold text-[#EB712B]">{order.price}</p>
     },
     {
       key: 'recipient',
-      label: t`Recipient`,
+      label: t`Buyer`,
       sortable: true,
-      render: (order) => <p className="font-medium text-text-main">{order.recipient}</p>
+      render: (order) => (
+        <div>
+          <p className="font-semibold text-sm text-text-main">{order.recipient}</p>
+          <p className="text-[11px] text-text-muted truncate max-w-[160px] mt-0.5">{order.address}</p>
+        </div>
+      )
     },
     {
       key: 'date',
       label: t`Date`,
       sortable: true,
-      render: (order) => <p className="text-xs text-text-muted">{order.date}</p>
+      render: (order) => <p className="text-xs font-medium text-text-muted">{order.date}</p>
     },
     {
       key: 'status',
       label: t`Status`,
       sortable: true,
+      render: (order) => {
+        let badgeStyle = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        let label = t`Pending`;
+
+        if (order.statusId === 4 || order.statusName.toLowerCase() === 'delivered') {
+          badgeStyle = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+          label = t`Delivered`;
+        } else if (order.statusId === 2 || order.statusName.toLowerCase() === 'approved') {
+          badgeStyle = 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+          label = t`Approved`;
+        } else if (order.statusId === 3 || order.statusName.toLowerCase() === 'cancelled') {
+          badgeStyle = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+          label = t`Cancelled`;
+        }
+
+        return (
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${badgeStyle}`}>
+            {label}
+          </span>
+        );
+      }
+    },
+    {
+      key: 'actions',
+      label: t`Action`,
+      sortable: false,
       render: (order) => (
         <div className="flex justify-end">
-          {order.status === 'Delivered' ? (
-            <button 
-              onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
-              className="px-3 py-2 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all cursor-pointer"
-            >
-              <Trans>Delivered</Trans>
-            </button>
-          ) : (
-            <button 
-              onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
-              className="px-4 py-2 rounded-lg bg-surface border border-border text-[10px] font-bold uppercase hover:bg-[#EB712B] hover:text-white hover:border-[#EB712B] transition-all cursor-pointer text-text-main"
-            >
-              <Trans>Details</Trans>
-            </button>
-          )}
+          <button 
+            onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.orderId}`, { state: { order } }); }}
+            className="px-3 py-1.5 rounded-xl bg-surface border border-border text-xs font-bold hover:bg-[#EB712B] hover:text-white hover:border-[#EB712B] transition-all cursor-pointer text-text-main flex items-center gap-1"
+          >
+            <span><Trans>Details</Trans></span>
+            <ChevronRight size={14} />
+          </button>
         </div>
       )
     }
@@ -211,35 +244,38 @@ const Order = () => {
     <div className="w-full text-text-main font-sans min-h-screen p-4 md:p-8 overflow-x-hidden">
       <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end mb-8 gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-2"><Trans>Order Management</Trans></h1>
-          <p className="text-text-muted text-xs md:text-sm"><Trans>Oversee real-time logistics and athlete fulfillment streams.</Trans></p>
+          <h1 className="text-2xl md:text-3xl font-bold mb-1"><Trans>Shop Orders</Trans></h1>
+          <p className="text-text-muted text-xs md:text-sm"><Trans>Manage athlete purchases, review incoming orders, and track fulfillment.</Trans></p>
         </div>
         
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full xl:w-auto">
-          <div className="relative w-full sm:w-72">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full xl:w-auto">
+          <div className="relative w-full sm:w-64">
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
             <input
               type="text"
               placeholder={t`Search orders, athletes...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-main placeholder-text-muted font-medium focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300"
+              className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-2 text-xs text-text-main placeholder-text-muted font-medium focus:outline-none focus:border-[#EB712B] transition-all"
             />
           </div>
 
-          <div className="bg-surface p-1 rounded-xl border border-border flex self-end shrink-0">
-            <button 
-              onClick={() => setActiveTab('Active')} 
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Active' ? 'bg-[#EB712B] text-white' : 'text-text-muted hover:text-text-main'}`}
-            >
-              <Trans>Active</Trans>
-            </button>
-            <button 
-              onClick={() => setActiveTab('Delivered')} 
-              className={`px-6 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${activeTab === 'Delivered' ? 'bg-[#EB712B] text-white' : 'text-text-muted hover:text-text-main'}`}
-            >
-              <Trans>Delivered</Trans>
-            </button>
+          <div className="bg-surface p-1 rounded-xl border border-border flex flex-wrap gap-1">
+            {(['All', 'Pending', 'Approved', 'Delivered', 'Cancelled'] as OrderTab[]).map((tab) => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)} 
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === tab ? 'bg-[#EB712B] text-white shadow-md shadow-[#EB712B]/20' : 'text-text-muted hover:text-text-main'
+                }`}
+              >
+                {tab === 'All' && <Trans>All</Trans>}
+                {tab === 'Pending' && <Trans>Pending</Trans>}
+                {tab === 'Approved' && <Trans>Approved</Trans>}
+                {tab === 'Delivered' && <Trans>Delivered</Trans>}
+                {tab === 'Cancelled' && <Trans>Cancelled</Trans>}
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -260,7 +296,7 @@ const Order = () => {
         </div>
       ) : (
         <div className="text-center py-16 bg-surface border border-border rounded-3xl text-text-muted font-medium text-sm">
-          <Trans>No orders found under "{activeTab}" matching your filter.</Trans>
+          <Trans>No orders found under "{activeTab}".</Trans>
         </div>
       )}
     </div>

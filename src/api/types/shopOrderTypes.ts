@@ -22,6 +22,7 @@ export type ResponseElement = {
     createdAt:  Date;
     updatedAt:  Date;
     deletedAt:  null;
+    comments?:  string;
     shop?:          Shop;
     buyer?:         Buyer;
     club?:          Club;
@@ -41,6 +42,8 @@ export type Buyer = {
     id:           number;
     fullName:     string;
     profileImage: null | string;
+    phone?:       string;
+    email?:       string;
 }
 
 export type Club = {

@@ -47,6 +47,15 @@ export const shopOrderApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Shop'],
     }),
+
+    cancelShopOrder: builder.mutation<ShopOrderTypes.UpdateShopOrderStatusResponse, { orderId: number }>({
+      query: (body) => ({
+        url: '/user/club/shop/order/cancel',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Shop'],
+    }),
   }),
 });
 
@@ -56,4 +65,5 @@ export const {
   useBuyShopItemMutation,
   useGetMyPurchasesListQuery,
   useUpdateShopOrderStatusMutation,
+  useCancelShopOrderMutation,
 } = shopOrderApiSlice;

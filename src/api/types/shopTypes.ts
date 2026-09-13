@@ -60,26 +60,32 @@ export type DeleteShopItemResponse = {
 }
 
 export type AddItemToShopRequest = {
-    clubId:       number;
-    name:         string;
-    price:        number;
-    description?: string;
-    image?:       string;
-    size?:        string;
-    gender?:      string;
-    quantity?:    number;
+    clubId:              number;
+    name:                string;
+    price:               number;
+    description?:        string;
+    image?:              string;
+    size?:               string;
+    gender?:             string;
+    quantity?:           number;
+    isShippingRequired?: boolean;
+    isFreeShipping?:     boolean;
+    shippingCost?:       number;
 }
 
 export type UpdateItemToShopRequest = {
-    shopItemId:   number;
-    name?:        string;
-    price?:       number;
-    description?: string;
-    image?:       string;
-    size?:        string;
-    gender?:      string;
-    isActive?:    boolean;
-    quantity?:    number;
+    shopItemId:          number;
+    name?:               string;
+    price?:              number;
+    description?:        string;
+    image?:              string;
+    size?:               string;
+    gender?:             string;
+    isActive?:           boolean;
+    quantity?:           number;
+    isShippingRequired?: boolean;
+    isFreeShipping?:     boolean;
+    shippingCost?:       number;
 }
 
 export type GetTheShopItemsParams = {

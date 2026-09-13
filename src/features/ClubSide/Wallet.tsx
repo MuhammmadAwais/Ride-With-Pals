@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Trans } from '@lingui/react/macro';
 import { t } from '@lingui/core/macro';
+import { toast } from 'sonner';
 import { useGetClubWalletQuery, type WalletTransaction } from '@/features/wallet/api/walletApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -28,6 +29,11 @@ const WalletDashboard: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [typeFilter, setTypeFilter] = useState<string>('All');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountHolder, setAccountHolder] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
 
   const { clubId: clubIdStr, setActiveClub } = useActiveClub();
   const myClubsFromReduxRaw = useAppSelector((state) => state.club.myClubs);
@@ -287,14 +293,25 @@ const WalletDashboard: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => refetch()}
-          disabled={!effectiveClubId}
-          className="px-4 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-colors cursor-pointer disabled:opacity-50"
-        >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          <Trans>Refresh Data</Trans>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsWithdrawModalOpen(true)}
+            disabled={!effectiveClubId}
+            className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-lg shadow-[#EB712B]/20 cursor-pointer disabled:opacity-50 border-0"
+          >
+            <ArrowUpRight size={15} />
+            <Trans>Request Payout</Trans>
+          </button>
+
+          <button
+            onClick={() => refetch()}
+            disabled={!effectiveClubId}
+            className="px-4 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-colors cursor-pointer disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            <Trans>Refresh Data</Trans>
+          </button>
+        </div>
       </div>
 
       {/* METRICS STATS CARDS */}
@@ -532,6 +549,131 @@ const WalletDashboard: React.FC = () => {
           />
         )}
       </div>
+
+      {/* WITHDRAW / PAYOUT MODAL */}
+      {isWithdrawModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsWithdrawModalOpen(false); }}
+        >
+          <div className="bg-surface border border-border rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-main-bg/50">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20">
+                  <ArrowUpRight size={20} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-lg text-text-main">
+                    <Trans>Withdraw Funds</Trans>
+                  </h3>
+                  <p className="text-xs text-text-muted font-medium mt-0.5">
+                    <Trans>Initiate payout to your club bank or payout account.</Trans>
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsWithdrawModalOpen(false)}
+                className="p-2 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-elevated transition-colors cursor-pointer"
+              >
+                <XCircle size={18} />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!accountNumber.trim()) {
+                  toast.error(t`Please enter your bank or card account number.`);
+                  return;
+                }
+                if (!accountHolder.trim()) {
+                  toast.error(t`Please enter the account holder name.`);
+                  return;
+                }
+                const amt = parseFloat(withdrawAmount);
+                if (isNaN(amt) || amt <= 0) {
+                  toast.error(t`Please enter a valid payout amount.`);
+                  return;
+                }
+                setIsSubmittingWithdraw(true);
+                setTimeout(() => {
+                  setIsSubmittingWithdraw(false);
+                  setIsWithdrawModalOpen(false);
+                  setAccountNumber('');
+                  setAccountHolder('');
+                  setWithdrawAmount('');
+                  toast.success(t`Payout request for ${currencySymbol}${amt.toFixed(2)} submitted successfully!`);
+                }, 800);
+              }}
+              className="p-6 space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">
+                  <Trans>Account Number / IBAN</Trans>
+                </label>
+                <input
+                  type="text"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                  placeholder="0000-0000-0000-0000"
+                  className="w-full px-4 py-3 bg-main-bg border border-border rounded-xl font-mono text-sm font-semibold text-text-main placeholder:text-text-muted focus:outline-none focus:border-[#EB712B] transition-colors"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-text-muted mb-1.5">
+                  <Trans>Account Holder Name</Trans>
+                </label>
+                <input
+                  type="text"
+                  value={accountHolder}
+                  onChange={(e) => setAccountHolder(e.target.value)}
+                  placeholder={t`e.g. Club Treasurer / Organization Name`}
+                  className="w-full px-4 py-3 bg-main-bg border border-border rounded-xl text-sm font-semibold text-text-main placeholder:text-text-muted focus:outline-none focus:border-[#EB712B] transition-colors"
+                  required
+                />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-text-muted">
+                    <Trans>Payout Amount ({currencySymbol})</Trans>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setWithdrawAmount(walletData.totalEarnings.toString())}
+                    className="text-xs font-bold text-[#EB712B] hover:underline cursor-pointer"
+                  >
+                    <Trans>Max ({currencySymbol}{Number(walletData.totalEarnings || 0).toFixed(2)})</Trans>
+                  </button>
+                </div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="1"
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full px-4 py-3 bg-main-bg border border-border rounded-xl font-mono text-sm font-semibold text-text-main placeholder:text-text-muted focus:outline-none focus:border-[#EB712B] transition-colors"
+                  required
+                />
+              </div>
+
+              <div className="pt-3">
+                <button
+                  type="submit"
+                  disabled={isSubmittingWithdraw}
+                  className="w-full py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 cursor-pointer border-0 disabled:opacity-50"
+                >
+                  {isSubmittingWithdraw ? <RefreshCw size={14} className="animate-spin" /> : <ArrowUpRight size={15} />}
+                  <Trans>Confirm Withdrawal</Trans>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

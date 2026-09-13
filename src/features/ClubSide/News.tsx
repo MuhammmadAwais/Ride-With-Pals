@@ -22,7 +22,8 @@ import {
   List,
   Quote,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Pin
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -195,7 +196,13 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
         <div className="flex-1 min-w-0 space-y-3 w-full">
           {/* Metadata Topline & Controls */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <div className="flex items-center gap-3 text-[11px] text-text-muted font-medium">
+            <div className="flex items-center gap-2.5 text-[11px] text-text-muted font-medium flex-wrap">
+              {item.isPinned && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#EB712B]/15 text-[#EB712B] border border-[#EB712B]/30 shadow-sm">
+                  <Pin size={11} className="rotate-45" />
+                  <Trans>Pinned Bulletin</Trans>
+                </span>
+              )}
               <span className="flex items-center gap-1.5">
                 <Calendar size={13} className="text-[#EB712B]" />
                 {item.date}
@@ -324,6 +331,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [isPinned, setIsPinned] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -340,10 +348,12 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
         setTitle(editingArticle.title || '');
         setDescription(editingArticle.fullContent || editingArticle.previewText || editingArticle.description || '');
         setPreviewUrl(editingArticle.image || null);
+        setIsPinned(Boolean(editingArticle.isPinned));
         setSelectedFile(null);
       } else {
         setTitle('');
         setDescription('');
+        setIsPinned(false);
         setSelectedFile(null);
         setPreviewUrl(null);
       }
@@ -419,6 +429,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           description: description.trim(),
           clubId: Number(clubId),
           image: imageUrl || undefined,
+          isPinned,
         }).unwrap();
         toast.success(t`Article updated successfully!`);
       } else {
@@ -427,6 +438,7 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
           description: description.trim(),
           clubId: Number(clubId),
           image: imageUrl || undefined,
+          isPinned,
         }).unwrap();
         toast.success(t`Article published to club feed!`);
       }
@@ -611,6 +623,36 @@ const PublishArticleModal: React.FC<PublishArticleModalProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-surface border border-border p-4 rounded-xl text-xs sm:text-sm text-text-main placeholder:text-text-muted/60 focus:outline-none focus:border-[#EB712B]/60 transition-colors leading-relaxed resize-y custom-scrollbar"
             />
+
+            {/* Pin Announcement Switch */}
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-hover/50 border border-border mt-3">
+              <div className="flex items-center gap-2.5">
+                <div className={`p-2 rounded-lg border transition-colors ${isPinned ? 'bg-[#EB712B]/15 text-[#EB712B] border-[#EB712B]/30' : 'bg-surface text-text-muted border-border'}`}>
+                  <Pin size={15} className={isPinned ? 'rotate-45' : ''} />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-text-main block">
+                    <Trans>Pin Announcement</Trans>
+                  </span>
+                  <span className="text-[10px] text-text-muted block">
+                    <Trans>Featured at the top of the club feed</Trans>
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPinned(!isPinned)}
+                className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  isPinned ? 'bg-[#EB712B]' : 'bg-surface border-border'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    isPinned ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
         </form>
 
@@ -830,7 +872,16 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
 
   const newsItems = useMemo(() => {
     const items = newsData?.rows || [];
-    return items.map((item: any, index: number) => {
+    // Sort pinned items to the top, then by creation date descending
+    const sorted = [...items].sort((a: any, b: any) => {
+      const aPinned = Boolean(a.isPinned);
+      const bPinned = Boolean(b.isPinned);
+      if (aPinned && !bPinned) return -1;
+      if (!aPinned && bPinned) return 1;
+      return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+    });
+
+    return sorted.map((item: any, index: number) => {
       const rawImg = item.image || item.imageUrl || null;
       const image = resolveImageUrl(rawImg);
       const readingMinutes = Math.max(1, Math.ceil((item.description || item.content || '').split(/\s+/).filter(Boolean).length / 150));
@@ -841,6 +892,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ clubId, club }) => {
         previewText: item.description || (item.content ? item.content.slice(0, 180) + '...' : t`No description provided.`),
         fullContent: item.description || item.content || t`No content provided.`,
         image: image,
+        isPinned: Boolean(item.isPinned),
+        pinnedAt: item.pinnedAt,
         readingTime: t`${readingMinutes} min read`,
         author: item.user?.fullName || item.author || t`Club Leadership`,
         authorInitials: (item.user?.fullName || item.author || 'CL').slice(0, 2).toUpperCase(),

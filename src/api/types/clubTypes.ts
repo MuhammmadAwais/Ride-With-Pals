@@ -500,6 +500,7 @@ export type CreateClubProfileRequest = {
     restrictClubShop?:        boolean;
     restrictJoinActivities?:  boolean;
     isWomenAndNonBinary?:     boolean;
+    currency?:                string;
 }
 
 export type UpdateClubInfoRequest = CreateClubProfileRequest & {

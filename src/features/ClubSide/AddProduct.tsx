@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, ArrowLeft, LayoutDashboard, FileText, X, Loader2, Package, Sparkles, CreditCard } from 'lucide-react';
+import { Upload, ArrowLeft, LayoutDashboard, FileText, X, Loader2, Package, Sparkles, CreditCard, Truck } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Trans } from '@lingui/react/macro';
@@ -23,9 +23,14 @@ const AddProduct = () => {
   // Form state
   const [name, setName] = useState(incomingProduct?.name || '');
   const [price, setPrice] = useState(incomingProduct?.price || '');
+  const [quantity, setQuantity] = useState(incomingProduct?.quantity?.toString() || '10');
   const [description, setDescription] = useState(incomingProduct?.description || '');
   const [size, setSize] = useState(incomingProduct?.size || 'L');
   const [gender, setGender] = useState(incomingProduct?.gender || 'Unisex');
+  const [isShippingRequired, setIsShippingRequired] = useState(Boolean(incomingProduct?.isShippingRequired));
+  const [isFreeShipping, setIsFreeShipping] = useState(Boolean(incomingProduct?.isFreeShipping));
+  const [shippingCost, setShippingCost] = useState(incomingProduct?.shippingCost ? incomingProduct.shippingCost.toString() : '');
+  const [isActive, setIsActive] = useState(incomingProduct?.isActive !== false);
 
   // Image state
   const [previewImages, setPreviewImages] = useState<string[]>([]);
@@ -55,6 +60,11 @@ const AddProduct = () => {
     if (incomingProduct) {
       const existingImages = incomingProduct.gallery || (incomingProduct.image ? [incomingProduct.image] : []);
       setPreviewImages(existingImages);
+      if (incomingProduct.quantity != null) setQuantity(incomingProduct.quantity.toString());
+      if (incomingProduct.isShippingRequired != null) setIsShippingRequired(Boolean(incomingProduct.isShippingRequired));
+      if (incomingProduct.isFreeShipping != null) setIsFreeShipping(Boolean(incomingProduct.isFreeShipping));
+      if (incomingProduct.shippingCost != null) setShippingCost(incomingProduct.shippingCost.toString());
+      if (incomingProduct.isActive != null) setIsActive(Boolean(incomingProduct.isActive));
     }
   }, [incomingProduct]);
 
@@ -86,6 +96,9 @@ const AddProduct = () => {
       return;
     }
 
+    const qtyNum = parseInt(quantity, 10) || 1;
+    const shipCostNum = isShippingRequired && !isFreeShipping ? parseFloat(shippingCost) || 0 : 0;
+
     try {
       let finalImageUrl: string | undefined;
       if (pendingFiles.length > 0) {
@@ -102,10 +115,15 @@ const AddProduct = () => {
           shopItemId: incomingProduct.id,
           name: name.trim(),
           price: Number(price),
+          quantity: qtyNum,
           description: description.trim(),
           size,
           gender: gender === 'None' ? undefined : gender,
           image: finalImageUrl,
+          isShippingRequired,
+          isFreeShipping: isShippingRequired ? isFreeShipping : false,
+          shippingCost: shipCostNum,
+          isActive,
         }).unwrap();
         toast.success(t`Product updated successfully!`);
       } else {
@@ -113,10 +131,14 @@ const AddProduct = () => {
           clubId: Number(clubIdStr),
           name: name.trim(),
           price: Number(price),
+          quantity: qtyNum,
           description: description.trim(),
           size,
           gender: gender === 'None' ? undefined : gender,
           image: finalImageUrl,
+          isShippingRequired,
+          isFreeShipping: isShippingRequired ? isFreeShipping : false,
+          shippingCost: shipCostNum,
         }).unwrap();
         toast.success(t`Product added to club shop!`);
       }
@@ -298,7 +320,7 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
                     <Trans>Size / Dimension</Trans>
@@ -333,6 +355,21 @@ const AddProduct = () => {
                     <option value="None">{t`Not Applicable`}</option>
                   </select>
                 </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                    <Trans>Units in Stock *</Trans>
+                  </label>
+                  <input 
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={quantity} 
+                    onChange={(e) => setQuantity(e.target.value)} 
+                    placeholder="10"
+                    className="w-full h-12 bg-main-bg border border-border rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors" 
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -346,6 +383,84 @@ const AddProduct = () => {
                   placeholder={t`Provide fabric composition, sizing fit guidelines, care instructions, or delivery details...`}
                   className="w-full bg-main-bg border border-border rounded-xl p-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors resize-none" 
                 />
+              </div>
+            </div>
+
+            {/* Fulfillment & Shipping Settings */}
+            <div className="bg-surface p-6 rounded-3xl border border-border shadow-lg space-y-5">
+              <h2 className="text-sm font-bold flex items-center gap-2 text-white">
+                <Truck size={18} className="text-[#EB712B]" /> <Trans>Fulfillment & Delivery</Trans>
+              </h2>
+
+              <div className="space-y-4">
+                <label className="flex items-start gap-3 p-4 rounded-2xl bg-main-bg border border-border cursor-pointer hover:border-[#EB712B]/30 transition-all">
+                  <input
+                    type="checkbox"
+                    checked={isShippingRequired}
+                    onChange={(e) => setIsShippingRequired(e.target.checked)}
+                    className="w-4 h-4 mt-0.5 rounded border-border accent-[#EB712B] cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-white block">
+                      <Trans>Requires Physical Shipping / Delivery</Trans>
+                    </span>
+                    <span className="text-[11px] text-text-muted block mt-0.5">
+                      <Trans>Enable if this item is mailed or couriered. Leave unchecked for club in-person pickup only.</Trans>
+                    </span>
+                  </div>
+                </label>
+
+                {isShippingRequired && (
+                  <div className="pl-4 border-l-2 border-[#EB712B]/30 space-y-4 pt-1">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isFreeShipping}
+                        onChange={(e) => setIsFreeShipping(e.target.checked)}
+                        className="w-4 h-4 rounded border-border accent-[#EB712B] cursor-pointer"
+                      />
+                      <span className="text-xs font-bold text-white">
+                        <Trans>Offer Free Shipping on this merchandise item</Trans>
+                      </span>
+                    </label>
+
+                    {!isFreeShipping && (
+                      <div className="space-y-2 max-w-xs">
+                        <label className="text-xs text-text-muted font-bold uppercase tracking-wider block">
+                          <Trans>Shipping Fee ($)</Trans>
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={shippingCost}
+                          onChange={(e) => setShippingCost(e.target.value)}
+                          placeholder={t`e.g. 5.00`}
+                          className="w-full h-11 bg-main-bg border border-border rounded-xl px-4 text-sm outline-none focus:border-[#EB712B] text-white placeholder:text-text-muted/40 transition-colors"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {incomingProduct && (
+                  <label className="flex items-center justify-between p-4 rounded-2xl bg-main-bg border border-border cursor-pointer">
+                    <div>
+                      <span className="text-xs font-bold text-white block">
+                        <Trans>Listing Active Status</Trans>
+                      </span>
+                      <span className="text-[11px] text-text-muted block mt-0.5">
+                        <Trans>Deactivating hides this product from the club merchandise store.</Trans>
+                      </span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={isActive}
+                      onChange={(e) => setIsActive(e.target.checked)}
+                      className="w-5 h-5 rounded border-border accent-[#EB712B] cursor-pointer"
+                    />
+                  </label>
+                )}
               </div>
             </div>
           </div>

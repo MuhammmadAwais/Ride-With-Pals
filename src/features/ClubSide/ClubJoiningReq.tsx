@@ -605,10 +605,10 @@ const JoinCodeModal: React.FC<JoinCodeModalProps> = ({
   onSubmit,
   isSubmitting,
 }) => {
-  // Default code generation helper
+  // Default code generation helper (strictly alphanumeric: letters and numbers only)
   const generateRandomCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = 'RWP-';
+    let result = 'RWP';
     for (let i = 0; i < 6; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -640,9 +640,13 @@ const JoinCodeModal: React.FC<JoinCodeModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanCode = code.trim().toUpperCase();
+    const cleanCode = code.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (!cleanCode) {
       setError(t`Please provide a valid join code.`);
+      return;
+    }
+    if (!/^[A-Z0-9]+$/i.test(cleanCode)) {
+      setError(t`Join code must only contain letters and numbers.`);
       return;
     }
     if (!expiresAt) {
@@ -725,14 +729,14 @@ const JoinCodeModal: React.FC<JoinCodeModalProps> = ({
               <input
                 type="text"
                 value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                 placeholder="e.g. SUMMER2026"
                 className="w-full px-4 py-3 bg-main-bg border border-border rounded-xl font-mono text-sm font-bold text-text-main placeholder:text-text-muted uppercase focus:outline-none focus:border-[#EB712B] transition-colors"
                 required
               />
             </div>
             <p className="text-[11px] text-text-muted mt-1.5">
-              <Trans>Athletes will enter this exact code into their mobile or web join dialog.</Trans>
+              <Trans>Alphanumeric characters only (letters and numbers). Athletes will enter this code to join.</Trans>
             </p>
           </div>
 

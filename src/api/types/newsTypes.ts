@@ -50,6 +50,8 @@ export type AddNewsResponseResponse = {
     image:               string;
     clubId:              number;
     addedBy:             number;
+    isPinned?:           boolean;
+    pinnedAt?:           Date | string | null;
     updatedAt:           Date;
     createdAt:           Date;
     deletedAt?:          Date | null;
@@ -95,6 +97,7 @@ export type AddNewsRequest = {
     description:  string;
     image?:       string;
     clubId:       number;
+    isPinned?:    boolean;
 }
 
 export type GetNewsByIdParams = {
@@ -107,6 +110,7 @@ export type UpdateNewsRequest = {
     description: string;
     image?:      string;
     clubId:      number;
+    isPinned?:   boolean;
 }
 
 export type DeleteNewsRequest = {

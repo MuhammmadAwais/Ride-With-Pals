@@ -36,10 +36,15 @@ interface ProductType {
   sku: string;
   category: string;
   price: string;
-  status: "IN STOCK" | "LIMITED";
+  status: "IN STOCK" | "LIMITED" | "OUT OF STOCK";
   image: string;
   gallery: string[];
   units?: number;
+  quantity?: number;
+  isShippingRequired?: boolean;
+  isFreeShipping?: boolean;
+  shippingCost?: number | string;
+  isActive?: boolean;
   sales?: string;
   code?: string;
   size?: string;
@@ -50,10 +55,9 @@ interface ProductType {
 const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
   const [activeImage, setActiveImage] = useState<string>("");
-
   const { clubId: clubIdStr } = useActiveClub();
   const clubId = clubIdStr ? Number(clubIdStr) : 0;
-  const permissions = useClubPermissions(clubId);
+  const permissions = useClubPermissions(clubId || undefined);
 
   const { data: shopData, isLoading } = useGetTheShopItemsQuery(
     { clubId, limit: 50, offset: 0 },
@@ -69,8 +73,9 @@ const Product = () => {
 
   const products = useMemo<ProductType[]>(() => {
     const rows = shopData?.rows || [];
-    return rows.map((p) => {
+    return rows.map((p: any) => {
       const formattedImg = formatProductImage(p.image);
+      const stockQty = p.quantity != null ? Number(p.quantity) : 0;
       return {
         id: p.id,
         name: p.name || "Unnamed Item",
@@ -78,13 +83,18 @@ const Product = () => {
         code: `PROD-${p.id}`,
         category: p.size || "General",
         price: p.price?.toString() || "0.00",
-        status: p.isActive ? "IN STOCK" : "LIMITED",
+        status: !p.isActive ? "LIMITED" : (stockQty > 0 ? "IN STOCK" : "OUT OF STOCK"),
         image: formattedImg,
         gallery: [formattedImg],
         size: p.size,
         gender: p.gender,
         description: p.description,
-        units: 0,
+        units: stockQty,
+        quantity: stockQty,
+        isShippingRequired: p.isShippingRequired,
+        isFreeShipping: p.isFreeShipping,
+        shippingCost: p.shippingCost,
+        isActive: p.isActive,
         sales: "0"
       };
     });
