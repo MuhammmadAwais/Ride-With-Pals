@@ -13,6 +13,7 @@ export interface AddRideState {
   isAsphalt: boolean;
   isTrail: boolean;
   gpxFile: string;
+  coverImage?: string;
   distance: number;
   description: string;
 
@@ -51,6 +52,7 @@ const initialState: AddRideState = {
   meetingPoint: '',
   endingPoint: '',
   gpxFile: '',
+  coverImage: '',
   distance: 0,
   description: '',
   pace: 'Medium',
