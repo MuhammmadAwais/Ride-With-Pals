@@ -524,7 +524,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   </div>
                   {isUpdatingScale && <Loader2 size={14} className="animate-spin text-[#EB712B]" />}
                 </div>
-                <div className="grid grid-cols-2 gap-2 bg-surface p-1 rounded-xl border border-border">
+                <div className="grid grid-cols-2 gap-1.5 bg-surface p-1 rounded-xl border border-border">
                   <button
                     type="button"
                     disabled={isUpdatingScale}
@@ -539,37 +539,37 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                         toast.error(err?.data?.message || t`Failed to update scale unit.`);
                       }
                     }}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                      (userProfileData?.scale || selectedScale) === 'kilometer'
-                        ? 'bg-[#EB712B] text-white shadow-md'
-                        : 'text-text-muted hover:text-text-main hover:bg-main-bg'
+                    className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 border-0 outline-none ${
+                      (userProfileData?.scale || selectedScale) === 'kilometer' || (userProfileData?.scale || selectedScale) === 'meter'
+                        ? 'bg-[#EB712B] text-white shadow-sm'
+                        : 'text-text-muted hover:text-text-main hover:bg-main-bg bg-transparent'
                     }`}
                   >
-                    <span>KM</span>
-                    <span className="text-[10px] opacity-80">(Kilometers)</span>
+                    <span className="font-black">KM</span>
+                    <span className="text-[11px] font-medium opacity-80">(Kilometers)</span>
                   </button>
                   <button
                     type="button"
                     disabled={isUpdatingScale}
                     onClick={async () => {
-                      if (selectedScale === 'mile' || selectedScale === 'miles') return;
-                      setSelectedScale('mile');
+                      if (selectedScale === 'miles' || selectedScale === 'mile') return;
+                      setSelectedScale('miles');
                       try {
-                        await updateScaleUnit({ scale: 'mile' }).unwrap();
+                        await updateScaleUnit({ scale: 'miles' }).unwrap();
                         toast.success(t`Distance unit updated to Miles.`);
                         refetchUserInfo();
                       } catch (err: any) {
                         toast.error(err?.data?.message || t`Failed to update scale unit.`);
                       }
                     }}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                      (userProfileData?.scale || selectedScale) === 'mile' || (userProfileData?.scale || selectedScale) === 'miles'
-                        ? 'bg-[#EB712B] text-white shadow-md'
-                        : 'text-text-muted hover:text-text-main hover:bg-main-bg'
+                    className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 border-0 outline-none ${
+                      (userProfileData?.scale || selectedScale) === 'miles' || (userProfileData?.scale || selectedScale) === 'mile'
+                        ? 'bg-[#EB712B] text-white shadow-sm'
+                        : 'text-text-muted hover:text-text-main hover:bg-main-bg bg-transparent'
                     }`}
                   >
-                    <span>MI</span>
-                    <span className="text-[10px] opacity-80">(Miles)</span>
+                    <span className="font-black">MI</span>
+                    <span className="text-[11px] font-medium opacity-80">(Miles)</span>
                   </button>
                 </div>
               </div>

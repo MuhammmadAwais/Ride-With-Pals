@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
-  Wallet as WalletIcon,
   DollarSign,
   Search,
   CheckCircle2,
@@ -13,7 +12,9 @@ import {
   Users,
   ArrowDownLeft,
   ArrowUpRight,
-  Sparkles
+  Layers,
+  Receipt,
+  X,
 } from 'lucide-react';
 import { Trans } from '@lingui/react/macro';
 import { t } from '@lingui/core/macro';
@@ -64,22 +65,10 @@ const WalletDashboard: React.FC = () => {
     ? Number(clubIdStr)
     : (extractClubs(joinedClubsData)[0]?.id || myClubsFromRedux[0]?.id || 0);
 
-  useEffect(() => {
-    if (effectiveClubId) {
-      console.log("📦 [Club Wallet] Calling GET /user/club/wallet?clubId=" + effectiveClubId);
-    }
-  }, [effectiveClubId]);
-
   const { data: walletResponse, isLoading, refetch } = useGetClubWalletQuery(
     { clubId: effectiveClubId },
     { skip: !effectiveClubId }
   );
-
-  useEffect(() => {
-    if (walletResponse) {
-      console.log("📦 [Club Wallet] Received API response:", walletResponse);
-    }
-  }, [walletResponse]);
 
   const rawData: any = walletResponse?.response || (walletResponse as any)?.data || walletResponse || {};
   const walletData = {
@@ -179,17 +168,17 @@ const WalletDashboard: React.FC = () => {
       key: 'title',
       label: t`Transaction & Customer`,
       sortable: true,
-      render: (t) => (
+      render: (item) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center text-[#EB712B] shadow-xs">
-            <Users size={18} />
+          <div className="w-9 h-9 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted shrink-0">
+            <Users size={16} />
           </div>
-          <div>
-            <div className="font-bold text-sm text-text-main">{t.title || 'Untitled Transaction'}</div>
+          <div className="min-w-0">
+            <div className="font-bold text-sm text-text-main truncate">{item.title || t`Untitled Transaction`}</div>
             <div className="text-[11px] text-text-muted flex items-center gap-1.5 mt-0.5">
-              <span>{t.customerName || 'Club Member'}</span>
+              <span className="truncate max-w-[140px]">{item.customerName || t`Club Member`}</span>
               <span>•</span>
-              <span className="font-mono text-[10px]">#{t.id}</span>
+              <span className="font-mono text-[10px] text-text-muted/70">#{item.id}</span>
             </div>
           </div>
         </div>
@@ -199,9 +188,9 @@ const WalletDashboard: React.FC = () => {
       key: 'category',
       label: t`Category`,
       sortable: true,
-      render: (t) => (
-        <span className="px-3 py-1 rounded-full text-xs font-bold bg-hover border border-border text-text-main">
-          {t.category || 'General'}
+      render: (item) => (
+        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold bg-hover border border-border/70 text-text-main">
+          {item.category || t`General`}
         </span>
       ),
     },
@@ -209,18 +198,18 @@ const WalletDashboard: React.FC = () => {
       key: 'type',
       label: t`Type`,
       sortable: true,
-      render: (t) => {
-        const isCredit = (t.type || '').toLowerCase() === 'credit';
+      render: (item) => {
+        const isCredit = (item.type || '').toLowerCase() === 'credit';
         return (
           <span
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
               isCredit
-                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                : 'bg-hover text-text-muted border-border/70'
             }`}
           >
-            {isCredit ? <ArrowDownLeft size={13} /> : <ArrowUpRight size={13} />}
-            {(t.type || 'Credit').toUpperCase()}
+            {isCredit ? <ArrowDownLeft size={12} /> : <ArrowUpRight size={12} />}
+            {isCredit ? <Trans>CREDIT</Trans> : <Trans>DEBIT</Trans>}
           </span>
         );
       },
@@ -229,11 +218,11 @@ const WalletDashboard: React.FC = () => {
       key: 'amount',
       label: t`Amount`,
       sortable: true,
-      render: (t) => {
-        const isCredit = (t.type || '').toLowerCase() === 'credit';
+      render: (item) => {
+        const isCredit = (item.type || '').toLowerCase() === 'credit';
         return (
-          <span className={`text-sm font-extrabold ${isCredit ? 'text-emerald-500' : 'text-text-main'}`}>
-            {isCredit ? '+' : '-'}{currencySymbol}{Number(t.amount || 0).toFixed(2)}
+          <span className={`text-sm font-black tracking-tight ${isCredit ? 'text-emerald-400' : 'text-text-main'}`}>
+            {isCredit ? '+' : '-'}{currencySymbol}{Number(item.amount || 0).toFixed(2)}
           </span>
         );
       },
@@ -242,25 +231,25 @@ const WalletDashboard: React.FC = () => {
       key: 'status',
       label: t`Status`,
       sortable: true,
-      render: (t) => {
-        const status = (t.status || '').toLowerCase();
+      render: (item) => {
+        const status = (item.status || '').toLowerCase();
         if (status === 'completed' || status === 'success') {
           return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <CheckCircle2 size={13} /> <Trans>Completed</Trans>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 size={12} /> <Trans>Completed</Trans>
             </span>
           );
         }
         if (status === 'pending') {
           return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
-              <Clock size={13} /> <Trans>Pending</Trans>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <Clock size={12} /> <Trans>Pending</Trans>
             </span>
           );
         }
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-500/10 text-red-500 border border-red-500/20">
-            <XCircle size={13} /> {t.status || 'Unknown'}
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20">
+            <XCircle size={12} /> {item.status || <Trans>Unknown</Trans>}
           </span>
         );
       },
@@ -269,9 +258,9 @@ const WalletDashboard: React.FC = () => {
       key: 'date',
       label: t`Date`,
       sortable: true,
-      render: (t) => (
-        <span className="text-xs font-medium text-text-muted">
-          {t.date ? new Date(t.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
+      render: (item) => (
+        <span className="text-xs font-semibold text-text-muted">
+          {item.date ? new Date(item.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
         </span>
       ),
     },
@@ -279,197 +268,230 @@ const WalletDashboard: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen text-text-main bg-main-bg font-sans p-6 md:p-10 space-y-8">
-      {/* HEADER SECTION */}
+      
+      {/* ── HEADER SECTION ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#EB712B] mb-1">
-            <WalletIcon size={16} /> <Trans>Club Treasury & Financials</Trans>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-text-main">
-            <Trans>Club Wallet Overview</Trans>
+          <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-text-main">
+            <Trans>Club Financial Overview</Trans>
           </h1>
-          <p className="text-sm text-text-muted mt-1">
-            <Trans>Real-time tracking of membership payments, shop sales, and liquidity for your club.</Trans>
+          <p className="text-xs text-text-muted font-medium mt-1">
+            <Trans>Real-time treasury metrics, membership revenues, shop sales, and complete ledger records for your club.</Trans>
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsWithdrawModalOpen(true)}
             disabled={!effectiveClubId}
-            className="px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-lg shadow-[#EB712B]/20 cursor-pointer disabled:opacity-50 border-0"
+            className="px-4 sm:px-5 py-2.5 rounded-xl bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-lg shadow-[#EB712B]/20 cursor-pointer disabled:opacity-50 border-0 active:scale-95"
           >
-            <ArrowUpRight size={15} />
-            <Trans>Request Payout</Trans>
+            <ArrowUpRight size={14} />
+            <span><Trans>Request Payout</Trans></span>
           </button>
 
           <button
             onClick={() => refetch()}
             disabled={!effectiveClubId}
-            className="px-4 py-2.5 rounded-xl bg-surface hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-colors cursor-pointer disabled:opacity-50"
+            className="px-4 py-2.5 rounded-xl bg-surface/50 hover:bg-hover border border-border text-xs font-bold flex items-center gap-2 text-text-main transition-all cursor-pointer shadow-sm hover:border-text-muted/40 disabled:opacity-50"
           >
-            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-            <Trans>Refresh Data</Trans>
+            <RefreshCw size={13} className={isLoading ? 'animate-spin text-[#EB712B]' : 'text-text-muted'} />
+            <span><Trans>Refresh Data</Trans></span>
           </button>
         </div>
       </div>
 
-      {/* METRICS STATS CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* TOTAL EARNINGS */}
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between relative overflow-hidden group">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Total Earnings</Trans></span>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <DollarSign size={20} />
+      {/* ── 1. ARCHITECTURAL FINANCIAL LEDGER STRIP (Blended Divided Telemetry Bar) ── */}
+      <section className="-mx-6 md:-mx-10 px-6 md:px-10 border-y border-border bg-surface/25 backdrop-blur-sm">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x-0 sm:divide-x divide-border">
+          
+          {/* Spec 01: Total Earnings */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                <Trans>Total Earnings</Trans>
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-text-main block truncate">
+                {currencySymbol}{Number(walletData.totalEarnings || 0).toFixed(2)}
+              </span>
+              <span className="text-[10px] font-bold text-emerald-400/90 flex items-center gap-1 truncate">
+                <TrendingUp size={11} className="shrink-0" /> <Trans>Cleared Revenues</Trans>
+              </span>
+            </div>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
+              <DollarSign size={18} className="text-[#EB712B]" />
             </div>
           </div>
-          <div>
-            <div className="text-3xl font-extrabold text-text-main">
-              {currencySymbol}{Number(walletData.totalEarnings || 0).toFixed(2)}
+
+          {/* Spec 02: Pending Earnings */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                <Trans>Pending Earnings</Trans>
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-amber-400 block truncate">
+                {currencySymbol}{Number(walletData.pendingEarnings || 0).toFixed(2)}
+              </span>
+              <span className="text-[10px] font-semibold text-text-muted block truncate">
+                <Trans>{pendingTx.length} Awaiting Clearance</Trans>
+              </span>
             </div>
-            <div className="text-xs text-emerald-500 font-bold mt-1 flex items-center gap-1">
-              <TrendingUp size={14} /> <Trans>Total cleared revenues</Trans>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
+              <Clock size={18} className="text-[#EB712B]" />
             </div>
           </div>
+
+          {/* Spec 03: Settlement Rate */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                <Trans>Settlement Rate</Trans>
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-400 block truncate">
+                {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}%
+              </span>
+              <span className="text-[10px] font-semibold text-text-muted block truncate">
+                <Trans>{completedTx.length} of {transactions.length} Cleared</Trans>
+              </span>
+            </div>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
+              <CheckCircle2 size={18} className="text-[#EB712B]" />
+            </div>
+          </div>
+
+          {/* Spec 04: Total Transactions */}
+          <div className="p-4 sm:p-5 lg:p-6 flex items-center justify-between gap-4 hover:bg-hover/20 transition-colors group">
+            <div className="space-y-0.5 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-muted block truncate">
+                <Trans>Total Transactions</Trans>
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-text-main block truncate">
+                {transactions.length}
+              </span>
+              <span className="text-[10px] font-semibold text-text-muted block truncate">
+                <Trans>Recorded Ledger Entries</Trans>
+              </span>
+            </div>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center shrink-0 shadow-xs">
+              <CreditCard size={18} className="text-[#EB712B]" />
+            </div>
+          </div>
+
         </div>
+      </section>
 
-        {/* PENDING EARNINGS */}
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Pending Earnings</Trans></span>
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <Clock size={20} />
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl font-extrabold text-amber-500">
-              {currencySymbol}{Number(walletData.pendingEarnings || 0).toFixed(2)}
-            </div>
-            <div className="text-xs text-text-muted mt-1"><Trans>{pendingTx.length} pending transactions awaiting clearance</Trans></div>
-          </div>
-        </div>
-
-        {/* SUCCESS RATE */}
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Success Rate</Trans></span>
-            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <Sparkles size={20} />
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl font-extrabold text-text-main">
-              {transactions.length > 0 ? Math.round((completedTx.length / transactions.length) * 100) : 0}%
-            </div>
-            <div className="text-xs text-text-muted mt-1"><Trans>{completedTx.length} completed / {transactions.length} total</Trans></div>
-          </div>
-        </div>
-
-        {/* TOTAL TRANSACTIONS */}
-        <div className="bg-surface p-6 rounded-3xl border border-border flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Total Transactions</Trans></span>
-            <div className="w-10 h-10 rounded-2xl bg-[#EB712B]/10 text-[#EB712B] flex items-center justify-center">
-              <CreditCard size={20} />
-            </div>
-          </div>
-          <div>
-            <div className="text-3xl font-extrabold text-text-main">{transactions.length}</div>
-            <div className="text-xs text-text-muted mt-1"><Trans>Recorded ledger entries</Trans></div>
-          </div>
-        </div>
-      </div>
-
-      {/* ANALYTICS / GRAPHS & BREAKDOWNS SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* REVENUE BY CATEGORY */}
-        <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-text-main"><Trans>Revenue by Category</Trans></h3>
-              <p className="text-xs text-text-muted"><Trans>Breakdown of earnings across club revenue streams</Trans></p>
-            </div>
-            <span className="text-xs font-bold text-[#EB712B] bg-[#EB712B]/10 px-3 py-1 rounded-full border border-[#EB712B]/20">
-              <Trans>{categoryBreakdown.length} Streams</Trans>
-            </span>
-          </div>
-
-          {categoryBreakdown.length === 0 ? (
-            <div className="py-12 text-center text-sm text-text-muted">
-              <Trans>No revenue categories recorded yet.</Trans>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {categoryBreakdown.map((cat, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-text-main">{cat.name}</span>
-                    <span className="text-text-muted">
-                      {currencySymbol}{cat.amount.toFixed(2)} ({cat.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 bg-hover rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-[#EB712B] to-amber-500 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.max(cat.percentage, 4)}%` }}
-                    />
-                  </div>
+      {/* ── 2. DUAL TELEMETRY ANALYTICS (Streamlined Dual Container) ── */}
+      <section className="w-full border border-border/80 bg-surface/30 rounded-2xl overflow-hidden backdrop-blur-sm shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border/80">
+          
+          {/* REVENUE BY CATEGORY */}
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-text-main">
+                    <Trans>Revenue by Category</Trans>
+                  </h3>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#EB712B] bg-[#EB712B]/10 px-2.5 py-0.5 rounded-full border border-[#EB712B]/20">
+                    <Trans>{categoryBreakdown.length} Streams</Trans>
+                  </span>
                 </div>
-              ))}
+                <p className="text-xs text-text-muted mt-0.5"><Trans>Breakdown of earnings across club revenue streams</Trans></p>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* TOP CONTRIBUTING CUSTOMERS */}
-        <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-text-main"><Trans>Top Contributing Members</Trans></h3>
-              <p className="text-xs text-text-muted"><Trans>Members generating the most revenue for the club</Trans></p>
-            </div>
-            <span className="text-xs font-bold text-blue-500 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
-              <Trans>{customerBreakdown.length} Members</Trans>
-            </span>
+            {categoryBreakdown.length === 0 ? (
+              <div className="py-10 flex flex-col items-center justify-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted">
+                  <Layers size={18} />
+                </div>
+                <p className="text-xs font-semibold text-text-muted"><Trans>No revenue streams recorded yet.</Trans></p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {categoryBreakdown.map((cat, idx) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-text-main">{cat.name}</span>
+                      <span className="text-text-muted font-mono">
+                        {currencySymbol}{cat.amount.toFixed(2)} ({cat.percentage}%)
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-hover rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#EB712B] rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(cat.percentage, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {customerBreakdown.length === 0 ? (
-            <div className="py-12 text-center text-sm text-text-muted">
-              <Trans>No member transactions recorded yet.</Trans>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {customerBreakdown.map((cust, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-text-main truncate max-w-[200px]">{cust.name}</span>
-                    <span className="text-text-muted">
-                      {currencySymbol}{cust.amount.toFixed(2)} ({cust.percentage}%)
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 bg-hover rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.max(cust.percentage, 4)}%` }}
-                    />
-                  </div>
+          {/* TOP CONTRIBUTING MEMBERS */}
+          <div className="p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-text-main">
+                    <Trans>Top Contributing Members</Trans>
+                  </h3>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-text-muted bg-hover px-2.5 py-0.5 rounded-full border border-border/80">
+                    <Trans>{customerBreakdown.length} Members</Trans>
+                  </span>
                 </div>
-              ))}
+                <p className="text-xs text-text-muted mt-0.5"><Trans>Athletes and members generating the most value</Trans></p>
+              </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* TRANSACTIONS TABLE SECTION */}
-      <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border space-y-6">
+            {customerBreakdown.length === 0 ? (
+              <div className="py-10 flex flex-col items-center justify-center text-center space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-hover border border-border/80 flex items-center justify-center text-text-muted">
+                  <Users size={18} />
+                </div>
+                <p className="text-xs font-semibold text-text-muted"><Trans>No member contributions recorded yet.</Trans></p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {customerBreakdown.map((cust, idx) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-bold">
+                      <span className="text-text-main truncate max-w-[200px]">{cust.name}</span>
+                      <span className="text-text-muted font-mono">
+                        {currencySymbol}{cust.amount.toFixed(2)} ({cust.percentage}%)
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-hover rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(cust.percentage, 4)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── 3. TRANSACTION LEDGER (Modern Unified Container) ── */}
+      <section className="w-full border border-border/80 bg-surface/30 rounded-2xl p-5 sm:p-7 space-y-6 backdrop-blur-sm shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h3 className="text-lg font-bold text-text-main"><Trans>Club Transaction Ledger</Trans></h3>
-            <p className="text-xs text-text-muted"><Trans>Full historical list of transactions for this club</Trans></p>
+            <div className="flex items-center gap-2">
+              <Receipt size={17} className="text-[#EB712B]" />
+              <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-text-main">
+                <Trans>Club Transaction Ledger</Trans>
+              </h3>
+            </div>
+            <p className="text-xs text-text-muted mt-0.5"><Trans>Full historical record of club payments, dues, and payouts</Trans></p>
           </div>
 
           {/* FILTER AND SEARCH CONTROLS */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Search Input */}
             <div className="relative">
               <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
@@ -478,52 +500,69 @@ const WalletDashboard: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t`Search transactions...`}
-                className="pl-9 pr-4 py-2 rounded-xl bg-main-bg border border-border text-xs font-medium text-text-main focus:outline-none focus:border-[#EB712B] transition-colors w-48 sm:w-64"
+                className="pl-9 pr-7 py-2 rounded-xl bg-main-bg border border-border text-xs font-medium text-text-main focus:outline-none focus:border-[#EB712B]/60 transition-colors w-44 sm:w-60"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main cursor-pointer p-0.5 border-0 bg-transparent"
+                  title={t`Clear search`}
+                >
+                  <X size={12} />
+                </button>
+              )}
             </div>
 
             {/* Status Filter Tabs */}
             <div className="flex items-center bg-main-bg p-1 rounded-xl border border-border">
-              {['All', 'Completed', 'Pending'].map((status) => (
+              {[
+                { id: 'All', label: t`All` },
+                { id: 'Completed', label: t`Completed` },
+                { id: 'Pending', label: t`Pending` }
+              ].map((status) => (
                 <button
-                  key={status}
-                  onClick={() => setStatusFilter(status)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    statusFilter === status
+                  key={status.id}
+                  onClick={() => setStatusFilter(status.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 outline-none ${
+                    statusFilter === status.id
                       ? 'bg-[#EB712B] text-white shadow-sm'
-                      : 'text-text-muted hover:text-text-main'
+                      : 'text-text-muted hover:text-text-main bg-transparent'
                   }`}
                 >
-                  {status === 'All' ? <Trans>All</Trans> : status === 'Completed' ? <Trans>Completed</Trans> : <Trans>Pending</Trans>}
+                  {status.label}
                 </button>
               ))}
             </div>
 
             {/* Type Filter Tabs */}
             <div className="flex items-center bg-main-bg p-1 rounded-xl border border-border">
-              {['All', 'Credit', 'Debit'].map((type) => (
+              {[
+                { id: 'All', label: t`All` },
+                { id: 'Credit', label: t`Credit` },
+                { id: 'Debit', label: t`Debit` }
+              ].map((type) => (
                 <button
-                  key={type}
-                  onClick={() => setTypeFilter(type)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    typeFilter === type
+                  key={type.id}
+                  onClick={() => setTypeFilter(type.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-0 outline-none ${
+                    typeFilter === type.id
                       ? 'bg-[#EB712B] text-white shadow-sm'
-                      : 'text-text-muted hover:text-text-main'
+                      : 'text-text-muted hover:text-text-main bg-transparent'
                   }`}
                 >
-                  {type === 'All' ? <Trans>All</Trans> : type === 'Credit' ? <Trans>Credit</Trans> : <Trans>Debit</Trans>}
+                  {type.label}
                 </button>
               ))}
             </div>
 
             {/* Category Filter Dropdown */}
             {categories.length > 0 && (
-              <div className="flex items-center gap-1.5 bg-main-bg px-3 py-2 rounded-xl border border-border">
-                <Filter size={13} className="text-text-muted" />
+              <div className="flex items-center gap-1.5 bg-main-bg px-3 py-1.5 rounded-xl border border-border">
+                <Filter size={12} className="text-text-muted" />
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-transparent text-xs font-bold text-text-main focus:outline-none cursor-pointer"
+                  className="bg-transparent text-xs font-bold text-text-main focus:outline-none cursor-pointer border-0"
                 >
                   <option value="All">{t`All Categories`}</option>
                   {categories.map(cat => (
@@ -539,7 +578,7 @@ const WalletDashboard: React.FC = () => {
         {isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center gap-3">
             <RefreshCw size={24} className="animate-spin text-[#EB712B]" />
-            <p className="text-xs font-bold text-text-muted"><Trans>Loading club wallet ledger...</Trans></p>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Loading club wallet ledger...</Trans></p>
           </div>
         ) : (
           <DataTable
@@ -548,7 +587,7 @@ const WalletDashboard: React.FC = () => {
             emptyMessage={t`No club wallet transactions found matching your filters.`}
           />
         )}
-      </div>
+      </section>
 
       {/* WITHDRAW / PAYOUT MODAL */}
       {isWithdrawModalOpen && (
@@ -573,7 +612,7 @@ const WalletDashboard: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsWithdrawModalOpen(false)}
-                className="p-2 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-elevated transition-colors cursor-pointer"
+                className="p-2 rounded-xl text-text-muted hover:text-text-main hover:bg-surface-elevated transition-colors cursor-pointer border-0 bg-transparent"
               >
                 <XCircle size={18} />
               </button>
@@ -643,7 +682,7 @@ const WalletDashboard: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setWithdrawAmount(walletData.totalEarnings.toString())}
-                    className="text-xs font-bold text-[#EB712B] hover:underline cursor-pointer"
+                    className="text-xs font-bold text-[#EB712B] hover:underline cursor-pointer border-0 bg-transparent"
                   >
                     <Trans>Max ({currencySymbol}{Number(walletData.totalEarnings || 0).toFixed(2)})</Trans>
                   </button>
@@ -664,10 +703,10 @@ const WalletDashboard: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmittingWithdraw}
-                  className="w-full py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 cursor-pointer border-0 disabled:opacity-50"
+                  className="w-full py-3.5 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg shadow-[#EB712B]/20 flex items-center justify-center gap-2 cursor-pointer border-0 disabled:opacity-50 active:scale-95"
                 >
                   {isSubmittingWithdraw ? <RefreshCw size={14} className="animate-spin" /> : <ArrowUpRight size={15} />}
-                  <Trans>Confirm Withdrawal</Trans>
+                  <span><Trans>Confirm Withdrawal</Trans></span>
                 </button>
               </div>
             </form>
