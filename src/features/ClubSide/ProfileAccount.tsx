@@ -524,7 +524,7 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                   </div>
                   {isUpdatingScale && <Loader2 size={14} className="animate-spin text-[#EB712B]" />}
                 </div>
-                <div className="grid grid-cols-2 gap-1.5 bg-surface p-1 rounded-xl border border-border">
+                <div className="grid grid-cols-2 gap-1 bg-surface p-1 rounded-xl border border-border overflow-hidden w-full">
                   <button
                     type="button"
                     disabled={isUpdatingScale}
@@ -539,14 +539,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                         toast.error(err?.data?.message || t`Failed to update scale unit.`);
                       }
                     }}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 border-0 outline-none ${
+                    className={`w-full py-2.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 border-0 outline-none min-w-0 overflow-hidden ${
                       (userProfileData?.scale || selectedScale) === 'kilometer' || (userProfileData?.scale || selectedScale) === 'meter'
-                        ? 'bg-[#EB712B] text-white shadow-sm'
+                        ? 'bg-[#EB712B] text-white shadow-sm font-bold'
                         : 'text-text-muted hover:text-text-main hover:bg-main-bg bg-transparent'
                     }`}
                   >
-                    <span className="font-black">KM</span>
-                    <span className="text-[11px] font-medium opacity-80">(Kilometers)</span>
+                    <span className="font-black tracking-wide shrink-0">KM</span>
+                    <span className="text-[10px] sm:text-[11px] font-medium opacity-80 truncate min-w-0">(Kilometers)</span>
                   </button>
                   <button
                     type="button"
@@ -562,14 +562,14 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
                         toast.error(err?.data?.message || t`Failed to update scale unit.`);
                       }
                     }}
-                    className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 border-0 outline-none ${
+                    className={`w-full py-2.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 border-0 outline-none min-w-0 overflow-hidden ${
                       (userProfileData?.scale || selectedScale) === 'miles' || (userProfileData?.scale || selectedScale) === 'mile'
-                        ? 'bg-[#EB712B] text-white shadow-sm'
+                        ? 'bg-[#EB712B] text-white shadow-sm font-bold'
                         : 'text-text-muted hover:text-text-main hover:bg-main-bg bg-transparent'
                     }`}
                   >
-                    <span className="font-black">MI</span>
-                    <span className="text-[11px] font-medium opacity-80">(Miles)</span>
+                    <span className="font-black tracking-wide shrink-0">MI</span>
+                    <span className="text-[10px] sm:text-[11px] font-medium opacity-80 truncate min-w-0">(Miles)</span>
                   </button>
                 </div>
               </div>
