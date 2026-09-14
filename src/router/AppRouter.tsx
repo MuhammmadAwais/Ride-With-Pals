@@ -165,10 +165,12 @@ export const router = createBrowserRouter(
         }
       >
         {/* ── Club Management (Clubside) ── */}
-        <Route path="/manage-club" element={<Navigate to="/view/clubside/dashboard" replace />} />
+        <Route path="/manage-club" element={<Navigate to="/view/clubside/overview" replace />} />
+        <Route path="/manage-club-home" element={<Navigate to="/view/clubside/overview" replace />} />
         
         <Route path="/view/clubside">
           <Route path="dashboard" element={<DashboardOverview />} />
+          <Route path="overview" element={<ManageClubHome />} />
           <Route path="activities" element={<Activities />} />
           <Route path="add-ride" element={<CreateRide />} />
           <Route path="edit-ride/:id" element={<CreateRide />} />

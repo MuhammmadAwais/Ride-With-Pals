@@ -26,7 +26,6 @@ import {
   User as UserIcon,
   Bell,
   Edit3,
-  MessageSquare,
   Building,
   Trash2,
 } from "lucide-react";
@@ -36,6 +35,7 @@ import { logout } from "@/features/auth/slices/authSlice";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 import { DeleteClubModal } from "@/components/common/DeleteClubModal";
+import { DeleteAccountModal } from "@/components/common/DeleteAccountModal";
 import { 
   useUpdatePasswordMutation, 
   useUpdateScaleUnitSettingsMutation, 
@@ -516,29 +516,62 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
               <Globe size={12} /> <Trans>App Preferences</Trans>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-main-bg p-5 rounded-2xl border border-border">
-                <div className="flex items-center gap-3 mb-3">
-                  <MapPin size={16} className="text-[#EB712B]" />
-                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Distance Unit</Trans></p>
+              <div className="bg-main-bg p-5 rounded-2xl border border-border flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <MapPin size={16} className="text-[#EB712B]" />
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>Distance Unit</Trans></p>
+                  </div>
+                  {isUpdatingScale && <Loader2 size={14} className="animate-spin text-[#EB712B]" />}
                 </div>
-                <select
-                  value={userProfileData?.scale || selectedScale}
-                  onChange={async (e) => {
-                    const val = e.target.value;
-                    setSelectedScale(val);
-                    try {
-                      await updateScaleUnit({ scale: val }).unwrap();
-                      toast.success(t`Distance unit updated to ${val === 'mile' ? 'Miles' : 'Kilometers'}.`);
-                    } catch (err: any) {
-                      toast.error(err?.data?.message || t`Failed to update scale unit.`);
-                    }
-                  }}
-                  disabled={isUpdatingScale}
-                  className="w-full bg-surface border border-border rounded-xl px-4 py-3 text-sm font-bold text-text-main outline-none focus:border-[#EB712B] transition-colors cursor-pointer"
-                >
-                  <option value="kilometer">{t`Kilometers (km)`}</option>
-                  <option value="mile">{t`Miles (mi)`}</option>
-                </select>
+                <div className="grid grid-cols-2 gap-2 bg-surface p-1 rounded-xl border border-border">
+                  <button
+                    type="button"
+                    disabled={isUpdatingScale}
+                    onClick={async () => {
+                      if (selectedScale === 'kilometer') return;
+                      setSelectedScale('kilometer');
+                      try {
+                        await updateScaleUnit({ scale: 'kilometer' }).unwrap();
+                        toast.success(t`Distance unit updated to Kilometers.`);
+                        refetchUserInfo();
+                      } catch (err: any) {
+                        toast.error(err?.data?.message || t`Failed to update scale unit.`);
+                      }
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      (userProfileData?.scale || selectedScale) === 'kilometer'
+                        ? 'bg-[#EB712B] text-white shadow-md'
+                        : 'text-text-muted hover:text-text-main hover:bg-main-bg'
+                    }`}
+                  >
+                    <span>KM</span>
+                    <span className="text-[10px] opacity-80">(Kilometers)</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isUpdatingScale}
+                    onClick={async () => {
+                      if (selectedScale === 'mile' || selectedScale === 'miles') return;
+                      setSelectedScale('mile');
+                      try {
+                        await updateScaleUnit({ scale: 'mile' }).unwrap();
+                        toast.success(t`Distance unit updated to Miles.`);
+                        refetchUserInfo();
+                      } catch (err: any) {
+                        toast.error(err?.data?.message || t`Failed to update scale unit.`);
+                      }
+                    }}
+                    className={`py-2 px-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                      (userProfileData?.scale || selectedScale) === 'mile' || (userProfileData?.scale || selectedScale) === 'miles'
+                        ? 'bg-[#EB712B] text-white shadow-md'
+                        : 'text-text-muted hover:text-text-main hover:bg-main-bg'
+                    }`}
+                  >
+                    <span>MI</span>
+                    <span className="text-[10px] opacity-80">(Miles)</span>
+                  </button>
+                </div>
               </div>
 
               <div className="bg-main-bg p-5 rounded-2xl border border-border">
@@ -880,64 +913,12 @@ const ProfileAccount: React.FC<ProfileAccountProps> = ({ role = 'organizer' }) =
         </div>
       )}
 
-      {/* Delete Account / Danger Zone Modal */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-surface border border-red-500/30 p-8 rounded-3xl w-full max-w-lg shadow-2xl">
-            <div className="flex justify-between items-start mb-6">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-red-500/10 text-red-500 rounded-2xl">
-                  <AlertTriangle size={24} />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-text-main">
-                    <Trans>Delete Account</Trans>
-                  </h2>
-                  <p className="text-red-500 text-xs font-semibold mt-0.5">
-                    <Trans>Irreversible Action</Trans>
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="text-text-muted hover:text-text-main cursor-pointer"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="space-y-4 text-sm text-text-muted">
-              <p>
-                <Trans>To permanently delete your account, remove your club memberships, and clear all personal data, please contact our support team.</Trans>
-              </p>
-              <div className="bg-red-500/5 p-4 rounded-xl border border-red-500/20 text-xs text-red-400 space-y-1">
-                <p className="font-bold">⚠️ <Trans>Notice:</Trans></p>
-                <p>
-                  <Trans>Account deletion requests are processed manually to verify account ownership and prevent unauthorized removals.</Trans>
-                </p>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 mt-8">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="px-5 py-2.5 rounded-xl border border-border text-text-muted font-bold hover:text-text-main transition-all cursor-pointer text-xs uppercase"
-              >
-                <Trans>Cancel</Trans>
-              </button>
-              <button
-                onClick={() => {
-                  setIsDeleteModalOpen(false);
-                  navigate(role === 'athlete' ? "/view/userside/support" : "/view/clubside/support");
-                }}
-                className="px-6 py-2.5 bg-red-500 hover:bg-red-600 rounded-xl font-bold text-white transition-all cursor-pointer flex items-center gap-2 text-xs uppercase shadow-lg shadow-red-500/20"
-              >
-                <MessageSquare size={14} /> <Trans>Contact Support</Trans>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Delete Account Modal */}
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        currentUserId={userProfileData?.id}
+      />
 
       {/* Avatar Lightbox Preview Modal */}
       {isAvatarPreviewOpen && (

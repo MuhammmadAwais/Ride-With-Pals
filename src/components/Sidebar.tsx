@@ -46,6 +46,7 @@ const renderNavLabel = (label: string): React.ReactNode => {
     case 'Profile': return <Trans>Profile</Trans>;
     // Club items
     case 'Dashboard': return <Trans>Dashboard</Trans>;
+    case 'Club Overview': return <Trans>Club Overview</Trans>;
     case 'Shop': return <Trans>Shop</Trans>;
     case 'Marketplace': return <Trans>Marketplace</Trans>;
     case 'Orders': return <Trans>Orders</Trans>;
@@ -87,6 +88,7 @@ const ICON_SIZE = 18;
 /** Club Management nav (organizers / owners). */
 const CLUB_NAV_ITEMS: NavEntry[] = [
   { label: 'Dashboard',        route: ROUTES.DASHBOARD,        icon: <LayoutDashboard size={ICON_SIZE} /> },
+  { label: 'Club Overview',    route: ROUTES.CLUB_OVERVIEW,    icon: <Compass size={ICON_SIZE} /> },
   { label: 'Activities',       route: ROUTES.ACTIVITIES,       icon: <Bike size={ICON_SIZE} /> },
   { label: 'Shop',             route: ROUTES.PRODUCT,          icon: <Store size={ICON_SIZE} /> },
   { label: 'Marketplace',      route: ROUTES.CLUB_MARKETPLACE, icon: <Tag size={ICON_SIZE} /> },

@@ -284,6 +284,15 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
+
+    deleteAccount: builder.mutation<{ statusCode?: number; message?: string }, { confirmDeleteOwnedClubs?: boolean } | void>({
+      query: (body) => ({
+        url: '/user/account',
+        method: 'DELETE',
+        body: body || {},
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 
@@ -304,4 +313,5 @@ export const {
   useUpdateScaleUnitSettingsMutation,
   useCheckEmailExistenceQuery,
   useGetOtherUserInfoQuery,
+  useDeleteAccountMutation,
 } = authApiSlice;

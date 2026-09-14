@@ -1,14 +1,36 @@
-import React, { useState, useRef, useEffect } from "react";
-import { MoreVertical, CreditCard, Plus, X, Trash2, Edit3 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect, useMemo } from "react";
+import { 
+  ChevronLeft, 
+  MapPin, 
+  Users, 
+  Activity, 
+  ShieldCheck, 
+  Globe, 
+  Lock, 
+  Bike, 
+  Trophy, 
+  Eye, 
+  Trash2, 
+  Edit3, 
+  Plus, 
+  X, 
+  MoreVertical, 
+  CreditCard 
+} from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import News from "./News";
 import Leaderboard from "./Leaderboard";
 import Discount from "./Discount";
+import Members from "./Members";
+import Overviews from "@/features/public-club/pages/Overviews";
+import Ride from "@/features/public-club/pages/Ride";
+import Marketplace from "@/features/public-club/pages/Marketplace";
+import Shop from "@/features/public-club/pages/Shop";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { fetchClubMembers } from "@/features/club/slices/clubSlice";
-import { useRemoveClubMemberMutation } from "@/features/club/api/clubApiSlice";
 import { 
   useCreateClubMembershipPlanMutation, 
   useUpdateClubMembershipPlanMutation, 
@@ -19,6 +41,8 @@ import { toast } from "sonner";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 import { DeleteClubModal } from "@/components/common/DeleteClubModal";
+import AvatarLightboxModal from "@/components/ui/AvatarLightboxModal";
+import { resolveImageUrl } from "@/features/public-club/services/clubGeocoding";
 
 interface MembershipPlan {
   id: string;
@@ -30,27 +54,146 @@ interface MembershipPlan {
   featuresList: string[];
 }
 
-const ManageClubHome = () => {
+type TabType =
+  | "Overview"
+  | "Rides"
+  | "Members"
+  | "Membership Plans"
+  | "News"
+  | "Leaderboard"
+  | "Shop"
+  | "Discounts"
+  | "Marketplace";
+
+const getMemberCount = (club: any) => {
+  if (!club) return 0;
+  const val =
+    club.participantCount ??
+    club.participant_count ??
+    club.memberCount ??
+    club.member_count ??
+    club.totalMembers ??
+    club.total_members ??
+    club.membersCount ??
+    club.members_count ??
+    club.userCount ??
+    club.user_count ??
+    club.count ??
+    club.total ??
+    club.clubMembers?.length ??
+    club.ClubMembers?.length ??
+    club.club_members?.length ??
+    club.user_clubs?.length ??
+    club.userClubs?.length ??
+    club.UserClubs?.length ??
+    club.members?.length ??
+    club.Members?.length ??
+    club.users?.length ??
+    club.Users?.length ??
+    club.participants?.length ??
+    club.Participants?.length ??
+    club._count?.user_clubs ??
+    club._count?.members ??
+    club._count?.users;
+
+  const count = Number(val);
+  if (!isNaN(count) && count > 0) return count;
+  return 0;
+};
+
+const getClubTypeName = (typeId?: any, rawName?: string) => {
+  if (rawName && typeof rawName === "string" && rawName.trim() !== "") {
+    const lower = rawName.toLowerCase();
+    if (lower.includes("run")) return "Running";
+    if (lower.includes("triathlon")) return "Triathlon";
+    if (lower.includes("cycl") || lower.includes("bike")) return "Cycling";
+  }
+  if (typeId === 2 || typeId === "2" || String(typeId).toLowerCase() === "running") return "Running";
+  if (
+    typeId === 3 ||
+    typeId === "3" ||
+    String(typeId).toLowerCase() === "triathlon" ||
+    String(typeId).toLowerCase() === "cycling & running"
+  )
+    return "Triathlon";
+  return "Cycling";
+};
+
+const renderSportBadge = (typeId?: any, rawName?: string) => {
+  const sport = getClubTypeName(typeId, rawName);
+  if (sport === "Running") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+        <Activity size={12} className="shrink-0 text-amber-500" /> <Trans>RUNNING</Trans>
+      </span>
+    );
+  }
+  if (sport === "Triathlon") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+        <Trophy size={12} className="shrink-0 text-purple-400" /> <Trans>TRIATHLON</Trans>
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/25 rounded-xl text-[11px] font-black uppercase tracking-wider shadow-sm whitespace-nowrap">
+      <Bike size={12} className="shrink-0 text-[#EB712B]" /> <Trans>CYCLING</Trans>
+    </span>
+  );
+};
+
+const TABS: TabType[] = [
+  "Overview",
+  "Rides",
+  "Members",
+  "Membership Plans",
+  "News",
+  "Leaderboard",
+  "Shop",
+  "Discounts",
+  "Marketplace",
+];
+
+const ManageClubHome: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { clubId, activeClub } = useActiveClub();
   const permissions = useClubPermissions(clubId || undefined);
 
-  // Retrieve dynamically passed values from the Redux store
-  const selectedBanner = activeClub?.coverImage || "";
-  const selectedLogo = activeClub?.logo || "";
+  // Dynamic images and name
+  const coverImage = activeClub?.coverImage
+    ? resolveImageUrl(activeClub.coverImage)
+    : (activeClub as any)?.bannerImage
+    ? resolveImageUrl((activeClub as any).bannerImage)
+    : "/Images/CycleImage2.png";
+
+  const logoImage = activeClub?.logo
+    ? resolveImageUrl(activeClub.logo)
+    : (activeClub as any)?.avatar
+    ? resolveImageUrl((activeClub as any).avatar)
+    : "/Images/CycleImage.png";
+
   const selectedName = activeClub?.clubName || "Club Name";
 
-  const [activeTab, setActiveTab] = useState("Members");
-  const [isDeleteClubModalOpen, setIsDeleteClubModalOpen] = useState(false);
+  const tabParam = searchParams.get("tab") as TabType | null;
+  const [activeTab, setActiveTab] = useState<TabType>(tabParam || "Overview");
 
-  // State to track which menu is open across sections
-  const [openMenuIndex, setOpenMenuIndex] = useState<{
-    section: string;
-    index: number;
-  } | null>(null);
+  useEffect(() => {
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const [isDeleteClubModalOpen, setIsDeleteClubModalOpen] = useState(false);
+  const [showClubAvatarPreview, setShowClubAvatarPreview] = useState(false);
 
   const dispatch = useAppDispatch();
   const { currentClubMembers } = useAppSelector((state) => state.club);
+
+  const dynamicMemberCount = useMemo(() => {
+    if (currentClubMembers && currentClubMembers.length > 0) return currentClubMembers.length;
+    return getMemberCount(activeClub);
+  }, [currentClubMembers, activeClub]);
 
   const { data: plansData } = useListMembershipPlansQuery(
     { clubId: clubId || 0, includeInactive: true },
@@ -60,7 +203,6 @@ const ManageClubHome = () => {
   const [createPlan] = useCreateClubMembershipPlanMutation();
   const [updatePlan] = useUpdateClubMembershipPlanMutation();
   const [deletePlan] = useDeleteMembershipPlanMutation();
-  const [removeMember] = useRemoveClubMemberMutation();
 
   useEffect(() => {
     if (clubId) {
@@ -68,39 +210,26 @@ const ManageClubHome = () => {
     }
   }, [dispatch, clubId]);
 
-  const formatMember = (m: any) => ({
-    id: m.userId || m.id,
-    name: (m.firstName || '') + ' ' + (m.lastName || '') || m.username || 'Unnamed',
-    role: m.role || 'Member',
-    status: 'Active Now',
-    avatar: m.profileImage || "/Images/ProfileImage.png"
-  });
-
-  const clubOwners = currentClubMembers?.filter((m: any) => m.role === 'owner').map(formatMember) || [];
-  const clubAdmins = currentClubMembers?.filter((m: any) => m.role === 'organizer' || m.role === 'admin').map(formatMember) || [];
-  const generalMembers = currentClubMembers?.filter((m: any) => !['owner', 'organizer', 'admin'].includes(m.role)).map(formatMember) || [];
-
-  // State for Membership Cards (Left-Form interacting with Right-Cards)
+  // Membership plans state
   const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>([]);
 
   useEffect(() => {
     if (plansData) {
       const plans = plansData.map((p: any) => ({
         id: String(p.id),
-        packageName: p.name || p.packageName || 'Unnamed Plan',
+        packageName: p.name || p.packageName || "Unnamed Plan",
         price: String(p.price),
-        duration: p.billingInterval || p.duration || 'monthly',
+        duration: p.billingInterval || p.duration || "monthly",
         autoRenew: p.autoRenew ? "Yes" : "No",
-        discount: String(p.discountPercent || ''),
+        discount: String(p.discountPercent || ""),
         featuresList: Array.isArray(p.features) ? p.features : []
       }));
       setMembershipPlans(plans);
     }
   }, [plansData]);
+
   const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
   const [openCardMenuId, setOpenCardMenuId] = useState<string | null>(null);
-
-  const menuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Membership form states
   const [showMembershipForm, setShowMembershipForm] = useState(false);
@@ -116,44 +245,10 @@ const ManageClubHome = () => {
     "Free coffee in our coffeeshop",
   ]);
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (openMenuIndex) {
-        const refKey = `${openMenuIndex.section}-${openMenuIndex.index}`;
-        if (
-          menuRefs.current[refKey] &&
-          !menuRefs.current[refKey]?.contains(event.target as Node)
-        ) {
-          setOpenMenuIndex(null);
-        }
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openMenuIndex]);
-
-  const handleMenuToggle = (section: string, index: number) => {
-    if (openMenuIndex?.section === section && openMenuIndex?.index === index) {
-      setOpenMenuIndex(null);
-    } else {
-      setOpenMenuIndex({ section, index });
-    }
-  };
-
-  const handleAction = async (actionName: string, targetItem: any) => {
+  const handleAction = (actionName: string, _targetItem?: any) => {
     if (actionName === "Connect to Stripe") {
       setShowMembershipForm(true);
-    } else if (actionName === "Remove Member" && clubId && targetItem.id) {
-      try {
-        await removeMember({ clubId: Number(clubId), userId: Number(targetItem.id) }).unwrap();
-        toast.success(t`${targetItem.name} removed from club.`);
-        dispatch(fetchClubMembers({ clubId }));
-      } catch (err: any) {
-        toast.error(err?.data?.message || t`Failed to remove member`);
-      }
     }
-    setOpenMenuIndex(null);
   };
 
   const handleAddFeature = () => {
@@ -216,7 +311,6 @@ const ManageClubHome = () => {
     }
   };
 
-  // Load selected membership plan into the form
   const handleEditPlan = (plan: MembershipPlan) => {
     setEditingPlanId(plan.id);
     setPackageName(plan.packageName);
@@ -229,7 +323,6 @@ const ManageClubHome = () => {
     setOpenCardMenuId(null);
   };
 
-  // Delete associated membership plan
   const handleDeletePlan = async (id: string) => {
     if (!clubId) return;
 
@@ -243,673 +336,691 @@ const ManageClubHome = () => {
     setOpenCardMenuId(null);
   };
 
-  const renderSection = (title: React.ReactNode, sub: React.ReactNode, items: any[], sectionKey: string) => (
-    <section className="group/section space-y-4 w-full">
-      {/* Section Header */}
-      <div className="flex justify-between items-center px-1">
-        <h2 className="text-xl font-black tracking-tight text-white flex items-center gap-3">
-          {title}
-          <span className="text-[10px] font-extrabold text-[#EB712B] px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/20 backdrop-blur-md">
-            {sub}
-          </span>
-        </h2>
-        <button className="text-[10px] font-black text-gray-500 hover:text-white transition-all tracking-[0.2em] uppercase cursor-pointer">
-          <Trans>View All</Trans>
-        </button>
-      </div>
-
-      {/* Modern Container: full width (w-full) */}
-      <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-white/[0.06] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] relative">
-        {/* Decorative gradient sheen */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#EB712B]/50 to-transparent" />
-
-        {items.map((item, i) => {
-          const isOpen =
-            openMenuIndex?.section === sectionKey && openMenuIndex?.index === i;
-          return (
-            <div
-              key={i}
-              className="group/row flex flex-wrap md:flex-nowrap items-center justify-between px-4 sm:px-6 py-5 border-b border-white/[0.03] last:border-0 
-                         transition-all duration-300 hover:bg-gradient-to-r hover:from-white/[0.03] hover:via-white/[0.01] hover:to-transparent 
-                         relative overflow-visible gap-y-4 md:gap-y-0"
-            >
-              {/* Left Vertical Accent Line */}
-              <div className="absolute left-0 top-0 w-[3px] h-full bg-gradient-to-b from-[#EB712B] to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-300" />
-
-              {/* Left Side: Avatar & Core Info */}
-              <div className="flex items-center gap-5 w-full md:w-auto justify-between md:justify-start">
-                <div className="flex items-center gap-5">
-                  {/* Premium Avatar Box */}
-                  <div className="w-12 h-12 rounded-2xl bg-hover border border-white/10 shadow-lg flex items-center justify-center overflow-hidden relative shrink-0 transition-transform duration-500 group-hover/row:scale-105">
-                    <img
-                      src={item.avatar}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                        const fallback =
-                          e.currentTarget.parentElement?.querySelector(
-                            ".fallback-text",
-                          );
-                        if (fallback) fallback.classList.remove("hidden");
-                      }}
-                    />
-                    <span className="fallback-text hidden text-xs text-gray-300 font-black tracking-tight">
-                      {item.name.charAt(0)}
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-tr from-[#EB712B]/20 to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-300" />
-                  </div>
-
-                  {/* Text details */}
-                  <div className="flex flex-col justify-center">
-                    <p className="font-bold text-gray-200 group-hover/row:text-white transition-colors tracking-tight text-sm leading-tight">
-                      {item.name}
-                    </p>
-                    <p className="text-[9px] text-gray-500 font-extrabold tracking-[0.15em] uppercase mt-1 group-hover/row:text-[#EB712B]/70 transition-colors">
-                      {item.role}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Side: Live Pulse Status & Responsive Action Menu */}
-              <div className="flex items-center justify-between w-full md:w-auto md:justify-start gap-8">
-                <span className="flex items-center gap-2.5 text-[10px] font-black tracking-[0.1em] text-white/40 bg-white/[0.02] px-3 py-1.5 rounded-full border border-white/5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500 shadow-[0_0_8px_#22c55e]"></span>
-                  </span>
-                  <Trans>ACTIVE NOW</Trans>
-                </span>
-
-                {/* Action Menu Dropdown */}
-                {(permissions.isOwner || (permissions.isAdmin && sectionKey === "members")) && (
-                  <div
-                    ref={(el: HTMLDivElement | null) => {
-                      menuRefs.current[`${sectionKey}-${i}`] = el;
-                    }}
-                    className="relative"
-                  >
-                    <button
-                      onClick={() => handleMenuToggle(sectionKey, i)}
-                      className={`p-2 rounded-xl transition-all cursor-pointer ${
-                        isOpen
-                          ? "bg-white/10 opacity-100 text-white"
-                          : "opacity-0 group-hover/row:opacity-100 text-gray-400 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      <MoreVertical size={16} />
-                    </button>
-
-                  {isOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-[#181818] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
-                      {sectionKey !== "owners" && (
-                        <button
-                          onClick={() => handleAction("Remove Member", item)}
-                          className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors cursor-pointer"
-                        >
-                          <Trans>Remove Member</Trans>
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-
   return (
-    <div className="min-h-screen bg-surface text-white p-4 sm:p-8 font-sans w-full">
-      {/* Header Banner */}
-      <div
-        className="relative h-96 md:h-[420px] w-full rounded-3xl mb-8 border border-white/10 shadow-[0_10px_50px_-12px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col justify-between p-6 sm:p-8 transition-all duration-700 ease-in-out group/banner cursor-pointer bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: selectedBanner
-            ? `url(${selectedBanner})`
-            : "none",
-          backgroundColor: "#1F1F1F",
-        }}
-      >
-        {/* Dark gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-0" />
+    <div className="min-h-screen bg-main-bg text-text-main font-sans overflow-x-hidden select-none pb-20">
+      
+      {/* ── Dynamic Full-Bleed Hero Header (Exact Match with Athlete Side) ── */}
+      <div className="relative h-60 sm:h-72 md:h-80 lg:h-[340px] w-full overflow-hidden bg-black select-none">
+        <img 
+          src={coverImage} 
+          alt={selectedName} 
+          className="w-full h-full object-cover"
+          onError={(e) => { (e.target as HTMLImageElement).src = "/Images/CycleImage2.png"; }}
+        />
+        {/* Layered Gradient Scrim */}
+        <div className="absolute inset-0 bg-gradient-to-t from-main-bg via-main-bg/60 to-black/35" />
 
-        {/* Top Navigation Buttons */}
-        <div className="relative z-10 flex justify-between w-full items-center">
-          <button
+        {/* Top Floating Bar: Back Button + Sport Tag */}
+        <div className="absolute top-6 left-4 sm:left-6 right-4 sm:right-6 flex justify-between items-center z-20">
+          <button 
             onClick={() => navigate(-1)}
-            className="p-3.5 bg-black/40 hover:bg-white/10 rounded-2xl border border-white/10 backdrop-blur-md 
-                     transition-all duration-300 ease-in-out cursor-pointer shadow-lg shadow-black/40
-                     hover:scale-105 active:scale-95 hover:border-white/30 group/btn flex items-center justify-center"
+            className="px-3.5 py-2 bg-black/60 hover:bg-black/85 backdrop-blur-xl border border-white/15 rounded-2xl flex items-center gap-2 text-white text-xs font-bold transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer group"
+            title="Back"
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="transition-transform duration-300 group-hover/btn:-translate-x-0.5"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
+            <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
+            <span className="hidden sm:inline"><Trans>Back</Trans></span>
           </button>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-3">
+          {/* Top-Right Sport Pill on Banner */}
+          {renderSportBadge(
+            activeClub?.clubTypeId, 
+            (activeClub as any)?.sport || (activeClub as any)?.sportType || (activeClub as any)?.category
+          )}
+        </div>
+      </div>
+
+      {/* ── Club Identity Section ── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative -mt-16 sm:-mt-20 md:-mt-24 z-10">
+        <div className="flex flex-col xl:flex-row gap-6 items-start xl:items-end justify-between mb-8">
+          
+          {/* Left Block: Avatar + Name & Info */}
+          <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-start sm:items-end min-w-0 flex-1 w-full">
+            
+            {/* Club Logo Avatar with Lightbox Preview */}
+            <div 
+              onClick={() => setShowClubAvatarPreview(true)}
+              className="relative shrink-0 group cursor-pointer"
+              title="Click to preview club avatar"
+            >
+              <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-3xl overflow-hidden border-4 border-main-bg bg-surface flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-102">
+                <img 
+                  src={logoImage} 
+                  alt={selectedName} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => { (e.target as HTMLImageElement).src = "/Images/CycleImage.png"; }}
+                />
+              </div>
+              {/* Hover overlay hint */}
+              <div className="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <Eye size={24} className="text-white drop-shadow-md" />
+              </div>
+              {(activeClub as any)?.isVerified && (
+                <div 
+                  className="absolute -bottom-1 -right-1 sm:bottom-0 sm:right-0 w-8 h-8 bg-emerald-500 rounded-2xl border-2 border-main-bg flex items-center justify-center pointer-events-none"
+                  title="Verified Club"
+                >
+                  <ShieldCheck size={16} className="text-white" />
+                </div>
+              )}
+            </div>
+
+            {/* Middle Info Column: Title & Metadata Chips */}
+            <div className="space-y-2.5 min-w-0 flex-1 w-full">
+              {/* Title in ONE single line */}
+              <h1 
+                className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-black tracking-tight text-text-main uppercase leading-tight whitespace-nowrap truncate"
+                title={selectedName}
+              >
+                {selectedName}
+              </h1>
+
+              {/* Badges / Chips Row */}
+              <div className="flex flex-wrap items-center gap-2 pt-0.5 text-xs font-bold">
+                {/* Truncated Address Chip with hover tooltip */}
+                <div 
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface/90 border border-border rounded-xl text-xs font-semibold text-text-muted hover:text-text-main transition-colors max-w-full min-w-0"
+                  title={activeClub?.location || "Global"}
+                >
+                  <MapPin size={13} className="text-[#EB712B] shrink-0" />
+                  <span className="truncate max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px]">
+                    {activeClub?.location || <Trans>Global</Trans>}
+                  </span>
+                </div>
+
+                {/* Members Chip */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface/90 border border-border rounded-xl text-xs font-bold text-text-muted whitespace-nowrap">
+                  <Users size={13} className="text-[#EB712B] shrink-0" />
+                  <span>{dynamicMemberCount} {dynamicMemberCount === 1 ? <Trans>Member</Trans> : <Trans>Members</Trans>}</span>
+                </div>
+
+                {/* Privacy Chip */}
+                <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border whitespace-nowrap ${
+                  activeClub?.clubPrivacyId === 1 
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                    : "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                }`}>
+                  {activeClub?.clubPrivacyId === 1 ? <Globe size={12} /> : <Lock size={12} />}
+                  <span>{activeClub?.clubPrivacyId === 1 ? <Trans>Public Club</Trans> : <Trans>Private Club</Trans>}</span>
+                </div>
+
+                {/* Women & Non-Binary Chip */}
+                {Boolean(activeClub?.isWomenAndNonBinary) && (
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border whitespace-nowrap bg-pink-500/10 text-pink-400 border-pink-500/20">
+                    <span><Trans>Women & Non-Binary Only</Trans></span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Block: Action Buttons (Club Organizer perspective) */}
+          <div className="shrink-0 flex flex-wrap items-center gap-2.5 sm:gap-3 w-full xl:w-auto pt-2 xl:pt-0">
+            {/* View as Athlete */}
+            {clubId && (
+              <button
+                type="button"
+                onClick={() => navigate(`/view/userside/club/${clubId}`)}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-surface border border-border hover:bg-hover text-text-main hover:text-[#EB712B] hover:border-[#EB712B]/30 text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer shadow-sm"
+                title={t`Preview how athletes see this club`}
+              >
+                <Eye size={15} />
+                <span><Trans>View as Athlete</Trans></span>
+              </button>
+            )}
+
+            {/* Edit Club */}
             {permissions.isAdmin && (
               <button
+                type="button"
                 onClick={() => navigate("/edit-club")}
-                className="flex items-center gap-2 px-5 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black 
-                         tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 
-                         transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 
-                         hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 backdrop-blur-md"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 bg-[#EB712B] hover:bg-[#ff8036] text-white text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer shadow-lg shadow-[#EB712B]/20"
               >
-                <Edit3 size={14} />
+                <Edit3 size={15} />
                 <span><Trans>Edit Club</Trans></span>
               </button>
             )}
 
+            {/* Delete Club */}
             {permissions.isOwner && (
               <button
                 type="button"
                 onClick={() => setIsDeleteClubModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-3 bg-red-600/40 hover:bg-red-600 text-red-200 hover:text-white rounded-2xl text-xs font-black 
-                         tracking-wider uppercase cursor-pointer shadow-lg shadow-black/40 
-                         transition-all duration-300 ease-in-out hover:scale-105 active:scale-95 border border-red-500/40 backdrop-blur-md"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-black uppercase tracking-wider rounded-2xl transition-all active:scale-95 cursor-pointer shadow-sm"
                 title={t`Delete Club`}
               >
-                <Trash2 size={14} />
-                <span className="hidden sm:inline"><Trans>Delete</Trans></span>
+                <Trash2 size={15} />
+                <span><Trans>Delete Club</Trans></span>
               </button>
             )}
           </div>
         </div>
 
-        {/* Club Info Overlay Section */}
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 w-full pointer-events-none">
-          <div className="flex items-center gap-5">
-            {/* CLUB LOGO IMAGE CONTAINER */}
-            <div className="w-20 h-20 rounded-2xl bg-black/40 border border-white/20 backdrop-blur-md overflow-hidden flex items-center justify-center shrink-0">
-              {selectedLogo ? (
-                <img
-                  src={selectedLogo}
-                  alt="Club Logo"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-xs font-bold text-gray-400"><Trans>Logo</Trans></span>
-              )}
-            </div>
-
-            {/* Texts & Badges */}
-            <div className="flex flex-col justify-center">
-              <span className="inline-flex items-center w-fit gap-1.5 px-3 py-1 bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/30 rounded-full text-[9px] font-black uppercase tracking-widest mb-2 shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#EB712B] animate-pulse" />
-                <Trans>Elite Registry</Trans>
-              </span>
-              <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight break-words drop-shadow-md">
-                {selectedName}
-              </h1>
-            </div>
-          </div>
-
-          {/* Founded Badge */}
-          <div className="bg-white/5 border border-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-gray-300 text-[10px] font-bold uppercase tracking-wider shrink-0">
-            <Trans>Founded 2026</Trans>
+        {/* ── Navigation Tabs (Exact Athlete Side Underline Style) ── */}
+        <div className="border-b border-border/50 mb-8 overflow-x-auto custom-scrollbar">
+          <div className="flex gap-8 min-w-max px-1">
+            {TABS.map((tab) => {
+              const isActive =
+                activeTab === tab ||
+                (tab === "Discounts" && activeTab === ("Discount" as any));
+              return (
+                <button
+                  key={tab}
+                  onClick={() => {
+                    setActiveTab(tab);
+                    setSearchParams({ tab });
+                    if (tab !== "Membership Plans") setShowMembershipForm(false);
+                  }}
+                  className={`pb-4 text-sm font-black uppercase tracking-wider transition-all duration-300 relative outline-none cursor-pointer border-0 bg-transparent whitespace-nowrap ${
+                    isActive
+                      ? "text-[#EB712B]"
+                      : "text-text-muted hover:text-text-main"
+                  }`}
+                >
+                  {tab === "Overview" ? <Trans>Overview</Trans> :
+                   tab === "Rides" ? <Trans>Rides</Trans> :
+                   tab === "Members" ? <Trans>Members</Trans> :
+                   tab === "Membership Plans" ? <Trans>Membership Plans</Trans> :
+                   tab === "News" ? <Trans>News</Trans> :
+                   tab === "Leaderboard" ? <Trans>Leaderboard</Trans> :
+                   tab === "Shop" ? <Trans>Shop</Trans> :
+                   tab === "Discounts" ? <Trans>Discounts</Trans> :
+                   <Trans>Marketplace</Trans>}
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-[#EB712B] rounded-t-full" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
-      </div>
 
-      {/* Navigation Tabs */}
-      <nav className="flex gap-1 mb-8 border-b border-white/10 overflow-x-auto scrollbar-hide w-full">
-        {[
-          { key: "Members", label: t`Members` },
-          { key: "Membership Plans", label: t`Membership Plans` },
-          { key: "Discount", label: t`Discount` },
-          { key: "News", label: t`News` },
-          { key: "Leaderboard", label: t`Leaderboard` },
-        ].map(
-          (tab) => {
-            const isActive = activeTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                onClick={() => {
-                  setActiveTab(tab.key);
-                  if (tab.key !== "Membership Plans") setShowMembershipForm(false);
-                }}
-                className={`relative px-6 py-4 text-xs font-bold uppercase tracking-widest transition-all duration-500 ease-out cursor-pointer whitespace-nowrap ${
-                  isActive
-                    ? "text-white"
-                    : "text-gray-500 hover:text-gray-200 hover:bg-white/5"
-                }`}
-              >
-                {tab.label}
+        {/* ── Dynamic Tab Content Area ── */}
+        <div className="w-full min-h-[400px]">
+          {activeTab === "Overview" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Overviews
+                clubId={clubId || undefined}
+                club={activeClub}
+                membersCount={dynamicMemberCount}
+              />
+            </div>
+          )}
 
-                {/* Glowing expanding underline */}
-                {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#EB712B] shadow-[0_0_15px_#EB712B] rounded-full animate-in fade-in slide-in-from-bottom-2 duration-500" />
-                )}
-              </button>
-            );
-          },
-        )}
-      </nav>
+          {activeTab === "Rides" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Ride clubId={clubId || undefined} />
+            </div>
+          )}
 
-      {/* Dynamic Content Switching */}
-      <div className="w-full">
-        {activeTab === "Members" && (
-          <div className="space-y-12 w-full animate-in fade-in duration-300">
-            {renderSection(<Trans>Club Owners</Trans>, t`${clubOwners.length} MEMBERS`, clubOwners, "owners")}
-            {renderSection(<Trans>Administrators</Trans>, t`${clubAdmins.length} STAFF`, clubAdmins, "admins")}
-            {renderSection(<Trans>Club Members</Trans>, t`${generalMembers.length} MEMBERS`, generalMembers, "members")}
-          </div>
-        )}
+          {activeTab === "Members" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Members clubId={clubId || undefined} />
+            </div>
+          )}
 
-        {activeTab === "Membership Plans" && (
-          <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in zoom-in-95 duration-500 items-start">
-            {/* LEFT SIDE: Membership Form / Stripe View */}
-            <div className="w-full flex justify-center">
-              {!permissions.canManageMembershipFee ? (
-                <div className="w-full bg-[#181818]/90 backdrop-blur-xl rounded-3xl border border-white/10 p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
-                  <CreditCard size={48} className="text-gray-600 mb-6" />
-                  <h3 className="text-lg font-black text-white mb-2 uppercase"><Trans>Access Restricted</Trans></h3>
-                  <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
-                    <Trans>You do not have the <span className="text-[#EB712B] font-bold">Manage Membership Fee</span> permission required to configure payment plans for this club.</Trans>
-                  </p>
-                </div>
-              ) : !showMembershipForm ? (
-                /* Stripe Connect View */
-                <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-8 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_40px_rgba(235,113,43,0.15)]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100" />
-
-                  <div className="z-10 flex flex-col items-center max-w-md text-center">
-                    <div className="w-24 h-24 rounded-full bg-[#1E1E1E] border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center relative mb-8 transition-transform duration-500 group-hover:scale-105">
-                      <div className="absolute inset-0 rounded-full bg-[#635BFF]/10 animate-pulse" />
-                      <CreditCard
-                        size={36}
-                        className="text-[#635BFF] relative z-10 transition-transform duration-300 group-hover:rotate-6"
-                      />
-                    </div>
-
-                    <h3 className="text-xl font-black tracking-tight text-white mb-3">
-                      <Trans>Stripe Integration</Trans>
+          {activeTab === "Membership Plans" && (
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in zoom-in-95 duration-500 items-start">
+              {/* LEFT SIDE: Membership Form / Stripe View */}
+              <div className="w-full flex justify-center">
+                {!permissions.canManageMembershipFee ? (
+                  <div className="w-full bg-surface/90 backdrop-blur-xl rounded-3xl border border-border p-8 min-h-[500px] flex flex-col items-center justify-center text-center shadow-xl">
+                    <CreditCard size={48} className="text-text-muted mb-6" />
+                    <h3 className="text-lg font-black text-text-main mb-2 uppercase">
+                      <Trans>Access Restricted</Trans>
                     </h3>
-                    <p className="text-xs font-medium text-gray-400 mb-8 leading-relaxed">
-                      <Trans>Please connect your Stripe account first to enable subscriptions and automated recurring membership payments.</Trans>
+                    <p className="text-xs text-text-muted max-w-xs leading-relaxed">
+                      <Trans>
+                        You do not have the{" "}
+                        <span className="text-[#EB712B] font-bold">
+                          Manage Membership Fee
+                        </span>{" "}
+                        permission required to configure payment plans for this club.
+                      </Trans>
                     </p>
-
-                    <button
-                      onClick={() => handleAction("Connect to Stripe", selectedName)}
-                      className="px-8 py-4 bg-[#EB712B] text-white rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer"
-                    >
-                      <span className="relative z-10"><Trans>Connect to Stripe</Trans></span>
-                    </button>
                   </div>
-                </div>
-              ) : (
-                /* Membership Fee Plan Setup Form View (Interactive & Stripe-Ready) */
-                <div className="w-full bg-[#181818]/90 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-6 md:p-8 animate-in fade-in zoom-in-95 duration-300 transition-all duration-300 hover:border-white/20">
-                  <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                    <h3 className="text-lg font-black tracking-tight text-white">
-                      {editingPlanId
-                        ? <Trans>Edit Membership Plan</Trans>
-                        : <Trans>Membership fee plan</Trans>}
-                    </h3>
-                    <span className="text-[9px] font-extrabold bg-[#EB712B]/10 text-[#EB712B] px-2.5 py-1 rounded-full border border-[#EB712B]/20 uppercase tracking-widest animate-pulse">
-                      <Trans>Stripe Ready</Trans>
-                    </span>
-                  </div>
+                ) : !showMembershipForm ? (
+                  /* Stripe Connect View */
+                  <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-border shadow-xl p-8 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_40px_rgba(235,113,43,0.15)]">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
 
-                  <form onSubmit={handleCreatePlan} className="space-y-5">
-                    {/* Package Name */}
-                    <div className="flex flex-col gap-2.5">
-                      <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                        <Trans>Package Name</Trans>
-                      </label>
-                      <input
-                        type="text"
-                        value={packageName}
-                        onChange={(e) => setPackageName(e.target.value)}
-                        placeholder={t`Annual Junior Membership`}
-                        className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
-                        required
-                      />
-                    </div>
-
-                    {/* Price & Duration Grid */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-2.5">
-                        <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          <Trans>Price</Trans>
-                        </label>
-                        <div className="relative">
-                          <span className="absolute left-4 top-3.5 text-xs font-black text-gray-500">
-                            €
-                          </span>
-                          <input
-                            type="number"
-                            step="0.01"
-                            placeholder="00.00"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            className="w-full bg-surface border border-white/10 rounded-xl pl-8 pr-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2.5">
-                        <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          <Trans>Duration</Trans>
-                        </label>
-                        <div className="relative group/select">
-                          <select
-                            value={duration}
-                            onChange={(e) => setDuration(e.target.value)}
-                            className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] appearance-none cursor-pointer font-bold transition-all duration-500 ease-in-out hover:border-[#EB712B]/50 hover:shadow-[0_0_15px_rgba(235,113,43,0.1)]"
-                          >
-                            <option value="monthly">{t`1 Month`}</option>
-                            <option value="quarterly">{t`3 Months`}</option>
-                            <option value="semi-annual">{t`6 Months`}</option>
-                            <option value="annual">{t`1 Year`}</option>
-                          </select>
-
-                          {/* Custom Dropdown Arrow */}
-                          <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none transition-transform duration-300 group-hover/select:translate-y-0.5">
-                            <svg
-                              width="10"
-                              height="6"
-                              viewBox="0 0 10 6"
-                              fill="none"
-                              stroke="#9CA3AF"
-                              className="transition-colors duration-300 group-hover/select:stroke-[#EB712B]"
-                            >
-                              <path
-                                d="M1 1L5 5L9 1"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Auto Renew & Discount Grid */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-2.5">
-                        <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          <Trans>Auto Renew</Trans>
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={autoRenew}
-                            onChange={(e) => setAutoRenew(e.target.value)}
-                            className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-white/20"
-                          >
-                            <option value="Yes">{t`Yes`}</option>
-                            <option value="No">{t`No`}</option>
-                          </select>
-                          <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none">
-                            <svg
-                              width="10"
-                              height="6"
-                              viewBox="0 0 10 6"
-                              fill="none"
-                              stroke="#9CA3AF"
-                            >
-                              <path
-                                d="M1 1L5 5L9 1"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2.5">
-                        <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                          <Trans>Discount (%)</Trans>
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          placeholder="0%"
-                          value={discount}
-                          onChange={(e) => setDiscount(e.target.value)}
-                          className="w-full bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
+                    <div className="z-10 flex flex-col items-center max-w-md text-center">
+                      <div className="w-24 h-24 rounded-full bg-main-bg border border-border shadow-md flex items-center justify-center relative mb-8 transition-transform duration-500 group-hover:scale-105">
+                        <div className="absolute inset-0 rounded-full bg-[#635BFF]/10 animate-pulse" />
+                        <CreditCard
+                          size={36}
+                          className="text-[#635BFF] relative z-10 transition-transform duration-300 group-hover:rotate-6"
                         />
                       </div>
-                    </div>
 
-                    {/* Feature Adder */}
-                    <div className="flex flex-col gap-2.5 pt-2">
-                      <label className="text-[10px] font-extrabold text-gray-400 tracking-[0.15em] uppercase">
-                        <Trans>Features Inclusion</Trans>
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={featureInput}
-                          onChange={(e) => setFeatureInput(e.target.value)}
-                          placeholder={t`Ex: Access to exclusive track days`}
-                          className="flex-1 bg-surface border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-white/20"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleAddFeature}
-                          className="p-3.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 rounded-xl text-white transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-95 hover:rotate-90"
-                        >
-                          <Plus size={16} className="text-[#EB712B]" />
-                        </button>
-                      </div>
+                      <h3 className="text-xl font-black tracking-tight text-text-main mb-3">
+                        <Trans>Stripe Integration</Trans>
+                      </h3>
+                      <p className="text-xs font-medium text-text-muted mb-8 leading-relaxed">
+                        <Trans>
+                          Please connect your Stripe account first to enable subscriptions and automated recurring membership payments.
+                        </Trans>
+                      </p>
 
-                      {/* Interactive Feature Bullets */}
-                      {featuresList.length > 0 && (
-                        <div className="mt-4 space-y-2.5 bg-surface/60 border border-white/[0.03] rounded-2xl p-4 animate-in fade-in duration-200">
-                          {featuresList.map((feat, index) => (
-                            <div
-                              key={index}
-                              className="group/item flex items-center justify-between bg-hover border border-white/5 py-2.5 px-3.5 rounded-xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 hover:translate-x-1"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shadow-[0_0_8px_#EB712B] transition-transform duration-300 group-hover/item:scale-125" />
-                                <span className="text-xs font-bold text-gray-200 tracking-tight">
-                                  {feat}
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveFeature(index)}
-                                className="opacity-0 group-hover/item:opacity-100 p-1 rounded-lg hover:bg-red-500/10 text-red-400 hover:text-red-300 transition-all duration-200 cursor-pointer hover:rotate-90"
-                              >
-                                <X size={14} />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Submit / Create / Update / Cancel Buttons */}
-                    <div className="flex gap-3 pt-4">
-                      {editingPlanId && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingPlanId(null);
-                            setShowMembershipForm(false);
-                          }}
-                          className="py-4 px-6 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:bg-white/15"
-                        >
-                          <Trans>Cancel</Trans>
-                        </button>
-                      )}
                       <button
-                        type="submit"
-                        className="flex-1 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 ease-in-out hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_25px_rgba(235,113,43,0.5)] border border-[#EB712B]/30 relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-all before:duration-700"
+                        type="button"
+                        onClick={() => handleAction("Connect to Stripe", selectedName)}
+                        className="px-8 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all active:scale-95"
                       >
                         <span className="relative z-10">
-                          {editingPlanId
-                            ? <Trans>Save Changes</Trans>
-                            : <Trans>Create Membership Plan</Trans>}
+                          <Trans>Connect to Stripe</Trans>
                         </span>
                       </button>
                     </div>
-                  </form>
-                </div>
-              )}
-            </div>
+                  </div>
+                ) : (
+                  /* Membership Fee Plan Setup Form View */
+                  <div className="w-full bg-surface/90 backdrop-blur-xl rounded-3xl border border-border shadow-xl p-6 md:p-8 animate-in fade-in zoom-in-95 duration-300 transition-all duration-300 hover:border-border/80">
+                    <div className="flex justify-between items-center mb-6 border-b border-border/50 pb-4">
+                      <h3 className="text-lg font-black tracking-tight text-text-main">
+                        {editingPlanId ? (
+                          <Trans>Edit Membership Plan</Trans>
+                        ) : (
+                          <Trans>Membership Fee Plan</Trans>
+                        )}
+                      </h3>
+                      <span className="text-[9px] font-extrabold bg-[#EB712B]/10 text-[#EB712B] px-2.5 py-1 rounded-full border border-[#EB712B]/20 uppercase tracking-widest animate-pulse">
+                        <Trans>Stripe Ready</Trans>
+                      </span>
+                    </div>
 
-            {/* RIGHT SIDE: Dynamic Membership Cards Display Area */}
-            <div className="w-full space-y-6 animate-in fade-in slide-from-right-5 duration-500">
-              <h2 className="text-xl font-black tracking-tight text-white flex items-center gap-3 px-1 mb-2">
-                <Trans>Membership Cards</Trans>
-                <span className="text-[10px] font-extrabold text-[#EB712B] px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/20 backdrop-blur-md">
-                  <Trans>{membershipPlans.length} Plans Created</Trans>
-                </span>
-              </h2>
+                    <form onSubmit={handleCreatePlan} className="space-y-5">
+                      {/* Package Name */}
+                      <div className="flex flex-col gap-2.5">
+                        <label className="text-[10px] font-extrabold text-text-muted tracking-[0.15em] uppercase">
+                          <Trans>Package Name</Trans>
+                        </label>
+                        <input
+                          type="text"
+                          value={packageName}
+                          onChange={(e) => setPackageName(e.target.value)}
+                          placeholder={t`Annual Junior Membership`}
+                          className="w-full bg-main-bg border border-border rounded-xl px-4 py-3.5 text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-border/80"
+                          required
+                        />
+                      </div>
 
-              {membershipPlans.length === 0 ? (
-                <div className="w-full bg-surface/50 backdrop-blur-xl border border-white/[0.04] rounded-3xl p-12 text-center transition-all duration-300 hover:border-white/10">
-                  <p className="text-xs font-black text-gray-600 uppercase tracking-[0.15em]">
-                    <Trans>No membership plans added yet</Trans>
-                  </p>
-                  <p className="text-[10px] text-gray-500 mt-1">
-                    <Trans>Fill out the form on the left to create and preview cards here.</Trans>
-                  </p>
-                </div>
-              ) : (
-                membershipPlans.map((plan) => (
-                  <div
-                    key={plan.id}
-                    className="w-full bg-[#161616] rounded-3xl border border-white/10 p-6 relative flex flex-col justify-between overflow-visible shadow-xl transition-all duration-300 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.1)] group hover:-translate-y-1"
-                  >
-                    {/* Top Action Dropdown (3-Dots) */}
-                    {permissions.canManageMembershipFee && (
-                      <div className="absolute top-6 right-6 z-40">
-                        <button
-                          onClick={() =>
-                            setOpenCardMenuId(
-                              openCardMenuId === plan.id ? null : plan.id,
-                            )
-                          }
-                          className="p-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-gray-400 hover:text-white transition-all duration-300 cursor-pointer hover:scale-110"
-                        >
-                          <MoreVertical size={16} />
-                        </button>
-
-                        {openCardMenuId === plan.id && (
-                          <div className="absolute right-0 mt-2 w-48 bg-[#1C1C1C] rounded-2xl border border-white/10 shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden transition-all">
-                            <button
-                              onClick={() => handleEditPlan(plan)}
-                              className="w-full text-left px-5 py-3 text-xs font-bold text-gray-300 hover:bg-white/[0.04] hover:text-white transition-colors duration-200 cursor-pointer"
+                      {/* Price & Duration Grid */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2.5">
+                          <label className="text-[10px] font-extrabold text-text-muted tracking-[0.15em] uppercase">
+                            <Trans>Price</Trans>
+                          </label>
+                          <div className="relative">
+                            <span className="absolute left-4 top-3.5 text-xs font-black text-text-muted">
+                              €
+                            </span>
+                            <input
+                              type="number"
+                              step="0.01"
+                              placeholder="00.00"
+                              value={price}
+                              onChange={(e) => setPrice(e.target.value)}
+                              className="w-full bg-main-bg border border-border rounded-xl pl-8 pr-4 py-3.5 text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-border/80"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2.5">
+                          <label className="text-[10px] font-extrabold text-text-muted tracking-[0.15em] uppercase">
+                            <Trans>Duration</Trans>
+                          </label>
+                          <div className="relative group/select">
+                            <select
+                              value={duration}
+                              onChange={(e) => setDuration(e.target.value)}
+                              className="w-full bg-main-bg border border-border rounded-xl px-4 py-3.5 text-xs text-text-main focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] appearance-none cursor-pointer font-bold transition-all duration-300 hover:border-[#EB712B]/50"
                             >
-                              <Trans>Edit</Trans>
-                            </button>
-                            <button
-                              onClick={() => handleDeletePlan(plan.id)}
-                              className="w-full text-left px-5 py-3 text-xs font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-200 cursor-pointer border-t border-white/[0.03]"
+                              <option value="monthly">{t`1 Month`}</option>
+                              <option value="quarterly">{t`3 Months`}</option>
+                              <option value="semi-annual">{t`6 Months`}</option>
+                              <option value="annual">{t`1 Year`}</option>
+                            </select>
+
+                            {/* Custom Dropdown Arrow */}
+                            <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none transition-transform duration-300 group-hover/select:translate-y-0.5">
+                              <svg
+                                width="10"
+                                height="6"
+                                viewBox="0 0 10 6"
+                                fill="none"
+                                stroke="#9CA3AF"
+                                className="transition-colors duration-300 group-hover/select:stroke-[#EB712B]"
+                              >
+                                <path
+                                  d="M1 1L5 5L9 1"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Auto Renew & Discount Grid */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2.5">
+                          <label className="text-[10px] font-extrabold text-text-muted tracking-[0.15em] uppercase">
+                            <Trans>Auto Renew</Trans>
+                          </label>
+                          <div className="relative">
+                            <select
+                              value={autoRenew}
+                              onChange={(e) => setAutoRenew(e.target.value)}
+                              className="w-full bg-main-bg border border-border rounded-xl px-4 py-3.5 text-xs text-text-main focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold appearance-none cursor-pointer hover:border-border/80"
                             >
-                              <Trans>Delete</Trans>
-                            </button>
+                              <option value="Yes">{t`Yes`}</option>
+                              <option value="No">{t`No`}</option>
+                            </select>
+                            <div className="absolute right-4 top-0 bottom-0 flex items-center pointer-events-none">
+                              <svg
+                                width="10"
+                                height="6"
+                                viewBox="0 0 10 6"
+                                fill="none"
+                                stroke="#9CA3AF"
+                              >
+                                <path
+                                  d="M1 1L5 5L9 1"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2.5">
+                          <label className="text-[10px] font-extrabold text-text-muted tracking-[0.15em] uppercase">
+                            <Trans>Discount (%)</Trans>
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            placeholder="0%"
+                            value={discount}
+                            onChange={(e) => setDiscount(e.target.value)}
+                            className="w-full bg-main-bg border border-border rounded-xl px-4 py-3.5 text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-border/80"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Feature Adder */}
+                      <div className="flex flex-col gap-2.5 pt-2">
+                        <label className="text-[10px] font-extrabold text-text-muted tracking-[0.15em] uppercase">
+                          <Trans>Features Inclusion</Trans>
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={featureInput}
+                            onChange={(e) => setFeatureInput(e.target.value)}
+                            placeholder={t`Ex: Access to exclusive track days`}
+                            className="flex-1 bg-main-bg border border-border rounded-xl px-4 py-3.5 text-xs text-text-main placeholder-gray-500 focus:outline-none focus:border-[#EB712B] focus:ring-1 focus:ring-[#EB712B] transition-all duration-300 font-bold hover:border-border/80"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleAddFeature}
+                            className="p-3.5 bg-hover hover:bg-[#EB712B]/10 border border-border hover:border-[#EB712B]/30 rounded-xl text-text-main transition-all duration-300 cursor-pointer flex items-center justify-center active:scale-95"
+                          >
+                            <Plus size={16} className="text-[#EB712B]" />
+                          </button>
+                        </div>
+
+                        {/* Interactive Feature Bullets */}
+                        {featuresList.length > 0 && (
+                          <div className="mt-4 space-y-2.5 bg-main-bg/60 border border-border/50 rounded-2xl p-4 animate-in fade-in duration-200">
+                            {featuresList.map((feat, index) => (
+                              <div
+                                key={index}
+                                className="group/item flex items-center justify-between bg-surface border border-border/80 py-2.5 px-3.5 rounded-xl cursor-pointer hover:border-[#EB712B]/40 transition-all duration-300 hover:translate-x-1"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-[#EB712B] shadow-[0_0_8px_#EB712B] transition-transform duration-300 group-hover/item:scale-125" />
+                                  <span className="text-xs font-bold text-text-main tracking-tight">
+                                    {feat}
+                                  </span>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveFeature(index)}
+                                  className="opacity-0 group-hover/item:opacity-100 p-1 rounded-lg hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 transition-all duration-200 cursor-pointer"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+                            ))}
                           </div>
                         )}
                       </div>
-                    )}
 
-                    {/* Pricing Overview */}
-                    <div>
-                      <span className="inline-block px-3 py-1 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-full text-[9px] font-black uppercase tracking-widest text-[#EB712B] mb-4 transition-all duration-300 group-hover:bg-[#EB712B]/20">
-                        <Trans>{plan.duration} Subscription</Trans>
-                      </span>
-                      <h3 className="text-lg font-black text-white uppercase tracking-tight break-words pr-12 transition-colors duration-300 group-hover:text-[#EB712B]">
-                        {plan.packageName}
-                      </h3>
-
-                      <div className="flex items-baseline gap-2 mt-4">
-                        <span className="text-3xl font-black text-[#EB712B] tracking-tight transition-all duration-300 group-hover:scale-105 group-hover:text-[#ff8036]">
-                          €{plan.price}
-                        </span>
-                        {plan.discount && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-green-500/10 text-green-400 border border-green-500/20 animate-pulse">
-                            -{plan.discount}% <Trans>Off</Trans>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="border-t border-white/5 my-5 transition-colors duration-300 group-hover:border-white/10" />
-
-                    {/* Feature Lists */}
-                    <div>
-                      <h4 className="text-[9px] font-extrabold uppercase tracking-widest text-gray-500 mb-3">
-                        <Trans>Included Benefits</Trans>
-                      </h4>
-                      <ul className="space-y-2">
-                        {plan.featuresList.map((feature, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-center gap-2.5 text-xs text-gray-300 font-medium transition-all duration-300 group-hover:translate-x-1"
+                      {/* Submit / Cancel Buttons */}
+                      <div className="flex gap-3 pt-4">
+                        {editingPlanId && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingPlanId(null);
+                              setShowMembershipForm(false);
+                            }}
+                            className="py-4 px-6 bg-hover hover:bg-surface border border-border text-text-muted hover:text-text-main rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer transition-all duration-300 active:scale-95"
                           >
-                            <div className="w-1 h-1 rounded-full bg-[#EB712B] shrink-0 transition-transform duration-300 group-hover:scale-125" />
-                            <span className="truncate">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="border-t border-white/5 my-5 transition-colors duration-300 group-hover:border-white/10" />
-
-                    {/* Additional Status Details Grid */}
-                    <div className="grid grid-cols-2 gap-4 bg-surface/50 border border-white/5 rounded-2xl p-4 text-[10px] font-extrabold uppercase tracking-[0.05em] transition-all duration-300 group-hover:bg-surface/80">
-                      <div>
-                        <span className="block text-gray-500 font-bold mb-1">
-                          <Trans>Auto-Renew</Trans>
-                        </span>
-                        <span
-                          className={`text-xs transition-colors duration-300 ${plan.autoRenew === "Yes" ? "text-green-400" : "text-gray-400"}`}
+                            <Trans>Cancel</Trans>
+                          </button>
+                        )}
+                        <button
+                          type="submit"
+                          className="flex-1 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-xl text-xs font-black tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all duration-300 ease-in-out hover:scale-[1.01] active:scale-95 border border-[#EB712B]/30"
                         >
-                          {plan.autoRenew === "Yes" ? <Trans>Yes</Trans> : <Trans>No</Trans>}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="block text-gray-500 font-bold mb-1">
-                          <Trans>Stripe Status</Trans>
-                        </span>
-                        <span className="text-xs text-green-400 flex items-center gap-1">
-                          <span className="relative flex h-1.5 w-1.5">
-                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500 shadow-[0_0_8px_#22c55e] animate-ping" />
+                          <span className="relative z-10">
+                            {editingPlanId ? (
+                              <Trans>Save Changes</Trans>
+                            ) : (
+                              <Trans>Create Membership Plan</Trans>
+                            )}
                           </span>
-                          <Trans>Connected</Trans>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
+
+              {/* RIGHT SIDE: Dynamic Membership Cards Display Area */}
+              <div className="w-full space-y-6 animate-in fade-in slide-from-right-5 duration-500">
+                <h2 className="text-xl font-black tracking-tight text-text-main flex items-center gap-3 px-1 mb-2">
+                  <Trans>Membership Cards</Trans>
+                  <span className="text-[10px] font-extrabold text-[#EB712B] px-3 py-1 rounded-full bg-[#EB712B]/10 border border-[#EB712B]/20 backdrop-blur-md">
+                    <Trans>{membershipPlans.length} Plans Created</Trans>
+                  </span>
+                </h2>
+
+                {membershipPlans.length === 0 ? (
+                  <div className="w-full bg-surface/50 backdrop-blur-xl border border-border rounded-3xl p-12 text-center transition-all duration-300 hover:border-border/80">
+                    <p className="text-xs font-black text-text-muted uppercase tracking-[0.15em]">
+                      <Trans>No membership plans added yet</Trans>
+                    </p>
+                    <p className="text-[10px] text-text-muted/80 mt-1">
+                      <Trans>
+                        Fill out the form on the left to create and preview cards here.
+                      </Trans>
+                    </p>
+                  </div>
+                ) : (
+                  membershipPlans.map((plan) => (
+                    <div
+                      key={plan.id}
+                      className="w-full bg-surface rounded-3xl border border-border p-6 relative flex flex-col justify-between overflow-visible shadow-xl transition-all duration-300 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.1)] group hover:-translate-y-1"
+                    >
+                      {/* Top Action Dropdown (3-Dots) */}
+                      {permissions.canManageMembershipFee && (
+                        <div className="absolute top-6 right-6 z-40">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOpenCardMenuId(
+                                openCardMenuId === plan.id ? null : plan.id
+                              )
+                            }
+                            className="p-2 bg-hover hover:bg-hover/80 border border-border rounded-xl text-text-muted hover:text-text-main transition-all duration-300 cursor-pointer"
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+
+                          {openCardMenuId === plan.id && (
+                            <div className="absolute right-0 mt-2 w-48 bg-surface rounded-2xl border border-border shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+                              <button
+                                type="button"
+                                onClick={() => handleEditPlan(plan)}
+                                className="w-full text-left px-5 py-3 text-xs font-bold text-text-main hover:bg-hover transition-colors duration-200 cursor-pointer"
+                              >
+                                <Trans>Edit</Trans>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeletePlan(plan.id)}
+                                className="w-full text-left px-5 py-3 text-xs font-bold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors duration-200 cursor-pointer border-t border-border/50"
+                              >
+                                <Trans>Delete</Trans>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Pricing Overview */}
+                      <div>
+                        <span className="inline-block px-3 py-1 bg-[#EB712B]/10 border border-[#EB712B]/20 rounded-full text-[9px] font-black uppercase tracking-widest text-[#EB712B] mb-4 transition-all duration-300 group-hover:bg-[#EB712B]/20">
+                          <Trans>{plan.duration} Subscription</Trans>
                         </span>
+                        <h3 className="text-lg font-black text-text-main uppercase tracking-tight break-words pr-12 transition-colors duration-300 group-hover:text-[#EB712B]">
+                          {plan.packageName}
+                        </h3>
+
+                        <div className="flex items-baseline gap-2 mt-4">
+                          <span className="text-3xl font-black text-[#EB712B] tracking-tight transition-all duration-300 group-hover:scale-105 group-hover:text-[#ff8036]">
+                            €{plan.price}
+                          </span>
+                          {plan.discount && (
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+                              -{plan.discount}% <Trans>Off</Trans>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-border/50 my-5 transition-colors duration-300 group-hover:border-border" />
+
+                      {/* Feature Lists */}
+                      <div>
+                        <h4 className="text-[9px] font-extrabold uppercase tracking-widest text-text-muted mb-3">
+                          <Trans>Included Benefits</Trans>
+                        </h4>
+                        <ul className="space-y-2">
+                          {plan.featuresList.map((feature, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-center gap-2.5 text-xs text-text-muted font-medium transition-all duration-300 group-hover:translate-x-1"
+                            >
+                              <div className="w-1 h-1 rounded-full bg-[#EB712B] shrink-0 transition-transform duration-300 group-hover:scale-125" />
+                              <span className="truncate">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="border-t border-border/50 my-5 transition-colors duration-300 group-hover:border-border" />
+
+                      {/* Additional Status Details Grid */}
+                      <div className="grid grid-cols-2 gap-4 bg-main-bg/50 border border-border/60 rounded-2xl p-4 text-[10px] font-extrabold uppercase tracking-[0.05em] transition-all duration-300 group-hover:bg-main-bg/80">
+                        <div>
+                          <span className="block text-text-muted font-bold mb-1">
+                            <Trans>Auto-Renew</Trans>
+                          </span>
+                          <span
+                            className={`text-xs transition-colors duration-300 ${
+                              plan.autoRenew === "Yes"
+                                ? "text-emerald-400"
+                                : "text-text-muted"
+                            }`}
+                          >
+                            {plan.autoRenew === "Yes" ? (
+                              <Trans>Yes</Trans>
+                            ) : (
+                              <Trans>No</Trans>
+                            )}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="block text-text-muted font-bold mb-1">
+                            <Trans>Stripe Status</Trans>
+                          </span>
+                          <span className="text-xs text-emerald-400 flex items-center gap-1">
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_8px_#22c55e] animate-ping" />
+                            </span>
+                            <Trans>Connected</Trans>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "Discount" && <Discount />}
+          {(activeTab === "Discounts" || (activeTab as any) === "Discount") && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Discount role="organizer" clubId={clubId || undefined} />
+            </div>
+          )}
 
-        {activeTab === "News" && <News />}
+          {activeTab === "News" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <News clubId={clubId || undefined} club={activeClub} />
+            </div>
+          )}
 
-        {activeTab === "Leaderboard" && <Leaderboard />}
+          {activeTab === "Leaderboard" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Leaderboard clubId={clubId || undefined} />
+            </div>
+          )}
+
+          {activeTab === "Shop" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Shop clubId={clubId || undefined} />
+            </div>
+          )}
+
+          {activeTab === "Marketplace" && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <Marketplace clubId={clubId || undefined} />
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Delete Club Modal */}
+      {/* ── Avatar Lightbox Preview Modal ── */}
+      <AvatarLightboxModal
+        isOpen={showClubAvatarPreview}
+        onClose={() => setShowClubAvatarPreview(false)}
+        imageUrl={logoImage}
+        name={selectedName}
+        subtitle={activeClub?.location || "Ride With Pals Club"}
+        tag="Club Avatar"
+        fallbackInitials={selectedName.slice(0, 2).toUpperCase()}
+      />
+
+      {/* ── Delete Club Modal ── */}
       {clubId && (
         <DeleteClubModal
           isOpen={isDeleteClubModalOpen}
@@ -918,7 +1029,13 @@ const ManageClubHome = () => {
           clubName={activeClub?.clubName}
           clubLogo={activeClub?.logo}
           clubLocation={activeClub?.location}
-          clubType={activeClub?.clubTypeId === 2 ? 'Running' : activeClub?.clubTypeId === 3 ? 'Triathlon' : 'Cycling'}
+          clubType={
+            activeClub?.clubTypeId === 2
+              ? "Running"
+              : activeClub?.clubTypeId === 3
+              ? "Triathlon"
+              : "Cycling"
+          }
         />
       )}
     </div>
