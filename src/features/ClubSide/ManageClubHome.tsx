@@ -16,7 +16,9 @@ import {
   Plus, 
   X, 
   MoreVertical, 
-  CreditCard 
+  CreditCard,
+  CheckCircle2,
+  ArrowRight
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Trans } from "@lingui/react/macro";
@@ -563,12 +565,17 @@ const ManageClubHome: React.FC = () => {
               {/* LEFT SIDE: Membership Form / Stripe View */}
               <div className="w-full flex justify-center">
                 {!permissions.canManageMembershipFee ? (
-                  <div className="w-full bg-surface/90 backdrop-blur-xl rounded-3xl border border-border p-8 min-h-[500px] flex flex-col items-center justify-center text-center shadow-xl">
-                    <CreditCard size={48} className="text-text-muted mb-6" />
-                    <h3 className="text-lg font-black text-text-main mb-2 uppercase">
+                  <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-border/80 p-8 min-h-[500px] flex flex-col items-center justify-center text-center shadow-xl relative overflow-hidden group transition-all duration-300 hover:border-border">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center mb-6 text-[#EB712B] shadow-md group-hover:scale-105 transition-transform duration-300">
+                      <Lock size={30} className="text-[#EB712B]" />
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-400 border border-rose-500/20 mb-3">
+                      <Trans>Permission Required</Trans>
+                    </span>
+                    <h3 className="text-xl font-black text-text-main mb-2 tracking-tight uppercase">
                       <Trans>Access Restricted</Trans>
                     </h3>
-                    <p className="text-xs text-text-muted max-w-xs leading-relaxed">
+                    <p className="text-xs font-medium text-text-muted max-w-xs leading-relaxed">
                       <Trans>
                         You do not have the{" "}
                         <span className="text-[#EB712B] font-bold">
@@ -580,35 +587,51 @@ const ManageClubHome: React.FC = () => {
                   </div>
                 ) : !showMembershipForm ? (
                   /* Stripe Connect View */
-                  <div className="w-full bg-surface/80 backdrop-blur-xl rounded-3xl border border-border shadow-xl p-8 min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-[#EB712B]/30 hover:shadow-[0_0_40px_rgba(235,113,43,0.15)]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#EB712B]/5 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
+                  <div className="w-full bg-surface rounded-3xl border border-border shadow-md p-8 sm:p-10 min-h-[480px] flex flex-col items-center justify-center text-center">
+                    <div className="flex flex-col items-center max-w-md w-full">
+                      {/* Eyebrow / Category Tag */}
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-[#EB712B]/10 text-[#EB712B] border border-[#EB712B]/20 mb-5">
+                        <ShieldCheck size={12} className="text-[#EB712B]" />
+                        <Trans>Payments & Subscriptions</Trans>
+                      </span>
 
-                    <div className="z-10 flex flex-col items-center max-w-md text-center">
-                      <div className="w-24 h-24 rounded-full bg-main-bg border border-border shadow-md flex items-center justify-center relative mb-8 transition-transform duration-500 group-hover:scale-105">
-                        <div className="absolute inset-0 rounded-full bg-[#635BFF]/10 animate-pulse" />
-                        <CreditCard
-                          size={36}
-                          className="text-[#635BFF] relative z-10 transition-transform duration-300 group-hover:rotate-6"
-                        />
+                      {/* App-Themed Signature Icon Container */}
+                      <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center mb-6 text-[#EB712B]">
+                        <CreditCard size={28} className="text-[#EB712B]" />
                       </div>
 
-                      <h3 className="text-xl font-black tracking-tight text-text-main mb-3">
+                      {/* Title & Description */}
+                      <h3 className="text-xl sm:text-2xl font-black tracking-tight text-text-main mb-2.5">
                         <Trans>Stripe Integration</Trans>
                       </h3>
-                      <p className="text-xs font-medium text-text-muted mb-8 leading-relaxed">
+                      <p className="text-xs sm:text-sm font-medium text-text-muted mb-6 max-w-sm leading-relaxed">
                         <Trans>
                           Please connect your Stripe account first to enable subscriptions and automated recurring membership payments.
                         </Trans>
                       </p>
 
+                      {/* Feature Trust Bullets */}
+                      <div className="w-full max-w-xs space-y-2 mb-8 text-left">
+                        <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-main-bg border border-border text-xs font-semibold text-text-muted">
+                          <CheckCircle2 size={15} className="text-[#EB712B] shrink-0" />
+                          <span><Trans>Automated Recurring Billing</Trans></span>
+                        </div>
+                        <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-main-bg border border-border text-xs font-semibold text-text-muted">
+                          <CheckCircle2 size={15} className="text-[#EB712B] shrink-0" />
+                          <span><Trans>Direct & Secure Payouts</Trans></span>
+                        </div>
+                      </div>
+
+                      {/* Connect Button */}
                       <button
                         type="button"
                         onClick={() => handleAction("Connect to Stripe", selectedName)}
-                        className="px-8 py-4 bg-[#EB712B] hover:bg-[#ff8036] text-white rounded-2xl text-xs font-black tracking-wider uppercase cursor-pointer shadow-lg shadow-[#EB712B]/20 transition-all active:scale-95"
+                        className="w-full max-w-xs py-3.5 px-8 bg-[#EB712B] hover:bg-[#d05c19] text-white rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors active:scale-95 flex items-center justify-center gap-2.5 border-0"
                       >
-                        <span className="relative z-10">
+                        <span>
                           <Trans>Connect to Stripe</Trans>
                         </span>
+                        <ArrowRight size={15} />
                       </button>
                     </div>
                   </div>
@@ -843,11 +866,14 @@ const ManageClubHome: React.FC = () => {
                 </h2>
 
                 {membershipPlans.length === 0 ? (
-                  <div className="w-full bg-surface/50 backdrop-blur-xl border border-border rounded-3xl p-12 text-center transition-all duration-300 hover:border-border/80">
-                    <p className="text-xs font-black text-text-muted uppercase tracking-[0.15em]">
+                  <div className="w-full bg-surface/50 backdrop-blur-xl border border-border/80 rounded-3xl p-10 sm:p-12 text-center transition-all duration-300 hover:border-[#EB712B]/30 flex flex-col items-center justify-center min-h-[300px] group shadow-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#EB712B]/15 via-[#EB712B]/10 to-transparent dark:from-[#2a170e] dark:via-[#1c1410] dark:to-[#120f0e] border border-[#EB712B]/25 flex items-center justify-center mb-4 text-[#EB712B] shadow-2xs group-hover:scale-105 transition-transform duration-300">
+                      <CreditCard size={22} className="text-[#EB712B]" />
+                    </div>
+                    <p className="text-xs font-black text-text-main uppercase tracking-[0.15em] mb-1.5">
                       <Trans>No membership plans added yet</Trans>
                     </p>
-                    <p className="text-[10px] text-text-muted/80 mt-1">
+                    <p className="text-xs text-text-muted max-w-xs leading-relaxed">
                       <Trans>
                         Fill out the form on the left to create and preview cards here.
                       </Trans>
@@ -857,7 +883,7 @@ const ManageClubHome: React.FC = () => {
                   membershipPlans.map((plan) => (
                     <div
                       key={plan.id}
-                      className="w-full bg-surface rounded-3xl border border-border p-6 relative flex flex-col justify-between overflow-visible shadow-xl transition-all duration-300 hover:border-[#EB712B]/30 hover:shadow-[0_0_30px_rgba(235,113,43,0.1)] group hover:-translate-y-1"
+                      className="w-full bg-surface rounded-3xl border border-border p-6 relative flex flex-col justify-between overflow-visible shadow-md transition-colors hover:border-[#EB712B]/40"
                     >
                       {/* Top Action Dropdown (3-Dots) */}
                       {permissions.canManageMembershipFee && (
