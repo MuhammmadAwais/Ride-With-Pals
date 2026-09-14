@@ -48,6 +48,7 @@ const AppLayout: React.FC = () => {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const myClubs = useAppSelector((s) => s.club.myClubs);
   const isClubLoading = useAppSelector((s) => s.club.isLoading);
+  const hasFetchedMyClubs = useAppSelector((s) => s.club.hasFetchedMyClubs);
   const { activeClub, setActiveClub, clearActiveClub } = useActiveClub();
   const [isModalManuallyOpened, setIsModalManuallyOpened] = useState(false);
   const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
@@ -63,11 +64,11 @@ const AppLayout: React.FC = () => {
   // If user is inside clubside, but clubs have loaded and user has 0 clubs,
   // clear active club and safely redirect away from club management to athlete view
   useEffect(() => {
-    if (isClubSide && !isClubLoading && Array.isArray(myClubs) && myClubs.length === 0) {
+    if (isClubSide && !isClubLoading && hasFetchedMyClubs && Array.isArray(myClubs) && myClubs.length === 0) {
       clearActiveClub();
       navigate('/view/userside/clubs', { replace: true });
     }
-  }, [isClubSide, isClubLoading, myClubs, clearActiveClub, navigate]);
+  }, [isClubSide, isClubLoading, hasFetchedMyClubs, myClubs, clearActiveClub, navigate]);
 
   // ── GSAP: Page content entry animation on route change ───────────────────
   useGSAP(

@@ -3,21 +3,9 @@ import { useAppSelector } from './useAppSelector';
 import { useAppDispatch } from './useAppDispatch';
 import { setCurrentClub } from '@/features/club/slices/clubSlice';
 import type { Club } from '@/features/club/types/clubTypes';
+import { clearAllClubStorage, purgeClubFromBrowser } from '@/features/club/utils/clubStorage';
 
-/** Clear all possible club-related keys from localStorage (both user-scoped & legacy fallbacks). */
-export const clearAllClubStorage = (uid?: string | number) => {
-  if (typeof window === 'undefined' || !window.localStorage) return;
-  if (uid) {
-    localStorage.removeItem(`selectedClubId_${uid}`);
-    localStorage.removeItem(`selectedClubName_${uid}`);
-    localStorage.removeItem(`selectedClubLogo_${uid}`);
-    localStorage.removeItem(`selectedClubBanner_${uid}`);
-  }
-  localStorage.removeItem('selectedClubId');
-  localStorage.removeItem('selectedClubName');
-  localStorage.removeItem('selectedClubLogo');
-  localStorage.removeItem('selectedClubBanner');
-};
+export { clearAllClubStorage, purgeClubFromBrowser };
 
 /**
  * Custom hook to manage the currently active club context.
@@ -29,6 +17,7 @@ export const useActiveClub = () => {
   const currentClub = useAppSelector((state) => state.club.currentClub);
   const myClubs = useAppSelector((state) => state.club.myClubs);
   const isClubLoading = useAppSelector((state) => state.club.isLoading);
+  const hasFetchedMyClubs = useAppSelector((state) => state.club.hasFetchedMyClubs);
   const userId = useAppSelector((state) => state.auth.user?.id);
 
   // Generate user-specific localStorage keys to prevent leakage on account switching
@@ -44,58 +33,66 @@ export const useActiveClub = () => {
       const storedName = localStorage.getItem(keyName) || localStorage.getItem('selectedClubName');
       const storedLogo = localStorage.getItem(keyLogo) || localStorage.getItem('selectedClubLogo');
       const storedBanner = localStorage.getItem(keyBanner) || localStorage.getItem('selectedClubBanner');
-      
-      if (storedId) {
-        dispatch(setCurrentClub({
-          id: Number(storedId),
-          clubName: storedName || 'Unknown Club',
-          logo: storedLogo || '',
-          coverImage: storedBanner || '',
-        } as Club));
+
+      if (storedId && storedId !== 'null' && storedId !== 'undefined' && Number(storedId) > 0) {
+        dispatch(
+          setCurrentClub({
+            id: Number(storedId),
+            clubName: storedName || 'Unknown Club',
+            logo: storedLogo || '',
+            coverImage: storedBanner || '',
+          } as Club)
+        );
       }
     }
   }, [currentClub, dispatch, userId, keyId, keyName, keyLogo, keyBanner]);
 
-  const setActiveClub = useCallback((club: any) => {
-    if (!club) return;
-    const resolvedId = Number(club.id || club.clubId);
-    const resolvedName = club.clubName || club.name || '';
-    const resolvedLogo = club.logo || '';
-    const resolvedBanner = club.coverImage || club.bannerImage || '';
+  const setActiveClub = useCallback(
+    (club: any) => {
+      if (!club) return;
+      const resolvedId = Number(club.id || club.clubId);
+      const resolvedName = club.clubName || club.name || '';
+      const resolvedLogo = club.logo || '';
+      const resolvedBanner = club.coverImage || club.bannerImage || '';
 
-    // 1. Update Redux (Triggers UI Reactivity)
-    dispatch(setCurrentClub({
-      ...club,
-      id: resolvedId,
-      clubName: resolvedName,
-      logo: resolvedLogo,
-      coverImage: resolvedBanner,
-    } as Club));
+      if (!resolvedId || isNaN(resolvedId) || resolvedId <= 0) return;
 
-    // 2. Persist to localStorage (User-scoped and fallback)
-    if (resolvedId) {
+      // 1. Update Redux (Triggers UI Reactivity)
+      dispatch(
+        setCurrentClub({
+          ...club,
+          id: resolvedId,
+          clubName: resolvedName,
+          logo: resolvedLogo,
+          coverImage: resolvedBanner,
+        } as Club)
+      );
+
+      // 2. Persist to localStorage (User-scoped and fallback)
       localStorage.setItem(keyId, resolvedId.toString());
       localStorage.setItem('selectedClubId', resolvedId.toString());
-    }
-    if (resolvedName) {
-      localStorage.setItem(keyName, resolvedName);
-      localStorage.setItem('selectedClubName', resolvedName);
-    }
-    if (resolvedLogo) {
-      localStorage.setItem(keyLogo, resolvedLogo);
-      localStorage.setItem('selectedClubLogo', resolvedLogo);
-    } else {
-      localStorage.removeItem(keyLogo);
-      localStorage.removeItem('selectedClubLogo');
-    }
-    if (resolvedBanner) {
-      localStorage.setItem(keyBanner, resolvedBanner);
-      localStorage.setItem('selectedClubBanner', resolvedBanner);
-    } else {
-      localStorage.removeItem(keyBanner);
-      localStorage.removeItem('selectedClubBanner');
-    }
-  }, [dispatch, keyId, keyName, keyLogo, keyBanner]);
+
+      if (resolvedName) {
+        localStorage.setItem(keyName, resolvedName);
+        localStorage.setItem('selectedClubName', resolvedName);
+      }
+      if (resolvedLogo) {
+        localStorage.setItem(keyLogo, resolvedLogo);
+        localStorage.setItem('selectedClubLogo', resolvedLogo);
+      } else {
+        localStorage.removeItem(keyLogo);
+        localStorage.removeItem('selectedClubLogo');
+      }
+      if (resolvedBanner) {
+        localStorage.setItem(keyBanner, resolvedBanner);
+        localStorage.setItem('selectedClubBanner', resolvedBanner);
+      } else {
+        localStorage.removeItem(keyBanner);
+        localStorage.removeItem('selectedClubBanner');
+      }
+    },
+    [dispatch, keyId, keyName, keyLogo, keyBanner]
+  );
 
   const clearActiveClub = useCallback(() => {
     dispatch(setCurrentClub(null));
@@ -104,8 +101,8 @@ export const useActiveClub = () => {
 
   // 2. Validation effect: Ensure selected club actually exists in server-fetched myClubs
   useEffect(() => {
-    // Only perform validation once clubs have loaded or if myClubs list is updated
-    if (!isClubLoading && Array.isArray(myClubs)) {
+    // Only perform validation once clubs have ACTUALLY been retrieved from server
+    if (!isClubLoading && hasFetchedMyClubs && Array.isArray(myClubs)) {
       if (myClubs.length === 0) {
         // User has NO manageable clubs on server — immediately wipe out any stale hydrated club
         if (currentClub !== null) {
@@ -114,7 +111,9 @@ export const useActiveClub = () => {
       } else {
         // User has at least 1 club. Verify whether currentClub belongs to myClubs
         if (currentClub) {
-          const exists = myClubs.some((c: any) => Number(c?.id || c?.clubId) === Number(currentClub.id));
+          const exists = myClubs.some(
+            (c: any) => Number(c?.id || c?.clubId) === Number(currentClub.id)
+          );
           if (!exists) {
             // Selected club was deleted or user lost access -> auto-switch to first valid club
             setActiveClub(myClubs[0]);
@@ -122,7 +121,7 @@ export const useActiveClub = () => {
         }
       }
     }
-  }, [isClubLoading, myClubs, currentClub, clearActiveClub, setActiveClub]);
+  }, [isClubLoading, hasFetchedMyClubs, myClubs, currentClub, clearActiveClub, setActiveClub]);
 
   return {
     activeClub: currentClub,

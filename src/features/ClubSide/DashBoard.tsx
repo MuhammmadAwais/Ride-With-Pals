@@ -30,6 +30,8 @@ import {
 import { useCheckStripeAccountStatusQuery } from '@/features/club/api/stripeApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { purgeClubFromBrowser } from '@/features/club/utils/clubStorage';
 import { toast } from 'sonner';
 import { Trans } from '@lingui/react/macro';
 import { t } from '@lingui/core/macro';
@@ -68,6 +70,7 @@ const DashboardSkeleton = () => (
 
 export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { activeClub, clubId, setActiveClub } = useActiveClub();
   const myClubsFromRedux = useAppSelector((state) => state.club.myClubs) || [];
   const { data: joinedClubsData } = useGetJoinedClubsQuery();
@@ -89,17 +92,31 @@ export const DashboardOverview = ({ stats: passedStats }: { stats?: any }) => {
   const activeClubObj = activeClub || myClubsFromRedux.find((c: any) => Number(c.id || c.clubId) === effectiveClubId);
 
   // Real API Calls for Dashboard Metrics
-  const { data: clubInfoData } = useGetClubInfoByIdQuery(
+  const { data: clubInfoData, error: clubInfoError } = useGetClubInfoByIdQuery(
     { clubId: effectiveClubId },
     { skip: !effectiveClubId }
   );
   const clubDetail = (clubInfoData as any)?.response || clubInfoData;
   const ownerIdFromClubDetail = Number(clubDetail?.userId || clubDetail?.ownerId || 0);
 
-  const { data: fetchedStats, isLoading: isLoadingStats } = useGetClubDashboardStatsQuery(
+  const { data: fetchedStats, isLoading: isLoadingStats, error: statsError } = useGetClubDashboardStatsQuery(
     { clubId: effectiveClubId },
     { skip: !!passedStats || !effectiveClubId }
   );
+
+  // Auto-heal if active club is deleted or returns 404 / not found from server
+  useEffect(() => {
+    const err: any = clubInfoError || statsError;
+    if (err && effectiveClubId) {
+      const status = err?.status;
+      const msg = (err?.data?.message || err?.message || "").toLowerCase();
+      if (status === 404 || msg.includes("not found") || msg.includes("doesn't exist")) {
+        console.warn("⚠️ [Dashboard] Active club not found on server. Purging from browser...");
+        purgeClubFromBrowser(effectiveClubId, dispatch);
+        navigate("/view/userside/clubs", { replace: true });
+      }
+    }
+  }, [clubInfoError, statsError, effectiveClubId, dispatch, navigate]);
 
   const { data: ridesResponse } = useGetClubRidesQuery(
     { clubId: effectiveClubId },

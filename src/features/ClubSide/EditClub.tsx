@@ -32,11 +32,14 @@ import {
 } from "lucide-react";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { purgeClubFromBrowser } from "@/features/club/utils/clubStorage";
 
 export default function EditClub() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const currentUserId = useAppSelector((state) => state.auth.user?.id);
-  const { clubId: clubIdStr, activeClub, clearActiveClub } = useActiveClub();
+  const { clubId: clubIdStr, activeClub } = useActiveClub();
   const [updateClub, { isLoading }] = useUpdateClubInfoByIdMutation();
   const [deleteClubMutation, { isLoading: isDeletingClub }] = useDeleteClubMutation();
   const [transferOwnershipMutation, { isLoading: isTransferring }] = useTransferClubOwnershipMutation();
@@ -244,9 +247,9 @@ export default function EditClub() {
     try {
       await deleteClubMutation({ clubId: Number(clubIdStr) }).unwrap();
       toast.success(t`Club "${clubName || activeClub?.clubName || 'Club'}" was deleted permanently.`);
-      clearActiveClub();
+      purgeClubFromBrowser(Number(clubIdStr), dispatch);
       setIsDeleteModalOpen(false);
-      navigate('/view/userside/home');
+      navigate('/view/userside/clubs', { replace: true });
     } catch (err: any) {
       console.error("Failed to delete club:", err);
       toast.error(err?.data?.message || err?.response?.data?.message || err?.message || t`Failed to delete club.`);

@@ -43,6 +43,7 @@ import { toast } from "sonner";
 import { useActiveClub } from "@/hooks/useActiveClub";
 import { useClubPermissions } from "@/hooks/useClubPermissions";
 import { DeleteClubModal } from "@/components/common/DeleteClubModal";
+import { purgeClubFromBrowser } from "@/features/club/utils/clubStorage";
 import AvatarLightboxModal from "@/components/ui/AvatarLightboxModal";
 import { resolveImageUrl } from "@/features/public-club/services/clubGeocoding";
 
@@ -186,10 +187,25 @@ const ManageClubHome: React.FC = () => {
     }
   }, [tabParam]);
 
+  const dispatch = useAppDispatch();
+
+  // Auto-heal if active club is deleted or returns 404 / not found from server
+  useEffect(() => {
+    if (permissions?.error && clubId) {
+      const err: any = permissions.error;
+      const status = err?.status;
+      const msg = (err?.data?.message || err?.message || "").toLowerCase();
+      if (status === 404 || msg.includes("not found") || msg.includes("doesn't exist")) {
+        console.warn("⚠️ [ManageClubHome] Club not found on server. Purging from browser...");
+        purgeClubFromBrowser(clubId, dispatch);
+        navigate("/view/userside/clubs", { replace: true });
+      }
+    }
+  }, [permissions?.error, clubId, dispatch, navigate]);
+
   const [isDeleteClubModalOpen, setIsDeleteClubModalOpen] = useState(false);
   const [showClubAvatarPreview, setShowClubAvatarPreview] = useState(false);
 
-  const dispatch = useAppDispatch();
   const { currentClubMembers } = useAppSelector((state) => state.club);
 
   const dynamicMemberCount = useMemo(() => {

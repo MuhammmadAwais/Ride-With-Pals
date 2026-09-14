@@ -22,6 +22,7 @@ const initialState: ClubState & {
   currentClubRides?: any[];
   currentClubNews?: any[];
   currentShopItems?: any[];
+  hasFetchedMyClubs: boolean;
 } = {
   myClubs: [],       // MANAGED clubs: clubs this user owns/admins (owned=true API call)
   joinedClubs: [],   // JOINED clubs: clubs this user is a member of (joined API call)
@@ -34,6 +35,7 @@ const initialState: ClubState & {
   currentShopItems: [],
   isLoading: false,
   error: null,
+  hasFetchedMyClubs: false,
 };
 
 // ─── Async Thunks ─────────────────────────────────────────────────────────────
@@ -200,6 +202,11 @@ const clubSlice = createSlice({
       }
       if (state.currentClub && Number(state.currentClub.id || (state.currentClub as any).clubId) === clubId) {
         state.currentClub = null;
+        state.currentClubMembers = [];
+        state.currentJoinRequests = [];
+        state.currentClubRides = [];
+        state.currentClubNews = [];
+        state.currentShopItems = [];
       }
     },
   },
@@ -212,10 +219,12 @@ const clubSlice = createSlice({
       })
       .addCase(fetchMyClubs.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.hasFetchedMyClubs = true;
         state.myClubs = action.payload;
       })
       .addCase(fetchMyClubs.rejected, (state, action) => {
         state.isLoading = false;
+        state.hasFetchedMyClubs = true;
         state.error = action.payload ?? 'Error fetching clubs';
       })
       // Fetch Joined Clubs (as regular member)

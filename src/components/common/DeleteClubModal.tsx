@@ -6,10 +6,9 @@ import { toast } from "sonner";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
 import { useDeleteClubMutation } from "@/features/club/api/clubApiSlice";
-import { useActiveClub } from "@/hooks/useActiveClub";
 
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { deleteClubFromState, fetchMyClubs, fetchJoinedClubs, fetchExploreClubs } from "@/features/club/slices/clubSlice";
+import { purgeClubFromBrowser } from "@/features/club/utils/clubStorage";
 
 interface DeleteClubModalProps {
   isOpen: boolean;
@@ -34,7 +33,6 @@ export const DeleteClubModal: React.FC<DeleteClubModalProps> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { clearActiveClub } = useActiveClub();
   const [deleteClubMutation, { isLoading }] = useDeleteClubMutation();
 
   const [step, setStep] = useState<1 | 2>(1);
@@ -82,16 +80,8 @@ export const DeleteClubModal: React.FC<DeleteClubModalProps> = ({
       await deleteClubMutation({ clubId: Number(clubId) }).unwrap();
       toast.success(t`Club "${clubName || 'Club'}" was deleted permanently.`);
       
-      // 1. Instantly purge from Redux club state
-      dispatch(deleteClubFromState(Number(clubId)));
-
-      // 2. Clear active club & all associated localStorage keys
-      clearActiveClub();
-
-      // 3. Trigger background re-fetch for all club lists
-      dispatch(fetchMyClubs());
-      dispatch(fetchJoinedClubs());
-      dispatch(fetchExploreClubs());
+      // Instantly purge club from localStorage, sessionStorage, Redux state & RTK Query cache
+      purgeClubFromBrowser(Number(clubId), dispatch);
 
       onClose();
 

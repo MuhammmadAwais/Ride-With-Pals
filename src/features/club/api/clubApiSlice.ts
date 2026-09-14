@@ -1,5 +1,6 @@
 import { apiSlice } from '@/api/apiSlice';
 import { ClubTypes } from '@/api/types';
+import { purgeClubFromBrowser } from '@/features/club/utils/clubStorage';
 
 export const clubApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -270,7 +271,18 @@ export const clubApiSlice = apiSlice.injectEndpoints({
         method: 'DELETE',
         params,
       }),
-      invalidatesTags: ['Club'],
+      invalidatesTags: ['Club', 'Ride'],
+      async onQueryStarted(params, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const clubId = Number(params?.clubId);
+          if (clubId) {
+            purgeClubFromBrowser(clubId, dispatch);
+          }
+        } catch {
+          // Deletion was not successful
+        }
+      },
     }),
 
     transferClubOwnership: builder.mutation<any, ClubTypes.TransferClubOwnershipRequest>({
