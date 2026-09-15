@@ -182,7 +182,7 @@ const CreateAccount = () => {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: "url(/Images/CycleRock.jpg)",
+            backgroundImage: "url(/Images/real-riders-road.webp)",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

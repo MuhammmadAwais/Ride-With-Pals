@@ -657,7 +657,7 @@ export const FeaturesSection: React.FC = () => {
                 <span className="rwp-fb-tag-arrow"><ArrowRight size={11}/></span>
                 <Trans>For Athletes &amp; Riders</Trans>
               </div>
-              <h3 className="rwp-fb-headline"><Trans>Discover clubs. Join activities.</Trans><br/><Trans>Climb the ranks.</Trans></h3>
+              <h3 className="rwp-fb-headline"><Trans>Discover clubs. Join activities.</Trans></h3>
               <p className="rwp-fb-copy">
                 <Trans>Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard.</Trans>
               </p>

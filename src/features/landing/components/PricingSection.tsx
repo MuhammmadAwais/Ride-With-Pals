@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
+import { LAUNCH_PRICING, STRIPE_PAYMENT_LINKS } from "../../../Constants";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -57,8 +58,13 @@ const PLANS = () => [
     name: t`Free Limited Plan`,
     tagline: t`Basic Tier`,
     description: t`Essential access to browse activities, join clubs, and connect with your community.`,
-    monthlyPrice: 0,
-    yearlyPrice: 0,
+    isFree: true,
+    regularPrice: null,
+    promoBadge: null,
+    monthlyPrice: "0",
+    yearlyPrice: "0",
+    intervalLabel: () => "",
+    saveText: null,
     cta: t`Start for Free`,
     ctaHref: "/signup",
     highlight: false,
@@ -79,12 +85,16 @@ const PLANS = () => [
     name: t`Premium Athlete`,
     tagline: t`Most popular`,
     description: t`Designed for athletes who want unlimited access to activities, marketplace, and analytics.`,
-    monthlyPrice: "9.99",
-    yearlyPrice: "4.16",
-    intervalLabel: (b: string) => b === "yearly" ? t`/ mo ($49.99/yr)` : t`/ month`,
-    saveText: t`Save over 58% with annual billing ($49.99/year)`,
+    isFree: false,
+    promoBadge: t`Launch Promo · 50% OFF`,
+    regularPrice: LAUNCH_PRICING.ATHLETE_REGULAR_PRICE,
+    promoPrice: LAUNCH_PRICING.ATHLETE_PROMO_PRICE,
+    monthlyPrice: "2,99",
+    yearlyPrice: LAUNCH_PRICING.ATHLETE_PROMO_PRICE,
+    intervalLabel: (b: string) => b === "yearly" ? t`/ year` : t`/ month`,
+    saveText: (b: string) => b === "yearly" ? t`Special launch price (Regular 29,99€/year)` : t`Or save 50% with annual launch promo (14,99€/yr)`,
     cta: t`Get Premium Athlete`,
-    ctaHref: "/signup",
+    ctaHref: STRIPE_PAYMENT_LINKS.ATHLETE_YEARLY_PROMO || "/signup?plan=athlete",
     highlight: true,
     features: [
       { text: t`Everything in Free Limited Plan`, ok: true },
@@ -103,12 +113,16 @@ const PLANS = () => [
     name: t`Gold Club Plan`,
     tagline: t`For club owners`,
     description: t`The complete club operating system — collect member fees, run your club shop, and grow.`,
-    monthlyPrice: "40",
-    yearlyPrice: "40",
+    isFree: false,
+    promoBadge: t`Launch Promo · 32% OFF`,
+    regularPrice: LAUNCH_PRICING.GOLD_CLUB_REGULAR_PRICE,
+    promoPrice: LAUNCH_PRICING.GOLD_CLUB_PROMO_PRICE,
+    monthlyPrice: LAUNCH_PRICING.GOLD_CLUB_PROMO_PRICE,
+    yearlyPrice: LAUNCH_PRICING.GOLD_CLUB_PROMO_PRICE,
     intervalLabel: () => t`/ year`,
-    saveText: t`Flat yearly rate — no member limits`,
+    saveText: () => t`Special launch price (Regular 130€/year) · Unlimited members`,
     cta: t`Start Gold Club`,
-    ctaHref: "/signup",
+    ctaHref: STRIPE_PAYMENT_LINKS.GOLD_CLUB_YEARLY_PROMO || "/signup?plan=gold_club",
     highlight: false,
     features: [
       { text: t`Unlimited Club Members (beyond 15)`, ok: true },
@@ -126,9 +140,9 @@ const PLANS = () => [
 // ── Pricing Card ──────────────────────────────────────────────────────────────
 
 const PricingCard = ({ plan, billing }) => {
-  const { id, Icon, name, tagline, description, monthlyPrice, yearlyPrice, intervalLabel, saveText, cta, ctaHref, highlight, features } = plan;
+  const { id, Icon, name, tagline, description, isFree, regularPrice, promoBadge, monthlyPrice, yearlyPrice, intervalLabel, saveText, cta, ctaHref, highlight, features } = plan;
   const price = billing === "monthly" ? monthlyPrice : yearlyPrice;
-  const isFree = price === 0 || price === "0";
+  const isExternal = ctaHref && ctaHref.startsWith("http");
 
   return (
     <div className={`rwp-pc ${highlight ? "rwp-pc--highlight" : ""}`}>
@@ -149,25 +163,40 @@ const PricingCard = ({ plan, billing }) => {
       {/* Price */}
       <div className="rwp-pc-price-block">
         {isFree ? (
-          <span className="rwp-pc-price-free"><Trans>Free</Trans></span>
-        ) : (
           <div className="rwp-pc-price-row">
-            <span className="rwp-pc-currency">$</span>
-            <span className="rwp-pc-amount">{price}</span>
-            <span className="rwp-pc-per">
-              {intervalLabel ? intervalLabel(billing) : `/ mo${billing === "yearly" ? ", billed yearly" : ""}`}
-            </span>
+            <span className="rwp-pc-price-free"><Trans>Free</Trans></span>
           </div>
+        ) : (
+          <>
+            {billing === "yearly" && regularPrice && (
+              <div className="rwp-pc-promo-badge-wrap">
+                {promoBadge && <span className="rwp-pc-promo-pill">{promoBadge}</span>}
+                <span className="rwp-pc-strike-amount">{regularPrice}€</span>
+              </div>
+            )}
+            <div className="rwp-pc-price-row">
+              <span className="rwp-pc-amount">{price}</span>
+              <span className="rwp-pc-currency">€</span>
+              <span className="rwp-pc-per">
+                {intervalLabel ? intervalLabel(billing) : `/ year`}
+              </span>
+            </div>
+          </>
         )}
-        {billing === "yearly" && saveText && (
+        {saveText && (
           <div className="rwp-pc-save-note">
-            {saveText}
+            {typeof saveText === "function" ? saveText(billing) : saveText}
           </div>
         )}
       </div>
 
       {/* CTA */}
-      <a href={ctaHref} className={`rwp-pc-cta ${highlight ? "rwp-pc-cta--primary" : "rwp-pc-cta--secondary"}`}>
+      <a
+        href={ctaHref}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        className={`rwp-pc-cta ${highlight ? "rwp-pc-cta--primary" : "rwp-pc-cta--secondary"}`}
+      >
         {cta}
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M2 7h10M8 3l4 4-4 4"/>
@@ -193,7 +222,7 @@ const PricingCard = ({ plan, billing }) => {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export const PricingSection: React.FC = () => {
-  const [billing, setBilling] = useState("monthly");
+  const [billing, setBilling] = useState("yearly");
 
   const css = `
     /* ── Section shell ── */
@@ -203,8 +232,6 @@ export const PricingSection: React.FC = () => {
       position: relative;
       overflow: hidden;
     }
-
-
 
     /* ── Header area ── */
     .rwp-pricing-header {
@@ -321,7 +348,9 @@ export const PricingSection: React.FC = () => {
     .rwp-pricing-preview img {
       width: 100%;
       display: block;
-      border-radius: 15px;
+      border-radius: 0 0 15px 15px;
+      object-fit: cover;
+      max-height: 280px;
     }
     /* Subtle top bar above screenshot */
     .rwp-pricing-preview-bar {
@@ -340,8 +369,9 @@ export const PricingSection: React.FC = () => {
     .rwp-pricing-preview-label {
       font-family: Manrope,Inter,sans-serif;
       font-size: 11px;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.4);
       margin-left: 4px;
+      font-weight: 600;
     }
     /* Floating "included in all plans" badge */
     .rwp-pricing-preview-badge {
@@ -355,7 +385,7 @@ export const PricingSection: React.FC = () => {
       padding: 6px 16px;
       font-family: Manrope,Inter,sans-serif;
       font-size: 11px;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.6);
       white-space: nowrap;
       display: flex;
       align-items: center;
@@ -446,7 +476,7 @@ export const PricingSection: React.FC = () => {
       background: rgba(235,113,43,0.06);
     }
 
-    .rwp-pc-identity { margin-bottom: 24px; }
+    .rwp-pc-identity { margin-bottom: 20px; }
     .rwp-pc-name {
       font-family: Manrope,Inter,sans-serif;
       font-size: 22px; font-weight: 800;
@@ -462,7 +492,33 @@ export const PricingSection: React.FC = () => {
       margin: 0;
     }
 
-    .rwp-pc-price-block { margin-bottom: 22px; }
+    .rwp-pc-price-block { margin-bottom: 22px; min-height: 105px; display: flex; flex-direction: column; justify-content: flex-end; }
+    .rwp-pc-promo-badge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .rwp-pc-promo-pill {
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #EB712B;
+      background: rgba(235,113,43,0.12);
+      border: 1px solid rgba(235,113,43,0.3);
+      border-radius: 100px;
+      padding: 2px 8px;
+      letter-spacing: 0.02em;
+    }
+    .rwp-pc-strike-amount {
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      text-decoration: line-through;
+      text-decoration-color: #EB712B;
+      text-decoration-thickness: 1.5px;
+    }
     .rwp-pc-price-free {
       font-family: Manrope,Inter,sans-serif;
       font-size: 42px; font-weight: 900;
@@ -472,34 +528,34 @@ export const PricingSection: React.FC = () => {
     .rwp-pc-price-row {
       display: flex;
       align-items: baseline;
-      gap: 4px;
+      gap: 3px;
     }
     .rwp-pc-currency {
       font-family: Manrope,Inter,sans-serif;
       font-size: 22px; font-weight: 700;
-      color: rgba(255,255,255,0.5);
-      align-self: flex-start;
-      margin-top: 8px;
+      color: #EB712B;
+      margin-right: 2px;
     }
     .rwp-pc-amount {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 48px; font-weight: 900;
+      font-size: 46px; font-weight: 900;
       color: #fff;
       letter-spacing: -0.04em;
       line-height: 1;
     }
     .rwp-pc-per {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 12px;
-      color: rgba(255,255,255,0.3);
-      margin-bottom: 4px;
-      align-self: flex-end;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-left: 2px;
+      font-weight: 500;
     }
     .rwp-pc-save-note {
       font-family: Manrope,Inter,sans-serif;
       font-size: 11px;
-      color: rgba(235,113,43,0.7);
-      margin-top: 4px;
+      color: rgba(235,113,43,0.85);
+      margin-top: 6px;
+      line-height: 1.4;
     }
 
     .rwp-pc-cta {
@@ -563,10 +619,10 @@ export const PricingSection: React.FC = () => {
       margin-top: 48px;
       font-family: Manrope,Inter,sans-serif;
       font-size: 13px;
-      color: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.3);
     }
     .rwp-pricing-footer a {
-      color: rgba(235,113,43,0.6);
+      color: rgba(235,113,43,0.75);
       text-decoration: none;
       transition: color 0.2s;
     }
@@ -625,7 +681,7 @@ export const PricingSection: React.FC = () => {
                 ><Trans>Yearly</Trans></button>
               </div>
               {billing === "yearly" && (
-                <span className="rwp-pricing-save-pill"><Trans>Save up to 58%</Trans></span>
+                <span className="rwp-pricing-save-pill"><Trans>Launch Promo: Save up to 50%</Trans></span>
               )}
             </div>
           </div>
@@ -638,11 +694,11 @@ export const PricingSection: React.FC = () => {
                   <div className="rwp-pricing-preview-dot" style={{ background: "#ff5f57" }} />
                   <div className="rwp-pricing-preview-dot" style={{ background: "#febc2e" }} />
                   <div className="rwp-pricing-preview-dot" style={{ background: "#28c840" }} />
-                  <span className="rwp-pricing-preview-label">Ride With Pals — Community Rides</span>
+                  <span className="rwp-pricing-preview-label">Ride With Pals — Move Together</span>
                 </div>
                 <img
-                  src="/landing/assets/images/pricing-cyclists.jpg"
-                  alt="Ride With Pals cyclists group ride"
+                  src="/Images/cyclist-gravel-landscape.jpg"
+                  alt="Ride With Pals cyclists on gravel road"
                   loading="lazy"
                 />
               </div>
@@ -671,3 +727,4 @@ export const PricingSection: React.FC = () => {
     </>
   );
 };
+

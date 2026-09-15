@@ -151,7 +151,7 @@ const Login = () => {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: 'url(/Images/CycleRock2.jpg)',
+            backgroundImage: 'url(/Images/cyclist-pedal-shoe.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -206,7 +206,7 @@ const Login = () => {
           {/* Heading */}
           <div className="animate-item mb-8">
             <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '34px', marginBottom: '6px' }}>
-              {LOGIN_COPY.SUBHEADING}
+              {LOGIN_COPY.HEADING}
             </h2>
             <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)' }}>
               {LOGIN_COPY.SUBHEADING}

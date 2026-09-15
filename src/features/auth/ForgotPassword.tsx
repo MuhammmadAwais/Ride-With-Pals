@@ -97,7 +97,7 @@ const ForgotPassword = () => {
 
       {/* LEFT PANEL */}
       <div className="brand-side hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
-        <div className="absolute inset-0" style={{ backgroundImage: 'url(/Images/MountainIamge2.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        <div className="absolute inset-0" style={{ backgroundImage: 'url(/Images/CyclingPicture.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.65)' }} />
         <div className="relative z-10 text-center px-12 max-w-md">
           <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '196px', marginBottom: '40px', display: 'block', margin: '0 auto 40px' }} draggable={false} />

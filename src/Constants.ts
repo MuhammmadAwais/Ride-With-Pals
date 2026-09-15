@@ -6,7 +6,7 @@
 
 // ─── App Identity ─────────────────────────────────────────────────────────────
 export const APP_NAME    = 'Ride With Pals' as const;
-export const APP_TAGLINE = 'Your Elite Riding Community' as const;
+export const APP_TAGLINE = 'Move Together' as const;
 export const APP_VERSION = '1.0.0' as const;
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -90,16 +90,34 @@ export const LOGIN_COPY = {
   PASSWORD_PLACEHOLDER: 'Enter your password',
   SUBMIT_LABEL:         'Sign In',
   SUBMITTING_LABEL:     'Signing in...',
-  LEFT_TAGLINE:         'Manage your club, rides, and community — all in one place.',
+  LEFT_TAGLINE:         'Move Together. Manage your club, rides, and community — all in one place.',
   INVALID_CREDENTIALS:  'Invalid email or password. Please try again.',
   SUCCESS_MESSAGE:      'Welcome back! Redirecting...',
 } as const;
 
 // ─── Signup Page Copy ─────────────────────────────────────────────────────────
 export const SIGNUP_COPY = {
-  HEADING:    'Create Account',
-  SUBHEADING: 'Join the elite riding community',
-  LEFT_TITLE: 'Ride with',
-  LEFT_HIGHLIGHT: 'Power',
-  LEFT_TAGLINE: 'Join the elite community of high-performance riders. Experience the trail like never before.',
+  HEADING:        'Create Account',
+  SUBHEADING:     'Move Together with your club and community',
+  LEFT_TITLE:     'Ride with',
+  LEFT_HIGHLIGHT: 'Pals',
+  LEFT_TAGLINE:   'Move Together. Connect with your squad, organize rides, and keep your community engaged.',
 } as const;
+
+// ─── Stripe Payment Links & Launch Promotion Configuration ───────────────────
+export const STRIPE_PAYMENT_LINKS = {
+  // Direct Stripe Payment Links (https://buy.stripe.com/...) can be configured here
+  ATHLETE_YEARLY_PROMO: '',
+  GOLD_CLUB_YEARLY_PROMO: '',
+} as const;
+
+export const LAUNCH_PRICING = {
+  CURRENCY_SYMBOL: '€',
+  CURRENCY_CODE: 'EUR',
+  ATHLETE_PROMO_PRICE: '14,99',
+  ATHLETE_REGULAR_PRICE: '29,99',
+  GOLD_CLUB_PROMO_PRICE: '89',
+  GOLD_CLUB_REGULAR_PRICE: '130',
+  VAT_NOTE: 'Prices include 21% VAT',
+} as const;
+
