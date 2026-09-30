@@ -22,7 +22,7 @@ msgstr ".gpx file"
 #. placeholder {0}: item.title
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "{0}"
-msgstr ""
+msgstr "{0}"
 
 #. placeholder {0}: pendingTx.length
 #: src/features/ClubSide/Wallet.tsx
@@ -189,7 +189,7 @@ msgstr "{totalPlansCount} Активен"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "/ year (billed annually)"
-msgstr ""
+msgstr "/ год (при оплате за год)"
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "+ Create Club"
@@ -240,7 +240,7 @@ msgstr "0000 0000 0000 0000"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "01 — COMMUNITY & CLUB MANAGEMENT"
-msgstr ""
+msgstr "01 — УПРАВЛЕНИЕ КЛУБОМ И СООБЩЕСТВОМ"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "01 — FOR RIDERS"
@@ -252,11 +252,11 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "02 — REVENUE & DUES"
-msgstr ""
+msgstr "02 — ДОХОДЫ И ЧЛЕНСКИЕ ВЗНОСЫ"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "03 — COMMUNITY ENGAGEMENT"
-msgstr ""
+msgstr "03 — ВОВЛЕЧЕННОСТЬ И ОБЩЕНИЕ"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "03 — FOR CLUBS"
@@ -268,7 +268,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "04 — THE MEMBER EXPERIENCE"
-msgstr ""
+msgstr "04 — УДОБСТВО ДЛЯ УЧАСТНИКА"
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "1 day left"
@@ -284,11 +284,11 @@ msgstr "1 год"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "1-Tap RSVP"
-msgstr ""
+msgstr "Запись на заезд в 1 клик"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "1-Tap RSVP to rides and activities"
-msgstr ""
+msgstr "Запись на выезды в 1 касание"
 
 #: src/features/ClubSide/TermsConditions.tsx
 msgid "1. Acceptance of Terms"
@@ -308,7 +308,7 @@ msgstr "12 часов (13:30)"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "14.99€/year. That's about 4 energy gels for 365 days of community."
-msgstr ""
+msgstr "14,99 €/год. Всего четыре энергетических геля за 365 дней активной клубной жизни."
 
 #: src/features/ClubSide/EditClub.tsx
 msgid "16:9 ratio recommended [JPG, PNG]"
@@ -405,7 +405,7 @@ msgstr "Принято"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Access & Invitation Control"
-msgstr ""
+msgstr "Контроль вступления и инвайты"
 
 #: src/features/ClubSide/AddDiscount.tsx
 #: src/features/ClubSide/AddProduct.tsx
@@ -556,7 +556,7 @@ msgstr "Деятельность"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Activities & recurring events"
-msgstr ""
+msgstr "События и регулярные тренировки"
 
 #: src/features/ClubSide/Activities.tsx
 #~ msgid "Activities currently live"
@@ -569,11 +569,11 @@ msgstr "Активность"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Activity & ride scheduling"
-msgstr ""
+msgstr "Расписание заездов и тренировок"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Activity & Route Calendar"
-msgstr ""
+msgstr "Календарь заездов и маршрутов"
 
 #: src/features/ClubSide/Activities.tsx
 msgid "Activity Cover"
@@ -618,11 +618,11 @@ msgstr "Activity Type"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Activity-specific & direct chat"
-msgstr ""
+msgstr "Чаты под тренировки и личные сообщения"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Activity-specific Chats"
-msgstr ""
+msgstr "Чаты под каждое событие"
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Add a feature..."
@@ -852,7 +852,7 @@ msgstr "Amount (€)"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "An effortless app your members will actually enjoy using."
-msgstr ""
+msgstr "Продуманное и быстрое приложение, которым приятно пользоваться каждый день."
 
 #: src/features/ClubSide/PrivacyPolicy.tsx
 msgid "Analyzing performance metrics to provide personalized insights."
@@ -860,7 +860,7 @@ msgstr "Analyzing performance metrics to provide personalized insights."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Android App"
-msgstr ""
+msgstr "Приложение для Android"
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Annual"
@@ -880,7 +880,7 @@ msgstr "App Rides"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Approve join requests, assign admins or ride leaders, and control who can create activities or post club news."
-msgstr ""
+msgstr "Одобряйте заявки на вступление, назначайте пейсмейкеров или администраторов и гибко распределяйте права."
 
 #: src/features/landing/components/BentoSection.tsx
 #~ msgid "Approve members, handle roles, and keep your community engaged and organised effortlessly."
@@ -888,7 +888,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Approve new members or use private invite codes."
-msgstr ""
+msgstr "Одобряйте заявки вручную или используйте закрытые инвайт-коды."
 
 #: src/features/ClubSide/OrderDetail.tsx
 msgid "Approve Order"
@@ -1177,7 +1177,7 @@ msgstr "Bank Transfer"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Basic Access"
-msgstr ""
+msgstr "Базовый доступ"
 
 #: src/features/ClubSide/Subscription.tsx
 #: src/features/public-club/pages/UserSubscription.tsx
@@ -1194,7 +1194,7 @@ msgstr "Базовый набор функций"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Bike Shops"
-msgstr ""
+msgstr "Веломагазинов"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Billing & plan renewal alerts"
@@ -1267,7 +1267,7 @@ msgstr "Просмотреть все аттракционы"
 #: src/features/landing/components/CTASection.tsx
 #: src/features/landing/components/HeroSection.tsx
 msgid "Build a sports community"
-msgstr ""
+msgstr "Создайте спортивное сообщество,"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Build your club."
@@ -1279,15 +1279,15 @@ msgstr "Доверие и безопасность в групповых тре�
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Built for"
-msgstr ""
+msgstr "Создано для"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Built for organisers."
-msgstr ""
+msgstr "Создано для организаторов."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Built specifically for road, gravel, MTB, trail and street runs."
-msgstr ""
+msgstr "Оптимизировано для шоссе, грэвела, MTB, трейлраннинга и бега по городу."
 
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "Built-in club chat, announcement board & gear marketplace"
@@ -1423,7 +1423,7 @@ msgstr "Отмена"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Cancel anytime"
-msgstr ""
+msgstr "Отмена подписки в любой момент"
 
 #: src/features/ClubSide/OrderDetail.tsx
 msgid "Cancel Order"
@@ -1528,7 +1528,7 @@ msgstr "Change role..."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Changes to rides, memberships and rosters update immediately across devices."
-msgstr ""
+msgstr "Любые изменения маршрутов, списков участников и взносов мгновенно видны на всех устройствах."
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Changing..."
@@ -1544,7 +1544,7 @@ msgstr "Чат поддержки"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Chat, updates & community shop"
-msgstr ""
+msgstr "Тематические чаты, лента и магазин"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Chat. Trade."
@@ -1607,7 +1607,7 @@ msgstr "Очистить поиск и фильтры"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Clear Status Tracking"
-msgstr ""
+msgstr "Наглядный учет статусов"
 
 #: src/features/ClubSide/Wallet.tsx
 msgid "Cleared Revenues"
@@ -1799,15 +1799,15 @@ msgstr "Ответ на вступление в клуб"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Club Leaderboards"
-msgstr ""
+msgstr "Клубные рейтинги и лидерборды"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Club leaderboards & distance rankings"
-msgstr ""
+msgstr "Клубные рейтинги и километраж"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Club leaderboards: Compete in distance and attendance rankings"
-msgstr ""
+msgstr "Клубные лидерборды: соревнуйтесь по дистанции и посещаемости"
 
 #: src/features/ClubSide/News.tsx
 msgid "Club Leadership"
@@ -1906,7 +1906,7 @@ msgstr "Club profile updated successfully!"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Club Shop"
-msgstr ""
+msgstr "Клубный магазин"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Club shop & fee collection"
@@ -1918,7 +1918,7 @@ msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Club shop integrated with Stripe"
-msgstr ""
+msgstr "Магазин клуба с онлайн-оплатой Stripe"
 
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Club Spending Distribution"
@@ -1976,7 +1976,7 @@ msgstr "Здесь появятся клубы, которыми вы управ
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Coaches"
-msgstr ""
+msgstr "Тренеров"
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "Code Active"
@@ -1992,7 +1992,7 @@ msgstr "Сбор взносов"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Collect payments securely into your own account."
-msgstr ""
+msgstr "Принимайте платежи безопасно прямо на расчетный счет клуба."
 
 #: src/features/ClubSide/StripeConnect.tsx
 msgid "Collect Revenue"
@@ -2056,11 +2056,11 @@ msgstr "Клуб сообщества"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Community dashboard"
-msgstr ""
+msgstr "Панель управления сообществом"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "COMMUNITY ENGAGEMENT"
-msgstr ""
+msgstr "ВОВЛЕЧЕННОСТЬ И ОБЩЕНИЕ"
 
 #: src/features/ClubSide/DashBoard.tsx
 msgid "Community Pulse"
@@ -2361,12 +2361,12 @@ msgstr "Создать поездку"
 #: src/features/landing/components/HowitWorksSection.tsx
 #: src/features/landing/components/Navigation.tsx
 msgid "Create your community"
-msgstr ""
+msgstr "Создать сообщество"
 
 #: src/features/landing/components/CTASection.tsx
 #: src/features/landing/components/HeroSection.tsx
 msgid "Create your community free"
-msgstr ""
+msgstr "Создать сообщество бесплатно"
 
 #: src/features/landing/components/HowitWorksSection.tsx
 #~ msgid "Create your profile"
@@ -2374,7 +2374,7 @@ msgstr ""
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Create your space, organise recurring activities and give your members one place to stay connected."
-msgstr ""
+msgstr "Создайте клубное пространство, организуйте регулярные события и дайте участникам единую платформу для общения."
 
 #: src/features/ClubSide/Wallet.tsx
 msgid "Credit"
@@ -2391,7 +2391,7 @@ msgstr "Межклубные события"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Cross-Platform"
-msgstr ""
+msgstr "Кроссплатформенность"
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Cross-post Listing"
@@ -2477,7 +2477,7 @@ msgstr "ВЕЛОСИПЕД"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Cycling & Running Support"
-msgstr ""
+msgstr "Поддержка велоспорта и бега"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Cycling Activity"
@@ -2489,7 +2489,7 @@ msgstr ""
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Cycling Clubs"
-msgstr ""
+msgstr "Велоклубов"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Cycling, running and swimming"
@@ -2552,7 +2552,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Dedicated chats per activity, private member messaging, partner discounts and club gear. A real digital hub for your community."
-msgstr ""
+msgstr "Отдельные чаты для каждого заезда, личные сообщения, скидки партнеров и экипировка — настоящий цифровой хаб клуба."
 
 #: src/features/ClubSide/ClubPermissions.tsx
 msgid "Default baseline capabilities granted to all administrators across this club."
@@ -2568,7 +2568,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Define membership amounts and validity periods."
-msgstr ""
+msgstr "Задавайте стоимость взносов и периоды действия клубных карт."
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Define the amount and membership validity period."
@@ -2723,7 +2723,7 @@ msgstr "Прямое сообщение {0}"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Direct Stripe Integration"
-msgstr ""
+msgstr "Прямая интеграция со Stripe"
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "Disable this toggle to pause athlete redemptions anytime."
@@ -3208,11 +3208,11 @@ msgstr "Событие управляется"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Everything you need to run, monetize, and scale your sports community or shop activities."
-msgstr ""
+msgstr "Все инструменты для профессионального ведения, монетизации и роста вашего сообщества или клубного магазина."
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Everything you need to set up your club and run weekly group sessions."
-msgstr ""
+msgstr "Все необходимое, чтобы основать свой клуб и запустить регулярные совместные заезды."
 
 #: src/features/ClubSide/ManageClubHome.tsx
 msgid "Ex: Access to exclusive track days"
@@ -3228,11 +3228,11 @@ msgstr "Exclusive"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Exclusive Partner Discounts"
-msgstr ""
+msgstr "Спецпредложения от партнеров"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Exclusive profile badge: Stand out as a verified supporter with orange community ring"
-msgstr ""
+msgstr "Особый бейдж в профиле: оранжевое кольцо проверенного участника клуба"
 
 #: src/features/ClubSide/AboutApp.tsx
 msgid "Executive Summary & Policies"
@@ -3307,7 +3307,7 @@ msgstr "Изучите запланированные поездки по клу
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Extra Marketplace listing: Keep more second-hand gear active at once"
-msgstr ""
+msgstr "Дополнительные объявления на барахолке: продавайте больше экипировки сразу"
 
 #: src/features/ClubSide/PrivacyPolicy.tsx
 msgid "Facilitating club memberships and event coordination."
@@ -3703,7 +3703,7 @@ msgstr "Гибкая настройка взносов"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "For Athletes"
-msgstr ""
+msgstr "Для спортсменов"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "for athletes & clubs."
@@ -3727,28 +3727,28 @@ msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "For Clubs & Businesses"
-msgstr ""
+msgstr "Для клубов и бизнеса"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "For clubs & shops"
-msgstr ""
+msgstr "Для клубов и магазинов"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "FOR CLUBS, SHOPS & COMMUNITY LEADERS"
-msgstr ""
+msgstr "ДЛЯ КЛУБОВ, МАГАЗИНОВ И ЛИДЕРОВ СПОРТА"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "FOR CLUBS, SHOPS & LOCAL SPORTS COMMUNITIES"
-msgstr ""
+msgstr "ДЛЯ КЛУБОВ, МАГАЗИНОВ И ЛОКАЛЬНЫХ СПОРТИВНЫХ СООБЩЕСТВ"
 
 #: src/features/landing/components/FooterSection.tsx
 #: src/features/landing/components/Navigation.tsx
 msgid "For Communities"
-msgstr ""
+msgstr "Для сообществ"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "For dedicated riders"
-msgstr ""
+msgstr "Для увлеченных райдеров"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "For Riders"
@@ -3780,11 +3780,11 @@ msgstr "Бесплатно"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Free Athlete"
-msgstr ""
+msgstr "Бесплатный спортсмен"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Free Club"
-msgstr ""
+msgstr "Бесплатный клуб"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Free Entry"
@@ -3792,7 +3792,7 @@ msgstr "Бесплатный вход"
 
 #: src/features/landing/components/CTASection.tsx
 msgid "Free forever for up to 15 members. No credit card required."
-msgstr ""
+msgstr "Всегда бесплатно для групп до 15 участников. Банковская карта не требуется."
 
 #: src/features/ClubSide/Subscription.tsx
 #: src/features/public-club/pages/UserSubscription.tsx
@@ -3809,11 +3809,11 @@ msgstr "Пт"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "from one place."
-msgstr ""
+msgstr "из одной точки."
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "From weekly activities to a community that grows."
-msgstr ""
+msgstr "От регулярных тренировок к растущему клубу единомышленников."
 
 #: src/features/ClubSide/AddProduct.tsx
 msgid "Fulfillment & Delivery"
@@ -3857,7 +3857,7 @@ msgstr "Полное имя"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Full-featured on all Android devices."
-msgstr ""
+msgstr "Полный функционал платформы на любых смартфонах Android."
 
 #: src/features/ClubSide/AddProduct.tsx
 #: src/features/public-club/pages/MyPurchases.tsx
@@ -3888,11 +3888,11 @@ msgstr "Получить помощь"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Get Athlete Premium"
-msgstr ""
+msgstr "Подключить Athlete Premium"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Get Gold Launch Offer"
-msgstr ""
+msgstr "Получить специальное предложение Gold"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Get Premium Athlete"
@@ -3908,11 +3908,11 @@ msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Get the most out of every ride and run with advanced integrations, route downloads, and verified community status."
-msgstr ""
+msgstr "Получайте максимум от тренировок с загрузкой треков, детальной аналитикой и статусом подтвержденного участника."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Give organisers the tools to run everything smoothly. Give members a better way to join, connect and show up."
-msgstr ""
+msgstr "Дайте организаторам профессиональные инструменты, а участникам — лучший способ объединяться и тренироваться вместе."
 
 #: src/features/ClubSide/DashBoard.tsx
 #: src/features/ClubSide/ManageClubHome.tsx
@@ -3948,7 +3948,7 @@ msgstr "Go to Profile"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Gold Club"
-msgstr ""
+msgstr "Клуб Gold"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Gold Club Plan"
@@ -3980,11 +3980,11 @@ msgstr "GPX Attached"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "GPX downloads & Strava sync"
-msgstr ""
+msgstr "Скачивание GPX и интеграция со Strava"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "GPX Downloads & Strava Sync"
-msgstr ""
+msgstr "Скачивание GPX и интеграция со Strava"
 
 #: src/features/dashboard/CreateRide.tsx
 msgid "GPX file upload failed."
@@ -3996,11 +3996,11 @@ msgstr "Маршрут GPX"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "GPX route downloads to bike computer"
-msgstr ""
+msgstr "Загрузка GPX-треков прямо в велокомпьютер"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "GPX route downloads: Export routes directly to your cycling computer or watch"
-msgstr ""
+msgstr "Экспорт GPX: отправка трека на велокомпьютер или спортивные часы"
 
 #: src/features/dashboard/CreateRide.tsx
 msgid "GPX Route file is required"
@@ -4124,7 +4124,7 @@ msgstr "Чем сервис отличается от Strava?"
 #: src/features/landing/components/FooterSection.tsx
 #: src/features/landing/components/Navigation.tsx
 msgid "How It Works"
-msgstr ""
+msgstr "Как это работает"
 
 #: src/features/landing/components/BlogSection.tsx
 msgid "How Metro CC Doubled Their Membership"
@@ -4222,7 +4222,7 @@ msgstr "Instant Approval"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Instantly see who is Paid or Not Renewed."
-msgstr ""
+msgstr "Сразу видно, кто оплатил членство, а у кого срок действия подошел к концу."
 
 #: src/features/ClubSide/OrderDetail.tsx
 #~ msgid "Insulation"
@@ -4242,7 +4242,7 @@ msgstr "Интеграция"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Internal Marketplace"
-msgstr ""
+msgstr "Внутриклубная барахолка"
 
 #: src/features/ClubSide/ClubPermissions.tsx
 msgid "Invalid member ID"
@@ -4258,7 +4258,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "iOS App"
-msgstr ""
+msgstr "Приложение для iOS"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 #~ msgid "Irreversible Action"
@@ -4290,7 +4290,7 @@ msgstr "И то, и другое. Ride with Pals сочетает функции
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "It’s free — for up to 15 members"
-msgstr ""
+msgstr "Бесплатно — до 15 участников"
 
 #: src/features/ClubSide/News.tsx
 msgid "Italic (*text*)"
@@ -4343,11 +4343,11 @@ msgstr "Вступить в клуб"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Join clubs & local communities"
-msgstr ""
+msgstr "Вступать в клубы и сообщества"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Join clubs, find group rides, and connect with athletes near you."
-msgstr ""
+msgstr "Вступайте в клубы, находите заезды в пелотоне и знакомьтесь с атлетами в своем городе."
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "Join Code"
@@ -4445,11 +4445,11 @@ msgstr "Keep hidden until active"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep logistics, photos and questions tied directly to each session."
-msgstr ""
+msgstr "Сохраняйте обсуждение деталей, фотоотчеты и вопросы прикрепленными к конкретному заезду."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep members engaged between activities."
-msgstr ""
+msgstr "Поддерживайте командный дух и общение между тренировками."
 
 #: src/features/ClubSide/OrderDetail.tsx
 msgid "Keep Order"
@@ -4457,11 +4457,11 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Keep rides, runs and meeting points clearly organized."
-msgstr ""
+msgstr "Сохраняйте идеальный порядок в графике тренировок и местах стартов."
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Keep your community coming back"
-msgstr ""
+msgstr "Поддерживайте вовлеченность участников"
 
 #: src/features/ClubSide/components/UserProfileModal.tsx
 msgid "Kilometer"
@@ -4496,11 +4496,11 @@ msgstr "Last updated: {0}"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "LAUNCH OFFER - SAVE €41"
-msgstr ""
+msgstr "СТАРТОВОЕ ПРЕДЛОЖЕНИЕ — СКИДКА 41 €"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "LAUNCH OFFER - SAVE 10€"
-msgstr ""
+msgstr "СТАРТОВОЕ ПРЕДЛОЖЕНИЕ — СКИДКА 10 €"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Leader"
@@ -4559,7 +4559,7 @@ msgstr "LEGAL STATUS"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Let members trade second-hand bikes and gear safely."
-msgstr ""
+msgstr "Безопасная площадка для покупки и продажи проверенных велосипедов и экипировки между своими."
 
 #: src/features/ClubSide/Activities.tsx
 msgid "Level"
@@ -4677,7 +4677,7 @@ msgstr "Loading..."
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Local Organisers"
-msgstr ""
+msgstr "Локальных организаторов"
 
 #: src/features/ClubSide/EditClub.tsx
 msgid "Location"
@@ -4709,7 +4709,7 @@ msgstr "Выход"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Loved by members"
-msgstr ""
+msgstr "Выбор активных участников"
 
 #: src/features/ClubSide/AddProduct.tsx
 msgid "M - Medium"
@@ -4747,7 +4747,7 @@ msgstr "Управление активными участниками"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Manage annual club dues, track who has paid or expired, and monetize special events or clinic rides with seamless Stripe integration."
-msgstr ""
+msgstr "Взимайте годовые взносы, отслеживайте статус продления и монетизируйте мастер-классы и кэмпы через встроенную оплату."
 
 #: src/features/ClubSide/Order.tsx
 msgid "Manage athlete purchases, review incoming orders, and track fulfillment."
@@ -4812,7 +4812,7 @@ msgstr "Mandatory institutional field"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Manual Check Support"
-msgstr ""
+msgstr "Учет наличных и переводов"
 
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "Manual member tracking & paper waivers"
@@ -4868,7 +4868,7 @@ msgstr "Mark if this is primarily oriented for women/non-binary cyclists."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Mark members as paid manually for cash or bank transfers."
-msgstr ""
+msgstr "Отмечайте оплату вручную при переводе на карту или расчете наличными."
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Mark members as paid when they pay outside the app."
@@ -4977,7 +4977,7 @@ msgstr "Member Avatar"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Member chat & announcements"
-msgstr ""
+msgstr "Клубный чат и официальные новости"
 
 #: src/features/ClubSide/ManageClub.tsx
 msgid "Member Count"
@@ -4993,11 +4993,11 @@ msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Member fee tracking (Paid / Not Renewed status)"
-msgstr ""
+msgstr "Учет клубных взносов (Статус: Оплачено / Не продлено)"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Member fee tracking (Paid / Not Renewed)"
-msgstr ""
+msgstr "Учет взносов (Оплачено / Требует продления)"
 
 #: src/features/ClubSide/Leaderboard.tsx
 msgid "Member Identity"
@@ -5033,11 +5033,11 @@ msgstr "Члены"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Members can check upcoming sessions, preview routes, RSVP with one tap, and track their participation on club leaderboards."
-msgstr ""
+msgstr "Участники просматривают план заездов, изучают перепад высот, подтверждают участие в 1 клик и растут в клубном рейтинге."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Members confirm attendance and see pace, distance and route details."
-msgstr ""
+msgstr "Спортсмены подтверждают выезд и видят планируемый темп, километраж и трек."
 
 #: src/features/ClubSide/Wallet.tsx
 #~ msgid "Members generating the most revenue for the club"
@@ -5053,11 +5053,11 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Members, roles & payments"
-msgstr ""
+msgstr "Участники, роли и взносы"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Members, Roles & Permissions"
-msgstr ""
+msgstr "Участники, роли и права доступа"
 
 #: src/features/landing/components/FAQSection.tsx
 #: src/features/public-club/pages/ClubDetails.tsx
@@ -5070,7 +5070,7 @@ msgstr "Membership Cards"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Membership dues and paid activities. Simplified."
-msgstr ""
+msgstr "Членские взносы и платные заезды — легко и прозрачно."
 
 #: src/features/ClubSide/ClubMembership.tsx
 #: src/features/ClubSide/DashBoard.tsx
@@ -5232,7 +5232,7 @@ msgstr "Move this member to a different fee plan"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Multiple admins & ride leaders"
-msgstr ""
+msgstr "Несколько администраторов и ведущих заездов"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Multisport activities"
@@ -5270,11 +5270,11 @@ msgstr "Name, email address, phone number, and profile picture."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Native experience for iPhone athletes and organisers on the move."
-msgstr ""
+msgstr "Быстрое нативное приложение для владельцев iPhone."
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Need custom arrangements? Talk to us →"
-msgstr ""
+msgstr "Нужны индивидуальные условия? Напишите нам →"
 
 #: src/features/ClubSide/StripeConnect.tsx
 msgid "Need Help?"
@@ -5493,7 +5493,7 @@ msgstr "No fee plans created yet"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "No hidden platform fees"
-msgstr ""
+msgstr "Никаких скрытых комиссий"
 
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "No integrated marketplace, sub-accounts, or event wallet"
@@ -5780,7 +5780,7 @@ msgstr "ВЫКЛЮЧЕННЫЙ"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Offer club merchandise, products or paid activities from the same place your members already use."
-msgstr ""
+msgstr "Продавайте клубную форму, мерч или платные мероприятия прямо в приложении, которым участники уже пользуются ежедневно."
 
 #: src/features/ClubSide/AddProduct.tsx
 msgid "Offer Free Shipping on this merchandise item"
@@ -5808,7 +5808,7 @@ msgstr "Official merchandise and gear provided directly by the club."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Official Updates"
-msgstr ""
+msgstr "Официальные объявления"
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Offline / Cash transfer"
@@ -5816,7 +5816,7 @@ msgstr "Offline / Cash transfer"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "One platform for the people who run the community and the people who make it thrive."
-msgstr ""
+msgstr "Единая платформа для тех, кто развивает клуб, и для тех, кто наполняет его жизнью."
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "One platform."
@@ -5824,7 +5824,7 @@ msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "One single membership fee or gear sale covers the whole year."
-msgstr ""
+msgstr "Один единственный членский взнос или продажа формы окупает подписку на год вперед."
 
 #: src/features/ClubSide/AddProduct.tsx
 msgid "One Size Fits All"
@@ -5994,11 +5994,11 @@ msgstr "Orders"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Organise your community. Without the admin chaos."
-msgstr ""
+msgstr "Организуйте сообщество без бюрократии и хаоса."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Organisers manage everything comfortably from the desktop dashboard. Members join and stay updated directly from their phones."
-msgstr ""
+msgstr "Организаторы управляют клубом на компьютере, а участники пользуются мобильным приложением."
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "Organization"
@@ -6108,7 +6108,7 @@ msgstr "Платные Мероприятия"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Paid activities & event ticketing"
-msgstr ""
+msgstr "Платные события и продажа слотов на старты"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Paid Activities & Event Ticketing"
@@ -6121,7 +6121,7 @@ msgstr "Платные мероприятия и продажа билетов"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Paid activities and workshops"
-msgstr ""
+msgstr "Платные мастер-классы и тренировочные сборы"
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Paid Entry"
@@ -6255,7 +6255,7 @@ msgstr "Pending Requests"
 #: src/features/landing/components/CTASection.tsx
 #: src/features/landing/components/HeroSection.tsx
 msgid "people come back to."
-msgstr ""
+msgstr "в которое участники захотят возвращаться."
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "Per page:"
@@ -6368,7 +6368,7 @@ msgstr "Plan #{planId}"
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Plan activities and bring people together"
-msgstr ""
+msgstr "Планируйте заезды и объединяйте людей"
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Plan created successfully!"
@@ -6384,7 +6384,7 @@ msgstr "Plan Name *"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Plan recurring weekly sessions, share routes with GPX, approve new members and publish official announcements. Everything your group needs in one single space."
-msgstr ""
+msgstr "Планируйте тренировки, делитесь треками GPX, подтверждайте новых участников и публикуйте официальные новости клуба в одном приложении."
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Plan updated successfully!"
@@ -6561,7 +6561,7 @@ msgstr "Почтовый индекс"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Powerful desktop control panel for club founders, shops and admins."
-msgstr ""
+msgstr "Полнофункциональная панель управления на ПК для создателей клубов и координаторов."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Pre-Owned"
@@ -6660,7 +6660,7 @@ msgstr "Тарифы"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "PRICING"
-msgstr ""
+msgstr "ТАРИФЫ И ПЛАНЫ"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Priority member chat support"
@@ -6846,7 +6846,7 @@ msgstr "Publish paid membership tiers and accept payments across mobile & web."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Publish perks, partner shop codes and local deals for your members."
-msgstr ""
+msgstr "Публикуйте промокоды от дружественных веломастерских и магазинов эксклюзивно для своих атлетов."
 
 #: src/features/dashboard/CreateRide.tsx
 msgid "Publish Ride"
@@ -6957,7 +6957,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Real-time Sync"
-msgstr ""
+msgstr "Мгновенная синхронизация"
 
 #: src/features/ClubSide/Wallet.tsx
 #~ msgid "Real-time tracking of membership payments, shop sales, and liquidity for your club."
@@ -7022,7 +7022,7 @@ msgstr "Записанные события книги"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Recurring Activities & Rides"
-msgstr ""
+msgstr "Регулярные заезды и тренировки"
 
 #: src/features/public-club/pages/Shop.tsx
 msgid "Redirecting you back..."
@@ -7151,11 +7151,11 @@ msgstr "Renews: {0}"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Replace scattered WhatsApp chats with a community your brand can grow."
-msgstr ""
+msgstr "Замените хаотичные чаты в WhatsApp единым пространством, где ваш бренд и клуб смогут расти."
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Replace scattered WhatsApp chats, manual spreadsheets and lost sales with one dedicated platform built for organisers."
-msgstr ""
+msgstr "Замените разрозненные чаты, ручные таблицы Excel и упущенные заказы единой платформой, созданной для организаторов."
 
 #: src/features/ClubSide/DashBoard.tsx
 msgid "Request approved successfully!"
@@ -7241,7 +7241,7 @@ msgstr "Return to plan"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "REVENUE & DUES"
-msgstr ""
+msgstr "ДОХОДЫ И ЧЛЕНСКИЕ ВЗНОСЫ"
 
 #: src/features/ClubSide/Wallet.tsx
 msgid "Revenue by Category"
@@ -7281,7 +7281,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Reward consistency by activities attended and Strava distance."
-msgstr ""
+msgstr "Поощряйте регулярность тренировок по числу посещенных заездов и километрам в Strava."
 
 #: src/features/ClubSide/NewsAdded.tsx
 msgid "Rich formatting enabled"
@@ -7371,7 +7371,7 @@ msgstr "Ride with Pals избавляет от несогласованных з
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Ride With Pals helps cycling and running clubs, shops and local organisers manage activities, members, payments and communication in one place."
-msgstr ""
+msgstr "Ride With Pals помогает велоклубам, беговым группам, магазинам и организаторам управлять событиями, участниками, взносами и общением в одном удобном месте."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place."
@@ -7440,7 +7440,7 @@ msgstr ""
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Role Permissions"
-msgstr ""
+msgstr "Гибкие роли и права"
 
 #: src/features/ClubSide/ClubPermissions.tsx
 msgid "Role updated for {fullName}"
@@ -7456,11 +7456,11 @@ msgstr "Маршрут и путевые точки"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Route sharing with GPX downloads"
-msgstr ""
+msgstr "Обмен маршрутами с поддержкой GPX"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Run your community "
-msgstr ""
+msgstr "Управляйте сообществом "
 
 #: src/features/ClubSide/EditClub.tsx
 #: src/features/dashboard/CreateRide.tsx
@@ -7482,7 +7482,7 @@ msgstr "Беговая активность"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "Running Groups"
-msgstr ""
+msgstr "Беговых клубов"
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "RWP Rider"
@@ -7631,7 +7631,7 @@ msgstr "Изменения в расписании и отмены"
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Schedule rides, runs and recurring sessions. Share routes, meeting points and updates with the right people."
-msgstr ""
+msgstr "Составляйте расписание заездов, пробежек и тренировок. Делитесь GPX-маршрутами, точками сбора и новостями с нужными участниками."
 
 #: src/features/ClubSide/Activities.tsx
 msgid "Scheduled & In-Progress"
@@ -7651,7 +7651,7 @@ msgstr "Запланированная поездка"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Seamless route access and verified activity tracking."
-msgstr ""
+msgstr "Быстрый экспорт треков и подтвержденная фиксация тренировок через Strava."
 
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Search athlete by name or @username..."
@@ -7768,7 +7768,7 @@ msgstr "Посмотреть все"
 
 #: src/features/landing/components/HeroSection.tsx
 msgid "See how it works"
-msgstr ""
+msgstr "Узнать, как это работает"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "See who has paid, who needs to renew, and who is not up to date."
@@ -7776,7 +7776,7 @@ msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "See your upcoming activities, members, payments and key tasks in one clear view."
-msgstr ""
+msgstr "Отслеживайте предстоящие заезды, состав участников, поступление взносов и главные задачи в едином окне."
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Select a club to view membership plans."
@@ -7846,15 +7846,15 @@ msgstr ""
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Sell directly to your community"
-msgstr ""
+msgstr "Прямые продажи участникам клуба"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Sell gear on Marketplace (up to 2 items)"
-msgstr ""
+msgstr "Продажа экипировки на барахолке (до 2 объявлений)"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Sell official club apparel, kits or event tickets directly."
-msgstr ""
+msgstr "Продавайте брендированную велоформу, сувениры и слоты на мероприятия без посредников."
 
 #: src/features/ClubSide/StripeConnect.tsx
 msgid "Sell official kits, cycling apparel, and accessories directly to club members with instant checkout and order management."
@@ -7928,7 +7928,7 @@ msgstr "Service Providers:"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Set ride leaders, community admins and member permissions."
-msgstr ""
+msgstr "Назначайте ведущих заездов, администраторов и настраивайте уровни доступа."
 
 #: src/features/ClubSide/AddProduct.tsx
 msgid "Set Up Stripe Gateway"
@@ -7936,11 +7936,11 @@ msgstr "Set Up Stripe Gateway"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Set up weekly club rides, track routes with GPX, and keep an active calendar without having to announce every session from scratch."
-msgstr ""
+msgstr "Создавайте еженедельные выезды, прикрепляйте GPX-треки и ведите актуальный календарь без рутинных анонсов с нуля."
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Set up your club, shop or local sports community in minutes. Add your name, identity and the people who help run it."
-msgstr ""
+msgstr "Настройте клуб, магазин или спортивное сообщество за пару минут. Добавьте название, айдентику и команду организаторов."
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard."
@@ -7986,7 +7986,7 @@ msgstr "Share an announcement or recap with the club"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Share club announcements and route changes without them getting buried."
-msgstr ""
+msgstr "Публикуйте важные объявления и изменения маршрутов так, чтобы они не терялись в общем чате."
 
 #: src/features/ClubSide/News.tsx
 msgid "Share full details with club members: route recaps, elevation profiles, meetup coordinates, pacing guidelines, or general announcements..."
@@ -8080,7 +8080,7 @@ msgstr "Выход?"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Simple, transparent pricing for growing communities."
-msgstr ""
+msgstr "Прозрачные и понятные тарифы для развивающихся сообществ."
 
 #: src/features/ClubSide/AddProduct.tsx
 msgid "Size / Dimension"
@@ -8205,7 +8205,7 @@ msgstr "Начать Бесплатно"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Start for free with your club or squad, or unlock complete member management, payments and your club shop with Gold."
-msgstr ""
+msgstr "Начните бесплатно со своей группой или подключите план Gold для неограниченного состава, взносов и клубного магазина."
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Start Gold Club"
@@ -8268,7 +8268,7 @@ msgstr "Step 3: Access, Leaders & Support"
 
 #: src/features/landing/components/BentoSection.tsx
 msgid "Stop switching between WhatsApp, spreadsheets, payment links and separate tools. Manage your activities, members, communication and payments in one place."
-msgstr ""
+msgstr "Хватит разрываться между чатами, таблицами, платежными ссылками и отдельными сервисами. Объедините события, участников, общение и взносы."
 
 #: src/features/dashboard/CreateRide.tsx
 msgid "Stops Configurations"
@@ -8289,7 +8289,7 @@ msgstr "Синхронизация GPS-маршрутов и Strava"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Strava activity sync"
-msgstr ""
+msgstr "Автоматическая синхронизация со Strava"
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Strava authentication initiated."
@@ -8301,7 +8301,7 @@ msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Strava integration: Automatic activity sync and verified stats"
-msgstr ""
+msgstr "Связка со Strava: автосинхронизация тренировок и подтвержденные показатели"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication."
@@ -8541,11 +8541,11 @@ msgstr "Маркетплейс — это внутренняя площадка 
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "THE MEMBER EXPERIENCE"
-msgstr ""
+msgstr "УДОБСТВО ДЛЯ УЧАСТНИКА"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "The status quo (WhatsApp, Instagram & sheets)"
-msgstr ""
+msgstr "Привычный хаос (WhatsApp, Instagram и таблицы)"
 
 #: src/features/landing/components/BentoSection.tsx
 #~ msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
@@ -8565,7 +8565,7 @@ msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "There is a smarter way to run your sports community."
-msgstr ""
+msgstr "Есть более умный способ управлять спортивным сообществом."
 
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "There’s a smarter way to manage your club"
@@ -8892,7 +8892,7 @@ msgstr "Вт"
 
 #: src/features/landing/components/CTASection.tsx
 msgid "Turn weekly activities into lasting community. Bring your members together, on and off the road."
-msgstr ""
+msgstr "Превратите регулярные заезды в сплоченное сообщество. Объединяйте участников на трассе и за ее пределами."
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Two ways to use it, one shared philosophy: simple, visual, and useful."
@@ -9006,11 +9006,11 @@ msgstr "Неограниченное число объявлений"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Unlimited members (no 15-member cap)"
-msgstr ""
+msgstr "Неограниченно участников (без лимита в 15 человек)"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Unlimited members (no cap)"
-msgstr ""
+msgstr "Неограниченное число участников"
 
 #: src/components/common/DeleteAccountModal.tsx
 #: src/features/ClubSide/ManageClub.tsx
@@ -9064,11 +9064,11 @@ msgstr "До {0} элементов торговой площадки"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Up to 15 club members"
-msgstr ""
+msgstr "До 15 участников в клубе"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Up to 15 members"
-msgstr ""
+msgstr "До 15 участников"
 
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Up to 2 items in Marketplace"
@@ -9184,7 +9184,7 @@ msgstr "Используйте не менее 6 символов, включа�
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "Use chat, news, discounts, memberships and your club shop to keep members engaged between activities."
-msgstr ""
+msgstr "Используйте чаты, ленту новостей, скидки партнеров, клубные взносы и магазин, чтобы оставаться на связи между стартами."
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "used"
@@ -9242,7 +9242,7 @@ msgstr "Проверенный спортсмен"
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Verified Gold community badge"
-msgstr ""
+msgstr "Официальный бейдж участника сообщества Gold"
 
 #: src/features/ClubSide/ManageClub.tsx
 msgid "Verified Members"
@@ -9365,11 +9365,11 @@ msgstr "У нас есть ответы."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Web App"
-msgstr ""
+msgstr "Веб-кабинет"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Web. iOS.<0/>Android.<1/><2>Always in sync.</2>"
-msgstr ""
+msgstr "Web. iOS.<0/>Android.<1/><2>Всегда синхронизировано.</2>"
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Wed"
@@ -9425,7 +9425,7 @@ msgstr "Why am I seeing this?"
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "WHY RIDE WITH PALS"
-msgstr ""
+msgstr "ПОЧЕМУ RIDE WITH PALS"
 
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "Why Ride With Pals?"
@@ -9433,7 +9433,7 @@ msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "With Ride With Pals"
-msgstr ""
+msgstr "С Ride With Pals"
 
 #: src/features/ClubSide/Wallet.tsx
 msgid "Withdraw Funds"

@@ -11,9 +11,31 @@ export const locales = {
   ar: 'العربية',
   ru: 'Русский',
   pt: 'Português',
+  de: 'Deutsch',
+  ca: 'Català',
 } as const;
 
 export type Locale = keyof typeof locales;
+
+/**
+ * Backend-supported ISO 639-1 language codes.
+ * Currently the backend services support English, Spanish, German, and Catalan.
+ */
+export const BACKEND_SUPPORTED_LANGUAGES = ['en', 'es', 'de', 'ca'] as const;
+export type BackendLanguage = typeof BACKEND_SUPPORTED_LANGUAGES[number];
+
+/**
+ * Maps any app locale to a backend-supported language code.
+ * Defaults to 'en' if the user's selected language is not yet supported on backend.
+ */
+export const getBackendLanguage = (locale?: string | null): BackendLanguage => {
+  if (!locale) return 'en';
+  const clean = locale.toLowerCase().split('-')[0];
+  if (BACKEND_SUPPORTED_LANGUAGES.includes(clean as BackendLanguage)) {
+    return clean as BackendLanguage;
+  }
+  return 'en';
+};
 
 export const rtlLocales: Locale[] = ['ar', 'ur'];
 
@@ -28,6 +50,8 @@ export const LANGUAGE_META: Record<Locale, { flag: string; countryCode: string; 
   ar: { flag: '🇸🇦', countryCode: 'sa', native: 'العربية',    english: 'Arabic'     },
   ru: { flag: '🇷🇺', countryCode: 'ru', native: 'Русский',    english: 'Russian'    },
   pt: { flag: '🇧🇷', countryCode: 'br', native: 'Português',  english: 'Portuguese' },
+  de: { flag: '🇩🇪', countryCode: 'de', native: 'Deutsch',    english: 'German'     },
+  ca: { flag: '🇪🇸', countryCode: 'es', native: 'Català',     english: 'Catalan'    },
 };
 
 /**
@@ -35,9 +59,20 @@ export const LANGUAGE_META: Record<Locale, { flag: string; countryCode: string; 
  * Also sets html[lang] and html[dir] for RTL support.
  */
 export async function dynamicActivate(locale: Locale) {
-  // Lazy-load the compiled catalog for this locale
-  const { messages } = await import(`../locales/${locale}/messages.ts`);
-  i18n.loadAndActivate({ locale, messages });
+  try {
+    // Lazy-load the compiled catalog for this locale
+    const { messages } = await import(`../locales/${locale}/messages.ts`);
+    i18n.loadAndActivate({ locale, messages });
+  } catch (err) {
+    console.warn(`[i18n] Failed to load messages for "${locale}", falling back to English:`, err);
+    try {
+      const { messages } = await import(`../locales/en/messages.ts`);
+      i18n.loadAndActivate({ locale, messages });
+    } catch {
+      // In worst-case fallback, activate without crashing
+      i18n.activate(locale);
+    }
+  }
 
   // Set lang attribute
   document.documentElement.lang = locale;

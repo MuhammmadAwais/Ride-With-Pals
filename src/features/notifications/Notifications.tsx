@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro';
 import { t } from '@lingui/core/macro';
 
 const Notifications: React.FC = () => {
-  const { data, isLoading } = useGetUserNotificationQuery();
+  const { data, isLoading } = useGetUserNotificationQuery({ limit: 20, offset: 0 });
   const [markAsRead] = useMarkAsReadNotificationsMutation();
 
   const notifications = data?.rows || [];

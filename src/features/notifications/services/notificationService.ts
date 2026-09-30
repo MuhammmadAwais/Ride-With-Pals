@@ -39,11 +39,11 @@ export const useNotifications = () => {
 };
 
 export const NotificationService = {
-  getUserNotifications: async () => {
-    return await ApiNotificationService.getUserNotification();
+  getUserNotifications: async (params?: Record<string, any>) => {
+    return await ApiNotificationService.getUserNotification({ limit: 10, offset: 0, ...(params || {}) });
   },
-  getClubNotifications: async (clubId: number) => {
-    return await ApiNotificationService.getClubNotifications({ clubId });
+  getClubNotifications: async (clubId: number, params?: Record<string, any>) => {
+    return await ApiNotificationService.getClubNotifications({ clubId, limit: 10, offset: 0, ...(params || {}) });
   },
   markNotificationAsRead: async (notificationId: number) => {
     return await ApiNotificationService.markAsReadNotifications({ notificationId });

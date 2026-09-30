@@ -2,7 +2,7 @@ import type { LinguiConfig } from '@lingui/conf';
 import { formatter } from '@lingui/format-po';
 
 const config: LinguiConfig = {
-  locales: ['en', 'ur', 'hi', 'es', 'nl', 'fr', 'it', 'ar', 'ru', 'pt'],
+  locales: ['en', 'ur', 'hi', 'es', 'nl', 'fr', 'it', 'ar', 'ru', 'pt', 'de', 'ca'],
   sourceLocale: 'en',
   catalogs: [
     {

@@ -64,7 +64,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
   const {
     data: userNotifs,
     isLoading: isLoadingUser,
-  } = useGetUserNotificationQuery(undefined, {
+  } = useGetUserNotificationQuery({ limit: 10, offset: 0 }, {
     skip: isClubSide, // only for athlete mode
     pollingInterval: 60000, // re-poll every minute
   });
@@ -73,7 +73,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ isOpen, onC
     data: clubNotifs,
     isLoading: isLoadingClub,
   } = useGetClubNotificationsQuery(
-    { clubId: clubId! },
+    { clubId: clubId!, limit: 10, offset: 0 },
     {
       skip: !isClubSide || !clubId, // only for club management mode
       pollingInterval: 60000,
@@ -254,12 +254,12 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, pageTitle = 'Dashboard', o
   const isClubSide = location.pathname.includes('/view/clubside') || location.pathname.includes('/manage-club');
 
   // Fetch unread count for the badge
-  const { data: userNotifs } = useGetUserNotificationQuery(undefined, {
+  const { data: userNotifs } = useGetUserNotificationQuery({ limit: 10, offset: 0 }, {
     skip: isClubSide,
     pollingInterval: 60000,
   });
   const { data: clubNotifs } = useGetClubNotificationsQuery(
-    { clubId: clubId! },
+    { clubId: clubId!, limit: 10, offset: 0 },
     { skip: !isClubSide || !clubId, pollingInterval: 60000 }
   );
 

@@ -268,6 +268,15 @@ export const authApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ['User'],
     }),
 
+    updateUserLanguage: builder.mutation<{ statusCode: number; message: string; response?: any }, { language: string }>({
+      query: (body) => ({
+        url: '/user/language',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
     checkEmailExistence: builder.query<AuthTypes.CheckEmailExistenceResponseResponse, AuthTypes.CheckEmailExistenceParams>({
       query: (params) => ({
         url: '/user/check-email',
@@ -311,6 +320,7 @@ export const {
   useFirebaseLoginMutation,
   useUpdateFcmTokenMutation,
   useUpdateScaleUnitSettingsMutation,
+  useUpdateUserLanguageMutation,
   useCheckEmailExistenceQuery,
   useGetOtherUserInfoQuery,
   useDeleteAccountMutation,

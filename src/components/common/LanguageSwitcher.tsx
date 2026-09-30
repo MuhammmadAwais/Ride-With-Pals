@@ -3,8 +3,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { setLocale } from '@/app/slices/languageSlice';
-import { dynamicActivate, LANGUAGE_META, type Locale } from '@/lib/i18n';
+import { dynamicActivate, LANGUAGE_META, getBackendLanguage, type Locale } from '@/lib/i18n';
 import { useTheme } from '@/hooks/useTheme';
+import { UserService } from '@/api/backendApi';
+import { apiSlice } from '@/api/apiSlice';
 
 interface LanguageSwitcherProps {
   /** Optional override: 'light' or 'dark'. If omitted, automatically uses current active theme */
@@ -41,6 +43,10 @@ const CountryFlag: React.FC<{ countryCode?: string; fallbackEmoji: string; alt: 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant, className = '' }) => {
   const dispatch = useAppDispatch();
   const currentLocale = useAppSelector((s) => s.language?.locale ?? 'en') as Locale;
+  const authState = useAppSelector((s) => s.auth);
+  const token = authState?.user?.token || (authState as any)?.token;
+  const isUpdatingRef = useRef(false);
+
   const [open, setOpen] = useState(false);
   const [isRtl, setIsRtl] = useState(document.documentElement.dir === 'rtl');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -72,11 +78,47 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant, cla
   }, [open]);
 
   const handleSelect = useCallback(async (locale: Locale) => {
+    if (locale === currentLocale || isUpdatingRef.current) {
+      setOpen(false);
+      return;
+    }
+
+    isUpdatingRef.current = true;
     setOpen(false);
-    await dynamicActivate(locale);
-    dispatch(setLocale(locale));
-    setIsRtl(['ar', 'ur'].includes(locale));
-  }, [dispatch]);
+
+    try {
+      // 1. Immediately switch UI catalog & fonts
+      await dynamicActivate(locale);
+
+      // 2. Update Redux language state & localStorage
+      dispatch(setLocale(locale));
+      setIsRtl(['ar', 'ur'].includes(locale));
+
+      // 3. Determine backend language (en | es | de | ca)
+      const backendLang = getBackendLanguage(locale);
+
+      // 4. If user is authenticated, sync preferred language with backend API
+      if (token) {
+        try {
+          await UserService.updateUserLanguage(backendLang);
+          console.log(`🌐 [LanguageSwitcher] Backend language synced to: ${backendLang}`);
+        } catch (apiErr) {
+          // Gracefully log warning without disrupting UI experience
+          console.warn('[LanguageSwitcher] Could not sync user language with backend:', apiErr);
+        }
+      }
+
+      // 5. Reset RTK Query cache so all active subscriptions/pages re-fetch fresh translated data
+      dispatch(apiSlice.util.resetApiState());
+
+      // 6. Broadcast global event for any non-RTK query listeners
+      window.dispatchEvent(new CustomEvent('app:languageChanged', { detail: { locale, backendLang } }));
+    } catch (err) {
+      console.error('[LanguageSwitcher] Error switching language:', err);
+    } finally {
+      isUpdatingRef.current = false;
+    }
+  }, [currentLocale, dispatch, token]);
 
   const current = LANGUAGE_META[currentLocale] || LANGUAGE_META.en;
 

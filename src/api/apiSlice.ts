@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery, type BaseQueryFn, type FetchArgs, type FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { toast } from 'sonner';
 import { logout } from '@/features/auth/slices/authSlice';
+import { getBackendLanguage } from '@/lib/i18n';
 
 // 1 & 2: Configure fetchBaseQuery with baseUrl mapped to import.meta.env.VITE_APP_BACKEND_API_BASE_URL
 const baseQuery = fetchBaseQuery({
@@ -13,6 +14,13 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
+
+    // Attach language headers for backend data localization (en | es | de | ca)
+    const currentLocale = state?.language?.locale || (typeof localStorage !== 'undefined' ? localStorage.getItem('rwp-locale') : null) || 'en';
+    const backendLang = getBackendLanguage(currentLocale);
+    headers.set('language', backendLang);
+    headers.set('Accept-Language', backendLang);
+
     return headers;
   },
 });

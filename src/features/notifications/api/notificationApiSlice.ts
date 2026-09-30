@@ -4,20 +4,34 @@ import { NotificationTypes } from '@/api/types';
 export const notificationApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUserNotification: builder.query<NotificationTypes.GetUserNotificationResponseResponse, NotificationTypes.GetUserNotificationParams | void>({
-      query: (params) => ({
-        url: '/user/notifications',
-        method: 'GET',
-        params: params || undefined,
-      }),
+      query: (params) => {
+        const p = params || {};
+        return {
+          url: '/user/notifications',
+          method: 'GET',
+          params: {
+            limit: p.limit ?? 10,
+            offset: p.offset ?? 0,
+            ...p,
+          },
+        };
+      },
       providesTags: ['Notification'],
     }),
 
-    getClubNotifications: builder.query<NotificationTypes.GetUserNotificationResponseResponse, NotificationTypes.GetClubNotificationsParams>({
-      query: (params) => ({
-        url: '/user/club/notifications',
-        method: 'GET',
-        params,
-      }),
+    getClubNotifications: builder.query<NotificationTypes.GetUserNotificationResponseResponse, NotificationTypes.GetClubNotificationsParams | void>({
+      query: (params) => {
+        const p = (params || {}) as any;
+        return {
+          url: '/user/club/notifications',
+          method: 'GET',
+          params: {
+            limit: p.limit ?? 10,
+            offset: p.offset ?? 0,
+            ...p,
+          },
+        };
+      },
       providesTags: ['Notification'],
     }),
 

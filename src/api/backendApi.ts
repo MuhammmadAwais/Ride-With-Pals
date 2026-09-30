@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "sonner";
+import { getBackendLanguage } from "@/lib/i18n";
 
 let injectedStore: any = null;
 
@@ -28,6 +29,14 @@ backendApi.interceptors.request.use(
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Attach language headers for backend data localization (en | es | de | ca)
+    const currentLocale = state?.language?.locale || (typeof localStorage !== 'undefined' ? localStorage.getItem('rwp-locale') : null) || 'en';
+    const backendLang = getBackendLanguage(currentLocale);
+    if (config.headers) {
+      config.headers['language'] = backendLang;
+      config.headers['Accept-Language'] = backendLang;
     }
 
     // For file uploads or FormData requests, extend timeout to 60s to prevent premature network timeouts
@@ -183,6 +192,12 @@ export const AuthService = logWrapper("AuthService", {
 });
 
 export const UserService = logWrapper("UserService", {
+  updateUserLanguage: async (data: { language: string } | string, params?: Record<string, any>) => {
+    const payload = typeof data === 'string' ? { language: data } : data;
+    const response = await backendApi.put('/user/language', payload, { params });
+    return response.data;
+  },
+
   upsertAthleteProfile: async (data?: any, params?: Record<string, any>) => {
     const response = await backendApi.put('/user/update/athlete/profile', data, { params });
     return response.data;
@@ -733,12 +748,22 @@ export const MembershipService = logWrapper("MembershipService", {
 
 export const NotificationService = logWrapper("NotificationService", {
   getUserNotification: async (params?: Record<string, any>) => {
-    const response = await backendApi.get('/user/notifications', { params });
+    const finalParams = {
+      limit: 10,
+      offset: 0,
+      ...(params || {}),
+    };
+    const response = await backendApi.get('/user/notifications', { params: finalParams });
     return response.data;
   },
 
   getClubNotifications: async (params?: Record<string, any>) => {
-    const response = await backendApi.get('/user/club/notifications', { params });
+    const finalParams = {
+      limit: 10,
+      offset: 0,
+      ...(params || {}),
+    };
+    const response = await backendApi.get('/user/club/notifications', { params: finalParams });
     return response.data;
   },
 

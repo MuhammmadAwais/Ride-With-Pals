@@ -6,7 +6,7 @@ interface LanguageState {
 }
 
 const getBrowserLocale = (): Locale => {
-  const supported: Locale[] = ['en', 'ur', 'hi', 'es', 'nl', 'fr', 'it', 'ar', 'ru', 'pt'];
+  const supported: Locale[] = ['en', 'ur', 'hi', 'es', 'nl', 'fr', 'it', 'ar', 'ru', 'pt', 'de', 'ca'];
   const browserLang = navigator.language.split('-')[0] as Locale;
   return supported.includes(browserLang) ? browserLang : 'en';
 };
