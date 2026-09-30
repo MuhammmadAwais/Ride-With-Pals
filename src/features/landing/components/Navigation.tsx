@@ -260,17 +260,17 @@ export const Navigation: React.FC = () => {
           <img src="/Images/Logo.png" alt="Ride With Pals" fetchPriority="high" decoding="async" />
         </a>
         <div className="rwp-nav-center">
+          <a className="rwp-nav-link" href="/#for-communities">
+            <Trans>For Communities</Trans>
+          </a>
           <a className="rwp-nav-link" href="/#how-it-works">
-            <Trans>How it Works</Trans>
+            <Trans>How It Works</Trans>
           </a>
           <a className="rwp-nav-link" href="/#features">
             <Trans>Features</Trans>
           </a>
           <a className="rwp-nav-link" href="/#pricing">
             <Trans>Pricing</Trans>
-          </a>
-          <a className="rwp-nav-link" href="/blog#blog">
-            <Trans>Community &amp; Updates</Trans>
           </a>
         </div>
         <div className="rwp-nav-actions">
@@ -280,7 +280,7 @@ export const Navigation: React.FC = () => {
             <Trans>Login</Trans>
           </a>
           <a className="rwp-btn-signup" href="/signup" id="landing-signup-btn">
-            <Trans>Sign up</Trans>
+            <Trans>Create your community</Trans>
           </a>
         </div>
         <button
@@ -297,17 +297,17 @@ export const Navigation: React.FC = () => {
       <div className={"rwp-mobile-drawer" + (menuOpen ? " open" : "")} role="dialog" aria-modal="true">
         <div className="rwp-mobile-orb" />
         <div className="rwp-mobile-drawer-inner">
+          <a className="rwp-mobile-link" href="/#for-communities" onClick={() => setMenuOpen(false)}>
+            <Trans>For Communities</Trans>
+          </a>
           <a className="rwp-mobile-link" href="/#how-it-works" onClick={() => setMenuOpen(false)}>
-            <Trans>How it Works</Trans>
+            <Trans>How It Works</Trans>
           </a>
           <a className="rwp-mobile-link" href="/#features" onClick={() => setMenuOpen(false)}>
             <Trans>Features</Trans>
           </a>
           <a className="rwp-mobile-link" href="/#pricing" onClick={() => setMenuOpen(false)}>
             <Trans>Pricing</Trans>
-          </a>
-          <a className="rwp-mobile-link" href="/blog#blog" onClick={() => setMenuOpen(false)}>
-            <Trans>Community &amp; Updates</Trans>
           </a>
         </div>
         <div className="rwp-mobile-lang-row">
@@ -318,7 +318,7 @@ export const Navigation: React.FC = () => {
             <Trans>Login</Trans>
           </a>
           <a className="rwp-mobile-btn-signup" href="/signup" onClick={() => setMenuOpen(false)}>
-            <Trans>Get started free</Trans>
+            <Trans>Create your community</Trans>
           </a>
         </div>
       </div>

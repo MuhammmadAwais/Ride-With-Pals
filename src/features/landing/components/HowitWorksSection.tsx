@@ -268,15 +268,11 @@ export const HowitWorksSection: React.FC = () => {
 
       <div className="rwp-hiw-container">
         <div className="rwp-hiw-header">
-          <div className="rwp-hiw-badge">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-            <Trans>Watch Video</Trans>
-          </div>
-          <h2 className="rwp-hiw-title"><Trans>Create and build community with </Trans><span style={{color: '#EB712B'}}>Ride With Pals</span> -</h2>
+          <h2 className="rwp-hiw-title">
+            <Trans>From weekly activities to a community that grows.</Trans>
+          </h2>
           <p className="rwp-hiw-subtitle">
-            <Trans>Connect with your squad, organize rides, and keep your community engaged - getting started takes just minutes.</Trans>
+            <Trans>Create your space, organise recurring activities and give your members one place to stay connected.</Trans>
           </p>
         </div>
 
@@ -298,16 +294,16 @@ export const HowitWorksSection: React.FC = () => {
           {/* Step 1 */}
           <div className="rwp-hiw-card">
             <div className="rwp-hiw-image">
-              <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Rider Profile and Setup" />
+              <img loading="lazy" src="/Images/feature-screens/feat-club-overview.png" alt="Create your community" />
             </div>
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
                 <div className="rwp-hiw-dot" />
                 <span className="rwp-hiw-step-text"><Trans>Step 1</Trans></span>
               </div>
-              <h3 className="rwp-hiw-card-title"><Trans>Create your profile</Trans></h3>
+              <h3 className="rwp-hiw-card-title"><Trans>Create your community</Trans></h3>
               <p className="rwp-hiw-card-desc">
-                <Trans>Set up your rider profile or create a club. Add your bikes, configure your preferences, and you're ready to roll.</Trans>
+                <Trans>Set up your club, shop or local sports community in minutes. Add your name, identity and the people who help run it.</Trans>
               </p>
             </div>
           </div>
@@ -315,16 +311,16 @@ export const HowitWorksSection: React.FC = () => {
           {/* Step 2 */}
           <div className="rwp-hiw-card">
             <div className="rwp-hiw-image">
-              <img loading="lazy" src="/Images/feature-screens/feat-clubs.png" alt="Organise Rides and Events" />
+              <img loading="lazy" src="/Images/feature-screens/feat-ride-detail.png" alt="Plan activities and bring people together" />
             </div>
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
                 <div className="rwp-hiw-dot" />
                 <span className="rwp-hiw-step-text"><Trans>Step 2</Trans></span>
               </div>
-              <h3 className="rwp-hiw-card-title"><Trans>Organise rides &amp; events</Trans></h3>
+              <h3 className="rwp-hiw-card-title"><Trans>Plan activities and bring people together</Trans></h3>
               <p className="rwp-hiw-card-desc">
-                <Trans>Schedule group rides, manage RSVPs seamlessly, and keep all your members informed with automated updates.</Trans>
+                <Trans>Schedule rides, runs and recurring sessions. Share routes, meeting points and updates with the right people.</Trans>
               </p>
             </div>
           </div>
@@ -332,16 +328,16 @@ export const HowitWorksSection: React.FC = () => {
           {/* Step 3 */}
           <div className="rwp-hiw-card">
             <div className="rwp-hiw-image">
-              <img loading="lazy" src="/Images/feature-screens/feat-rides-list.png" alt="Ride and Connect" />
+              <img loading="lazy" src="/Images/feature-screens/feat-discounts.png" alt="Keep your community coming back" />
             </div>
             <div className="rwp-hiw-content">
               <div className="rwp-hiw-step-badge">
                 <div className="rwp-hiw-dot" />
                 <span className="rwp-hiw-step-text"><Trans>Step 3</Trans></span>
               </div>
-              <h3 className="rwp-hiw-card-title"><Trans>Ride and connect</Trans></h3>
+              <h3 className="rwp-hiw-card-title"><Trans>Keep your community coming back</Trans></h3>
               <p className="rwp-hiw-card-desc">
-                <Trans>Join the ride, track your progress, build connections, and share your experiences with the community.</Trans>
+                <Trans>Use chat, news, discounts, memberships and your club shop to keep members engaged between activities.</Trans>
               </p>
             </div>
           </div>

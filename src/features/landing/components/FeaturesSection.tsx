@@ -134,37 +134,37 @@ export const FeaturesSection: React.FC = () => {
       margin: 0 3px;
     }
 
-    /* Stat pills */
-    .rwp-fs-stats {
-      display: flex;
-      gap: 2px;
-    }
-    .rwp-fs-stat {
+    /* Benefit pills */
+    .rwp-fs-benefits {
       display: flex;
       flex-direction: column;
+      gap: 10px;
+    }
+    .rwp-fs-benefit-pill {
+      display: inline-flex;
       align-items: center;
-      padding: 18px 28px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.02);
-    }
-    .rwp-fs-stat:first-child { border-radius: 12px 0 0 12px; }
-    .rwp-fs-stat:last-child  { border-radius: 0 12px 12px 0; }
-    .rwp-fs-stat-num {
+      gap: 10px;
+      padding: 12px 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.025);
+      border-radius: 30px;
       font-family: Manrope, Inter, sans-serif;
-      font-size: 32px;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: -0.04em;
-      line-height: 1;
-    }
-    .rwp-fs-stat-num span { color: #EB712B; }
-    .rwp-fs-stat-label {
-      font-family: Manrope, Inter, sans-serif;
-      font-size: 11px;
-      color: rgba(255,255,255,0.25);
-      margin-top: 5px;
-      letter-spacing: 0.06em;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
       white-space: nowrap;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .rwp-fs-benefit-pill:hover {
+      border-color: rgba(235,113,43,0.3);
+      background: rgba(235,113,43,0.05);
+    }
+    .rwp-fs-benefit-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #EB712B;
+      box-shadow: 0 0 8px rgba(235,113,43,0.7);
     }
 
     /* Top rule */
@@ -611,8 +611,8 @@ export const FeaturesSection: React.FC = () => {
             {/* Headline with swirl decoration */}
             <div className="rwp-fs-headline-wrap">
               <h2 className="rwp-fs-h1">
-                <Trans>Designed for clubs.</Trans><br/>
-                <span className="rwp-fs-h1-accent"><Trans>Perfect for athletes</Trans></span>.
+                <Trans>Built for organisers.</Trans><br/>
+                <span className="rwp-fs-h1-accent"><Trans>Loved by members</Trans></span>.
               </h2>
               {/* Swirl arrow pointing down-right toward the content */}
               <span className="rwp-fs-swirl" aria-hidden="true">
@@ -620,23 +620,28 @@ export const FeaturesSection: React.FC = () => {
               </span>
             </div>
 
-            {/* Sub-copy + stats */}
+            {/* Sub-copy + benefits */}
             <div className="rwp-fs-sub-row">
-              <p className="rwp-fs-sub">
-                <Trans>Two ways to use it, one shared philosophy: simple, visual, and useful.</Trans>
-              </p>
-              <div className="rwp-fs-stats">
-                <div className="rwp-fs-stat">
-                  <div className="rwp-fs-stat-num">10<span>+</span></div>
-                  <div className="rwp-fs-stat-label"><Trans>Core Features</Trans></div>
+              <div>
+                <p className="rwp-fs-sub" style={{ marginBottom: "12px", color: "rgba(255,255,255,0.75)" }}>
+                  <Trans>One platform for the people who run the community and the people who make it thrive.</Trans>
+                </p>
+                <p className="rwp-fs-sub" style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)" }}>
+                  <Trans>Give organisers the tools to run everything smoothly. Give members a better way to join, connect and show up.</Trans>
+                </p>
+              </div>
+              <div className="rwp-fs-benefits">
+                <div className="rwp-fs-benefit-pill">
+                  <div className="rwp-fs-benefit-dot" />
+                  <Trans>Activities &amp; recurring events</Trans>
                 </div>
-                <div className="rwp-fs-stat">
-                  <div className="rwp-fs-stat-num">2</div>
-                  <div className="rwp-fs-stat-label"><Trans>User Roles</Trans></div>
+                <div className="rwp-fs-benefit-pill">
+                  <div className="rwp-fs-benefit-dot" />
+                  <Trans>Members, roles &amp; payments</Trans>
                 </div>
-                <div className="rwp-fs-stat">
-                  <div className="rwp-fs-stat-num">3</div>
-                  <div className="rwp-fs-stat-label"><Trans>Platforms</Trans></div>
+                <div className="rwp-fs-benefit-pill">
+                  <div className="rwp-fs-benefit-dot" />
+                  <Trans>Chat, updates &amp; community shop</Trans>
                 </div>
               </div>
             </div>
@@ -645,112 +650,28 @@ export const FeaturesSection: React.FC = () => {
           <div className="rwp-fs-toprule"/>
 
           {/* ─────────────────────────────────────────
-              BLOCK 01 — RIDES & LEADERBOARD
+              BLOCK 01 — COMMUNITY & CLUB MANAGEMENT
           ───────────────────────────────────────── */}
           <div className="rwp-fb rwp-fb--rider">
             <div className="rwp-fb-meta">
-              <span className="rwp-fb-num"><Trans>01 — FOR RIDERS</Trans></span>
-            </div>
-
-            <div className="rwp-fb-text">
-              <div className="rwp-fb-type-tag rider">
-                <span className="rwp-fb-tag-arrow"><ArrowRight size={11}/></span>
-                <Trans>For Athletes &amp; Riders</Trans>
-              </div>
-              <h3 className="rwp-fb-headline"><Trans>Discover clubs. Join activities.</Trans></h3>
-              <p className="rwp-fb-copy">
-                <Trans>Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard.</Trans>
-              </p>
-              <ul className="rwp-fb-list">
-                {[
-                  [t`Browse & Join Rides`, t`Upcoming rides with pace, distance and ride type`],
-                  [t`Monthly Leaderboards`, t`Compete by rides attended or total km covered`],
-                  [t`GPX & Strava Sync`, t`Download route files and sync with Strava classification`],
-                  [t`Multisport activities`, t`Cycling, running and swimming`],
-                ].map(([title, desc]) => (
-                  <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rwp-fb-screens">
-              <div className="rwp-fb-glow"/>
-              <div className="rwp-fb-screen-a">
-                <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Rides listing" />
-              </div>
-              <div className="rwp-fb-screen-b">
-                <img loading="lazy" src="/Images/feature-screens/feat-leaderboard-1.png" alt="Leaderboard" />
-              </div>
-            </div>
-          </div>
-
-          <div className="rwp-fb-rule"/>
-
-          {/* ─────────────────────────────────────────
-              BLOCK 02 — COMMUNITY / MARKETPLACE
-          ───────────────────────────────────────── */}
-          <div className="rwp-fb rwp-fb--rider rwp-fb--rev">
-            <div className="rwp-fb-meta">
-              <span className="rwp-fb-num"><Trans>02 — COMMUNITY</Trans></span>
-            </div>
-
-            <div className="rwp-fb-screens">
-              <div className="rwp-fb-glow"/>
-              <div className="rwp-fb-screen-a">
-                <img loading="lazy" src="/Images/feature-screens/feat-chat.png" alt="Chat" />
-              </div>
-              <div className="rwp-fb-screen-b">
-                <img loading="lazy" src="/Images/feature-screens/feat-shop.png" alt="Marketplace" />
-              </div>
-            </div>
-
-            <div className="rwp-fb-text">
-              <div className="rwp-fb-type-tag rider">
-                <span className="rwp-fb-tag-arrow"><ArrowRight size={11}/></span>
-                <Trans>For Riders</Trans>
-              </div>
-              <h3 className="rwp-fb-headline"><Trans>Chat. Trade.</Trans><br/><Trans>Stay connected.</Trans></h3>
-              <p className="rwp-fb-copy">
-                <Trans>Group chat, direct messages, a built-in marketplace, and an in-app wallet — everything that keeps your club community alive between rides.</Trans>
-              </p>
-              <ul className="rwp-fb-list">
-                {[
-                  [t`A chat for every ride.`, t`Say goodbye to endless WhatsApp chats.`],
-                  [t`Club Marketplace`, t`Buy and sell gear with riders you already know`],
-                  [t`In-App Wallet`, t`Deposit, withdraw, and pay without leaving the app`],
-                  [t`Member Discounts`, t`Exclusive discount codes on gear and club events`],
-                ].map(([title, desc]) => (
-                  <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="rwp-fb-rule"/>
-
-          {/* ─────────────────────────────────────────
-              BLOCK 03 — CLUB MANAGEMENT
-          ───────────────────────────────────────── */}
-          <div className="rwp-fb rwp-fb--rider">
-            <div className="rwp-fb-meta">
-              <span className="rwp-fb-num"><Trans>03 — FOR CLUBS</Trans></span>
+              <span className="rwp-fb-num"><Trans>01 — COMMUNITY &amp; CLUB MANAGEMENT</Trans></span>
             </div>
 
             <div className="rwp-fb-text">
               <div className="rwp-fb-type-tag club">
                 <span className="rwp-fb-tag-arrow"><ArrowRight size={11} color="rgba(255,255,255,0.35)"/></span>
-                <Trans>For Club Owners &amp; Managers</Trans>
+                <Trans>FOR CLUBS, SHOPS &amp; COMMUNITY LEADERS</Trans>
               </div>
-              <h3 className="rwp-fb-headline"><Trans>Build your club.</Trans><br/><Trans>Create community.</Trans></h3>
+              <h3 className="rwp-fb-headline"><Trans>Organise your community. Without the admin chaos.</Trans></h3>
               <p className="rwp-fb-copy">
-                <Trans>Create and manage multiple clubs from one dashboard. Post news, control who joins, manage members, and keep your community organised — all from your admin panel.</Trans>
+                <Trans>Plan recurring weekly sessions, share routes with GPX, approve new members and publish official announcements. Everything your group needs in one single space.</Trans>
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  [t`Club Calendar`, t`Keep every ride, event, and activity organized in one place`],
-                  [t`Join Request Control`, t`Accept or reject applications with one tap`],
-                  [t`Member Management`, t`View all members, assign roles, message directly`],
-                  [t`News & Announcements`, t`Post updates and records for members to engage with`],
+                  [t`Activity & Route Calendar`, t`Keep rides, runs and meeting points clearly organized.`],
+                  [t`Access & Invitation Control`, t`Approve new members or use private invite codes.`],
+                  [t`Role Permissions`, t`Set ride leaders, community admins and member permissions.`],
+                  [t`Official Updates`, t`Share club announcements and route changes without them getting buried.`],
                 ].map(([title, desc]) => (
                   <li key={title}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
@@ -771,40 +692,124 @@ export const FeaturesSection: React.FC = () => {
           <div className="rwp-fb-rule"/>
 
           {/* ─────────────────────────────────────────
-              BLOCK 04 — ANALYTICS & CLUB OVERVIEW
+              BLOCK 02 — MEMBERSHIP FEES & REVENUE
           ───────────────────────────────────────── */}
           <div className="rwp-fb rwp-fb--rider rwp-fb--rev">
             <div className="rwp-fb-meta">
-              <span className="rwp-fb-num"><Trans>04 — MEMBERSHIP FEES</Trans></span>
+              <span className="rwp-fb-num"><Trans>02 — REVENUE &amp; DUES</Trans></span>
             </div>
 
             <div className="rwp-fb-screens">
               <div className="rwp-fb-glow"/>
               <div className="rwp-fb-screen-a">
-                <img loading="lazy" src="/Images/feature-screens/feat-analytics.png" alt="Performance Analytics" />
+                <img loading="lazy" src="/Images/feature-screens/feat-wallet.png" alt="Membership Dues & Wallet" />
               </div>
               <div className="rwp-fb-screen-b">
-                <img loading="lazy" src="/Images/feature-screens/feat-club-overview.png" alt="Club Overview" />
+                <img loading="lazy" src="/Images/feature-screens/feat-club-overview.png" alt="Member payment status" />
               </div>
             </div>
 
             <div className="rwp-fb-text">
               <div className="rwp-fb-type-tag club">
                 <span className="rwp-fb-tag-arrow"><ArrowRight size={11} color="rgba(255,255,255,0.35)"/></span>
-                <Trans>For Club Owners</Trans>
+                <Trans>REVENUE &amp; DUES</Trans>
               </div>
-              <h3 className="rwp-fb-headline"><Trans>Membership fees.</Trans><br/><Trans>Made simple.</Trans></h3>
+              <h3 className="rwp-fb-headline"><Trans>Membership dues and paid activities. Simplified.</Trans></h3>
               <p className="rwp-fb-copy">
-                <Trans>Set up your club's membership fees, track payments, send Stripe payment requests, and keep every member's status up to date - all from one simple dashboard.</Trans>
+                <Trans>Manage annual club dues, track who has paid or expired, and monetize special events or clinic rides with seamless Stripe integration.</Trans>
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  [t`Flexible Fee Setup`, t`Define the amount and membership validity period.`],
-                  [t`Payment Tracking`, t`See who has paid, who needs to renew, and who is not up to date.`],
-                  [t`Stripe Payments`, t`Send secure payment requests directly through Stripe.`],
-                  [t`Manual Payment Updates`, t`Mark members as paid when they pay outside the app.`],
+                  [t`Flexible Fee Setup`, t`Define membership amounts and validity periods.`],
+                  [t`Clear Status Tracking`, t`Instantly see who is Paid or Not Renewed.`],
+                  [t`Direct Stripe Integration`, t`Collect payments securely into your own account.`],
+                  [t`Manual Check Support`, t`Mark members as paid manually for cash or bank transfers.`],
                 ].map(([title, desc]) => (
                   <li key={title}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="rwp-fb-rule"/>
+
+          {/* ─────────────────────────────────────────
+              BLOCK 03 — COMMUNITY & ENGAGEMENT
+          ───────────────────────────────────────── */}
+          <div className="rwp-fb rwp-fb--rider">
+            <div className="rwp-fb-meta">
+              <span className="rwp-fb-num"><Trans>03 — COMMUNITY ENGAGEMENT</Trans></span>
+            </div>
+
+            <div className="rwp-fb-text">
+              <div className="rwp-fb-type-tag rider">
+                <span className="rwp-fb-tag-arrow"><ArrowRight size={11}/></span>
+                <Trans>COMMUNITY ENGAGEMENT</Trans>
+              </div>
+              <h3 className="rwp-fb-headline"><Trans>Keep members engaged between activities.</Trans></h3>
+              <p className="rwp-fb-copy">
+                <Trans>Dedicated chats per activity, private member messaging, partner discounts and club gear. A real digital hub for your community.</Trans>
+              </p>
+              <ul className="rwp-fb-list">
+                {[
+                  [t`Activity-specific Chats`, t`Keep logistics, photos and questions tied directly to each session.`],
+                  [t`Internal Marketplace`, t`Let members trade second-hand bikes and gear safely.`],
+                  [t`Exclusive Partner Discounts`, t`Publish perks, partner shop codes and local deals for your members.`],
+                  [t`Club Shop`, t`Sell official club apparel, kits or event tickets directly.`],
+                ].map(([title, desc]) => (
+                  <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rwp-fb-screens">
+              <div className="rwp-fb-glow"/>
+              <div className="rwp-fb-screen-a">
+                <img loading="lazy" src="/Images/feature-screens/feat-chat.png" alt="Community Chat" />
+              </div>
+              <div className="rwp-fb-screen-b">
+                <img loading="lazy" src="/Images/feature-screens/feat-discounts.png" alt="Discounts & Shop" />
+              </div>
+            </div>
+          </div>
+
+          <div className="rwp-fb-rule"/>
+
+          {/* ─────────────────────────────────────────
+              BLOCK 04 — THE MEMBER EXPERIENCE
+          ───────────────────────────────────────── */}
+          <div className="rwp-fb rwp-fb--rider rwp-fb--rev">
+            <div className="rwp-fb-meta">
+              <span className="rwp-fb-num"><Trans>04 — THE MEMBER EXPERIENCE</Trans></span>
+            </div>
+
+            <div className="rwp-fb-screens">
+              <div className="rwp-fb-glow"/>
+              <div className="rwp-fb-screen-a">
+                <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Rides listing" />
+              </div>
+              <div className="rwp-fb-screen-b">
+                <img loading="lazy" src="/Images/feature-screens/feat-leaderboard-1.png" alt="Leaderboard" />
+              </div>
+            </div>
+
+            <div className="rwp-fb-text">
+              <div className="rwp-fb-type-tag rider">
+                <span className="rwp-fb-tag-arrow"><ArrowRight size={11}/></span>
+                <Trans>THE MEMBER EXPERIENCE</Trans>
+              </div>
+              <h3 className="rwp-fb-headline"><Trans>An effortless app your members will actually enjoy using.</Trans></h3>
+              <p className="rwp-fb-copy">
+                <Trans>Members can check upcoming sessions, preview routes, RSVP with one tap, and track their participation on club leaderboards.</Trans>
+              </p>
+              <ul className="rwp-fb-list">
+                {[
+                  [t`1-Tap RSVP`, t`Members confirm attendance and see pace, distance and route details.`],
+                  [t`Club Leaderboards`, t`Reward consistency by activities attended and Strava distance.`],
+                  [t`GPX Downloads & Strava Sync`, t`Seamless route access and verified activity tracking.`],
+                  [t`Cycling & Running Support`, t`Built specifically for road, gravel, MTB, trail and street runs.`],
+                ].map(([title, desc]) => (
+                  <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
               </ul>
             </div>
@@ -820,15 +825,15 @@ export const FeaturesSection: React.FC = () => {
               <div>
                 <div className="rwp-fp-label">
                   <span className="rwp-fp-label-line"/>
-                  <span className="rwp-fp-label-text">Cross-Platform</span>
+                  <span className="rwp-fp-label-text"><Trans>Cross-Platform</Trans></span>
                 </div>
                 <h3 className="rwp-fp-headline">
-                  Web. iOS.<br/>
+                  <Trans>Web. iOS.<br/>
                   Android.<br/>
-                  <em className="text-accent">Always in sync.</em>
+                  <em className="text-accent">Always in sync.</em></Trans>
                 </h3>
                 <p className="rwp-fp-copy">
-                  Your rides, clubs, and conversations follow you everywhere. Start organising on desktop — join from your phone. The full experience, on every screen.
+                  <Trans>Organisers manage everything comfortably from the desktop dashboard. Members join and stay updated directly from their phones.</Trans>
                 </p>
                 <div className="rwp-fp-grid">
                   <div className="rwp-fp-grid-cell">
@@ -837,8 +842,8 @@ export const FeaturesSection: React.FC = () => {
                         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.33c.66-.8 1.11-1.92.99-3.04-.96.04-2.13.64-2.82 1.44-.61.71-1.15 1.86-1.01 2.96 1.08.08 2.18-.55 2.84-1.36z"/>
                       </svg>
                     </div>
-                    <div className="rwp-fp-grid-title">iOS App</div>
-                    <div className="rwp-fp-grid-sub">Native experience on iPhone and iPad</div>
+                    <div className="rwp-fp-grid-title"><Trans>iOS App</Trans></div>
+                    <div className="rwp-fp-grid-sub"><Trans>Native experience for iPhone athletes and organisers on the move.</Trans></div>
                   </div>
                   <div className="rwp-fp-grid-cell">
                     <div className="rwp-fp-grid-icon">
@@ -846,8 +851,8 @@ export const FeaturesSection: React.FC = () => {
                         <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5516 0 .9997.4482.9997.9993 0 .5511-.4481.9997-.9997.9997zm-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5516 0 .9997.4482.9997.9993 0 .5511-.4481.9997-.9997.9997zm11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1523-.5676.416.416 0 00-.5676.1523l-2.0223 3.503C15.5902 8.3582 13.8535 8 12 8s-3.5902.3582-5.1366.9499L4.8411 5.4469a.416.416 0 00-.5676-.1523.416.416 0 00-.1523.5676l1.9973 3.4592C2.6889 11.1867 0 14.792 0 19h24c0-4.208-2.6889-7.8133-6.1185-9.6786z"/>
                       </svg>
                     </div>
-                    <div className="rwp-fp-grid-title">Android App</div>
-                    <div className="rwp-fp-grid-sub">Full-featured on all Android devices</div>
+                    <div className="rwp-fp-grid-title"><Trans>Android App</Trans></div>
+                    <div className="rwp-fp-grid-sub"><Trans>Full-featured on all Android devices.</Trans></div>
                   </div>
                   <div className="rwp-fp-grid-cell">
                     <div className="rwp-fp-grid-icon">
@@ -858,8 +863,8 @@ export const FeaturesSection: React.FC = () => {
                         <text x="12" y="13.3" textAnchor="middle" fill="#EB712B" fontSize="4.2" fontWeight="900" fontFamily="sans-serif">WWW</text>
                       </svg>
                     </div>
-                    <div className="rwp-fp-grid-title">Web App</div>
-                    <div className="rwp-fp-grid-sub">Full desktop experience in any browser</div>
+                    <div className="rwp-fp-grid-title"><Trans>Web App</Trans></div>
+                    <div className="rwp-fp-grid-sub"><Trans>Powerful desktop control panel for club founders, shops and admins.</Trans></div>
                   </div>
                   <div className="rwp-fp-grid-cell">
                     <div className="rwp-fp-grid-icon">
@@ -871,8 +876,8 @@ export const FeaturesSection: React.FC = () => {
                         <path d="M14.2 15a2 2 0 013-1m.3 1l.8-.8m-.8.8l-.8-.8m-2 1.8a2 2 0 00-3 1m-.3-1l-.8.8m.8-.8l.8.8" stroke="#FFF" strokeWidth="1.2" strokeLinecap="round"/>
                       </svg>
                     </div>
-                    <div className="rwp-fp-grid-title">Real-time Sync</div>
-                    <div className="rwp-fp-grid-sub">Data stays in sync across all your devices</div>
+                    <div className="rwp-fp-grid-title"><Trans>Real-time Sync</Trans></div>
+                    <div className="rwp-fp-grid-sub"><Trans>Changes to rides, memberships and rosters update immediately across devices.</Trans></div>
                   </div>
                 </div>
               </div>

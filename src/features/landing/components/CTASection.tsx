@@ -48,7 +48,6 @@ export const CTASection: React.FC = () => {
                     transform: "none",
                     opacity: "1",
                   } as any}
-                 
                 >
                   <h2
                     className="framer-text framer-styles-preset-1qep5fy"
@@ -59,7 +58,7 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-1of0zx5, rgb(255, 255, 255))",
                     } as any}
                   >
-                    <Trans>Ready to elevate your </Trans><span style={{ color: "#EB712B" }}><Trans>club &amp; rides?</Trans></span>
+                    <Trans>Build a sports community</Trans> <span style={{ color: "#EB712B" }}><Trans>people come back to.</Trans></span>
                   </h2>
                 </div>
                 <div
@@ -72,7 +71,6 @@ export const CTASection: React.FC = () => {
                     transform: "none",
                     opacity: "1",
                   } as any}
-                 
                 >
                   <p
                     className="framer-text framer-styles-preset-38u9fz"
@@ -83,8 +81,36 @@ export const CTASection: React.FC = () => {
                         "var(--extracted-r6o4lv, rgba(255, 255, 255, 0.55))",
                     } as any}
                   >
-                    <Trans>Join athletes and club leaders building the ultimate sports community.</Trans>
+                    <Trans>Turn weekly activities into lasting community. Bring your members together, on and off the road.</Trans>
                   </p>
+                </div>
+                <div style={{ marginTop: "28px", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
+                  <a
+                    href="/signup"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      backgroundColor: "#EB712B",
+                      color: "#ffffff",
+                      fontFamily: "Manrope, Inter, sans-serif",
+                      fontSize: "15px",
+                      fontWeight: 700,
+                      padding: "14px 28px",
+                      borderRadius: "12px",
+                      textDecoration: "none",
+                      boxShadow: "0 8px 24px rgba(235, 113, 43, 0.4)",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <Trans>Create your community free</Trans>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 8h10M9 4l4 4-4 4"/>
+                    </svg>
+                  </a>
+                  <span style={{ fontFamily: "Manrope, Inter, sans-serif", fontSize: "12px", color: "rgba(255, 255, 255, 0.45)", marginLeft: "4px" }}>
+                    <Trans>Free forever for up to 15 members. No credit card required.</Trans>
+                  </span>
                 </div>
               </div>
             </div>

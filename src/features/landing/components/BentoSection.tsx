@@ -22,7 +22,8 @@ export const BentoSection: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} id="bento-features" className={`rwp-bento ${isVisible ? "visible" : ""}`}>
+    <section ref={sectionRef} id="for-communities" className={`rwp-bento ${isVisible ? "visible" : ""}`}>
+      <div id="bento-features" style={{ position: "absolute", top: 0 }} />
       <style>{`
         .rwp-bento {
           padding: 120px 20px;
@@ -371,10 +372,10 @@ export const BentoSection: React.FC = () => {
       <div className="rwp-bento-container">
         <div className="rwp-bento-header">
           <h2 className="rwp-bento-title">
-            <Trans>Take your club to the </Trans><span style={{ color: "#EB712B" }}><Trans>next level</Trans></span>
+            <Trans>Run your community </Trans><span style={{ color: "#EB712B" }}><Trans>from one place.</Trans></span>
           </h2>
           <p className="rwp-bento-subtitle">
-            <Trans>The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes.</Trans>
+            <Trans>Stop switching between WhatsApp, spreadsheets, payment links and separate tools. Manage your activities, members, communication and payments in one place.</Trans>
           </p>
         </div>
 
@@ -407,10 +408,10 @@ export const BentoSection: React.FC = () => {
           <div className="rwp-bento-card rwp-bento-card-1">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> <Trans>Smart Dashboard</Trans>
+                <span className="rwp-bento-accent-dot"></span> <Trans>Community dashboard</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                <Trans>See all your active events, clubs, and tasks in one unified view — no more toggling between apps.</Trans>
+                <Trans>See your upcoming activities, members, payments and key tasks in one clear view.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
@@ -420,58 +421,58 @@ export const BentoSection: React.FC = () => {
                   <div className="rwp-browser-dot" style={{ background: '#FFBD2E' }} />
                   <div className="rwp-browser-dot" style={{ background: '#27C93F' }} />
                 </div>
-                <img loading="lazy" src="/Images/feature-screens/feat-web-dashboard.png" alt="Smart Dashboard" />
+                <img loading="lazy" src="/Images/feature-screens/feat-web-dashboard.png" alt="Community dashboard" />
               </div>
             </div>
           </div>
 
-          {/* Card 2: Analytics */}
+          {/* Card 2: Recurring Activities & Rides */}
           <div className="rwp-bento-card rwp-bento-card-2">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> <Trans>Ride Analytics</Trans>
+                <span className="rwp-bento-accent-dot"></span> <Trans>Recurring Activities &amp; Rides</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                <Trans>Track your personal bests and club statistics to understand your performance flow over time.</Trans>
+                <Trans>Set up weekly club rides, track routes with GPX, and keep an active calendar without having to announce every session from scratch.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
               <div className="rwp-phone-mockup">
-                <img loading="lazy" src="/Images/feature-screens/feat-analytics.png" alt="Ride Analytics" />
+                <img loading="lazy" src="/Images/feature-screens/feat-rides.png" alt="Recurring Activities &amp; Rides" />
               </div>
             </div>
           </div>
 
-          {/* Card 3: Club Management */}
+          {/* Card 3: Members, Roles & Permissions */}
           <div className="rwp-bento-card rwp-bento-card-3">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> <Trans>Club Management</Trans>
+                <span className="rwp-bento-accent-dot"></span> <Trans>Members, Roles &amp; Permissions</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                <Trans>Approve members, handle roles, and keep your community engaged and organised effortlessly.</Trans>
+                <Trans>Approve join requests, assign admins or ride leaders, and control who can create activities or post club news.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
               <div className="rwp-phone-mockup">
-                <img loading="lazy" src="/Images/feature-screens/feat-manage-club.png" alt="Club Management" />
+                <img loading="lazy" src="/Images/feature-screens/feat-manage-club.png" alt="Members, Roles &amp; Permissions" />
               </div>
             </div>
           </div>
 
-          {/* Card 4: Shop / Marketplace */}
+          {/* Card 4: Sell directly to your community */}
           <div className="rwp-bento-card rwp-bento-card-4">
             <div className="rwp-bento-content">
               <h3 className="rwp-bento-card-title">
-                <span className="rwp-bento-accent-dot"></span> <Trans>Integrated Shop</Trans>
+                <span className="rwp-bento-accent-dot"></span> <Trans>Sell directly to your community</Trans>
               </h3>
               <p className="rwp-bento-card-desc">
-                <Trans>Offer club merch, event tickets, and gear directly to your members without external tools.</Trans>
+                <Trans>Offer club merchandise, products or paid activities from the same place your members already use.</Trans>
               </p>
             </div>
             <div className="rwp-bento-image-area">
               <div className="rwp-phone-mockup">
-                <img loading="lazy" src="/Images/feature-screens/feat-shop.png" alt="Integrated Shop" />
+                <img loading="lazy" src="/Images/feature-screens/feat-shop.png" alt="Sell directly to your community" />
               </div>
             </div>
           </div>

@@ -2,25 +2,24 @@
 import React, { useState } from "react";
 import { Trans } from "@lingui/react/macro";
 import { t } from "@lingui/core/macro";
-import { LAUNCH_PRICING, STRIPE_PAYMENT_LINKS } from "../../../Constants";
+import { STRIPE_PAYMENT_LINKS } from "../../../Constants";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
 const CheckIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" style={{ flexShrink: 0 }}>
     <circle cx="7.5" cy="7.5" r="7.5" fill="rgba(235,113,43,0.1)"/>
     <path d="M4.5 7.5L6.5 9.5L10.5 5.5" stroke="#EB712B" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
 const CrossIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" style={{ flexShrink: 0 }}>
     <circle cx="7.5" cy="7.5" r="7.5" fill="rgba(255,255,255,0.03)"/>
     <path d="M5.5 5.5L9.5 9.5M9.5 5.5L5.5 9.5" stroke="rgba(255,255,255,0.15)" strokeWidth="1.4" strokeLinecap="round"/>
   </svg>
 );
 
-// Rider plan icon
 const RiderIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EB712B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="5.5" cy="17.5" r="3.5"/>
@@ -32,7 +31,6 @@ const RiderIcon = () => (
   </svg>
 );
 
-// Pro / Club icon
 const ProIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EB712B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -42,7 +40,6 @@ const ProIcon = () => (
   </svg>
 );
 
-// Elite icon
 const EliteIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EB712B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -51,97 +48,115 @@ const EliteIcon = () => (
 
 // ── Plan data ─────────────────────────────────────────────────────────────────
 
-const PLANS = () => [
+const CLUB_PLANS = () => [
   {
-    id: "free",
-    Icon: RiderIcon,
-    name: t`Free Limited Plan`,
-    tagline: t`Basic Tier`,
-    description: t`Essential access to browse activities, join clubs, and connect with your community.`,
+    id: "free-club",
+    Icon: ProIcon,
+    name: t`Free Club`,
+    tagline: t`Up to 15 members`,
+    description: t`Everything you need to set up your club and run weekly group sessions.`,
     isFree: true,
+    price: "0",
     regularPrice: null,
     promoBadge: null,
-    monthlyPrice: "0",
-    yearlyPrice: "0",
-    intervalLabel: () => "",
-    saveText: null,
+    intervalLabel: "",
+    cta: t`Start for Free`,
+    ctaHref: "/signup?plan=free_club",
+    highlight: false,
+    microcopy: null,
+    features: [
+      { text: t`Up to 15 club members`, ok: true },
+      { text: t`Activity & ride scheduling`, ok: true },
+      { text: t`Route sharing with GPX downloads`, ok: true },
+      { text: t`Member chat & announcements`, ok: true },
+      { text: t`Unlimited members (no cap)`, ok: false },
+      { text: t`Member fee tracking (Paid / Not Renewed)`, ok: false },
+      { text: t`Club shop integrated with Stripe`, ok: false },
+      { text: t`Paid activities & event ticketing`, ok: false },
+    ],
+  },
+  {
+    id: "gold-club",
+    Icon: EliteIcon,
+    name: t`Gold Club`,
+    tagline: t`For clubs & shops`,
+    description: t`Everything you need to run, monetize, and scale your sports community or shop activities.`,
+    isFree: false,
+    promoBadge: t`LAUNCH OFFER - SAVE €41`,
+    regularPrice: "130",
+    price: "89",
+    intervalLabel: t`/ year (billed annually)`,
+    cta: t`Get Gold Launch Offer`,
+    ctaHref: STRIPE_PAYMENT_LINKS.GOLD_CLUB_YEARLY_PROMO || "/signup?plan=gold_club",
+    highlight: true,
+    microcopy: t`One single membership fee or gear sale covers the whole year.`,
+    features: [
+      { text: t`Unlimited members (no 15-member cap)`, ok: true },
+      { text: t`Member fee tracking (Paid / Not Renewed status)`, ok: true },
+      { text: t`Club shop integrated with Stripe`, ok: true },
+      { text: t`Paid activities and workshops`, ok: true },
+      { text: t`Verified Gold community badge`, ok: true },
+      { text: t`GPX downloads & Strava sync`, ok: true },
+      { text: t`Multiple admins & ride leaders`, ok: true },
+    ],
+  },
+];
+
+const ATHLETE_PLANS = () => [
+  {
+    id: "free-athlete",
+    Icon: RiderIcon,
+    name: t`Free Athlete`,
+    tagline: t`Basic Access`,
+    description: t`Join clubs, find group rides, and connect with athletes near you.`,
+    isFree: true,
+    price: "0",
+    regularPrice: null,
+    promoBadge: null,
+    intervalLabel: "",
     cta: t`Start for Free`,
     ctaHref: "/signup",
     highlight: false,
+    microcopy: null,
     features: [
-      { text: t`Browse & join public activities`, ok: true },
-      { text: t`Up to 2 items in Marketplace`, ok: true },
-      { text: t`Basic ride & activity tracking`, ok: true },
-      { text: t`Public club access & group chats`, ok: true },
-      { text: t`Create a club (up to 15 members)`, ok: true },
-      { text: t`Unlimited marketplace listings`, ok: false },
-      { text: t`Advanced Performance Analytics`, ok: false },
-      { text: t`Club shop & membership fee management`, ok: false },
+      { text: t`Join clubs & local communities`, ok: true },
+      { text: t`1-Tap RSVP to rides and activities`, ok: true },
+      { text: t`Activity-specific & direct chat`, ok: true },
+      { text: t`Sell gear on Marketplace (up to 2 items)`, ok: true },
+      { text: t`Strava activity sync`, ok: false },
+      { text: t`GPX route downloads to bike computer`, ok: false },
+      { text: t`Club leaderboards & distance rankings`, ok: false },
     ],
   },
   {
     id: "premium-athlete",
     Icon: ProIcon,
     name: t`Premium Athlete`,
-    tagline: t`Most popular`,
-    description: t`Designed for athletes who want unlimited access to activities, marketplace, and analytics.`,
+    tagline: t`For dedicated riders`,
+    description: t`Get the most out of every ride and run with advanced integrations, route downloads, and verified community status.`,
     isFree: false,
-    promoBadge: t`Launch Promo · 50% OFF`,
-    regularPrice: LAUNCH_PRICING.ATHLETE_REGULAR_PRICE,
-    promoPrice: LAUNCH_PRICING.ATHLETE_PROMO_PRICE,
-    monthlyPrice: "2,99",
-    yearlyPrice: LAUNCH_PRICING.ATHLETE_PROMO_PRICE,
-    intervalLabel: (b: string) => b === "yearly" ? t`/ year` : t`/ month`,
-    saveText: (b: string) => b === "yearly" ? t`Special launch price (Regular 29,99€/year)` : t`Or save 50% with annual launch promo (14,99€/yr)`,
-    cta: t`Get Premium Athlete`,
+    promoBadge: t`LAUNCH OFFER - SAVE 10€`,
+    regularPrice: "24.99",
+    price: "14.99",
+    intervalLabel: t`/ year (billed annually)`,
+    cta: t`Get Athlete Premium`,
     ctaHref: STRIPE_PAYMENT_LINKS.ATHLETE_YEARLY_PROMO || "/signup?plan=athlete",
     highlight: true,
+    microcopy: t`14.99€/year. That's about 4 energy gels for 365 days of community.`,
     features: [
-      { text: t`Everything in Free Limited Plan`, ok: true },
-      { text: t`Unlimited Marketplace Listings`, ok: true },
-      { text: t`Unlimited Group Rides & Activities`, ok: true },
-      { text: t`Strava & GPS Route Syncing`, ok: true },
-      { text: t`Advanced Performance Analytics`, ok: true },
-      { text: t`Verified Pro Athlete Badge`, ok: true },
-      { text: t`Priority member chat support`, ok: true },
-      { text: t`Club shop & fee collection`, ok: false },
-    ],
-  },
-  {
-    id: "gold-club",
-    Icon: EliteIcon,
-    name: t`Gold Club Plan`,
-    tagline: t`For club owners`,
-    description: t`The complete club operating system — collect member fees, run your club shop, and grow.`,
-    isFree: false,
-    promoBadge: t`Launch Promo · 32% OFF`,
-    regularPrice: LAUNCH_PRICING.GOLD_CLUB_REGULAR_PRICE,
-    promoPrice: LAUNCH_PRICING.GOLD_CLUB_PROMO_PRICE,
-    monthlyPrice: LAUNCH_PRICING.GOLD_CLUB_PROMO_PRICE,
-    yearlyPrice: LAUNCH_PRICING.GOLD_CLUB_PROMO_PRICE,
-    intervalLabel: () => t`/ year`,
-    saveText: () => t`Special launch price (Regular 130€/year) · Unlimited members`,
-    cta: t`Start Gold Club`,
-    ctaHref: STRIPE_PAYMENT_LINKS.GOLD_CLUB_YEARLY_PROMO || "/signup?plan=gold_club",
-    highlight: false,
-    features: [
-      { text: t`Unlimited Club Members (beyond 15)`, ok: true },
-      { text: t`Stripe Automated Fee Collection`, ok: true },
-      { text: t`Manual Payment Tracking & Cash Updates`, ok: true },
-      { text: t`Online Club Merchandise Shop`, ok: true },
-      { text: t`Paid Activities & Event Ticketing`, ok: true },
-      { text: t`Strava & GPX Route Syncing`, ok: true },
-      { text: t`Multiple Admins & Co-Owner Roles`, ok: true },
-      { text: t`Verified Gold Club Crown Badge`, ok: true },
+      { text: t`Strava integration: Automatic activity sync and verified stats`, ok: true },
+      { text: t`GPX route downloads: Export routes directly to your cycling computer or watch`, ok: true },
+      { text: t`Club leaderboards: Compete in distance and attendance rankings`, ok: true },
+      { text: t`Extra Marketplace listing: Keep more second-hand gear active at once`, ok: true },
+      { text: t`Exclusive profile badge: Stand out as a verified supporter with orange community ring`, ok: true },
     ],
   },
 ];
 
 // ── Pricing Card ──────────────────────────────────────────────────────────────
 
-const PricingCard = ({ plan, billing }) => {
-  const { id, Icon, name, tagline, description, isFree, regularPrice, promoBadge, monthlyPrice, yearlyPrice, intervalLabel, saveText, cta, ctaHref, highlight, features } = plan;
-  const price = billing === "monthly" ? monthlyPrice : yearlyPrice;
+const PricingCard = ({ plan }) => {
+  const { Icon, name, tagline, description, isFree, regularPrice, promoBadge, price, intervalLabel, cta, ctaHref, highlight, microcopy, features } = plan;
   const isExternal = ctaHref && ctaHref.startsWith("http");
 
   return (
@@ -164,11 +179,12 @@ const PricingCard = ({ plan, billing }) => {
       <div className="rwp-pc-price-block">
         {isFree ? (
           <div className="rwp-pc-price-row">
-            <span className="rwp-pc-price-free"><Trans>Free</Trans></span>
+            <span className="rwp-pc-amount">0</span>
+            <span className="rwp-pc-currency">€</span>
           </div>
         ) : (
           <>
-            {billing === "yearly" && regularPrice && (
+            {regularPrice && (
               <div className="rwp-pc-promo-badge-wrap">
                 {promoBadge && <span className="rwp-pc-promo-pill">{promoBadge}</span>}
                 <span className="rwp-pc-strike-amount">{regularPrice}€</span>
@@ -177,16 +193,9 @@ const PricingCard = ({ plan, billing }) => {
             <div className="rwp-pc-price-row">
               <span className="rwp-pc-amount">{price}</span>
               <span className="rwp-pc-currency">€</span>
-              <span className="rwp-pc-per">
-                {intervalLabel ? intervalLabel(billing) : `/ year`}
-              </span>
+              {intervalLabel && <span className="rwp-pc-per">{intervalLabel}</span>}
             </div>
           </>
-        )}
-        {saveText && (
-          <div className="rwp-pc-save-note">
-            {typeof saveText === "function" ? saveText(billing) : saveText}
-          </div>
         )}
       </div>
 
@@ -203,6 +212,12 @@ const PricingCard = ({ plan, billing }) => {
         </svg>
       </a>
 
+      {microcopy && (
+        <div className="rwp-pc-microcopy">
+          {microcopy}
+        </div>
+      )}
+
       {/* Divider */}
       <div className="rwp-pc-divider" />
 
@@ -211,7 +226,7 @@ const PricingCard = ({ plan, billing }) => {
         {features.map((f, i) => (
           <li key={i} className={`rwp-pc-feature ${f.ok ? "" : "rwp-pc-feature--off"}`}>
             {f.ok ? <CheckIcon /> : <CrossIcon />}
-            {f.text}
+            <span>{f.text}</span>
           </li>
         ))}
       </ul>
@@ -222,12 +237,12 @@ const PricingCard = ({ plan, billing }) => {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export const PricingSection: React.FC = () => {
-  const [billing, setBilling] = useState("yearly");
+  const [activeTab, setActiveTab] = useState<"clubs" | "athletes">("clubs");
 
   const css = `
     /* ── Section shell ── */
     .rwp-pricing {
-      padding: 120px 40px;
+      padding: 120px 24px;
       background: transparent;
       position: relative;
       overflow: hidden;
@@ -237,17 +252,9 @@ export const PricingSection: React.FC = () => {
     .rwp-pricing-header {
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      max-width: 1160px;
-      margin: 0 auto 64px;
-    }
-    .rwp-pricing-header-left {}
-    .rwp-pricing-header-right {
-      display: flex;
-      justify-content: flex-end;
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 40px;
     }
 
     /* Badge */
@@ -257,8 +264,9 @@ export const PricingSection: React.FC = () => {
       gap: 7px;
       border: 1px solid rgba(235,113,43,0.3);
       border-radius: 100px;
-      padding: 5px 13px;
+      padding: 5px 14px;
       margin-bottom: 20px;
+      background: rgba(235,113,43,0.04);
     }
     .rwp-pricing-badge-dot {
       width: 6px; height: 6px;
@@ -269,143 +277,74 @@ export const PricingSection: React.FC = () => {
       font-family: Manrope,Inter,sans-serif;
       font-size: 11px; font-weight: 700;
       color: #EB712B;
-      letter-spacing: 0.07em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .rwp-pricing-heading {
       font-family: Manrope,Inter,sans-serif;
-      font-size: clamp(32px, 3.8vw, 50px);
+      font-size: clamp(32px, 3.8vw, 48px);
       font-weight: 800;
       color: #fff;
       letter-spacing: -0.03em;
-      line-height: 1.08;
-      margin: 0 0 18px;
-    }
-    .rwp-pricing-heading em {
-      font-style: normal;
-      color: #EB712B;
+      line-height: 1.15;
+      margin: 0 0 16px;
     }
     .rwp-pricing-sub {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 15px;
-      color: rgba(255,255,255,0.38);
-      line-height: 1.65;
-      margin: 0 0 32px;
-      max-width: 420px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.6;
+      margin: 0 auto;
+      max-width: 660px;
     }
 
-    /* Toggle */
-    .rwp-pricing-toggle-row {
+    /* ── Audience Tabs ── */
+    .rwp-pricing-tabs-wrap {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      justify-content: center;
+      margin: 0 auto 52px;
+      position: relative;
+      z-index: 2;
     }
-    .rwp-pricing-toggle {
+    .rwp-pricing-tabs {
       display: inline-flex;
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.08);
+      background: #0d0d0d;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 100px;
-      padding: 3px;
+      padding: 5px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
-    .rwp-pricing-toggle-btn {
+    .rwp-pricing-tab-btn {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 13px; font-weight: 600;
-      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 26px;
       border-radius: 100px;
       border: none;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
+      transition: all 0.22s ease;
     }
-    .rwp-pricing-toggle-btn.on  { background: #EB712B; color: #fff; }
-    .rwp-pricing-toggle-btn.off { background: transparent; color: rgba(255,255,255,0.4); }
-    .rwp-pricing-toggle-btn.off:hover { color: rgba(255,255,255,0.75); }
-    .rwp-pricing-save-pill {
-      font-family: Manrope,Inter,sans-serif;
-      font-size: 11px; font-weight: 700;
-      color: #EB712B;
-      background: rgba(235,113,43,0.08);
-      border: 1px solid rgba(235,113,43,0.2);
-      border-radius: 100px;
-      padding: 3px 10px;
-      letter-spacing: 0.03em;
-      animation: rwp-fadein 0.3s ease;
+    .rwp-pricing-tab-btn.active {
+      background: #EB712B;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(235, 113, 43, 0.35);
     }
-    @keyframes rwp-fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-
-    /* App screenshot preview */
-    .rwp-pricing-preview {
-      position: relative;
-      width: 100%;
-      max-width: 480px;
+    .rwp-pricing-tab-btn:not(.active) {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.55);
     }
-    .rwp-pricing-preview-frame {
-      width: 100%;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      position: relative;
-    }
-    .rwp-pricing-preview img {
-      width: 100%;
-      display: block;
-      border-radius: 0 0 15px 15px;
-      object-fit: cover;
-      max-height: 280px;
-    }
-    /* Subtle top bar above screenshot */
-    .rwp-pricing-preview-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
-      background: #111;
-      border-radius: 16px 16px 0 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .rwp-pricing-preview-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-    }
-    .rwp-pricing-preview-label {
-      font-family: Manrope,Inter,sans-serif;
-      font-size: 11px;
-      color: rgba(255,255,255,0.4);
-      margin-left: 4px;
-      font-weight: 600;
-    }
-    /* Floating "included in all plans" badge */
-    .rwp-pricing-preview-badge {
-      position: absolute;
-      bottom: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #0d0d0d;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 100px;
-      padding: 6px 16px;
-      font-family: Manrope,Inter,sans-serif;
-      font-size: 11px;
-      color: rgba(255,255,255,0.6);
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .rwp-pricing-preview-badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 6px rgba(74,222,128,0.6);
+    .rwp-pricing-tab-btn:not(.active):hover {
+      color: #ffffff;
     }
 
-    /* ── Cards grid ── */
+    /* ── Cards grid (2-column layout) ── */
     .rwp-pricing-grid {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: 1fr 1.15fr 1fr;
-      gap: 0;
-      max-width: 1160px;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      max-width: 880px;
       margin: 0 auto;
       align-items: stretch;
     }
@@ -413,36 +352,21 @@ export const PricingSection: React.FC = () => {
     /* ── Card ── */
     .rwp-pc {
       background: #0a0a0a;
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 32px 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 36px 32px;
       display: flex;
       flex-direction: column;
-      gap: 0;
       position: relative;
-      transition: border-color 0.25s;
+      transition: border-color 0.25s, transform 0.2s;
     }
-    /* Left card: rounded left corners */
-    .rwp-pc:first-child {
-      border-radius: 20px 0 0 20px;
-      border-right: none;
+    .rwp-pc:hover {
+      border-color: rgba(235,113,43,0.3);
     }
-    /* Middle card: full border, slightly elevated */
     .rwp-pc--highlight {
       background: #0d0d0d;
       border-color: #EB712B !important;
-      border-radius: 20px;
-      padding: 36px 30px;
-      z-index: 2;
-      box-shadow: 0 0 0 1px #EB712B, 0 24px 64px rgba(0,0,0,0.6);
-      margin: -8px 0;
-    }
-    /* Right card: rounded right corners */
-    .rwp-pc:last-child {
-      border-radius: 0 20px 20px 0;
-      border-left: none;
-    }
-    .rwp-pc:not(.rwp-pc--highlight):hover {
-      border-color: rgba(235,113,43,0.2);
+      box-shadow: 0 0 0 1px #EB712B, 0 20px 50px rgba(235,113,43,0.12), 0 24px 64px rgba(0,0,0,0.7);
     }
 
     .rwp-pc-top {
@@ -452,78 +376,79 @@ export const PricingSection: React.FC = () => {
       margin-bottom: 20px;
     }
     .rwp-pc-icon {
-      width: 42px; height: 42px;
-      border-radius: 10px;
-      background: rgba(235,113,43,0.07);
-      border: 1px solid rgba(235,113,43,0.15);
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(235,113,43,0.08);
+      border: 1px solid rgba(235,113,43,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .rwp-pc-tag {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 10px; font-weight: 700;
-      letter-spacing: 0.07em;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.45);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 100px;
-      padding: 3px 10px;
+      padding: 4px 12px;
     }
     .rwp-pc-tag--accent {
       color: #EB712B;
       border-color: rgba(235,113,43,0.35);
-      background: rgba(235,113,43,0.06);
+      background: rgba(235,113,43,0.08);
     }
 
-    .rwp-pc-identity { margin-bottom: 20px; }
+    .rwp-pc-identity { margin-bottom: 22px; }
     .rwp-pc-name {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 22px; font-weight: 800;
+      font-size: 24px; font-weight: 800;
       color: #fff;
       letter-spacing: -0.02em;
       margin-bottom: 8px;
     }
     .rwp-pc-desc {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 13px;
-      color: rgba(255,255,255,0.38);
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.55);
       line-height: 1.6;
       margin: 0;
+      min-height: 42px;
     }
 
-    .rwp-pc-price-block { margin-bottom: 22px; min-height: 105px; display: flex; flex-direction: column; justify-content: flex-end; }
+    .rwp-pc-price-block {
+      margin-bottom: 22px;
+      min-height: 82px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
     .rwp-pc-promo-badge-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 6px;
     }
     .rwp-pc-promo-pill {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 10.5px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       color: #EB712B;
-      background: rgba(235,113,43,0.12);
-      border: 1px solid rgba(235,113,43,0.3);
+      background: rgba(235,113,43,0.15);
+      border: 1px solid rgba(235,113,43,0.35);
       border-radius: 100px;
-      padding: 2px 8px;
-      letter-spacing: 0.02em;
+      padding: 3px 10px;
+      letter-spacing: 0.04em;
     }
     .rwp-pc-strike-amount {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
       color: rgba(255,255,255,0.4);
       text-decoration: line-through;
       text-decoration-color: #EB712B;
-      text-decoration-thickness: 1.5px;
-    }
-    .rwp-pc-price-free {
-      font-family: Manrope,Inter,sans-serif;
-      font-size: 42px; font-weight: 900;
-      color: #EB712B;
-      letter-spacing: -0.04em;
+      text-decoration-thickness: 2px;
     }
     .rwp-pc-price-row {
       display: flex;
@@ -532,30 +457,23 @@ export const PricingSection: React.FC = () => {
     }
     .rwp-pc-currency {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 22px; font-weight: 700;
+      font-size: 24px; font-weight: 800;
       color: #EB712B;
       margin-right: 2px;
     }
     .rwp-pc-amount {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 46px; font-weight: 900;
+      font-size: 48px; font-weight: 900;
       color: #fff;
       letter-spacing: -0.04em;
       line-height: 1;
     }
     .rwp-pc-per {
       font-family: Manrope,Inter,sans-serif;
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      margin-left: 2px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.45);
+      margin-left: 4px;
       font-weight: 500;
-    }
-    .rwp-pc-save-note {
-      font-family: Manrope,Inter,sans-serif;
-      font-size: 11px;
-      color: rgba(235,113,43,0.85);
-      margin-top: 6px;
-      line-height: 1.4;
     }
 
     .rwp-pc-cta {
@@ -565,11 +483,11 @@ export const PricingSection: React.FC = () => {
       gap: 8px;
       text-decoration: none;
       font-family: Manrope,Inter,sans-serif;
-      font-size: 13.5px; font-weight: 700;
-      padding: 13px;
+      font-size: 14px; font-weight: 700;
+      padding: 14px;
       border-radius: 12px;
       transition: background 0.2s, border-color 0.2s, transform 0.15s;
-      margin-bottom: 24px;
+      margin-bottom: 12px;
     }
     .rwp-pc-cta--primary {
       background: #EB712B;
@@ -579,15 +497,26 @@ export const PricingSection: React.FC = () => {
     .rwp-pc-cta--primary:hover { background: #d4631f; transform: translateY(-1px); }
     .rwp-pc-cta--secondary {
       background: transparent;
-      color: rgba(255,255,255,0.6);
-      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.12);
     }
-    .rwp-pc-cta--secondary:hover { border-color: rgba(255,255,255,0.22); color: #fff; transform: translateY(-1px); }
+    .rwp-pc-cta--secondary:hover { border-color: rgba(255,255,255,0.3); color: #fff; transform: translateY(-1px); }
+
+    .rwp-pc-microcopy {
+      font-family: Manrope,Inter,sans-serif;
+      font-size: 11.5px;
+      color: rgba(235,113,43,0.9);
+      text-align: center;
+      line-height: 1.45;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
 
     .rwp-pc-divider {
       width: 100%;
       height: 1px;
       background: rgba(255,255,255,0.06);
+      margin-top: 8px;
       margin-bottom: 22px;
     }
 
@@ -597,130 +526,101 @@ export const PricingSection: React.FC = () => {
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 11px;
+      gap: 12px;
       flex: 1;
     }
     .rwp-pc-feature {
       display: flex;
-      align-items: center;
-      gap: 9px;
+      align-items: flex-start;
+      gap: 10px;
       font-family: Manrope,Inter,sans-serif;
-      font-size: 13px;
-      color: rgba(255,255,255,0.65);
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.45;
       font-weight: 500;
     }
-    .rwp-pc-feature--off { color: rgba(255,255,255,0.2); }
+    .rwp-pc-feature--off { color: rgba(255,255,255,0.25); }
 
     /* ── Footer note ── */
     .rwp-pricing-footer {
       position: relative;
       z-index: 1;
       text-align: center;
-      margin-top: 48px;
+      margin-top: 52px;
       font-family: Manrope,Inter,sans-serif;
-      font-size: 13px;
-      color: rgba(255,255,255,0.3);
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.4);
     }
     .rwp-pricing-footer a {
-      color: rgba(235,113,43,0.75);
+      color: rgba(235,113,43,0.85);
       text-decoration: none;
       transition: color 0.2s;
     }
     .rwp-pricing-footer a:hover { color: #EB712B; }
 
     /* ── Responsive ── */
-    @media (max-width: 1024px) {
-      .rwp-pricing-header { grid-template-columns: 1fr; gap: 32px; }
-      .rwp-pricing-header-right { justify-content: flex-start; }
-      .rwp-pricing-preview { max-width: 480px; }
-    }
-    @media (max-width: 860px) {
-      .rwp-pricing { padding: 64px 20px; }
-      .rwp-pricing-grid { grid-template-columns: 1fr; gap: 12px; max-width: 480px; }
-      .rwp-pc:first-child { border-radius: 20px; border-right: 1px solid rgba(255,255,255,0.07); }
-      .rwp-pc:last-child  { border-radius: 20px; border-left: 1px solid rgba(255,255,255,0.07); }
-      .rwp-pc--highlight  { margin: 0; }
-      .rwp-pricing-header { margin-bottom: 40px; }
-      .rwp-pricing-preview { display: none; }
-    }
-    @media (max-width: 480px) {
-      .rwp-pricing-heading { font-size: 30px; }
+    @media (max-width: 768px) {
+      .rwp-pricing { padding: 80px 16px; }
+      .rwp-pricing-grid { grid-template-columns: 1fr; gap: 20px; }
+      .rwp-pricing-tabs { width: 100%; max-width: 360px; }
+      .rwp-pricing-tab-btn { flex: 1; padding: 10px 14px; font-size: 13px; text-align: center; }
+      .rwp-pc { padding: 28px 20px; }
+      .rwp-pricing-heading { font-size: 28px; }
     }
   `;
+
+  const plans = activeTab === "clubs" ? CLUB_PLANS() : ATHLETE_PLANS();
 
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <section className="rwp-pricing" id="pricing">
 
-        {/* ─── Header: copy left, app preview right ─── */}
+        {/* ─── Header ─── */}
         <div className="rwp-pricing-header">
-          <div className="rwp-pricing-header-left">
-            <div className="rwp-pricing-badge">
-              <div className="rwp-pricing-badge-dot" />
-              <span className="rwp-pricing-badge-text"><Trans>Pricing</Trans></span>
-            </div>
-            <h2 className="rwp-pricing-heading">
-              <Trans>One platform.</Trans><br />
-              <em><Trans>Real plans</Trans></em> <Trans>for athletes &amp; clubs.</Trans>
-            </h2>
-            <p className="rwp-pricing-sub">
-              <Trans>Whether you are an individual athlete or running a growing sports club — find the real plan that fits. Transparent pricing with no hidden fees.</Trans>
-            </p>
-
-            {/* Billing toggle */}
-            <div className="rwp-pricing-toggle-row">
-              <div className="rwp-pricing-toggle">
-                <button
-                  className={`rwp-pricing-toggle-btn ${billing === "monthly" ? "on" : "off"}`}
-                  onClick={() => setBilling("monthly")}
-                ><Trans>Monthly</Trans></button>
-                <button
-                  className={`rwp-pricing-toggle-btn ${billing === "yearly" ? "on" : "off"}`}
-                  onClick={() => setBilling("yearly")}
-                ><Trans>Yearly</Trans></button>
-              </div>
-              {billing === "yearly" && (
-                <span className="rwp-pricing-save-pill"><Trans>Launch Promo: Save up to 50%</Trans></span>
-              )}
-            </div>
+          <div className="rwp-pricing-badge">
+            <div className="rwp-pricing-badge-dot" />
+            <span className="rwp-pricing-badge-text"><Trans>PRICING</Trans></span>
           </div>
+          <h2 className="rwp-pricing-heading">
+            <Trans>Simple, transparent pricing for growing communities.</Trans>
+          </h2>
+          <p className="rwp-pricing-sub">
+            <Trans>
+              Start for free with your club or squad, or unlock complete member management, payments and your club shop with Gold.
+            </Trans>
+          </p>
+        </div>
 
-          {/* Group Cycling Image — right side */}
-          <div className="rwp-pricing-header-right">
-            <div className="rwp-pricing-preview">
-              <div className="rwp-pricing-preview-frame">
-                <div className="rwp-pricing-preview-bar">
-                  <div className="rwp-pricing-preview-dot" style={{ background: "#ff5f57" }} />
-                  <div className="rwp-pricing-preview-dot" style={{ background: "#febc2e" }} />
-                  <div className="rwp-pricing-preview-dot" style={{ background: "#28c840" }} />
-                  <span className="rwp-pricing-preview-label">Ride With Pals — Move Together</span>
-                </div>
-                <img
-                  src="/Images/cyclist-gravel-landscape.jpg"
-                  alt="Ride With Pals cyclists on gravel road"
-                  loading="lazy"
-                />
-              </div>
-              <div className="rwp-pricing-preview-badge">
-                <div className="rwp-pricing-preview-badge-dot" />
-                Join 12,000+ active riders on the road
-              </div>
-            </div>
+        {/* ─── Audience Selector Tabs ─── */}
+        <div className="rwp-pricing-tabs-wrap">
+          <div className="rwp-pricing-tabs">
+            <button
+              className={`rwp-pricing-tab-btn ${activeTab === "clubs" ? "active" : ""}`}
+              onClick={() => setActiveTab("clubs")}
+            >
+              <Trans>For Clubs &amp; Businesses</Trans>
+            </button>
+            <button
+              className={`rwp-pricing-tab-btn ${activeTab === "athletes" ? "active" : ""}`}
+              onClick={() => setActiveTab("athletes")}
+            >
+              <Trans>For Athletes</Trans>
+            </button>
           </div>
         </div>
 
-        {/* ─── Cards ─── */}
+        {/* ─── Cards Grid ─── */}
         <div className="rwp-pricing-grid">
-          {PLANS().map(plan => (
-            <PricingCard key={plan.id} plan={plan} billing={billing} />
+          {plans.map(plan => (
+            <PricingCard key={plan.id} plan={plan} />
           ))}
         </div>
 
         {/* ─── Footer ─── */}
         <div className="rwp-pricing-footer">
-          <Trans>Start for free on web &amp; mobile</Trans> &nbsp;·&nbsp; <Trans>Transparent pricing</Trans> &nbsp;·&nbsp;
-          <a href="/contact"><Trans>Questions? Talk to us →</Trans></a>
+          <Trans>No hidden platform fees</Trans> &nbsp;·&nbsp; <Trans>Cancel anytime</Trans> &nbsp;·&nbsp;
+          <a href="/contact"><Trans>Need custom arrangements? Talk to us →</Trans></a>
         </div>
 
       </section>

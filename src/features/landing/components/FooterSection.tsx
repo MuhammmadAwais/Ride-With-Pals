@@ -179,7 +179,7 @@ export const FooterSection: React.FC = () => {
           <span className="footer-word"><Trans>RIDE?</Trans></span>
         </h2>
         <a href="/signup" className="rwp-footer-btn">
-          <Trans>Join the Club</Trans>
+          <Trans>Create your community</Trans>
         </a>
 
         <div className="rwp-footer-grid">
@@ -194,10 +194,10 @@ export const FooterSection: React.FC = () => {
           <div className="rwp-footer-col">
             <h4><Trans>Platform</Trans></h4>
             <ul>
-              <li><a href="#how-it-works"><Trans>How it Works</Trans></a></li>
+              <li><a href="#for-communities"><Trans>For Communities</Trans></a></li>
+              <li><a href="#how-it-works"><Trans>How It Works</Trans></a></li>
               <li><a href="#features"><Trans>Features</Trans></a></li>
               <li><a href="#pricing"><Trans>Pricing</Trans></a></li>
-              <li><a href="#community"><Trans>Community</Trans></a></li>
             </ul>
           </div>
           <div className="rwp-footer-col">
