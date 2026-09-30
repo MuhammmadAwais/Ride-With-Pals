@@ -1,0 +1,398 @@
+/* ==========================================================================
+   Ride With Pals — Comprehensive RTL (Right-to-Left) Stylesheet
+   Supports: Urdu (ur), Arabic (ar)
+   ========================================================================== */
+
+/* ── Typography & Global Reset ────────────────────────────────────────── */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] body,
+[dir="rtl"] input,
+[dir="rtl"] button,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[dir="rtl"] p,
+[dir="rtl"] span,
+[dir="rtl"] a,
+[dir="rtl"] li,
+[dir="rtl"] label {
+  line-height: 1.7;
+}
+
+/* ── NAVIGATION ────────────────────────────────────────────────────────── */
+[dir="rtl"] .rwp-nav {
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-nav-center {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+[dir="rtl"] .rwp-nav-actions {
+  flex-direction: row;
+}
+
+[dir="rtl"] .rwp-lang-dropdown {
+  left: 0 !important;
+  right: auto !important;
+}
+
+[dir="rtl"] .rwp-lang-item {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-mobile-drawer-inner {
+  text-align: right !important;
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-mobile-link {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-mobile-link:hover {
+  padding-left: 0 !important;
+  padding-right: 10px !important;
+}
+
+/* ── HERO SECTION ──────────────────────────────────────────────────────── */
+[dir="rtl"] .framer-tvpdyg,
+[dir="rtl"] .framer-1feyz7p,
+[dir="rtl"] .framer-snfcfs,
+[dir="rtl"] .framer-iDUXM .framer-tvpdyg,
+[dir="rtl"] .framer-iDUXM .framer-1feyz7p,
+[dir="rtl"] .framer-iDUXM .framer-snfcfs {
+  text-align: center !important;
+  align-items: center !important;
+}
+
+[dir="rtl"] .rwp-hero-title {
+  text-align: center !important;
+  font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[dir="rtl"] .rwp-hero-sub {
+  text-align: center !important;
+  line-height: 1.75 !important;
+  font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[dir="rtl"] .rwp-hero-sub-small {
+  text-align: center !important;
+  line-height: 1.68 !important;
+  font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+[dir="rtl"] .rwp-hero-cta-wrapper {
+  align-items: center !important;
+  text-align: center !important;
+}
+
+[dir="rtl"] .rwp-hero-btn-group {
+  flex-direction: row !important;
+  justify-content: center !important;
+}
+
+[dir="rtl"] .rwp-hero-primary-btn svg {
+  transform: scaleX(-1) rotate(-45deg) !important;
+}
+
+[dir="rtl"] .rwp-hero-secondary-btn svg {
+  transform: scaleX(-1) !important;
+}
+
+[dir="rtl"] .rwp-hero-audience-bar {
+  flex-direction: row !important;
+}
+
+[dir="rtl"] .rwp-hero-audience-label {
+  margin-right: 0 !important;
+  margin-left: 6px !important;
+}
+
+/* ── HOW IT WORKS SECTION ─────────────────────────────────────────────── */
+[dir="rtl"] .rwp-hiw {
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-hiw-content {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-hiw-step-badge {
+  align-self: flex-start !important;
+}
+
+[dir="rtl"] .rwp-hiw-arrow-1 {
+  right: calc(33.33% - 55px) !important;
+  left: auto !important;
+  transform: scaleX(-1) !important;
+}
+
+[dir="rtl"] .rwp-hiw-arrow-2 {
+  right: calc(66.66% - 55px) !important;
+  left: auto !important;
+  transform: scaleX(-1) !important;
+}
+
+/* ── BENTO SECTION ────────────────────────────────────────────────────── */
+[dir="rtl"] .rwp-bento {
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-bento-header {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-bento-title {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-bento-subtitle {
+  text-align: right !important;
+  line-height: 1.7 !important;
+}
+
+[dir="rtl"] .rwp-bento-card {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-bento-content {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-bento-badge {
+  align-self: flex-start !important;
+}
+
+[dir="rtl"] .rwp-bento-sub-badge {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+/* ── FEATURES SECTION (ALTERNATING EDITORIAL) ─────────────────────────── */
+[dir="rtl"] .rwp-fs {
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-fs-header {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-fs-h1 {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-fs-sub {
+  text-align: right !important;
+  line-height: 1.8 !important;
+}
+
+[dir="rtl"] .rwp-fs-label {
+  justify-content: flex-start !important;
+}
+
+[dir="rtl"] .rwp-fs-stats {
+  justify-content: flex-start !important;
+}
+
+[dir="rtl"] .rwp-fs-swirl {
+  left: -90px !important;
+  right: auto !important;
+  transform: scaleX(-1) !important;
+}
+
+[dir="rtl"] .rwp-fb {
+  direction: rtl;
+}
+
+/* Timeline thread on the 80px meta column (placed on the right in RTL) */
+[dir="rtl"] .rwp-fb::before {
+  right: 39px !important;
+  left: auto !important;
+}
+
+[dir="rtl"] .rwp-fb::after {
+  right: 35px !important;
+  left: auto !important;
+}
+
+[dir="rtl"] .rwp-fb-text {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-fb-headline {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-fb-copy {
+  text-align: right !important;
+  line-height: 1.85 !important;
+}
+
+[dir="rtl"] .rwp-fb-type-tag {
+  justify-content: flex-start !important;
+}
+
+[dir="rtl"] .rwp-fb-tag-arrow {
+  transform: scaleX(-1) !important;
+}
+
+[dir="rtl"] .rwp-fb-list li {
+  text-align: right !important;
+  flex-direction: row;
+}
+
+/* ── COMPARISON SECTION ───────────────────────────────────────────────── */
+[dir="rtl"] .framer-1gbj1e,
+[dir="rtl"] .framer-iDUXM .framer-1gbj1e,
+[dir="rtl"] .framer-WFg1Q {
+  direction: rtl;
+}
+
+[dir="rtl"] .framer-vpb40j {
+  text-align: center !important;
+}
+
+[dir="rtl"] .framer-1ncuk4v,
+[dir="rtl"] .framer-1sl2whp {
+  text-align: right !important;
+}
+
+[dir="rtl"] .framer-1ncuk4v h5,
+[dir="rtl"] .framer-1u4kadb p {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-comp-row {
+  flex-direction: row !important;
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-comp-text {
+  text-align: right !important;
+  line-height: 1.75 !important;
+}
+
+[dir="rtl"] .rwp-comp-title {
+  margin-right: 0 !important;
+  margin-left: 6px !important;
+}
+
+/* ── PRICING SECTION ──────────────────────────────────────────────────── */
+[dir="rtl"] .rwp-pricing {
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-pricing-header {
+  text-align: center !important;
+}
+
+[dir="rtl"] .rwp-pc {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-pc-identity {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-pc-desc {
+  text-align: right !important;
+  line-height: 1.7 !important;
+}
+
+[dir="rtl"] .rwp-pc-feat {
+  flex-direction: row !important;
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-pc-feat-text {
+  text-align: right !important;
+  line-height: 1.65 !important;
+}
+
+[dir="rtl"] .rwp-pricing-custom-link svg {
+  transform: scaleX(-1) !important;
+}
+
+/* ── FAQ SECTION ──────────────────────────────────────────────────────── */
+[dir="rtl"] .rwp-faq-section {
+  direction: rtl;
+}
+
+[dir="rtl"] .faq-tab {
+  align-self: flex-start !important;
+}
+
+[dir="rtl"] .faq-tab::after {
+  left: -16px !important;
+  right: auto !important;
+  border-bottom-right-radius: 12px !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+[dir="rtl"] .faq-front {
+  flex-direction: row !important;
+  text-align: right !important;
+}
+
+[dir="rtl"] .faq-question-text {
+  text-align: right !important;
+}
+
+[dir="rtl"] .faq-answer-text {
+  text-align: right !important;
+  line-height: 1.8 !important;
+}
+
+/* ── BLOG SECTION ─────────────────────────────────────────────────────── */
+[dir="rtl"] .framer-iti230 {
+  direction: rtl;
+}
+
+[dir="rtl"] .framer-iti230 h2,
+[dir="rtl"] .framer-iti230 h3,
+[dir="rtl"] .framer-iti230 p {
+  text-align: right !important;
+  --framer-text-alignment: right !important;
+}
+
+/* ── CTA SECTION ──────────────────────────────────────────────────────── */
+[dir="rtl"] .framer-18w1jh2 {
+  direction: rtl;
+}
+
+[dir="rtl"] .framer-18w1jh2 h2,
+[dir="rtl"] .framer-18w1jh2 p {
+  text-align: right !important;
+  --framer-text-alignment: right !important;
+}
+
+[dir="rtl"] .framer-18w1jh2 a svg {
+  transform: scaleX(-1) rotate(-45deg) !important;
+}
+
+/* ── FOOTER SECTION ───────────────────────────────────────────────────── */
+[dir="rtl"] .rwp-footer {
+  direction: rtl;
+}
+
+[dir="rtl"] .rwp-footer-grid {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-footer-col {
+  text-align: right !important;
+}
+
+[dir="rtl"] .rwp-footer-col ul {
+  text-align: right !important;
+}

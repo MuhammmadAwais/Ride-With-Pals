@@ -1,0 +1,642 @@
+[
+  {
+    "id": "{0}",
+    "entry": "#. placeholder {0}: item.desc\n#. placeholder {0}: item.title\n#: src/features/landing/components/ComparisonSection.tsx\nmsgid \"{0}\"\nmsgstr \"\""
+  },
+  {
+    "id": "/ year (billed annually)",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"/ year (billed annually)\"\nmsgstr \"\""
+  },
+  {
+    "id": "01 — COMMUNITY & CLUB MANAGEMENT",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"01 — COMMUNITY & CLUB MANAGEMENT\"\nmsgstr \"\""
+  },
+  {
+    "id": "02 — REVENUE & DUES",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"02 — REVENUE & DUES\"\nmsgstr \"\""
+  },
+  {
+    "id": "03 — COMMUNITY ENGAGEMENT",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"03 — COMMUNITY ENGAGEMENT\"\nmsgstr \"\""
+  },
+  {
+    "id": "04 — THE MEMBER EXPERIENCE",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"04 — THE MEMBER EXPERIENCE\"\nmsgstr \"\""
+  },
+  {
+    "id": "1-Tap RSVP",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"1-Tap RSVP\"\nmsgstr \"\""
+  },
+  {
+    "id": "1-Tap RSVP to rides and activities",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"1-Tap RSVP to rides and activities\"\nmsgstr \"\""
+  },
+  {
+    "id": "14.99€/year. That's about 4 energy gels for 365 days of community.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"14.99€/year. That's about 4 energy gels for 365 days of community.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Access & Invitation Control",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Access & Invitation Control\"\nmsgstr \"\""
+  },
+  {
+    "id": "Activities & recurring events",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Activities & recurring events\"\nmsgstr \"\""
+  },
+  {
+    "id": "Activity & ride scheduling",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Activity & ride scheduling\"\nmsgstr \"\""
+  },
+  {
+    "id": "Activity & Route Calendar",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Activity & Route Calendar\"\nmsgstr \"\""
+  },
+  {
+    "id": "Activity-specific & direct chat",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Activity-specific & direct chat\"\nmsgstr \"\""
+  },
+  {
+    "id": "Activity-specific Chats",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Activity-specific Chats\"\nmsgstr \"\""
+  },
+  {
+    "id": "An effortless app your members will actually enjoy using.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"An effortless app your members will actually enjoy using.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Android App",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Android App\"\nmsgstr \"\""
+  },
+  {
+    "id": "Approve join requests, assign admins or ride leaders, and control who can create activities or post club news.",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Approve join requests, assign admins or ride leaders, and control who can create activities or post club news.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Approve new members or use private invite codes.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Approve new members or use private invite codes.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Basic Access",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Basic Access\"\nmsgstr \"\""
+  },
+  {
+    "id": "Bike Shops",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Bike Shops\"\nmsgstr \"\""
+  },
+  {
+    "id": "Build a sports community",
+    "entry": "#: src/features/landing/components/CTASection.tsx\n#: src/features/landing/components/HeroSection.tsx\nmsgid \"Build a sports community\"\nmsgstr \"\""
+  },
+  {
+    "id": "Built for",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Built for\"\nmsgstr \"\""
+  },
+  {
+    "id": "Built for organisers.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Built for organisers.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Built specifically for road, gravel, MTB, trail and street runs.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Built specifically for road, gravel, MTB, trail and street runs.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Cancel anytime",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Cancel anytime\"\nmsgstr \"\""
+  },
+  {
+    "id": "Changes to rides, memberships and rosters update immediately across devices.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Changes to rides, memberships and rosters update immediately across devices.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Chat, updates & community shop",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Chat, updates & community shop\"\nmsgstr \"\""
+  },
+  {
+    "id": "Clear Status Tracking",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Clear Status Tracking\"\nmsgstr \"\""
+  },
+  {
+    "id": "Club Leaderboards",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Club Leaderboards\"\nmsgstr \"\""
+  },
+  {
+    "id": "Club leaderboards & distance rankings",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Club leaderboards & distance rankings\"\nmsgstr \"\""
+  },
+  {
+    "id": "Club leaderboards: Compete in distance and attendance rankings",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Club leaderboards: Compete in distance and attendance rankings\"\nmsgstr \"\""
+  },
+  {
+    "id": "Club Shop",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Club Shop\"\nmsgstr \"\""
+  },
+  {
+    "id": "Club shop integrated with Stripe",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Club shop integrated with Stripe\"\nmsgstr \"\""
+  },
+  {
+    "id": "Coaches",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Coaches\"\nmsgstr \"\""
+  },
+  {
+    "id": "Collect payments securely into your own account.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Collect payments securely into your own account.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Community dashboard",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Community dashboard\"\nmsgstr \"\""
+  },
+  {
+    "id": "COMMUNITY ENGAGEMENT",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"COMMUNITY ENGAGEMENT\"\nmsgstr \"\""
+  },
+  {
+    "id": "Create your community",
+    "entry": "#: src/features/landing/components/FooterSection.tsx\n#: src/features/landing/components/HowitWorksSection.tsx\n#: src/features/landing/components/Navigation.tsx\nmsgid \"Create your community\"\nmsgstr \"\""
+  },
+  {
+    "id": "Create your community free",
+    "entry": "#: src/features/landing/components/CTASection.tsx\n#: src/features/landing/components/HeroSection.tsx\nmsgid \"Create your community free\"\nmsgstr \"\""
+  },
+  {
+    "id": "Create your space, organise recurring activities and give your members one place to stay connected.",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"Create your space, organise recurring activities and give your members one place to stay connected.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Cross-Platform",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Cross-Platform\"\nmsgstr \"\""
+  },
+  {
+    "id": "Cycling & Running Support",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Cycling & Running Support\"\nmsgstr \"\""
+  },
+  {
+    "id": "Cycling Clubs",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Cycling Clubs\"\nmsgstr \"\""
+  },
+  {
+    "id": "Dedicated chats per activity, private member messaging, partner discounts and club gear. A real digital hub for your community.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Dedicated chats per activity, private member messaging, partner discounts and club gear. A real digital hub for your community.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Define membership amounts and validity periods.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Define membership amounts and validity periods.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Direct Stripe Integration",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Direct Stripe Integration\"\nmsgstr \"\""
+  },
+  {
+    "id": "Everything you need to run, monetize, and scale your sports community or shop activities.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Everything you need to run, monetize, and scale your sports community or shop activities.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Everything you need to set up your club and run weekly group sessions.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Everything you need to set up your club and run weekly group sessions.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Exclusive Partner Discounts",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Exclusive Partner Discounts\"\nmsgstr \"\""
+  },
+  {
+    "id": "Exclusive profile badge: Stand out as a verified supporter with orange community ring",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Exclusive profile badge: Stand out as a verified supporter with orange community ring\"\nmsgstr \"\""
+  },
+  {
+    "id": "Extra Marketplace listing: Keep more second-hand gear active at once",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Extra Marketplace listing: Keep more second-hand gear active at once\"\nmsgstr \"\""
+  },
+  {
+    "id": "For Athletes",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"For Athletes\"\nmsgstr \"\""
+  },
+  {
+    "id": "For Clubs & Businesses",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"For Clubs & Businesses\"\nmsgstr \"\""
+  },
+  {
+    "id": "For clubs & shops",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"For clubs & shops\"\nmsgstr \"\""
+  },
+  {
+    "id": "FOR CLUBS, SHOPS & COMMUNITY LEADERS",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"FOR CLUBS, SHOPS & COMMUNITY LEADERS\"\nmsgstr \"\""
+  },
+  {
+    "id": "FOR CLUBS, SHOPS & LOCAL SPORTS COMMUNITIES",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"FOR CLUBS, SHOPS & LOCAL SPORTS COMMUNITIES\"\nmsgstr \"\""
+  },
+  {
+    "id": "For Communities",
+    "entry": "#: src/features/landing/components/FooterSection.tsx\n#: src/features/landing/components/Navigation.tsx\nmsgid \"For Communities\"\nmsgstr \"\""
+  },
+  {
+    "id": "For dedicated riders",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"For dedicated riders\"\nmsgstr \"\""
+  },
+  {
+    "id": "Free Athlete",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Free Athlete\"\nmsgstr \"\""
+  },
+  {
+    "id": "Free Club",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Free Club\"\nmsgstr \"\""
+  },
+  {
+    "id": "Free forever for up to 15 members. No credit card required.",
+    "entry": "#: src/features/landing/components/CTASection.tsx\nmsgid \"Free forever for up to 15 members. No credit card required.\"\nmsgstr \"\""
+  },
+  {
+    "id": "from one place.",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"from one place.\"\nmsgstr \"\""
+  },
+  {
+    "id": "From weekly activities to a community that grows.",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"From weekly activities to a community that grows.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Full-featured on all Android devices.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Full-featured on all Android devices.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Get Athlete Premium",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Get Athlete Premium\"\nmsgstr \"\""
+  },
+  {
+    "id": "Get Gold Launch Offer",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Get Gold Launch Offer\"\nmsgstr \"\""
+  },
+  {
+    "id": "Get the most out of every ride and run with advanced integrations, route downloads, and verified community status.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Get the most out of every ride and run with advanced integrations, route downloads, and verified community status.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Give organisers the tools to run everything smoothly. Give members a better way to join, connect and show up.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Give organisers the tools to run everything smoothly. Give members a better way to join, connect and show up.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Gold Club",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Gold Club\"\nmsgstr \"\""
+  },
+  {
+    "id": "GPX downloads & Strava sync",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"GPX downloads & Strava sync\"\nmsgstr \"\""
+  },
+  {
+    "id": "GPX Downloads & Strava Sync",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"GPX Downloads & Strava Sync\"\nmsgstr \"\""
+  },
+  {
+    "id": "GPX route downloads to bike computer",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"GPX route downloads to bike computer\"\nmsgstr \"\""
+  },
+  {
+    "id": "GPX route downloads: Export routes directly to your cycling computer or watch",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"GPX route downloads: Export routes directly to your cycling computer or watch\"\nmsgstr \"\""
+  },
+  {
+    "id": "How It Works",
+    "entry": "#: src/features/landing/components/FooterSection.tsx\n#: src/features/landing/components/Navigation.tsx\nmsgid \"How It Works\"\nmsgstr \"\""
+  },
+  {
+    "id": "Instantly see who is Paid or Not Renewed.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Instantly see who is Paid or Not Renewed.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Internal Marketplace",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Internal Marketplace\"\nmsgstr \"\""
+  },
+  {
+    "id": "iOS App",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"iOS App\"\nmsgstr \"\""
+  },
+  {
+    "id": "It’s free — for up to 15 members",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"It’s free — for up to 15 members\"\nmsgstr \"\""
+  },
+  {
+    "id": "Join clubs & local communities",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Join clubs & local communities\"\nmsgstr \"\""
+  },
+  {
+    "id": "Join clubs, find group rides, and connect with athletes near you.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Join clubs, find group rides, and connect with athletes near you.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Keep logistics, photos and questions tied directly to each session.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Keep logistics, photos and questions tied directly to each session.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Keep members engaged between activities.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Keep members engaged between activities.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Keep rides, runs and meeting points clearly organized.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Keep rides, runs and meeting points clearly organized.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Keep your community coming back",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"Keep your community coming back\"\nmsgstr \"\""
+  },
+  {
+    "id": "LAUNCH OFFER - SAVE €41",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"LAUNCH OFFER - SAVE €41\"\nmsgstr \"\""
+  },
+  {
+    "id": "LAUNCH OFFER - SAVE 10€",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"LAUNCH OFFER - SAVE 10€\"\nmsgstr \"\""
+  },
+  {
+    "id": "Let members trade second-hand bikes and gear safely.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Let members trade second-hand bikes and gear safely.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Local Organisers",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Local Organisers\"\nmsgstr \"\""
+  },
+  {
+    "id": "Loved by members",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Loved by members\"\nmsgstr \"\""
+  },
+  {
+    "id": "Manage annual club dues, track who has paid or expired, and monetize special events or clinic rides with seamless Stripe integration.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Manage annual club dues, track who has paid or expired, and monetize special events or clinic rides with seamless Stripe integration.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Manual Check Support",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Manual Check Support\"\nmsgstr \"\""
+  },
+  {
+    "id": "Mark members as paid manually for cash or bank transfers.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Mark members as paid manually for cash or bank transfers.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Member chat & announcements",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Member chat & announcements\"\nmsgstr \"\""
+  },
+  {
+    "id": "Member fee tracking (Paid / Not Renewed status)",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Member fee tracking (Paid / Not Renewed status)\"\nmsgstr \"\""
+  },
+  {
+    "id": "Member fee tracking (Paid / Not Renewed)",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Member fee tracking (Paid / Not Renewed)\"\nmsgstr \"\""
+  },
+  {
+    "id": "Members can check upcoming sessions, preview routes, RSVP with one tap, and track their participation on club leaderboards.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Members can check upcoming sessions, preview routes, RSVP with one tap, and track their participation on club leaderboards.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Members confirm attendance and see pace, distance and route details.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Members confirm attendance and see pace, distance and route details.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Members, roles & payments",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Members, roles & payments\"\nmsgstr \"\""
+  },
+  {
+    "id": "Members, Roles & Permissions",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Members, Roles & Permissions\"\nmsgstr \"\""
+  },
+  {
+    "id": "Membership dues and paid activities. Simplified.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Membership dues and paid activities. Simplified.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Multiple admins & ride leaders",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Multiple admins & ride leaders\"\nmsgstr \"\""
+  },
+  {
+    "id": "Native experience for iPhone athletes and organisers on the move.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Native experience for iPhone athletes and organisers on the move.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Need custom arrangements? Talk to us →",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Need custom arrangements? Talk to us →\"\nmsgstr \"\""
+  },
+  {
+    "id": "No hidden platform fees",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"No hidden platform fees\"\nmsgstr \"\""
+  },
+  {
+    "id": "Offer club merchandise, products or paid activities from the same place your members already use.",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Offer club merchandise, products or paid activities from the same place your members already use.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Official Updates",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Official Updates\"\nmsgstr \"\""
+  },
+  {
+    "id": "One platform for the people who run the community and the people who make it thrive.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"One platform for the people who run the community and the people who make it thrive.\"\nmsgstr \"\""
+  },
+  {
+    "id": "One single membership fee or gear sale covers the whole year.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"One single membership fee or gear sale covers the whole year.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Organise your community. Without the admin chaos.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Organise your community. Without the admin chaos.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Organisers manage everything comfortably from the desktop dashboard. Members join and stay updated directly from their phones.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Organisers manage everything comfortably from the desktop dashboard. Members join and stay updated directly from their phones.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Paid activities & event ticketing",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Paid activities & event ticketing\"\nmsgstr \"\""
+  },
+  {
+    "id": "Paid activities and workshops",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Paid activities and workshops\"\nmsgstr \"\""
+  },
+  {
+    "id": "people come back to.",
+    "entry": "#: src/features/landing/components/CTASection.tsx\n#: src/features/landing/components/HeroSection.tsx\nmsgid \"people come back to.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Plan activities and bring people together",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"Plan activities and bring people together\"\nmsgstr \"\""
+  },
+  {
+    "id": "Plan recurring weekly sessions, share routes with GPX, approve new members and publish official announcements. Everything your group needs in one single space.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Plan recurring weekly sessions, share routes with GPX, approve new members and publish official announcements. Everything your group needs in one single space.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Powerful desktop control panel for club founders, shops and admins.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Powerful desktop control panel for club founders, shops and admins.\"\nmsgstr \"\""
+  },
+  {
+    "id": "PRICING",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"PRICING\"\nmsgstr \"\""
+  },
+  {
+    "id": "Publish perks, partner shop codes and local deals for your members.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Publish perks, partner shop codes and local deals for your members.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Real-time Sync",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Real-time Sync\"\nmsgstr \"\""
+  },
+  {
+    "id": "Recurring Activities & Rides",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Recurring Activities & Rides\"\nmsgstr \"\""
+  },
+  {
+    "id": "Replace scattered WhatsApp chats with a community your brand can grow.",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Replace scattered WhatsApp chats with a community your brand can grow.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Replace scattered WhatsApp chats, manual spreadsheets and lost sales with one dedicated platform built for organisers.",
+    "entry": "#: src/features/landing/components/ComparisonSection.tsx\nmsgid \"Replace scattered WhatsApp chats, manual spreadsheets and lost sales with one dedicated platform built for organisers.\"\nmsgstr \"\""
+  },
+  {
+    "id": "REVENUE & DUES",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"REVENUE & DUES\"\nmsgstr \"\""
+  },
+  {
+    "id": "Reward consistency by activities attended and Strava distance.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Reward consistency by activities attended and Strava distance.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Ride With Pals helps cycling and running clubs, shops and local organisers manage activities, members, payments and communication in one place.",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Ride With Pals helps cycling and running clubs, shops and local organisers manage activities, members, payments and communication in one place.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Role Permissions",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Role Permissions\"\nmsgstr \"\""
+  },
+  {
+    "id": "Route sharing with GPX downloads",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Route sharing with GPX downloads\"\nmsgstr \"\""
+  },
+  {
+    "id": "Run your community ",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Run your community \"\nmsgstr \"\""
+  },
+  {
+    "id": "Running Groups",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"Running Groups\"\nmsgstr \"\""
+  },
+  {
+    "id": "Schedule rides, runs and recurring sessions. Share routes, meeting points and updates with the right people.",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"Schedule rides, runs and recurring sessions. Share routes, meeting points and updates with the right people.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Seamless route access and verified activity tracking.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Seamless route access and verified activity tracking.\"\nmsgstr \"\""
+  },
+  {
+    "id": "See how it works",
+    "entry": "#: src/features/landing/components/HeroSection.tsx\nmsgid \"See how it works\"\nmsgstr \"\""
+  },
+  {
+    "id": "See your upcoming activities, members, payments and key tasks in one clear view.",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"See your upcoming activities, members, payments and key tasks in one clear view.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Sell directly to your community",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Sell directly to your community\"\nmsgstr \"\""
+  },
+  {
+    "id": "Sell gear on Marketplace (up to 2 items)",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Sell gear on Marketplace (up to 2 items)\"\nmsgstr \"\""
+  },
+  {
+    "id": "Sell official club apparel, kits or event tickets directly.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Sell official club apparel, kits or event tickets directly.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Set ride leaders, community admins and member permissions.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Set ride leaders, community admins and member permissions.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Set up weekly club rides, track routes with GPX, and keep an active calendar without having to announce every session from scratch.",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Set up weekly club rides, track routes with GPX, and keep an active calendar without having to announce every session from scratch.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Set up your club, shop or local sports community in minutes. Add your name, identity and the people who help run it.",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"Set up your club, shop or local sports community in minutes. Add your name, identity and the people who help run it.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Share club announcements and route changes without them getting buried.",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Share club announcements and route changes without them getting buried.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Simple, transparent pricing for growing communities.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Simple, transparent pricing for growing communities.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Start for free with your club or squad, or unlock complete member management, payments and your club shop with Gold.",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Start for free with your club or squad, or unlock complete member management, payments and your club shop with Gold.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Stop switching between WhatsApp, spreadsheets, payment links and separate tools. Manage your activities, members, communication and payments in one place.",
+    "entry": "#: src/features/landing/components/BentoSection.tsx\nmsgid \"Stop switching between WhatsApp, spreadsheets, payment links and separate tools. Manage your activities, members, communication and payments in one place.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Strava activity sync",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Strava activity sync\"\nmsgstr \"\""
+  },
+  {
+    "id": "Strava integration: Automatic activity sync and verified stats",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Strava integration: Automatic activity sync and verified stats\"\nmsgstr \"\""
+  },
+  {
+    "id": "THE MEMBER EXPERIENCE",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"THE MEMBER EXPERIENCE\"\nmsgstr \"\""
+  },
+  {
+    "id": "The status quo (WhatsApp, Instagram & sheets)",
+    "entry": "#: src/features/landing/components/ComparisonSection.tsx\nmsgid \"The status quo (WhatsApp, Instagram & sheets)\"\nmsgstr \"\""
+  },
+  {
+    "id": "There is a smarter way to run your sports community.",
+    "entry": "#: src/features/landing/components/ComparisonSection.tsx\nmsgid \"There is a smarter way to run your sports community.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Turn weekly activities into lasting community. Bring your members together, on and off the road.",
+    "entry": "#: src/features/landing/components/CTASection.tsx\nmsgid \"Turn weekly activities into lasting community. Bring your members together, on and off the road.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Unlimited members (no 15-member cap)",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Unlimited members (no 15-member cap)\"\nmsgstr \"\""
+  },
+  {
+    "id": "Unlimited members (no cap)",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Unlimited members (no cap)\"\nmsgstr \"\""
+  },
+  {
+    "id": "Up to 15 club members",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Up to 15 club members\"\nmsgstr \"\""
+  },
+  {
+    "id": "Up to 15 members",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Up to 15 members\"\nmsgstr \"\""
+  },
+  {
+    "id": "Use chat, news, discounts, memberships and your club shop to keep members engaged between activities.",
+    "entry": "#: src/features/landing/components/HowitWorksSection.tsx\nmsgid \"Use chat, news, discounts, memberships and your club shop to keep members engaged between activities.\"\nmsgstr \"\""
+  },
+  {
+    "id": "Verified Gold community badge",
+    "entry": "#: src/features/landing/components/PricingSection.tsx\nmsgid \"Verified Gold community badge\"\nmsgstr \"\""
+  },
+  {
+    "id": "Web App",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Web App\"\nmsgstr \"\""
+  },
+  {
+    "id": "Web. iOS.<0/>Android.<1/><2>Always in sync.</2>",
+    "entry": "#: src/features/landing/components/FeaturesSection.tsx\nmsgid \"Web. iOS.<0/>Android.<1/><2>Always in sync.</2>\"\nmsgstr \"\""
+  },
+  {
+    "id": "WHY RIDE WITH PALS",
+    "entry": "#: src/features/landing/components/ComparisonSection.tsx\nmsgid \"WHY RIDE WITH PALS\"\nmsgstr \"\""
+  },
+  {
+    "id": "With Ride With Pals",
+    "entry": "#: src/features/landing/components/ComparisonSection.tsx\nmsgid \"With Ride With Pals\"\nmsgstr \"\""
+  }
+]
