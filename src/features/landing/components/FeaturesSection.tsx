@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from "react";
 import { Trans } from "@lingui/react/macro";
-import { t } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react";
 
 /* Tiny SVG atoms outside component render */
 const ArrowRight = ({ size = 12, color = "#EB712B" }: { size?: number; color?: string }) => (
@@ -23,6 +23,7 @@ const SwirlArrow = () => (
 );
 
 export const FeaturesSection: React.FC = () => {
+  useLingui();
   const css = `
     /* ════════════════════════════════════════════
        FEATURES SECTION — editorial, no plain cards
@@ -668,12 +669,12 @@ export const FeaturesSection: React.FC = () => {
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  [t`Activity & Route Calendar`, t`Keep rides, runs and meeting points clearly organized.`],
-                  [t`Access & Invitation Control`, t`Approve new members or use private invite codes.`],
-                  [t`Role Permissions`, t`Set ride leaders, community admins and member permissions.`],
-                  [t`Official Updates`, t`Share club announcements and route changes without them getting buried.`],
-                ].map(([title, desc]) => (
-                  <li key={title}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
+                  [<Trans>Activity &amp; Route Calendar</Trans>, <Trans>Keep rides, runs and meeting points clearly organized.</Trans>],
+                  [<Trans>Access &amp; Invitation Control</Trans>, <Trans>Approve new members or use private invite codes.</Trans>],
+                  [<Trans>Role Permissions</Trans>, <Trans>Set ride leaders, community admins and member permissions.</Trans>],
+                  [<Trans>Official Updates</Trans>, <Trans>Share club announcements and route changes without them getting buried.</Trans>],
+                ].map(([title, desc], idx) => (
+                  <li key={idx}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
               </ul>
             </div>
@@ -720,12 +721,12 @@ export const FeaturesSection: React.FC = () => {
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  [t`Flexible Fee Setup`, t`Define membership amounts and validity periods.`],
-                  [t`Clear Status Tracking`, t`Instantly see who is Paid or Not Renewed.`],
-                  [t`Direct Stripe Integration`, t`Collect payments securely into your own account.`],
-                  [t`Manual Check Support`, t`Mark members as paid manually for cash or bank transfers.`],
-                ].map(([title, desc]) => (
-                  <li key={title}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
+                  [<Trans>Flexible Fee Setup</Trans>, <Trans>Define membership amounts and validity periods.</Trans>],
+                  [<Trans>Clear Status Tracking</Trans>, <Trans>Instantly see who is Paid or Not Renewed.</Trans>],
+                  [<Trans>Direct Stripe Integration</Trans>, <Trans>Collect payments securely into your own account.</Trans>],
+                  [<Trans>Manual Check Support</Trans>, <Trans>Mark members as paid manually for cash or bank transfers.</Trans>],
+                ].map(([title, desc], idx) => (
+                  <li key={idx}>{listIconClub}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
               </ul>
             </div>
@@ -752,12 +753,12 @@ export const FeaturesSection: React.FC = () => {
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  [t`Activity-specific Chats`, t`Keep logistics, photos and questions tied directly to each session.`],
-                  [t`Internal Marketplace`, t`Let members trade second-hand bikes and gear safely.`],
-                  [t`Exclusive Partner Discounts`, t`Publish perks, partner shop codes and local deals for your members.`],
-                  [t`Club Shop`, t`Sell official club apparel, kits or event tickets directly.`],
-                ].map(([title, desc]) => (
-                  <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
+                  [<Trans>Activity-specific Chats</Trans>, <Trans>Keep logistics, photos and questions tied directly to each session.</Trans>],
+                  [<Trans>Internal Marketplace</Trans>, <Trans>Let members trade second-hand bikes and gear safely.</Trans>],
+                  [<Trans>Exclusive Partner Discounts</Trans>, <Trans>Publish perks, partner shop codes and local deals for your members.</Trans>],
+                  [<Trans>Club Shop</Trans>, <Trans>Sell official club apparel, kits or event tickets directly.</Trans>],
+                ].map(([title, desc], idx) => (
+                  <li key={idx}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
               </ul>
             </div>
@@ -804,12 +805,12 @@ export const FeaturesSection: React.FC = () => {
               </p>
               <ul className="rwp-fb-list">
                 {[
-                  [t`1-Tap RSVP`, t`Members confirm attendance and see pace, distance and route details.`],
-                  [t`Club Leaderboards`, t`Reward consistency by activities attended and Strava distance.`],
-                  [t`GPX Downloads & Strava Sync`, t`Seamless route access and verified activity tracking.`],
-                  [t`Cycling & Running Support`, t`Built specifically for road, gravel, MTB, trail and street runs.`],
-                ].map(([title, desc]) => (
-                  <li key={title}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
+                  [<Trans>1-Tap RSVP</Trans>, <Trans>Members confirm attendance and see pace, distance and route details.</Trans>],
+                  [<Trans>Club Leaderboards</Trans>, <Trans>Reward consistency by activities attended and Strava distance.</Trans>],
+                  [<Trans>GPX Downloads &amp; Strava Sync</Trans>, <Trans>Seamless route access and verified activity tracking.</Trans>],
+                  [<Trans>Cycling &amp; Running Support</Trans>, <Trans>Built specifically for road, gravel, MTB, trail and street runs.</Trans>],
+                ].map(([title, desc], idx) => (
+                  <li key={idx}>{listIconRider}<div><strong>{title}</strong>{desc}</div></li>
                 ))}
               </ul>
             </div>

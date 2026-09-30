@@ -19,9 +19,12 @@ import { BlogSection } from './components/BlogSection';
 import { CTASection } from './components/CTASection';
 import { FooterSection } from './components/FooterSection';
 
+import { useLingui } from '@lingui/react';
+
 gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage: React.FC = () => {
+  useLingui(); // Subscribes LandingPage tree to Lingui locale changes
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
 

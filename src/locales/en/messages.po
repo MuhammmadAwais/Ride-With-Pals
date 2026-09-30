@@ -13,6 +13,16 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: src/features/landing/components/Navigation.tsx
+msgid "Close menu"
+msgstr "Close menu"
+
+#. js-lingui-explicit-id
+#: src/features/landing/components/Navigation.tsx
+msgid "Open menu"
+msgstr "Open menu"
+
 #: src/features/dashboard/CreateRide.tsx
 msgid ".gpx file"
 msgstr ".gpx file"
@@ -20,8 +30,8 @@ msgstr ".gpx file"
 #. placeholder {0}: item.desc
 #. placeholder {0}: item.title
 #: src/features/landing/components/ComparisonSection.tsx
-msgid "{0}"
-msgstr "{0}"
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #. placeholder {0}: pendingTx.length
 #: src/features/ClubSide/Wallet.tsx
@@ -373,9 +383,17 @@ msgstr "6 Months"
 #~ msgid "A chat for every ride."
 #~ msgstr "A chat for every ride."
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "A dedicated news feed for verified club broadcasts, alongside dedicated chats tied specifically to each session."
+msgstr "A dedicated news feed for verified club broadcasts, alongside dedicated chats tied specifically to each session."
+
 #: src/features/ClubSide/StripeConnect.tsx
 msgid "About Stripe"
 msgstr "About Stripe"
+
+#: src/features/landing/components/FooterSection.tsx
+msgid "About Us"
+msgstr "About Us"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats."
@@ -1085,6 +1103,10 @@ msgid "Automated bank payouts for new transactions will stop."
 msgstr "Automated bank payouts for new transactions will stop."
 
 #: src/features/landing/components/ComparisonSection.tsx
+msgid "Automated dues & Stripe payments:"
+msgstr "Automated dues & Stripe payments:"
+
+#: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "Automated monthly leaderboards, distance metrics & badges"
 #~ msgstr "Automated monthly leaderboards, distance metrics & badges"
 
@@ -1223,6 +1245,10 @@ msgstr "Biography / About"
 msgid "Bizum"
 msgstr "Bizum"
 
+#: src/features/landing/components/FooterSection.tsx
+msgid "Blog"
+msgstr "Blog"
+
 #: src/features/ClubSide/News.tsx
 msgid "Bold (**text**)"
 msgstr "Bold (**text**)"
@@ -1258,6 +1284,10 @@ msgstr "Browse activities and tap the bookmark icon to save them for later."
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Browse All Rides"
 msgstr "Browse All Rides"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Browse upcoming events, pay entry, see who else is joining — all without leaving the app. The UX is seamless from start to finish."
+msgstr "Browse upcoming events, pay entry, see who else is joining — all without leaving the app. The UX is seamless from start to finish."
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Browse upcoming group rides with pace, distance, and ride type at a glance. Swipe to join in seconds — then compete monthly on the leaderboard."
@@ -1464,6 +1494,10 @@ msgstr "Cardholder Name"
 msgid "Cards & Apple/Google Pay Ready"
 msgstr "Cards & Apple/Google Pay Ready"
 
+#: src/features/landing/components/FooterSection.tsx
+msgid "Careers"
+msgstr "Careers"
+
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Cash"
 msgstr "Cash"
@@ -1533,6 +1567,10 @@ msgstr "Changes to rides, memberships and rosters update immediately across devi
 msgid "Changing..."
 msgstr "Changing..."
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Chasing bank transfers & cash:"
+msgstr "Chasing bank transfers & cash:"
+
 #: src/components/Sidebar.tsx
 msgid "Chat"
 msgstr "Chat"
@@ -1576,6 +1614,10 @@ msgstr "City"
 #: src/features/ClubSide/Product.tsx
 msgid "Classification"
 msgstr "Classification"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Clean event pages with route maps, GPX downloads, pace levels and 1-tap RSVPs. Everyone knows where and when to show up."
+msgstr "Clean event pages with route maps, GPX downloads, pace levels and 1-tap RSVPs. Everyone knows where and when to show up."
 
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Clear"
@@ -1688,6 +1730,10 @@ msgstr "Close"
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Close Directory"
 msgstr "Close Directory"
+
+#: src/features/landing/components/Navigation.tsx
+#~ msgid "Close menu"
+#~ msgstr "Close menu"
 
 #: src/features/ClubSide/components/UserProfileModal.tsx
 #: src/features/public-club/pages/RideJoining.tsx
@@ -1870,6 +1916,10 @@ msgstr "Club overview & settings"
 msgid "Club Owner"
 msgstr "Club Owner"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Club Owner · Lagos"
+msgstr "Club Owner · Lagos"
+
 #: src/features/ClubSide/StripeConnect.tsx
 msgid "Club Owner Access Only"
 msgstr "Club Owner Access Only"
@@ -1964,6 +2014,10 @@ msgstr "Club Wallet"
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Club:"
 msgstr "Club:"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Clubs"
+msgstr "Clubs"
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members."
@@ -2241,6 +2295,10 @@ msgstr "Continue Editing"
 msgid "Continue to Account Deletion"
 msgstr "Continue to Account Deletion"
 
+#: src/features/landing/components/FooterSection.tsx
+msgid "Cookie Policy"
+msgstr "Cookie Policy"
+
 #. placeholder {0}: row.email
 #: src/features/ClubSide/Members.tsx
 msgid "Copied {0} to clipboard!"
@@ -2384,6 +2442,10 @@ msgstr "Credit"
 msgid "CREDIT"
 msgstr "CREDIT"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Crit Racer · London"
+msgstr "Crit Racer · London"
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Cross-Club"
 msgstr "Cross-Club"
@@ -2490,6 +2552,10 @@ msgstr "Cycling Club"
 msgid "Cycling Clubs"
 msgstr "Cycling Clubs"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Cycling Coach · Accra"
+msgstr "Cycling Coach · Accra"
+
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Cycling, running and swimming"
 #~ msgstr "Cycling, running and swimming"
@@ -2548,6 +2614,10 @@ msgstr "DEBIT"
 #: src/features/ClubSide/Leaderboard.tsx
 msgid "December"
 msgstr "December"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Dedicated activity hub:"
+msgstr "Dedicated activity hub:"
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Dedicated chats per activity, private member messaging, partner discounts and club gear. A real digital hub for your community."
@@ -3156,6 +3226,14 @@ msgstr "End Date"
 msgid "Ending Point (Optional)"
 msgstr "Ending Point (Optional)"
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Endless chats & buried details:"
+msgstr "Endless chats & buried details:"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Endurance Cyclist · Riyadh"
+msgstr "Endurance Cyclist · Riyadh"
+
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Ensure your account is protected with a strong password."
 msgstr "Ensure your account is protected with a strong password."
@@ -3692,6 +3770,14 @@ msgstr "Filter articles..."
 msgid "Final Confirmation Required"
 msgstr "Final Confirmation Required"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Finally an app that respects serious riders. Stats, routes, and community — all dialled in perfectly. Could not ask for more."
+msgstr "Finally an app that respects serious riders. Stats, routes, and community — all dialled in perfectly. Could not ask for more."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Fixed Gear Rider · Tokyo"
+msgstr "Fixed Gear Rider · Tokyo"
+
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Flat yearly rate — no member limits"
 #~ msgstr "Flat yearly rate — no member limits"
@@ -3809,6 +3895,10 @@ msgstr "Fri"
 #: src/features/landing/components/BentoSection.tsx
 msgid "from one place."
 msgstr "from one place."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "From solo weekend warriors to club managers running hundreds of members — here is what the community says."
+msgstr "From solo weekend warriors to club managers running hundreds of members — here is what the community says."
 
 #: src/features/landing/components/HowitWorksSection.tsx
 msgid "From weekly activities to a community that grows."
@@ -4009,9 +4099,17 @@ msgstr "GPX Route file is required"
 msgid "GPX route uploaded successfully."
 msgstr "GPX route uploaded successfully."
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Gran Fondo Racer · Munich"
+msgstr "Gran Fondo Racer · Munich"
+
 #: src/features/ClubSide/ClubPermissions.tsx
 msgid "Grant full access"
 msgstr "Grant full access"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Gravel Rider · Lyon"
+msgstr "Gravel Rider · Lyon"
 
 #: src/features/public-club/pages/Marketplace.tsx
 #: src/features/public-club/pages/Ride.tsx
@@ -4141,6 +4239,14 @@ msgstr "How to Launch Your Club and Attract More Riders"
 msgid "I acknowledge and accept the"
 msgstr "I acknowledge and accept the"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "I found riders at my exact fitness level within a week. The club discovery feature alone is worth the download."
+msgstr "I found riders at my exact fitness level within a week. The club discovery feature alone is worth the download."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "I manage training groups for 40+ athletes. The permission system lets coaches and members have completely separate access — perfect."
+msgstr "I manage training groups for 40+ athletes. The permission system lets coaches and members have completely separate access — perfect."
+
 #: src/components/common/DeleteClubModal.tsx
 #: src/features/ClubSide/EditClub.tsx
 msgid "I Understand, Continue"
@@ -4173,6 +4279,10 @@ msgstr "Image size must be under 10MB."
 #: src/features/ClubSide/StripeConnect.tsx
 msgid "Impact of Disconnection"
 msgstr "Impact of Disconnection"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Important club announcements, weather cancellations or safety rules get buried under chatter and memes."
+msgstr "Important club announcements, weather cancellations or safety rules get buried under chatter and memes."
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "in"
@@ -4226,6 +4336,10 @@ msgstr "Instantly see who is Paid or Not Renewed."
 #: src/features/ClubSide/OrderDetail.tsx
 #~ msgid "Insulation"
 #~ msgstr "Insulation"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Integrated club shop & exclusive perks:"
+msgstr "Integrated club shop & exclusive perks:"
 
 #: src/features/landing/components/BentoSection.tsx
 #~ msgid "Integrated Shop"
@@ -4706,6 +4820,10 @@ msgstr "Login"
 msgid "Logout"
 msgstr "Logout"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Loved by <0>12,000+</0> riders worldwide"
+msgstr "Loved by <0>12,000+</0> riders worldwide"
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Loved by members"
 msgstr "Loved by members"
@@ -4824,6 +4942,10 @@ msgstr "Manual Check Support"
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Manual Payment Updates"
 #~ msgstr "Manual Payment Updates"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Manually checking bank statements, updating outdated spreadsheets, and awkward follow-ups for expired memberships."
+msgstr "Manually checking bank statements, updating outdated spreadsheets, and awkward follow-ups for expired memberships."
 
 #: src/features/public-club/pages/Ride.tsx
 msgid "Map View"
@@ -4985,6 +5107,10 @@ msgstr "Member Count"
 #: src/features/ClubSide/ClubPermissions.tsx
 msgid "Member Delegation"
 msgstr "Member Delegation"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Member directory & role permissions:"
+msgstr "Member directory & role permissions:"
 
 #: src/features/landing/components/FeaturesSection.tsx
 #~ msgid "Member Discounts"
@@ -5225,6 +5351,10 @@ msgstr "Most Popular"
 msgid "Move this member to a different fee plan"
 msgstr "Move this member to a different fee plan"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "MTB Enthusiast · Cape Town"
+msgstr "MTB Enthusiast · Cape Town"
+
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Multiple Admins & Co-Owner Roles"
 #~ msgstr "Multiple Admins & Co-Owner Roles"
@@ -5253,6 +5383,10 @@ msgstr "My Financial Overview"
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "My Listings"
 msgstr "My Listings"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "My performance is up 20% since I started training with my Ride With Pals club. The activity feed keeps me accountable every day."
+msgstr "My performance is up 20% since I started training with my Ride With Pals club. The activity feed keeps me accountable every day."
 
 #: src/components/Sidebar.tsx
 #: src/features/public-club/pages/MyPurchases.tsx
@@ -5610,6 +5744,10 @@ msgstr "No name provided"
 msgid "No notifications yet"
 msgstr "No notifications yet"
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "No official voice:"
+msgstr "No official voice:"
+
 #: src/features/ClubSide/Order.tsx
 #~ msgid "No orders found under \"{activeTab}\" matching your filter."
 #~ msgstr "No orders found under \"{activeTab}\" matching your filter."
@@ -5785,6 +5923,10 @@ msgstr "Offer club merchandise, products or paid activities from the same place 
 msgid "Offer Free Shipping on this merchandise item"
 msgstr "Offer Free Shipping on this merchandise item"
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Official announcements & structured chats:"
+msgstr "Official announcements & structured chats:"
+
 #: src/features/ClubSide/News.tsx
 msgid "Official announcements, ride recaps, and community notices from club leadership."
 msgstr "Official announcements, ride recaps, and community notices from club leadership."
@@ -5901,6 +6043,10 @@ msgstr "Open Distance"
 msgid "Open Group Chat"
 msgstr "Open Group Chat"
 
+#: src/features/landing/components/Navigation.tsx
+#~ msgid "Open menu"
+#~ msgstr "Open menu"
+
 #: src/features/ClubSide/SupportHelp.tsx
 msgid "Open Session"
 msgstr "Open Session"
@@ -5995,6 +6141,10 @@ msgstr "Orders"
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Organise your community. Without the admin chaos."
 msgstr "Organise your community. Without the admin chaos."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Organised an 80-rider charity event through RWP. Every attendee asked which platform we used. We told them gladly."
+msgstr "Organised an 80-rider charity event through RWP. Every attendee asked which platform we used. We told them gladly."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Organisers manage everything comfortably from the desktop dashboard. Members join and stay updated directly from their phones."
@@ -6332,6 +6482,10 @@ msgstr "Phone no."
 #: src/features/ClubSide/EditClub.tsx
 msgid "Phone Number"
 msgstr "Phone Number"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Phone numbers exposed in public groups, zero control over who joins, and no way to manage permissions or roles."
+msgstr "Phone numbers exposed in public groups, zero control over who joins, and no way to manage permissions or roles."
 
 #: src/components/common/DeleteAccountModal.tsx
 msgid "Pick a candidate member to become the new primary owner:"
@@ -6676,6 +6830,7 @@ msgstr "Privacy <0>Protocol</0>"
 
 #: src/components/Sidebar.tsx
 #: src/features/ClubSide/PrivacyPolicy.tsx
+#: src/features/landing/components/FooterSection.tsx
 msgid "Privacy Policy"
 msgstr "Privacy Policy"
 
@@ -6697,6 +6852,10 @@ msgstr "PRIVATE"
 #: src/features/public-club/pages/ClubDetails.tsx
 msgid "Private Club"
 msgstr "Private Club"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Private invite codes, join request approvals, and role management for founders, admins and ride leaders."
+msgstr "Private invite codes, join request approvals, and role management for founders, admins and ride leaders."
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "Problems Solved"
@@ -6922,6 +7081,10 @@ msgstr "Randomize"
 msgid "Rank"
 msgstr "Rank"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Rating"
+msgstr "Rating"
+
 #: src/features/ClubSide/ClubMembership.tsx
 msgid "Re-assign this member to the fee"
 msgstr "Re-assign this member to the fee"
@@ -6954,6 +7117,14 @@ msgstr "Ready to delete"
 #: src/features/landing/components/PricingSection.tsx
 #~ msgid "Real plans"
 #~ msgstr "Real plans"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Real results."
+msgstr "Real results."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Real riders."
+msgstr "Real riders."
 
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Real-time Sync"
@@ -7393,6 +7564,10 @@ msgstr "Ride With Pals Messages"
 msgid "RIDE?"
 msgstr "RIDE?"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Rider Stories"
+msgstr "Rider Stories"
+
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Riders"
 msgstr "Riders"
@@ -7416,10 +7591,18 @@ msgstr "Rides currently on the road"
 msgid "Rides Scheduled"
 msgstr "Rides Scheduled"
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Rides take hours to organize, but participants buy gear elsewhere and never see your store promotions or partner discounts."
+msgstr "Rides take hours to organize, but participants buy gear elsewhere and never see your store promotions or partner discounts."
+
 #: src/features/public-club/pages/Ride.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Road"
 msgstr "Road"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Road Cyclist · Dubai"
+msgstr "Road Cyclist · Dubai"
 
 #: src/features/ClubSide/Members.tsx
 #: src/features/public-club/pages/RideJoining.tsx
@@ -7458,6 +7641,10 @@ msgstr "Route & Waypoints"
 msgid "Route sharing with GPX downloads"
 msgstr "Route sharing with GPX downloads"
 
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Routes, meeting points and GPX files get lost under hundreds of daily messages. Half the group arrives late or asks the same questions repeatedly."
+msgstr "Routes, meeting points and GPX files get lost under hundreds of daily messages. Half the group arrives late or asks the same questions repeatedly."
+
 #: src/features/landing/components/BentoSection.tsx
 msgid "Run your community "
 msgstr "Run your community "
@@ -7483,6 +7670,14 @@ msgstr "Running Activity"
 #: src/features/landing/components/HeroSection.tsx
 msgid "Running Groups"
 msgstr "Running Groups"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Running my cycling club used to be a headache. Now memberships, news updates, and ride tracking all live in one dashboard."
+msgstr "Running my cycling club used to be a headache. Now memberships, news updates, and ride tracking all live in one dashboard."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "RWP completely changed how I organise group rides. Club management, scheduling, leaderboards — it is all there and it actually works."
+msgstr "RWP completely changed how I organise group rides. Club management, scheduling, leaderboards — it is all there and it actually works."
 
 #: src/features/ClubSide/ClubJoiningReq.tsx
 msgid "RWP Rider"
@@ -7515,6 +7710,10 @@ msgstr "San Francisco, CA"
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Sat"
 msgstr "Sat"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Satisfaction"
+msgstr "Satisfaction"
 
 #: src/features/ClubSide/AddDiscount.tsx
 #: src/features/ClubSide/NewsAdded.tsx
@@ -7592,6 +7791,10 @@ msgstr "saved activities"
 msgid "Saved Activities"
 msgstr "Saved Activities"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Saved rides, wallet, subscriptions — everything is there, fast, and clean. Built by people who actually get what cyclists need."
+msgstr "Saved rides, wallet, subscriptions — everything is there, fast, and clean. Built by people who actually get what cyclists need."
+
 #: src/features/ClubSide/EditClub.tsx
 #: src/features/dashboard/CreateRide.tsx
 msgid "Saving Changes..."
@@ -7644,6 +7847,10 @@ msgstr "Scheduled Events"
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Scheduled Ride"
 msgstr "Scheduled Ride"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Seamless recurring membership fees, instant payment status tags (Paid / Not Renewed), and direct payouts to your bank account."
+msgstr "Seamless recurring membership fees, instant payment status tags (Paid / Not Renewed), and direct payouts to your bank account."
 
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "Seamless ride creation with GPX routes & leader controls"
@@ -8042,6 +8249,10 @@ msgstr "Shop Orders"
 #: src/features/ClubSide/DashBoard.tsx
 msgid "Shop Orders Placed"
 msgstr "Shop Orders Placed"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Showcase local partner deals, sell official kits or paid workshops, and turn weekly attendees into loyal paying customers."
+msgstr "Showcase local partner deals, sell official kits or paid workshops, and turn weekly attendees into loyal paying customers."
 
 #. placeholder {0}: filteredProducts.length
 #: src/features/public-club/pages/Marketplace.tsx
@@ -8515,6 +8726,10 @@ msgstr "Terms & Safety Guidelines"
 msgid "Terms and conditions updated successfully!"
 msgstr "Terms and conditions updated successfully!"
 
+#: src/features/landing/components/FooterSection.tsx
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
 #: src/features/public-club/pages/Shop.tsx
 msgid "Thank you for purchasing"
 msgstr "Thank you for purchasing"
@@ -8531,6 +8746,10 @@ msgstr "Thank you for your purchase of the"
 #~ msgid "The complete club operating system — collect member fees, run your club shop, and grow."
 #~ msgstr "The complete club operating system — collect member fees, run your club shop, and grow."
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "The marketplace is a hidden gem. Sold my old crankset and found a used wheelset the same afternoon. Real riders, real gear."
+msgstr "The marketplace is a hidden gem. Sold my old crankset and found a used wheelset the same afternoon. Real riders, real gear."
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
 msgstr "The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person."
@@ -8543,6 +8762,10 @@ msgstr "The marketplace is an internal classifieds section for club members. It 
 msgid "THE MEMBER EXPERIENCE"
 msgstr "THE MEMBER EXPERIENCE"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "The social side does not feel like an afterthought here — it is the whole point. This is the first cycling app I have actually kept."
+msgstr "The social side does not feel like an afterthought here — it is the whole point. This is the first cycling app I have actually kept."
+
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "The status quo (WhatsApp, Instagram & sheets)"
 msgstr "The status quo (WhatsApp, Instagram & sheets)"
@@ -8550,6 +8773,10 @@ msgstr "The status quo (WhatsApp, Instagram & sheets)"
 #: src/features/landing/components/BentoSection.tsx
 #~ msgid "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
 #~ msgstr "The ultimate ecosystem for cycling, running, and triathlon clubs. Manage activities, members, and finances in a single platform built by athletes, for athletes."
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "The weekly leaderboard creates exactly the right kind of friendly competition. Everyone in our club is pushing harder because of it."
+msgstr "The weekly leaderboard creates exactly the right kind of friendly competition. Everyone in our club is pushing harder because of it."
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "There are currently no listings available in this category."
@@ -8785,6 +9012,10 @@ msgstr "Total Subscribers"
 msgid "Total Transactions"
 msgstr "Total Transactions"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Track Cyclist · São Paulo"
+msgstr "Track Cyclist · São Paulo"
+
 #: src/features/public-club/pages/UserWallet.tsx
 msgid "Track your memberships, gear acquisitions, activity fees, and complete multi-club transaction history."
 msgstr "Track your memberships, gear acquisitions, activity fees, and complete multi-club transaction history."
@@ -8856,6 +9087,10 @@ msgstr "Transferring..."
 #: src/features/ClubSide/DashBoard.tsx
 msgid "Trends"
 msgstr "Trends"
+
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Triathlete · Barcelona"
+msgstr "Triathlete · Barcelona"
 
 #: src/features/ClubSide/EditClub.tsx
 #: src/features/public-club/components/ClubCard.tsx
@@ -9020,6 +9255,10 @@ msgstr "Unnamed Club"
 #: src/features/ClubSide/ClubPermissions.tsx
 msgid "Unnamed Member"
 msgstr "Unnamed Member"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Unorganised rosters & no privacy:"
+msgstr "Unorganised rosters & no privacy:"
 
 #: src/features/ClubSide/DashBoard.tsx
 msgid "Unpaid"
@@ -9379,6 +9618,10 @@ msgstr "Wed"
 msgid "Week"
 msgstr "Week"
 
+#: src/features/landing/components/TestimonialsSection.tsx
+msgid "Weekend Cyclist · Bangalore"
+msgstr "Weekend Cyclist · Bangalore"
+
 #: src/features/ClubSide/OrderDetail.tsx
 #~ msgid "Weight"
 #~ msgstr "Weight"
@@ -9657,3 +9900,7 @@ msgstr "Your Stripe account requires additional identity or banking information 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Your transaction is successful, and a confirmation email has been sent. Your professional gear will ship soon!"
 msgstr "Your transaction is successful, and a confirmation email has been sent. Your professional gear will ship soon!"
+
+#: src/features/landing/components/ComparisonSection.tsx
+msgid "Zero commercial return:"
+msgstr "Zero commercial return:"

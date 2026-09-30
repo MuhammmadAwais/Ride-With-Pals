@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { useRef, useEffect } from "react";
+import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 
 // Avatar pool — 9 real images cycled across 12 cards
 const AVATARS = [
@@ -17,44 +19,44 @@ const AVATARS = [
 const TESTIMONIALS_ROW1 = [
   {
     name: "Ahmed Al-Rashidi",
-    role: "Road Cyclist · Dubai",
+    role: <Trans>Road Cyclist · Dubai</Trans>,
     avatar: AVATARS[0],
-    text: "RWP completely changed how I organise group rides. Club management, scheduling, leaderboards — it is all there and it actually works.",
+    text: <Trans>RWP completely changed how I organise group rides. Club management, scheduling, leaderboards — it is all there and it actually works.</Trans>,
     rating: 5,
   },
   {
     name: "Sarah Mitchell",
-    role: "MTB Enthusiast · Cape Town",
+    role: <Trans>MTB Enthusiast · Cape Town</Trans>,
     avatar: AVATARS[1],
-    text: "I found riders at my exact fitness level within a week. The club discovery feature alone is worth the download.",
+    text: <Trans>I found riders at my exact fitness level within a week. The club discovery feature alone is worth the download.</Trans>,
     rating: 5,
   },
   {
     name: "Carlos Medina",
-    role: "Triathlete · Barcelona",
+    role: <Trans>Triathlete · Barcelona</Trans>,
     avatar: AVATARS[2],
-    text: "My performance is up 20% since I started training with my Ride With Pals club. The activity feed keeps me accountable every day.",
+    text: <Trans>My performance is up 20% since I started training with my Ride With Pals club. The activity feed keeps me accountable every day.</Trans>,
     rating: 5,
   },
   {
     name: "Priya Sharma",
-    role: "Weekend Cyclist · Bangalore",
+    role: <Trans>Weekend Cyclist · Bangalore</Trans>,
     avatar: AVATARS[3],
-    text: "Finally an app that respects serious riders. Stats, routes, and community — all dialled in perfectly. Could not ask for more.",
+    text: <Trans>Finally an app that respects serious riders. Stats, routes, and community — all dialled in perfectly. Could not ask for more.</Trans>,
     rating: 5,
   },
   {
     name: "James Okonkwo",
-    role: "Club Owner · Lagos",
+    role: <Trans>Club Owner · Lagos</Trans>,
     avatar: AVATARS[4],
-    text: "Running my cycling club used to be a headache. Now memberships, news updates, and ride tracking all live in one dashboard.",
+    text: <Trans>Running my cycling club used to be a headache. Now memberships, news updates, and ride tracking all live in one dashboard.</Trans>,
     rating: 5,
   },
   {
     name: "Yuki Tanaka",
-    role: "Fixed Gear Rider · Tokyo",
+    role: <Trans>Fixed Gear Rider · Tokyo</Trans>,
     avatar: AVATARS[5],
-    text: "The marketplace is a hidden gem. Sold my old crankset and found a used wheelset the same afternoon. Real riders, real gear.",
+    text: <Trans>The marketplace is a hidden gem. Sold my old crankset and found a used wheelset the same afternoon. Real riders, real gear.</Trans>,
     rating: 5,
   },
 ];
@@ -62,44 +64,44 @@ const TESTIMONIALS_ROW1 = [
 const TESTIMONIALS_ROW2 = [
   {
     name: "Nina Hoffmann",
-    role: "Gran Fondo Racer · Munich",
+    role: <Trans>Gran Fondo Racer · Munich</Trans>,
     avatar: AVATARS[6],
-    text: "The social side does not feel like an afterthought here — it is the whole point. This is the first cycling app I have actually kept.",
+    text: <Trans>The social side does not feel like an afterthought here — it is the whole point. This is the first cycling app I have actually kept.</Trans>,
     rating: 5,
   },
   {
     name: "Tariq Hassan",
-    role: "Endurance Cyclist · Riyadh",
+    role: <Trans>Endurance Cyclist · Riyadh</Trans>,
     avatar: AVATARS[7],
-    text: "Browse upcoming events, pay entry, see who else is joining — all without leaving the app. The UX is seamless from start to finish.",
+    text: <Trans>Browse upcoming events, pay entry, see who else is joining — all without leaving the app. The UX is seamless from start to finish.</Trans>,
     rating: 5,
   },
   {
     name: "Emma Bertrand",
-    role: "Gravel Rider · Lyon",
+    role: <Trans>Gravel Rider · Lyon</Trans>,
     avatar: AVATARS[8],
-    text: "Organised an 80-rider charity event through RWP. Every attendee asked which platform we used. We told them gladly.",
+    text: <Trans>Organised an 80-rider charity event through RWP. Every attendee asked which platform we used. We told them gladly.</Trans>,
     rating: 5,
   },
   {
     name: "Marcus Webb",
-    role: "Crit Racer · London",
+    role: <Trans>Crit Racer · London</Trans>,
     avatar: AVATARS[0],
-    text: "The weekly leaderboard creates exactly the right kind of friendly competition. Everyone in our club is pushing harder because of it.",
+    text: <Trans>The weekly leaderboard creates exactly the right kind of friendly competition. Everyone in our club is pushing harder because of it.</Trans>,
     rating: 5,
   },
   {
     name: "Amara Diallo",
-    role: "Cycling Coach · Accra",
+    role: <Trans>Cycling Coach · Accra</Trans>,
     avatar: AVATARS[3],
-    text: "I manage training groups for 40+ athletes. The permission system lets coaches and members have completely separate access — perfect.",
+    text: <Trans>I manage training groups for 40+ athletes. The permission system lets coaches and members have completely separate access — perfect.</Trans>,
     rating: 5,
   },
   {
     name: "Lucas Ferreira",
-    role: "Track Cyclist · São Paulo",
+    role: <Trans>Track Cyclist · São Paulo</Trans>,
     avatar: AVATARS[6],
-    text: "Saved rides, wallet, subscriptions — everything is there, fast, and clean. Built by people who actually get what cyclists need.",
+    text: <Trans>Saved rides, wallet, subscriptions — everything is there, fast, and clean. Built by people who actually get what cyclists need.</Trans>,
     rating: 5,
   },
 ];
@@ -199,28 +201,29 @@ const SocialProofBar = () => (
       <div className="rwp-tc-proof-stars">
         {[1,2,3,4,5].map(i => <StarIcon key={i} />)}
       </div>
-      <span className="rwp-tc-proof-label">Loved by <strong>12,000+</strong> riders worldwide</span>
+      <span className="rwp-tc-proof-label"><Trans>Loved by <strong>12,000+</strong> riders worldwide</Trans></span>
     </div>
     <div className="rwp-tc-proof-divider" />
     <div className="rwp-tc-proof-stat">
       <span className="rwp-tc-proof-num">340<span style={{ color: "#EB712B" }}>+</span></span>
-      <span className="rwp-tc-proof-unit">Clubs</span>
+      <span className="rwp-tc-proof-unit"><Trans>Clubs</Trans></span>
     </div>
     <div className="rwp-tc-proof-divider" />
     <div className="rwp-tc-proof-stat">
       <span className="rwp-tc-proof-num">4.9<span style={{ color: "#EB712B" }}>★</span></span>
-      <span className="rwp-tc-proof-unit">Rating</span>
+      <span className="rwp-tc-proof-unit"><Trans>Rating</Trans></span>
     </div>
     <div className="rwp-tc-proof-divider" />
     <div className="rwp-tc-proof-stat">
       <span className="rwp-tc-proof-num">98<span style={{ color: "#EB712B" }}>%</span></span>
-      <span className="rwp-tc-proof-unit">Satisfaction</span>
+      <span className="rwp-tc-proof-unit"><Trans>Satisfaction</Trans></span>
     </div>
   </div>
 );
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export const TestimonialsSection: React.FC = () => {
+  useLingui();
   const css = `
     .rwp-testimonials {
       padding: 100px 0 80px;
@@ -449,14 +452,14 @@ export const TestimonialsSection: React.FC = () => {
           <div className="rwp-testimonials-header-left">
             <div className="rwp-testimonials-badge">
               <div className="rwp-testimonials-badge-dot" />
-              <span className="rwp-testimonials-badge-text">Rider Stories</span>
+              <span className="rwp-testimonials-badge-text"><Trans>Rider Stories</Trans></span>
             </div>
             <h2 className="rwp-testimonials-heading">
-              Real riders.<br />
-              <em>Real results.</em>
+              <Trans>Real riders.</Trans><br />
+              <em><Trans>Real results.</Trans></em>
             </h2>
             <p className="rwp-testimonials-sub">
-              From solo weekend warriors to club managers running hundreds of members — here is what the community says.
+              <Trans>From solo weekend warriors to club managers running hundreds of members — here is what the community says.</Trans>
             </p>
           </div>
         </div>

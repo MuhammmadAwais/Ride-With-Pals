@@ -1,7 +1,9 @@
 import React from "react";
 import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 
 export const FooterSection: React.FC = () => {
+  useLingui();
   return (
     <footer className="rwp-footer">
       <style>{`
@@ -203,18 +205,18 @@ export const FooterSection: React.FC = () => {
           <div className="rwp-footer-col">
             <h4><Trans>Company</Trans></h4>
             <ul>
-              <li><a href="#about">About Us</a></li>
-              <li><a href="#blog">Blog</a></li>
-              <li><a href="#careers">Careers</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="#about"><Trans>About Us</Trans></a></li>
+              <li><a href="#blog"><Trans>Blog</Trans></a></li>
+              <li><a href="#careers"><Trans>Careers</Trans></a></li>
+              <li><a href="#contact"><Trans>Contact</Trans></a></li>
             </ul>
           </div>
           <div className="rwp-footer-col">
             <h4><Trans>Legal</Trans></h4>
             <ul>
-              <li><a href="#privacy">Privacy Policy</a></li>
-              <li><a href="#terms">Terms of Service</a></li>
-              <li><a href="#cookies">Cookie Policy</a></li>
+              <li><a href="#privacy"><Trans>Privacy Policy</Trans></a></li>
+              <li><a href="#terms"><Trans>Terms of Service</Trans></a></li>
+              <li><a href="#cookies"><Trans>Cookie Policy</Trans></a></li>
             </ul>
           </div>
         </div>

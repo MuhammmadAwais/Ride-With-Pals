@@ -1,8 +1,10 @@
 // @ts-nocheck
 import React from "react";
 import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 
 export const CTASection: React.FC = () => {
+  useLingui();
   return (
     <section className="framer-18w1jh2" data-framer-name="CTA Section">
       <div className="framer-au4vbu-container">

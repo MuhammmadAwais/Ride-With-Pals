@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 
 export const BentoSection: React.FC = () => {
+  useLingui();
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 

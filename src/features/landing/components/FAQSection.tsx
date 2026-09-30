@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from "react";
 import { Trans } from "@lingui/react/macro";
-import { t } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react";
 
 const FAQItem = ({ faq, index, isOpen, toggleOpen }) => {
   return (
@@ -38,6 +38,7 @@ const FAQItem = ({ faq, index, isOpen, toggleOpen }) => {
 };
 
 export const FAQSection: React.FC = () => {
+  useLingui();
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleOpen = (index) => {
@@ -46,129 +47,129 @@ export const FAQSection: React.FC = () => {
 
   const FAQS = [
     {
-      shortTitle: t`Overview`,
-      question: t`What is Ride with Pals?`,
-      answer: t`Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place.`
+      shortTitle: <Trans>Overview</Trans>,
+      question: <Trans>What is Ride with Pals?</Trans>,
+      answer: <Trans>Ride with Pals is an all-in-one platform for cycling, running, and triathlon clubs that lets you organize activities, manage members, collect membership fees, sell products, and build a community - all in one place.</Trans>
     },
     {
-      shortTitle: t`Sports`,
-      question: t`Is it only for cycling?`,
-      answer: t`No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water).`
+      shortTitle: <Trans>Sports</Trans>,
+      question: <Trans>Is it only for cycling?</Trans>,
+      answer: <Trans>No. Ride with Pals is designed for cycling, running, and triathlon clubs. That's why we use the term “Activities,” which can include cycling (gravel, road, and MTB), running (road and trail), or swimming (pool or open water).</Trans>
     },
     {
-      shortTitle: t`Other Sports`,
-      question: t`Does it work for skating, hiking, or other sports clubs?`,
-      answer: t`Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app.`
+      shortTitle: <Trans>Other Sports</Trans>,
+      question: <Trans>Does it work for skating, hiking, or other sports clubs?</Trans>,
+      answer: <Trans>Yes, it works perfectly well for them. Although the main categories currently available are Cycling, Running, and Triathlon, any sport where groups meet to follow a route, use a GPS track, and track their progress by distance and time can find the perfect club management tool in our app.</Trans>
     },
     {
-      shortTitle: t`Problems Solved`,
-      question: t`What problems does it solve?`,
-      answer: t`Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management.`
+      shortTitle: <Trans>Problems Solved</Trans>,
+      question: <Trans>What problems does it solve?</Trans>,
+      answer: <Trans>Ride with Pals eliminates disorganized activities, scattered communication across messaging apps, headaches with selling club merchandise to members, lack of a trusted marketplace for second-hand gear, and manual chaos in member and membership fee management.</Trans>
     },
     {
-      shortTitle: t`vs Strava`,
-      question: t`How is it different from Strava?`,
-      answer: t`Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication.`
+      shortTitle: <Trans>vs Strava</Trans>,
+      question: <Trans>How is it different from Strava?</Trans>,
+      answer: <Trans>Strava is a sports social network focused on individual performance. Ride with Pals is designed to manage entire clubs — activities, members, payments, permissions, club shop, and internal communication.</Trans>
     },
     {
-      shortTitle: t`Strava Sync`,
-      question: t`Can I use the app without connecting Strava?`,
-      answer: t`Yes, absolutely. Strava is optional.`
+      shortTitle: <Trans>Strava Sync</Trans>,
+      question: <Trans>Can I use the app without connecting Strava?</Trans>,
+      answer: <Trans>Yes, absolutely. Strava is optional.</Trans>
     },
     {
-      shortTitle: t`Platform Type`,
-      question: t`Is it a social app or a management tool?`,
-      answer: t`It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation.`
+      shortTitle: <Trans>Platform Type</Trans>,
+      question: <Trans>Is it a social app or a management tool?</Trans>,
+      answer: <Trans>It's both. Ride with Pals combines community features — chats, marketplace, and activities — with real club management tools, including membership fees, a club shop, permissions, and organisation.</Trans>
     },
     {
-      shortTitle: t`Casual Groups`,
-      question: t`I'm not part of an official club, but my friends and I ride together. Can we use the app?`,
-      answer: t`Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats.`
+      shortTitle: <Trans>Casual Groups</Trans>,
+      question: <Trans>I'm not part of an official club, but my friends and I ride together. Can we use the app?</Trans>,
+      answer: <Trans>Absolutely. In fact, Ride with Pals was created to improve communication within riding groups like ours and put an end to endless, chaotic WhatsApp chats.</Trans>
     },
     {
-      shortTitle: t`Membership`,
-      question: t`Do I need to belong to a club to use the app?`,
-      answer: t`No. You can use it as an individual athlete, join clubs, or take part in public activities.`
+      shortTitle: <Trans>Membership</Trans>,
+      question: <Trans>Do I need to belong to a club to use the app?</Trans>,
+      answer: <Trans>No. You can use it as an individual athlete, join clubs, or take part in public activities.</Trans>
     },
     {
-      shortTitle: t`Public Rides`,
-      question: t`Can I create activities without belonging to a club?`,
-      answer: t`Yes. You can create public activities.`
+      shortTitle: <Trans>Public Rides</Trans>,
+      question: <Trans>Can I create activities without belonging to a club?</Trans>,
+      answer: <Trans>Yes. You can create public activities.</Trans>
     },
     {
-      shortTitle: t`Create Club`,
-      question: t`Do I need to be a Premium user to create a club?`,
-      answer: t`No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan.`
+      shortTitle: <Trans>Create Club</Trans>,
+      question: <Trans>Do I need to be a Premium user to create a club?</Trans>,
+      answer: <Trans>No. To create a club, you just need to register as an athlete first on the Free plan. You can then create a club and choose between the Free or Gold club plan.</Trans>
     },
     {
-      shortTitle: t`Collect Fees`,
-      question: t`How can I collect membership fees from my members?`,
-      answer: t`If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard.`
+      shortTitle: <Trans>Collect Fees</Trans>,
+      question: <Trans>How can I collect membership fees from my members?</Trans>,
+      answer: <Trans>If you have a Gold club subscription, you can define membership fees, mark payments as completed, and send payment requests through Stripe from your club dashboard.</Trans>
     },
     {
-      shortTitle: t`Payment Options`,
-      question: t`Does Ride with Pals process payments, or does it only record them?`,
-      answer: t`Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app.`
+      shortTitle: <Trans>Payment Options</Trans>,
+      question: <Trans>Does Ride with Pals process payments, or does it only record them?</Trans>,
+      answer: <Trans>Both options are available: you can manage payments manually (recording outside payments like cash or bank transfer), or you can use Stripe to automate and collect them securely inside the app.</Trans>
     },
     {
-      shortTitle: t`Paid Activities`,
-      question: t`What do I need to create paid activities or manage membership fee payments?`,
-      answer: t`You need a Gold club subscription, a free Stripe account, and you must connect it to the app.`
+      shortTitle: <Trans>Paid Activities</Trans>,
+      question: <Trans>What do I need to create paid activities or manage membership fee payments?</Trans>,
+      answer: <Trans>You need a Gold club subscription, a free Stripe account, and you must connect it to the app.</Trans>
     },
     {
-      shortTitle: t`Commission`,
-      question: t`Does the app charge a commission on each payment made through the app?`,
-      answer: t`Yes. Ride with Pals charges a small 4% management fee on each transaction.`
+      shortTitle: <Trans>Commission</Trans>,
+      question: <Trans>Does the app charge a commission on each payment made through the app?</Trans>,
+      answer: <Trans>Yes. Ride with Pals charges a small 4% management fee on each transaction.</Trans>
     },
     {
-      shortTitle: t`Permissions`,
-      question: t`As a club administrator, what permissions can I grant to club members?`,
-      answer: t`You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish.`
+      shortTitle: <Trans>Permissions</Trans>,
+      question: <Trans>As a club administrator, what permissions can I grant to club members?</Trans>,
+      answer: <Trans>You can define the permissions available to administrators and members, such as creating news posts, creating activities, and sharing discounts. You can appoint as many administrators as you wish.</Trans>
     },
     {
-      shortTitle: t`Moderation`,
-      question: t`Can users be banned?`,
-      answer: t`Yes. Administrators can accept or remove members.`
+      shortTitle: <Trans>Moderation</Trans>,
+      question: <Trans>Can users be banned?</Trans>,
+      answer: <Trans>Yes. Administrators can accept or remove members.</Trans>
     },
     {
-      shortTitle: t`Schedule`,
-      question: t`Can I create recurring activities?`,
-      answer: t`Yes. You can schedule activities on a weekly, biweekly, or monthly basis.`
+      shortTitle: <Trans>Schedule</Trans>,
+      question: <Trans>Can I create recurring activities?</Trans>,
+      answer: <Trans>Yes. You can schedule activities on a weekly, biweekly, or monthly basis.</Trans>
     },
     {
-      shortTitle: t`Cross-Club`,
-      question: t`Can I share an activity across multiple clubs?`,
-      answer: t`Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join.`
+      shortTitle: <Trans>Cross-Club</Trans>,
+      question: <Trans>Can I share an activity across multiple clubs?</Trans>,
+      answer: <Trans>Yes. You can publish the same activity in as many clubs as you belong to. You can also make it public so that people outside your clubs can join.</Trans>
     },
     {
-      shortTitle: t`Ride Chat`,
-      question: t`Is there a chat within the app?`,
-      answer: t`Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club.`
+      shortTitle: <Trans>Ride Chat</Trans>,
+      question: <Trans>Is there a chat within the app?</Trans>,
+      answer: <Trans>Yes. A chat is created for every activity, allowing participants to discuss topics related specifically to that activity. You can also chat privately with members of your club.</Trans>
     },
     {
-      shortTitle: t`Forum & News`,
-      question: t`Is there a forum-style interaction feature?`,
-      answer: t`Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format.`
+      shortTitle: <Trans>Forum & News</Trans>,
+      question: <Trans>Is there a forum-style interaction feature?</Trans>,
+      answer: <Trans>Yes. The club's News section allows users to comment on each post, with all the conversation kept together in a forum-style format.</Trans>
     },
     {
-      shortTitle: t`Online Shop`,
-      question: t`How does the online shop work?`,
-      answer: t`Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members.`
+      shortTitle: <Trans>Online Shop</Trans>,
+      question: <Trans>How does the online shop work?</Trans>,
+      answer: <Trans>Clubs with a Gold subscription can connect their Stripe payment account and activate an online shop to sell merchandise and products to their members.</Trans>
     },
     {
-      shortTitle: t`Marketplace`,
-      question: t`How does the marketplace work?`,
-      answer: t`The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission.`
+      shortTitle: <Trans>Marketplace</Trans>,
+      question: <Trans>How does the marketplace work?</Trans>,
+      answer: <Trans>The marketplace is an internal classifieds section for club members. It allows you to sell your sports equipment to people you trust. Neither the club nor the app charges any commission.</Trans>
     },
     {
-      shortTitle: t`Market Trades`,
-      question: t`How are transactions carried out through the marketplace?`,
-      answer: t`The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person.`
+      shortTitle: <Trans>Market Trades</Trans>,
+      question: <Trans>How are transactions carried out through the marketplace?</Trans>,
+      answer: <Trans>The marketplace is a space for exchanges between members. It does not support card payments. The exchange of goods and money takes place outside the app, in person.</Trans>
     },
     {
-      shortTitle: t`Upgrade`,
-      question: t`Can I start for free and upgrade later?`,
-      answer: t`Yes. You can upgrade at any time.`
+      shortTitle: <Trans>Upgrade</Trans>,
+      question: <Trans>Can I start for free and upgrade later?</Trans>,
+      answer: <Trans>Yes. You can upgrade at any time.</Trans>
     }
   ];
 

@@ -1,9 +1,11 @@
 // @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 import { LanguageSwitcher } from "@/components/common/LanguageSwitcher";
 
 export const Navigation: React.FC = () => {
+  const { i18n } = useLingui();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -286,7 +288,7 @@ export const Navigation: React.FC = () => {
         <button
           className={"rwp-hamburger" + (menuOpen ? " open" : "")}
           onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label={menuOpen ? i18n._("Close menu") : i18n._("Open menu")}
           aria-expanded={menuOpen}
         >
           <span className="rwp-hamburger-bar" />

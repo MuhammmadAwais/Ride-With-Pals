@@ -1,51 +1,53 @@
 // @ts-nocheck
 import React from "react";
 import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 
 export const ComparisonSection: React.FC = () => {
+  useLingui();
   const badItems = [
     {
-      title: "Endless chats & buried details:",
-      desc: "Routes, meeting points and GPX files get lost under hundreds of daily messages. Half the group arrives late or asks the same questions repeatedly.",
+      title: <Trans>Endless chats &amp; buried details:</Trans>,
+      desc: <Trans>Routes, meeting points and GPX files get lost under hundreds of daily messages. Half the group arrives late or asks the same questions repeatedly.</Trans>,
     },
     {
-      title: "Unorganised rosters & no privacy:",
-      desc: "Phone numbers exposed in public groups, zero control over who joins, and no way to manage permissions or roles.",
+      title: <Trans>Unorganised rosters &amp; no privacy:</Trans>,
+      desc: <Trans>Phone numbers exposed in public groups, zero control over who joins, and no way to manage permissions or roles.</Trans>,
     },
     {
-      title: "Chasing bank transfers & cash:",
-      desc: "Manually checking bank statements, updating outdated spreadsheets, and awkward follow-ups for expired memberships.",
+      title: <Trans>Chasing bank transfers &amp; cash:</Trans>,
+      desc: <Trans>Manually checking bank statements, updating outdated spreadsheets, and awkward follow-ups for expired memberships.</Trans>,
     },
     {
-      title: "Zero commercial return:",
-      desc: "Rides take hours to organize, but participants buy gear elsewhere and never see your store promotions or partner discounts.",
+      title: <Trans>Zero commercial return:</Trans>,
+      desc: <Trans>Rides take hours to organize, but participants buy gear elsewhere and never see your store promotions or partner discounts.</Trans>,
     },
     {
-      title: "No official voice:",
-      desc: "Important club announcements, weather cancellations or safety rules get buried under chatter and memes.",
+      title: <Trans>No official voice:</Trans>,
+      desc: <Trans>Important club announcements, weather cancellations or safety rules get buried under chatter and memes.</Trans>,
     },
   ];
 
   const goodItems = [
     {
-      title: "Dedicated activity hub:",
-      desc: "Clean event pages with route maps, GPX downloads, pace levels and 1-tap RSVPs. Everyone knows where and when to show up.",
+      title: <Trans>Dedicated activity hub:</Trans>,
+      desc: <Trans>Clean event pages with route maps, GPX downloads, pace levels and 1-tap RSVPs. Everyone knows where and when to show up.</Trans>,
     },
     {
-      title: "Member directory & role permissions:",
-      desc: "Private invite codes, join request approvals, and role management for founders, admins and ride leaders.",
+      title: <Trans>Member directory &amp; role permissions:</Trans>,
+      desc: <Trans>Private invite codes, join request approvals, and role management for founders, admins and ride leaders.</Trans>,
     },
     {
-      title: "Automated dues & Stripe payments:",
-      desc: "Seamless recurring membership fees, instant payment status tags (Paid / Not Renewed), and direct payouts to your bank account.",
+      title: <Trans>Automated dues &amp; Stripe payments:</Trans>,
+      desc: <Trans>Seamless recurring membership fees, instant payment status tags (Paid / Not Renewed), and direct payouts to your bank account.</Trans>,
     },
     {
-      title: "Integrated club shop & exclusive perks:",
-      desc: "Showcase local partner deals, sell official kits or paid workshops, and turn weekly attendees into loyal paying customers.",
+      title: <Trans>Integrated club shop &amp; exclusive perks:</Trans>,
+      desc: <Trans>Showcase local partner deals, sell official kits or paid workshops, and turn weekly attendees into loyal paying customers.</Trans>,
     },
     {
-      title: "Official announcements & structured chats:",
-      desc: "A dedicated news feed for verified club broadcasts, alongside dedicated chats tied specifically to each session.",
+      title: <Trans>Official announcements &amp; structured chats:</Trans>,
+      desc: <Trans>A dedicated news feed for verified club broadcasts, alongside dedicated chats tied specifically to each session.</Trans>,
     },
   ];
 
@@ -379,8 +381,8 @@ export const ComparisonSection: React.FC = () => {
                       </svg>
                     </div>
                     <p className="rwp-comp-text">
-                      <span className="rwp-comp-title"><Trans>{item.title}</Trans></span>
-                      <span className="rwp-comp-desc"><Trans>{item.desc}</Trans></span>
+                      <span className="rwp-comp-title">{item.title}</span>
+                      <span className="rwp-comp-desc">{item.desc}</span>
                     </p>
                   </div>
                 ))}
@@ -458,8 +460,8 @@ export const ComparisonSection: React.FC = () => {
                       </svg>
                     </div>
                     <p className="rwp-comp-text">
-                      <span className="rwp-comp-title"><Trans>{item.title}</Trans></span>
-                      <span className="rwp-comp-desc-good"><Trans>{item.desc}</Trans></span>
+                      <span className="rwp-comp-title">{item.title}</span>
+                      <span className="rwp-comp-desc-good">{item.desc}</span>
                     </p>
                   </div>
                 ))}

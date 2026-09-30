@@ -1,8 +1,10 @@
 // @ts-nocheck
 import React from "react";
 import { Trans } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react";
 
 export const BlogSection: React.FC = () => {
+  useLingui();
   return (
     <section
       className="framer-iti230"
