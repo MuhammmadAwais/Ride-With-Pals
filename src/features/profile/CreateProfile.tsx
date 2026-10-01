@@ -31,13 +31,18 @@ const CreateProfile = () => {
       {/* --- MOBILE LAYOUT --- */}
       <div className="lg:hidden relative min-h-screen w-full overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/Images/ProfilePic.jpg" alt="Athlete" className="w-full h-full object-cover" />
+          <img 
+            src="/Images/runner-and-pigeons.jpg" 
+            alt="Runner with pigeons" 
+            className="w-full h-full object-cover object-center" 
+            onError={(e) => { (e.target as HTMLImageElement).src = '/Images/_1runner and piggeons.png'; }}
+          />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="absolute bottom-8 left-6 right-6 fade-in">
           <button
             onClick={() => navigate("/athlete-profile")}
-            className="w-full bg-[#1a1a1a] p-4 rounded-2xl flex items-center justify-between border border-white/10 hover:border-[#EB712B] transition-all"
+            className="w-full bg-[#1a1a1a] p-4 rounded-2xl flex items-center justify-between border border-white/10 hover:border-[#EB712B] transition-all cursor-pointer"
           >
             <h2 className="text-white font-semibold text-lg">Create your Athlete Profile</h2>
             <div className="bg-[#333] p-3 rounded-full"><span>→</span></div>
@@ -52,7 +57,7 @@ const CreateProfile = () => {
           <div className="flex-1 space-y-8 fade-in">
             <h1 className="text-6xl font-extrabold leading-[1.05] tracking-tighter text-white">
               Create your <br />
-              <span className="text-transparent bg-clip-text  from-[#EB712B] to-[#ff9e66] ">
+              <span className="text-transparent bg-clip-text from-[#EB712B] to-[#ff9e66]">
                 Athlete Profile
               </span>
             </h1>
@@ -64,7 +69,7 @@ const CreateProfile = () => {
             
             <button 
               onClick={() => navigate("/athlete-profile")}
-              className="group px-8 py-4 bg-[#EB712B] text-white font-bold rounded-xl transition-all duration-300 flex items-center gap-3 hover:gap-5 active:scale-95 shadow-lg shadow-[#EB712B]/20"
+              className="group px-8 py-4 bg-[#EB712B] text-white font-bold rounded-xl transition-all duration-300 flex items-center gap-3 hover:gap-5 active:scale-95 shadow-lg shadow-[#EB712B]/20 cursor-pointer"
             >
               Get Started
               <span className="transition-transform duration-300">→</span>
@@ -74,9 +79,10 @@ const CreateProfile = () => {
           <div className="flex-1 relative max-w-md image-reveal">
             <div className="absolute -inset-4 shadow-[0px_4px_20px_rgba(235,113,43,0.4)] from-[#EB712B]/20 to-transparent rounded-3xl blur-xl"></div>
             <img 
-              src="/Images/ProfilePic.jpg" 
-              alt="Athlete" 
+              src="/Images/runner-and-pigeons.jpg" 
+              alt="Runner with pigeons" 
               className="relative rounded-3xl w-full shadow-2xl border border-white/5 object-cover h-130" 
+              onError={(e) => { (e.target as HTMLImageElement).src = '/Images/_1runner and piggeons.png'; }}
             />
           </div>
         </div>

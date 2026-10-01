@@ -115,8 +115,12 @@ const VerifyEmail = () => {
 
       {/* LEFT PANEL */}
       <div className="hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
-        <div className="absolute inset-0" style={{ backgroundImage: 'url(/Images/HikingPicture.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.68)' }} />
+        <div className="absolute inset-0" style={{ backgroundImage: 'url(/Images/real-riders-road.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        <div className="absolute inset-0" style={{ background: 'rgba(5,5,5,0.72)' }} />
+        <div
+          className="absolute -top-10 -left-10 w-60 h-60 rounded-full"
+          style={{ background: 'rgba(235,113,43,0.04)', filter: 'blur(60px)', pointerEvents: 'none' }}
+        />
         <div className="relative z-10 text-center px-12 max-w-md">
           <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '196px', marginBottom: '40px', display: 'block', margin: '0 auto 40px' }} draggable={false} />
           <h1 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '48px', lineHeight: 1.15, marginBottom: '16px' }}>

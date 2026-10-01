@@ -63,7 +63,7 @@ const getRideCoverImage = (ride: any): string => {
     ride.club?.coverImage ||
     ride.club?.bannerImage ||
     ride.club?.logo;
-  return resolveImageUrl(raw) || '/Images/CyclingPicture.jpg';
+  return resolveImageUrl(raw) || '/Images/cyclist-gravel-landscape.jpg';
 };
 
 // Helper for sport badge label
@@ -658,7 +658,7 @@ export default function UserCalendar() {
                           src={rideImage}
                           alt={rideTitle}
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/Images/CyclingPicture.jpg';
+                            (e.target as HTMLImageElement).src = '/Images/cyclist-gravel-landscape.jpg';
                           }}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
                         />

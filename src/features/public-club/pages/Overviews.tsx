@@ -222,7 +222,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
         club?.coverImage || 
         club?.bannerImage || 
         club?.logo;
-      const image = resolveImageUrl(imagePath) || "/Images/CyclingPicture.jpg";
+      const image = resolveImageUrl(imagePath) || "/Images/cyclist-gravel-landscape.jpg";
 
       return {
         id,
@@ -480,7 +480,7 @@ export default function Overviews({ clubId, club: propClub, membersCount: propMe
                       src={ride.image} 
                       alt={ride.title} 
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-103"
-                      onError={(e) => { (e.target as HTMLImageElement).src = '/Images/CyclingPicture.jpg'; }}
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/Images/cyclist-gravel-landscape.jpg'; }}
                     />
                     
                     {/* Gradient overlay for contrast */}

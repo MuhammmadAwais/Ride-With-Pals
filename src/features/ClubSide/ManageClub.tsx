@@ -65,8 +65,8 @@ export const ManageClub = () => {
   const mappedClubs = uniqueClubs.map(club => ({
     id: club.id,
     name: club.clubName || t`Unnamed Club`,
-    img: club.coverImage || "/Images/CyclingPicture.jpg",
-    logo: club.logo || "/Images/CyclingPicture.jpg",
+    img: club.coverImage || "/Images/cyclist-gravel-landscape.jpg",
+    logo: club.logo || "/Images/cyclist-gravel-landscape.jpg",
     sub: `TYPE ID ${club.clubTypeId}`,
     owner: club.ownerId ? `Owner ${club.ownerId}` : "N/A",
     avatar: "O",

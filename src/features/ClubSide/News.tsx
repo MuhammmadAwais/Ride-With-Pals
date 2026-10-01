@@ -168,7 +168,7 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
   const [showComments, setShowComments] = useState(false);
   const isDeleting = isDeletingId === Number(item.id);
 
-  const displayImage = item.image || '/Images/CyclingPicture.jpg';
+  const displayImage = item.image || '/Images/cyclist-gravel-landscape.jpg';
 
   return (
     <article className="group relative bg-surface border border-border rounded-2xl p-5 sm:p-6 overflow-hidden transition-all duration-300 hover:border-[#EB712B]/40">
@@ -183,7 +183,7 @@ const NewsArticle: React.FC<NewsArticleProps> = ({ item, canManage, onDelete, on
             alt={item.title} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover/thumb:scale-104"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = '/Images/CyclingPicture.jpg';
+              (e.target as HTMLImageElement).src = '/Images/cyclist-gravel-landscape.jpg';
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover/thumb:opacity-40 transition-opacity" />
