@@ -22,10 +22,10 @@ export const useAuth = () => {
     }
   };
 
-  const handleValidateOtp = async (otp: number, tempToken: string) => {
+  const handleValidateOtp = async (otp: number, tempToken: string, type: 'signup' | 'forgot' = 'forgot') => {
     setIsLoading(true);
     try {
-      const response = await ApiAuthService.validateOTP({ OTP: otp }, { headers: { Authorization: `Bearer ${tempToken}` } });
+      const response = await ApiAuthService.validateOTP({ OTP: otp, type }, { headers: { Authorization: `Bearer ${tempToken}` } });
       toast.success(response.message || "OTP validated");
       return response.response?.token;
     } catch (error: any) {

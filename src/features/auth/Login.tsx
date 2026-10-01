@@ -65,8 +65,10 @@ const Login = () => {
   /* ── GSAP stagger entry ── */
   useGSAP(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.fromTo('.brand-side', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.2 })
-      .fromTo('.animate-item', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 }, '-=0.7');
+    if (containerRef.current?.querySelector('.brand-side')) {
+      tl.fromTo('.brand-side', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.2 });
+    }
+    tl.fromTo('.animate-item', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 }, '-=0.7');
   }, { scope: containerRef });
 
   /* ── Validation ── */
@@ -144,7 +146,7 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-page" style={{ background: '#050505', color: '#fff' }}>
+    <div ref={containerRef} className="auth-page" style={{ background: '#050505', color: '#fff' }}>
 
       {/* ══ LEFT PANEL ══ */}
       <div className="brand-side hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
@@ -196,7 +198,7 @@ const Login = () => {
           }}
         />
 
-        <div ref={containerRef} className="w-full relative z-10" style={{ maxWidth: '460px', padding: '0 4px' }}>
+        <div className="w-full relative z-10" style={{ maxWidth: '460px', padding: '0 4px' }}>
 
           {/* Mobile logo */}
           <div className="animate-item lg:hidden flex justify-center mb-8">

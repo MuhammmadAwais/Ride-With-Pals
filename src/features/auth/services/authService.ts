@@ -90,12 +90,12 @@ export const useAuth = () => {
     }
   };
 
-  const validateOtp = async (otp: number, token: string) => {
+  const validateOtp = async (otp: number, token: string, type: 'signup' | 'forgot' = 'forgot') => {
     setIsLoading(true);
     setError(null);
     try {
       // Assuming validateOTP is defined in ApiAuthService
-      const response = await ApiAuthService.validateOTP({ OTP: otp }, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await ApiAuthService.validateOTP({ OTP: otp, type }, { headers: { Authorization: `Bearer ${token}` } });
       toast.success(response.message || 'OTP validated successfully.');
       return { token: response.response?.token, message: response.message };
     } catch (err: any) {

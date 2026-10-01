@@ -41,8 +41,10 @@ const ForgotPassword = () => {
 
   useGSAP(() => {
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.fromTo('.brand-side', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.1 })
-      .fromTo('.animate-item', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 }, '-=0.65');
+    if (containerRef.current?.querySelector('.brand-side')) {
+      tl.fromTo('.brand-side', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.1 });
+    }
+    tl.fromTo('.animate-item', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 }, '-=0.65');
   }, { scope: containerRef });
 
   const handleSendOtp = async () => {
@@ -68,7 +70,7 @@ const ForgotPassword = () => {
     }
     setError('');
     try {
-      const response = await validateOtp({ OTP: Number(otp), token: tempToken }).unwrap();
+      const response = await validateOtp({ OTP: Number(otp), token: tempToken, type: 'forgot' }).unwrap();
       setResetToken(response.token);
       setStep('password');
       toast.success('OTP validated successfully.');
@@ -93,7 +95,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="auth-page" style={{ background: '#050505', color: '#fff' }}>
+    <div ref={containerRef} className="auth-page" style={{ background: '#050505', color: '#fff' }}>
 
       {/* LEFT PANEL */}
       <div className="brand-side hidden lg:flex w-1/2 relative items-center justify-center overflow-hidden">
@@ -120,7 +122,7 @@ const ForgotPassword = () => {
         className="w-full lg:w-1/2 flex items-center justify-center"
         style={{ padding: '40px 20px', overflowY: 'auto', background: 'rgba(5,5,5,0.97)' }}
       >
-        <div ref={containerRef} className="w-full" style={{ maxWidth: '460px', padding: '0 4px' }}>
+        <div className="w-full" style={{ maxWidth: '460px', padding: '0 4px' }}>
 
           {/* Mobile logo */}
           <div className="animate-item lg:hidden flex justify-center mb-8">

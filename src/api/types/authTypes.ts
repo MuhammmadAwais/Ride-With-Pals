@@ -141,6 +141,7 @@ export type ResendOtpRequest = {
 
 export type ValidateOtpRequest = {
     OTP: number;
+    type?: 'signup' | 'forgot';
 }
 
 export type ChangePasswordRequest = {

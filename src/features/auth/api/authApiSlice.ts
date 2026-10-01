@@ -45,26 +45,28 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
 
     validateOtp: builder.mutation<AuthTypes.SignupResponseResponse, AuthTypes.ValidateOtpRequest & { token: string }>({
-      query: ({ OTP, token }) => ({
+      query: ({ OTP, token, type = 'forgot' }) => ({
         url: '/user/validate/otp',
         method: 'PUT',
-        body: { OTP },
+        body: { OTP, type },
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }),
       invalidatesTags: ['User'],
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const user: AppUser = {
-            id: data.id,
-            email: data.email,
-            token: data.token,
-            isAthleteProfile: !!data.isAthleteProfile,
-            role: data.isAthleteProfile ? 'athlete' : 'organizer',
-          };
-          dispatch(setUser(user));
+          if (arg.type === 'signup') {
+            const user: AppUser = {
+              id: data.id,
+              email: data.email,
+              token: data.token,
+              isAthleteProfile: !!data.isAthleteProfile,
+              role: data.isAthleteProfile ? 'athlete' : 'organizer',
+            };
+            dispatch(setUser(user));
+          }
         } catch (err) {}
       },
     }),
