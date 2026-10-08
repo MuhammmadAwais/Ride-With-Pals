@@ -1,12 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Locale } from '@/lib/i18n';
+import { type Locale, locales } from '@/lib/i18n';
 
 interface LanguageState {
   locale: Locale;
 }
 
 const getBrowserLocale = (): Locale => {
-  const supported: Locale[] = ['en', 'ur', 'hi', 'es', 'nl', 'fr', 'it', 'ar', 'ru', 'pt', 'de', 'ca'];
+  const supported = Object.keys(locales) as Locale[];
   const browserLang = navigator.language.split('-')[0] as Locale;
   return supported.includes(browserLang) ? browserLang : 'en';
 };

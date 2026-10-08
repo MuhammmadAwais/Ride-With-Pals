@@ -13,20 +13,42 @@ export const locales = {
   pt: 'Português',
   de: 'Deutsch',
   ca: 'Català',
+  eu: 'Euskara',
+  da: 'Dansk',
+  gl: 'Galego',
+  no: 'Norsk',
+  sv: 'Svenska',
 } as const;
 
 export type Locale = keyof typeof locales;
 
 /**
  * Backend-supported ISO 639-1 language codes.
- * Currently the backend services support English, Spanish, German, and Catalan.
+ * The backend services support:
+ * English (en), Spanish (es), German (de), Catalan (ca), Basque (eu),
+ * Danish (da), Dutch (nl), French (fr), Galician (gl), Italian (it),
+ * Norwegian (no), Portuguese (pt), Swedish (sv).
  */
-export const BACKEND_SUPPORTED_LANGUAGES = ['en', 'es', 'de', 'ca'] as const;
+export const BACKEND_SUPPORTED_LANGUAGES = [
+  'en',
+  'es',
+  'de',
+  'ca',
+  'eu',
+  'da',
+  'nl',
+  'fr',
+  'gl',
+  'it',
+  'no',
+  'pt',
+  'sv',
+] as const;
 export type BackendLanguage = typeof BACKEND_SUPPORTED_LANGUAGES[number];
 
 /**
  * Maps any app locale to a backend-supported language code.
- * Defaults to 'en' if the user's selected language is not yet supported on backend.
+ * Defaults to 'en' if the user's selected language is not supported on backend.
  */
 export const getBackendLanguage = (locale?: string | null): BackendLanguage => {
   if (!locale) return 'en';
@@ -52,6 +74,11 @@ export const LANGUAGE_META: Record<Locale, { flag: string; countryCode: string; 
   pt: { flag: '🇧🇷', countryCode: 'br', native: 'Português',  english: 'Portuguese' },
   de: { flag: '🇩🇪', countryCode: 'de', native: 'Deutsch',    english: 'German'     },
   ca: { flag: '🇪🇸', countryCode: 'es', native: 'Català',     english: 'Catalan'    },
+  eu: { flag: '🇪🇸', countryCode: 'es', native: 'Euskara',    english: 'Basque'     },
+  da: { flag: '🇩🇰', countryCode: 'dk', native: 'Dansk',      english: 'Danish'     },
+  gl: { flag: '🇪🇸', countryCode: 'es', native: 'Galego',     english: 'Galician'   },
+  no: { flag: '🇳🇴', countryCode: 'no', native: 'Norsk',      english: 'Norwegian'  },
+  sv: { flag: '🇸🇪', countryCode: 'se', native: 'Svenska',    english: 'Swedish'    },
 };
 
 /**
