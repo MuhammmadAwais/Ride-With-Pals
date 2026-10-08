@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Users, PlusCircle, Loader2 } from 'lucide-react';
 import { useGetClubRidesQuery } from '@/features/club/api/clubApiSlice';
 import { useActiveClub } from '@/hooks/useActiveClub';
+import { Trans } from '@lingui/react/macro';
 
 interface CalendarRide {
   id: number;
@@ -119,15 +120,15 @@ export const DashboardCalendar: React.FC = () => {
     <div className="space-y-8 animate-fade-in font-sans">
       <div className="flex items-center justify-between border-b border-border pb-6">
         <div>
-          <h1 className="text-4xl font-black text-white">Calendar</h1>
-          <p className="text-text-muted text-xs md:text-sm mt-1">Manage and discover upcoming group rides and training runs.</p>
+          <h1 className="text-4xl font-black text-white"><Trans>Calendar</Trans></h1>
+          <p className="text-text-muted text-xs md:text-sm mt-1"><Trans>Manage and discover upcoming group rides and training runs.</Trans></p>
         </div>
         <button 
           onClick={() => navigate('/dashboard/rides/create')}
           className="flex items-center gap-2 bg-[#EB712B] text-white px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 cursor-pointer hover:bg-[#d66525] border-0 outline-none"
         >
           <PlusCircle size={16} />
-          <span>Host a Ride</span>
+          <span><Trans>Host a Ride</Trans></span>
         </button>
       </div>
 
@@ -218,19 +219,19 @@ export const DashboardCalendar: React.FC = () => {
                   {selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </h3>
                 <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest mt-0.5">
-                  {selectedDateRides.length} Scheduled Ride{selectedDateRides.length === 1 ? '' : 's'}
+                  {selectedDateRides.length} {selectedDateRides.length === 1 ? <Trans>Scheduled Ride</Trans> : <Trans>Scheduled Rides</Trans>}
                 </p>
               </div>
             </div>
 
             {selectedDateRides.length === 0 ? (
               <div className="text-center py-12 space-y-3">
-                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">No rides scheduled on this day</p>
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider"><Trans>No rides scheduled on this day</Trans></p>
                 <button
                   onClick={() => navigate('/dashboard/rides/create')}
                   className="text-xs text-[#EB712B] font-bold hover:underline cursor-pointer"
                 >
-                  + Create a new ride
+                  <Trans>+ Create a new ride</Trans>
                 </button>
               </div>
             ) : (
@@ -245,7 +246,7 @@ export const DashboardCalendar: React.FC = () => {
                     <div className="flex flex-wrap items-center gap-3 text-[10px] text-text-muted font-medium">
                       <span className="flex items-center gap-1"><Clock size={12} className="text-[#EB712B]" /> {ride.time}</span>
                       <span className="flex items-center gap-1"><MapPin size={12} className="text-[#EB712B]" /> {ride.location}</span>
-                      <span className="flex items-center gap-1"><Users size={12} className="text-[#EB712B]" /> {ride.riders} riders</span>
+                      <span className="flex items-center gap-1"><Users size={12} className="text-[#EB712B]" /> {ride.riders} <Trans>riders</Trans></span>
                     </div>
                   </div>
                 ))}

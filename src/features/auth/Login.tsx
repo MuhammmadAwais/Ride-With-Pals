@@ -21,6 +21,8 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { cn } from '@/lib/utils';
 import { ROUTES, LOGIN_COPY, APP_NAME } from '@/Constants';
 import { useFirebaseAuth } from '@/features/auth/hooks/useFirebaseAuth';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 interface FormErrors {
   email?: string;
@@ -170,10 +172,10 @@ const Login = () => {
         <div className="relative z-10 text-center px-12 max-w-md">
           <img src="/Images/Logo.png" alt={APP_NAME} style={{ width: '196px', marginBottom: '40px', display: 'block', margin: '0 auto 40px' }} draggable={false} />
           <h1 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '52px', lineHeight: 1.1, marginBottom: '16px' }}>
-            {LOGIN_COPY.HEADING}
+            <Trans>Welcome Back</Trans>
           </h1>
           <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '16px', color: 'rgba(255,255,255,0.60)', lineHeight: 1.7 }}>
-            {LOGIN_COPY.LEFT_TAGLINE}
+            <Trans>Move Together. Manage your club, rides, and community — all in one place.</Trans>
           </p>
         </div>
       </div>
@@ -208,10 +210,10 @@ const Login = () => {
           {/* Heading */}
           <div className="animate-item mb-8">
             <h2 style={{ fontFamily: 'var(--font-poppins)', fontWeight: 800, fontSize: '34px', marginBottom: '6px' }}>
-              {LOGIN_COPY.HEADING}
+              <Trans>Welcome Back</Trans>
             </h2>
             <p style={{ fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.45)' }}>
-              {LOGIN_COPY.SUBHEADING}
+              <Trans>Sign in to your Ride With Pals account</Trans>
             </p>
           </div>
 
@@ -220,7 +222,7 @@ const Login = () => {
             {/* Email */}
             <div className="animate-item">
               <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px', display: 'block', marginBottom: '6px' }}>
-                {LOGIN_COPY.EMAIL_LABEL}
+                <Trans>Email Address</Trans>
               </label>
               <div style={{ position: 'relative' }}>
                 <Mail size={17} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: errors.email ? '#ef4444' : 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }} />
@@ -229,7 +231,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); clearError('email'); }}
                   onKeyDown={handleKeyDown}
-                  placeholder={LOGIN_COPY.EMAIL_PLACEHOLDER}
+                  placeholder="rider@ridewithpals.com"
                   autoComplete="email"
                   className={cn('field', errors.email && 'field-error')}
                   style={{ paddingLeft: '44px' }}
@@ -243,7 +245,7 @@ const Login = () => {
             <div className="animate-item">
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', alignItems: 'center' }}>
                 <label style={{ fontFamily: 'var(--font-roboto)', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.55)', marginLeft: '4px' }}>
-                  {LOGIN_COPY.PASSWORD_LABEL}
+                  <Trans>Password</Trans>
                 </label>
                 <span
                   onClick={() => navigate(ROUTES.FORGOT_PASSWORD)}
@@ -251,7 +253,7 @@ const Login = () => {
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#EB712B')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.35)')}
                 >
-                  Forgot password?
+                  <Trans>Forgot password?</Trans>
                 </span>
               </div>
               <div style={{ position: 'relative' }}>
@@ -261,7 +263,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); clearError('password'); }}
                   onKeyDown={handleKeyDown}
-                  placeholder={LOGIN_COPY.PASSWORD_PLACEHOLDER}
+                  placeholder={t`Enter your password`}
                   autoComplete="current-password"
                   className={cn('field', errors.password && 'field-error')}
                   style={{ paddingLeft: '44px', paddingRight: '48px' }}
@@ -291,9 +293,9 @@ const Login = () => {
               {isLoading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  {LOGIN_COPY.SUBMITTING_LABEL}
+                  <Trans>Signing in...</Trans>
                 </>
-              ) : LOGIN_COPY.SUBMIT_LABEL}
+              ) : <Trans>Sign In</Trans>}
             </button>
 
             {/* Divider */}
@@ -323,7 +325,7 @@ const Login = () => {
                   whiteSpace: 'nowrap',
                 }}
               >
-                Or sign in with
+                <Trans>Or sign in with</Trans>
               </span>
               <div
                 style={{
@@ -444,13 +446,13 @@ const Login = () => {
 
             {/* Sign up link */}
             <p className="animate-item" style={{ textAlign: 'center', fontFamily: 'var(--font-roboto)', fontSize: '14px', color: 'rgba(255,255,255,0.40)', marginTop: '4px' }}>
-              Don't have an account?{' '}
+              <Trans>Don't have an account?</Trans>{' '}
               <span
                 onClick={() => navigate(ROUTES.SIGNUP)}
                 className="hover:cursor-pointer"
                 style={{ color: '#EB712B', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px', cursor: 'pointer' }}
               >
-                Sign up
+                <Trans>Sign up</Trans>
               </span>
             </p>
           </div>

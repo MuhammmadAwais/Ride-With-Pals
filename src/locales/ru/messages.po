@@ -1,11 +1,17 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2026-09-30 20:10+0500\n"
+"POT-Creation-Date: 2026-10-08 17:28+0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: ru\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #. js-lingui-explicit-id
 #: src/features/landing/components/Navigation.tsx
@@ -193,6 +199,10 @@ msgstr "{totalPlansCount} Активен"
 #: src/features/landing/components/PricingSection.tsx
 msgid "/ year (billed annually)"
 msgstr "/ год (при оплате за год)"
+
+#: src/features/dashboard/DashboardCalendar.tsx
+msgid "+ Create a new ride"
+msgstr ""
 
 #: src/features/public-club/pages/UserClub.tsx
 msgid "+ Create Club"
@@ -1354,6 +1364,7 @@ msgid "By registering for this event, you understand the aerobic and environment
 msgstr "Регистрируясь на это мероприятие, вы понимаете аэробные и экологические проблемы активного отдыха и берете на себя личную ответственность."
 
 #: src/components/Sidebar.tsx
+#: src/features/dashboard/DashboardCalendar.tsx
 #: src/features/public-club/pages/RideJoining.tsx
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Calendar"
@@ -2353,6 +2364,10 @@ msgstr "Создать клуб"
 msgid "Create a new group ride activity and sync with your club members."
 msgstr "Create a new group ride activity and sync with your club members."
 
+#: src/features/auth/CreateAccount.tsx
+msgid "Create Account"
+msgstr ""
+
 #: src/features/landing/components/HowitWorksSection.tsx
 #~ msgid "Create and build community with "
 #~ msgstr "Создавайте и развивайте сообщество с "
@@ -2959,6 +2974,10 @@ msgstr "Ride with Pals принимает платежи напрямую или
 msgid "Does the app charge a commission on each payment made through the app?"
 msgstr "Взимается ли комиссия за платежи, проведенные в приложении?"
 
+#: src/features/auth/Login.tsx
+msgid "Don't have an account?"
+msgstr ""
+
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Done"
 msgstr "Сделанный"
@@ -3180,6 +3199,7 @@ msgstr "Elite status verified across all portfolios. Your operational efficiency
 msgid "ELITE TIER STATUS"
 msgstr "ELITE TIER STATUS"
 
+#: src/features/auth/Login.tsx
 #: src/features/ClubSide/EditClub.tsx
 msgid "Email Address"
 msgstr "Email Address"
@@ -3251,6 +3271,10 @@ msgstr "Enter your club privacy policy here..."
 #: src/features/ClubSide/TermsConditions.tsx
 msgid "Enter your club terms and conditions here..."
 msgstr "Enter your club terms and conditions here..."
+
+#: src/features/auth/Login.tsx
+msgid "Enter your password"
+msgstr ""
 
 #: src/features/public-club/pages/Marketplace.tsx
 msgid "Equipment Condition"
@@ -3838,6 +3862,10 @@ msgstr "Для увлеченных райдеров"
 msgid "forever"
 msgstr "навсегда"
 
+#: src/features/auth/Login.tsx
+msgid "Forgot password?"
+msgstr ""
+
 #: src/features/landing/components/FAQSection.tsx
 msgid "Forum & News"
 msgstr "Форум и Новости"
@@ -4186,6 +4214,10 @@ msgstr "High-performance oversight for your athletic organizations."
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Host"
 msgstr "Хозяин"
+
+#: src/features/dashboard/DashboardCalendar.tsx
+msgid "Host a Ride"
+msgstr ""
 
 #: src/features/landing/components/FAQSection.tsx
 msgid "How are transactions carried out through the marketplace?"
@@ -4856,6 +4888,10 @@ msgstr "Управление 1 клубом"
 msgid "Manage active members"
 msgstr "Управление активными участниками"
 
+#: src/features/dashboard/DashboardCalendar.tsx
+msgid "Manage and discover upcoming group rides and training runs."
+msgstr ""
+
 #: src/features/landing/components/FeaturesSection.tsx
 msgid "Manage annual club dues, track who has paid or expired, and monetize special events or clinic rides with seamless Stripe integration."
 msgstr "Взимайте годовые взносы, отслеживайте статус продления и монетизируйте мастер-классы и кэмпы через встроенную оплату."
@@ -5345,6 +5381,18 @@ msgstr "Самый популярный"
 msgid "Move this member to a different fee plan"
 msgstr "Move this member to a different fee plan"
 
+#: src/features/auth/CreateAccount.tsx
+msgid "Move Together with your club and community"
+msgstr ""
+
+#: src/features/auth/CreateAccount.tsx
+msgid "Move Together. Connect with your squad, organize rides, and keep your community engaged."
+msgstr ""
+
+#: src/features/auth/Login.tsx
+msgid "Move Together. Manage your club, rides, and community — all in one place."
+msgstr ""
+
 #: src/features/landing/components/TestimonialsSection.tsx
 msgid "MTB Enthusiast · Cape Town"
 msgstr "Любитель MTB · Кейптаун"
@@ -5798,6 +5846,10 @@ msgstr "Для этого клуба пока не создано ни одно�
 msgid "No Rides on this Date"
 msgstr "Нет поездок в этот день"
 
+#: src/features/dashboard/DashboardCalendar.tsx
+msgid "No rides scheduled on this day"
+msgstr ""
+
 #: src/features/public-club/pages/SavedRides.tsx
 msgid "No Saved Activities Yet"
 msgstr "Пока нет сохраненных действий"
@@ -6061,8 +6113,12 @@ msgstr "Opening Portal..."
 msgid "Options"
 msgstr "Options"
 
-msgid "Order"
-msgstr "Заказ"
+#: src/features/auth/Login.tsx
+msgid "Or sign in with"
+msgstr ""
+
+#~ msgid "Order"
+#~ msgstr "Заказ"
 
 #: src/features/ClubSide/OrderDetail.tsx
 msgid "Order Approved"
@@ -6270,6 +6326,10 @@ msgstr "Платные мастер-классы и тренировочные �
 msgid "Paid Entry"
 msgstr "Платный вход"
 
+#: src/features/auth/CreateAccount.tsx
+msgid "Pals"
+msgstr ""
+
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participant"
 msgstr "Участник"
@@ -6286,6 +6346,10 @@ msgstr "Участники"
 #: src/features/public-club/pages/RideJoining.tsx
 msgid "Participation"
 msgstr "Участие"
+
+#: src/features/auth/Login.tsx
+msgid "Password"
+msgstr ""
 
 #: src/features/ClubSide/ProfileAccount.tsx
 msgid "Password must be at least 6 characters"
@@ -7525,6 +7589,10 @@ msgstr "Поездка запланирована"
 msgid "Ride Updated!"
 msgstr ""
 
+#: src/features/auth/CreateAccount.tsx
+msgid "Ride with"
+msgstr ""
+
 #: src/features/landing/components/ComparisonSection.tsx
 #~ msgid "Ride With Pals"
 #~ msgstr "Ride With Pals"
@@ -7560,6 +7628,10 @@ msgstr "К ЗАЕЗДУ?"
 #: src/features/landing/components/TestimonialsSection.tsx
 msgid "Rider Stories"
 msgstr "Истории велосипедистов"
+
+#: src/features/dashboard/DashboardCalendar.tsx
+msgid "riders"
+msgstr ""
 
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Riders"
@@ -7837,9 +7909,14 @@ msgstr ""
 msgid "Scheduled Events"
 msgstr "Scheduled Events"
 
+#: src/features/dashboard/DashboardCalendar.tsx
 #: src/features/public-club/pages/UserCalendar.tsx
 msgid "Scheduled Ride"
 msgstr "Запланированная поездка"
+
+#: src/features/dashboard/DashboardCalendar.tsx
+msgid "Scheduled Rides"
+msgstr ""
 
 #: src/features/landing/components/ComparisonSection.tsx
 msgid "Seamless recurring membership fees, instant payment status tags (Paid / Not Renewed), and direct payouts to your bank account."
@@ -8270,6 +8347,14 @@ msgstr "Показаны уведомления \"{0} из {1}\""
 msgid "Showing <0>{0}</0> to <1>{1}</1> of <2>{2}</2> clubs"
 msgstr "Показаны <0>{0}</0> в <1>{1}</1> из <2>{2}</2> клубов."
 
+#: src/features/auth/Login.tsx
+msgid "Sign In"
+msgstr ""
+
+#: src/features/auth/Login.tsx
+msgid "Sign in to your Ride With Pals account"
+msgstr ""
+
 #: src/components/Sidebar.tsx
 msgid "Sign Out"
 msgstr "Выход"
@@ -8278,9 +8363,13 @@ msgstr "Выход"
 msgid "Sign Out?"
 msgstr "Выход?"
 
-#: src/features/landing/components/Navigation.tsx
-#~ msgid "Sign up"
-#~ msgstr "Регистрация"
+#: src/features/auth/Login.tsx
+msgid "Sign up"
+msgstr "Регистрация"
+
+#: src/features/auth/Login.tsx
+msgid "Signing in..."
+msgstr ""
 
 #: src/features/landing/components/PricingSection.tsx
 msgid "Simple, transparent pricing for growing communities."
@@ -9618,6 +9707,10 @@ msgstr "Велосипедист выходного дня · Бангалор"
 #: src/features/ClubSide/OrderDetail.tsx
 #~ msgid "Weight"
 #~ msgstr "Weight"
+
+#: src/features/auth/Login.tsx
+msgid "Welcome Back"
+msgstr ""
 
 #: src/features/public-club/pages/UserSubscription.tsx
 msgid "Welcome to the Premium Plan! You now have full access to marketplace listings, unlimited rides, and all premium features."

@@ -24,6 +24,8 @@ import { ROUTES, SIGNUP_COPY, APP_NAME } from '@/Constants';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { useFirebaseAuth } from '@/features/auth/hooks/useFirebaseAuth';
 import { Loader2 } from 'lucide-react';
+import { Trans } from '@lingui/react/macro';
+import { t } from '@lingui/core/macro';
 
 /* ── Validation helpers ──────────────────────────────────────────────────── */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -220,9 +222,9 @@ const CreateAccount = () => {
               marginBottom: "16px",
             }}
           >
-            {SIGNUP_COPY.LEFT_TITLE}{" "}
+            <Trans>Ride with</Trans>{" "}
             <span style={{ color: "#EB712B" }}>
-              {SIGNUP_COPY.LEFT_HIGHLIGHT}
+              <Trans>Pals</Trans>
             </span>
           </h1>
           <p
@@ -233,7 +235,7 @@ const CreateAccount = () => {
               lineHeight: 1.7,
             }}
           >
-            {SIGNUP_COPY.LEFT_TAGLINE}
+            <Trans>Move Together. Connect with your squad, organize rides, and keep your community engaged.</Trans>
           </p>
         </div>
       </div>
@@ -288,7 +290,7 @@ const CreateAccount = () => {
                 marginBottom: "6px",
               }}
             >
-              {SIGNUP_COPY.HEADING}
+              <Trans>Create Account</Trans>
             </h2>
             <p
               style={{
@@ -297,7 +299,7 @@ const CreateAccount = () => {
                 color: "rgba(255,255,255,0.50)",
               }}
             >
-              {SIGNUP_COPY.SUBHEADING}
+              <Trans>Move Together with your club and community</Trans>
             </p>
           </div>
 
